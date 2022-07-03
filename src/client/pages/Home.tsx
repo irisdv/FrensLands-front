@@ -1,5 +1,6 @@
 import React, { useMemo, useEffect } from "react";
 import { useStarknet, useConnectors } from "@starknet-react/core";
+import { ConnectWallet } from "../components/ConnectWallet";
 
 export default function Home() {
   const { account } = useStarknet();
@@ -9,11 +10,7 @@ export default function Home() {
     <>
       <p>Page Homepage</p>
       <div>
-        {available.map((connector) => (
-          <button key={connector.id()} onClick={() => connect(connector)}>
-            Connect {connector.name()}
-          </button>
-        ))}
+        <ConnectWallet />
       </div>
       <div>gm {account}</div>
     </>
