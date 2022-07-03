@@ -1,0 +1,43 @@
+{
+  "name": "hackathon-front",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack serve --config ./src/client/webpack.dev.js --hot"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/irisdv/hackathon-front.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/irisdv/hackathon-front/issues"
+  },
+  "homepage": "https://github.com/irisdv/hackathon-front#readme",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.3.0"
+  },
+  "devDependencies": {
+    "@starknet-react/core": "^0.12.0",
+    "@types/node": "^18.0.1",
+    "@types/react": "^18.0.14",
+    "@types/react-dom": "^18.0.5",
+    "css-loader": "^6.7.1",
+    "get-starknet": "^1.4.2",
+    "html-webpack-plugin": "^5.5.0",
+    "postcss": "^8.4.14",
+    "postcss-loader": "^7.0.0",
+    "starknet": "^3.15.0",
+    "style-loader": "^3.3.1",
+    "ts-loader": "^9.3.1",
+    "typescript": "^4.7.4",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.9.3"
+  }
+}
