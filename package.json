@@ -5,18 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack serve --config ./src/client/webpack.dev.js --hot"
+    "start": "webpack serve --config ./src/client/webpack.dev.js --hot",
+    "build": "webpack --config ./src/client/webpack.prod.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/irisdv/hackathon-front.git"
   },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/irisdv/hackathon-front/issues"
-  },
-  "homepage": "https://github.com/irisdv/hackathon-front#readme",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
