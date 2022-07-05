@@ -13,12 +13,12 @@
     "url": "git+https://github.com/irisdv/hackathon-front.git"
   },
   "dependencies": {
+    "@starknet-react/core": "^0.11.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
-    "@starknet-react/core": "^0.12.0",
     "@types/node": "^18.0.1",
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
