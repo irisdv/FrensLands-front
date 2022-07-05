@@ -102,8 +102,6 @@ export default class ViewGL {
   // ******************* RENDER LOOP ******************* //
   update = (t?: any) => {
 
-
-
     // cam
     this.controls.target = new THREE.Vector3(0, 0, 0);
 
