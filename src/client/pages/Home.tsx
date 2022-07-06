@@ -4,10 +4,9 @@ import { ConnectWallet } from "../components/ConnectWallet";
 import { TestGenMap } from "../components/testGenMap";
 import { TransactionList } from "../components/TransactionList";
 
-import { BuildingCounter } from "../components/BuildingCounter";
-import { InitializeBuildings } from "../components/InitializeBuildings";
-import { BuildBuildings } from "../components/BuildBuildings";
-import { GetBuildings } from "../components/GetBuildings";
+import { GetBuildingCount } from "../components/Buildings/GetBuildingCount";
+import { BuildBuildings } from "../components/Buildings/BuildBuildings";
+import { GetBuildings } from "../components/Buildings/GetBuildings";
 
 export default function Home() {
   // const { account } = useStarknet();
@@ -25,10 +24,8 @@ export default function Home() {
       </div>
       <div>gm {account}</div>
       <TestGenMap />
-      <BuildingCounter />
-      <InitializeBuildings />
+      <GetBuildingCount />
       <BuildBuildings />
-      {/* <GetBuildings /> */}
       <h2>Recent Transactions</h2>
       <TransactionList />
     </>

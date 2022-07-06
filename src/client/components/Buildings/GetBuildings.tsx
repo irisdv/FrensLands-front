@@ -1,15 +1,12 @@
 import { useStarknet, useStarknetCall } from "@starknet-react/core";
 import React, { useMemo, useState, useRef, useEffect } from "react";
-import { useBuildingsContract } from "../hooks/buildings";
+import { useBuildingsContract } from "../../hooks/buildings";
 import { number, uint256 } from "starknet";
 import { toBN } from "starknet/dist/utils/number";
 
 export function GetBuildings() {
   const [watch, setWatch] = useState(true);
   const { contract: building } = useBuildingsContract();
-
-  //   Fetch au début de la partie tous les buildings IDS
-  //   Une seule fois, check avec DB si ok : si différent alors edit, sinon ok
 
   const { data: buildingIdsResult } = useStarknetCall({
     contract: building,
