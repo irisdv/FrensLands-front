@@ -99,11 +99,43 @@ export default class ViewGL {
   };
 
 
+  // ******************* TEST TO CLEAN LATER ******************//
+
+  /*
+  var mouse = new THREE.Vector2;
+
+  window.addEventListener( 'resize', onWindowResize, false );
+  document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+  document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+  document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+  }
+
+  function onWindowResize()
+  {
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize( window.innerWidth, window.innerHeight );
+  }
+
+  function onDocumentMouseDown( event ) { mousePressed = true; }
+  function onDocumentMouseUp( event ) { mousePressed = false; syncframe = 0; }
+  function onDocumentMouseMove( event )
+  {
+
+  mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+  mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+  raycaster.setFromCamera( mouse.clone(), camera );
+
+}*/
+
+
+
   // ******************* RENDER LOOP ******************* //
   update = (t?: any) => {
 
     // cam
-    this.controls.target = new THREE.Vector3(0, 0, 0);
+    this.controls.target = new THREE.Vector3(this.camera.position.x, 0, this.camera.position.z);
+
 
 
     this.controls.update();
