@@ -18,8 +18,7 @@ export default class ViewGL {
   private controls: any;
   private stats: any;
 
-  constructor(canvasRef: any)
-  {
+  constructor(canvasRef: any) {
     // CREATE SCENE AND RENDERER
     this.scene = new THREE.Scene();
 
@@ -41,7 +40,7 @@ export default class ViewGL {
     this.scene.add(light);
 
     // CAMERA
-    this.camX = 0
+    this.camX = 0;
     this.camY = 10;
     this.camZ = 0;
     this.camera = new THREE.PerspectiveCamera(
@@ -57,21 +56,20 @@ export default class ViewGL {
     // ******************* GET WORLD READY *******************//
     this.terrainCreate();
 
-
     // CALL ANIMATION LOOP
     this.update();
   }
   // ****************** FUNCTIONS ********************** //
 
-  terrainCreate = () =>
-  {
+  terrainCreate = () => {
     var terrain: THREE.Mesh;
     let terrainPlane = new THREE.PlaneGeometry(40, 16, 1, 1);
     terrainPlane.rotateX(-Math.PI * 0.5);
-    const texture = new THREE.TextureLoader().load('resources/textures/Grass_Gen1.png');
+    const texture = new THREE.TextureLoader().load(
+      "resources/textures/Grass_Gen1.png"
+    );
 
-    let mat = new THREE.MeshStandardMaterial(
-    {
+    let mat = new THREE.MeshStandardMaterial({
       map: texture,
       transparent: true,
       depthWrite: false,
@@ -79,25 +77,44 @@ export default class ViewGL {
       // shading: 2
     });
 
-    if(mat.map)
-    {
-        mat.map.repeat = new THREE.Vector2(1, 1); // TEXTURE TILLING
-        mat.map.wrapS = THREE.RepeatWrapping; // REPEAT X
-        mat.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
-        mat.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+    if (mat.map) {
+      mat.map.repeat = new THREE.Vector2(1, 1); // TEXTURE TILLING
+      mat.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+      mat.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+      mat.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
     }
 
     terrain = new THREE.Mesh(terrainPlane, mat);
     this.scene.add(terrain);
-  }
+  };
 
   // ******************* PUBLIC EVENTS ******************* //
   onWindowResize = (vpW: number, vpH: number) => {
     this.camera.aspect = vpW / vpH;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(vpW, vpH);
+
+    // this.camera.aspect = window.innerWidth / window.innerHeight;
+    // this.camera.updateProjectionMatrix();
+    // this.renderer.setSize( window.innerWidth, window.innerHeight );
   };
 
+  onDocumentMouseDown = (event: any) => {
+    // mousePressed = true;
+    console.log("mousePressed", true);
+  };
+
+  onDocumentMouseUp = (event: any) => {
+    // mousePressed = false; syncframe = 0;
+    console.log("mousePressed", false);
+  };
+
+  onDocumentMouseMove = (event: any) => {
+    //   mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    // mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    // raycaster.setFromCamera( mouse.clone(), camera );
+    console.log("mouseMoved X", (event.clientX / window.innerWidth) * 2 - 1);
+  };
 
   // ******************* TEST TO CLEAN LATER ******************//
 
@@ -128,15 +145,14 @@ export default class ViewGL {
 
 }*/
 
-
-
   // ******************* RENDER LOOP ******************* //
   update = (t?: any) => {
-
     // cam
-    this.controls.target = new THREE.Vector3(this.camera.position.x, 0, this.camera.position.z);
-
-
+    this.controls.target = new THREE.Vector3(
+      this.camera.position.x,
+      0,
+      this.camera.position.z
+    );
 
     this.controls.update();
 
