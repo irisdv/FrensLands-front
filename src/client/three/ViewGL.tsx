@@ -18,9 +18,20 @@ export default class ViewGL {
   private controls: any;
   private stats: any;
 
+  private mouse: THREE.Vector2;
+
+  private compArray: any[];
+  private frontBlockArray: any[];
+  private validatedBlockArray: any[];
+
+  private firstLoad: number;
+
   constructor(canvasRef: any) {
     // CREATE SCENE AND RENDERER
     this.scene = new THREE.Scene();
+    this.mouse = new THREE.Vector2;
+
+    this.firstLoad = 1;
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: canvasRef,
@@ -52,6 +63,70 @@ export default class ViewGL {
     this.camera.position.y = this.camY;
     this.camera.position.z = this.camZ;
     this.controls = new OrbitControls(this.camera, canvasRef);
+
+
+    // ******************* INIT ARRAYS ************************//
+    var i = 0;
+    this.compArray = [];
+    while (i < 640)
+    {
+      this.compArray[i] = "1234567891234567";
+      i++;
+    }
+
+    this.frontBlockArray = [];
+    this.validatedBlockArray = [];
+
+    var indexI = 0;
+    var indexJ = 0;
+    i = 0;
+
+    while (indexI < 16)
+    {
+      this.validatedBlockArray[indexI] = [];
+      this.frontBlockArray[indexI] = [];
+
+      while (indexJ < 40)
+      {
+        this.validatedBlockArray[indexI][indexJ] = decompose(this.compArray[i]);
+
+        if (this.firstLoad == 1)
+        {
+          this.frontBlockArray[indexI][indexJ] = decompose(this.compArray[i]);
+        }
+        indexJ++;
+        i++;
+      }
+      indexJ = 0;
+      indexI++;
+    }
+
+    this.firstLoad = 0;
+
+
+    function decompose(elem: any)
+    {
+      var tempDecomp : any[] = [];
+      elem.toString()
+
+      tempDecomp[0] = elem[0] + elem[1];            //[pos:x]
+      tempDecomp[1] = elem[2] + elem[3];            //[pos:y]
+      tempDecomp[2] = elem[4];                      //[mat type]
+      tempDecomp[3] = elem[5] + elem[6];            //[ress or bat type]
+      tempDecomp[4] = elem[7] + elem[8] + elem[9];  //[UNIQUE ID]
+      tempDecomp[5] = elem[10] + elem[11];          //[health]
+      tempDecomp[6] = elem[12] + elem[13];          //[quantity ress or pop]
+      tempDecomp[7] = elem[14];                     //[current level
+      tempDecomp[8] = elem[15];                     //[activity index or number of days active]
+
+
+      console.log("tempDecomp", tempDecomp);
+
+      return (tempDecomp);
+
+    }
+      //tempDecomp[9] = objet3d
+
 
     // ******************* GET WORLD READY *******************//
     this.terrainCreate();
@@ -110,17 +185,22 @@ export default class ViewGL {
   };
 
   onDocumentMouseMove = (event: any) => {
+
+    this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+    //console.log ("mouseX", this.mouse.x);
+    //console.log ("mouseY", this.mouse.y);
+
     //   mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     // mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
     // raycaster.setFromCamera( mouse.clone(), camera );
-    console.log("mouseMoved X", (event.clientX / window.innerWidth) * 2 - 1);
+    //console.log("mouseMoved X", (event.clientX / window.innerWidth) * 2 - 1);
   };
 
   // ******************* TEST TO CLEAN LATER ******************//
 
   /*
-  var mouse = new THREE.Vector2;
-
   window.addEventListener( 'resize', onWindowResize, false );
   document.addEventListener( 'mousemove', onDocumentMouseMove, false );
   document.addEventListener( 'mousedown', onDocumentMouseDown, false );
