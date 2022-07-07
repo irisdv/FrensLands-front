@@ -151,7 +151,7 @@ export default class ViewGL
 
     var testPos = new THREE.Vector2(24, 7);
 
-    this.createObject(testPos, 2, 1, "youpi",1 , 1, "Matchbox_Tiles_Objects_Outlined");
+    this.createObject(testPos, 2, 1, "youpi",1 , 1, "Matchbox_Tiles_Objects");
 
     // CALL ANIMATION LOOP
     this.update();
@@ -332,7 +332,8 @@ export default class ViewGL
 
     if (matObj.map)
     {
-      matObj.map.repeat = new THREE.Vector2(1, 1); // TEXTURE TILLING
+      matObj.map.repeat = new THREE.Vector2(0.09, 0.09); // TEXTURE TILLING ADAPTED TO BUILDING TILES
+      matObj.map.offset.set(0.41, 0.29); // POSITION OF BUILDING ON TEXTURE
       matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
       matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
       matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
