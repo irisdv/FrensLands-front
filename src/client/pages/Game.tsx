@@ -13,9 +13,9 @@ export default function Game() {
   const [watch, setWatch] = useState(true);
 
   // if (account) {
-  const { address, buildingCount, setAddress, updateBuildings } =
-    useGameContext();
-  // }
+  // const { address, buildingCount, setAddress, updateBuildings } =
+  //   useGameContext();
+  // // }
 
   const { data: counterBuildingsResult } = useStarknetCall({
     contract: building,
@@ -29,7 +29,7 @@ export default function Game() {
       var elem = toBN(counterBuildingsResult[0]);
       var newCounter = elem.toNumber();
 
-      updateBuildings(newCounter);
+      // updateBuildings(newCounter);
 
       return { counter: newCounter };
     }
