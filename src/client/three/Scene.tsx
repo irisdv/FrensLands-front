@@ -19,6 +19,9 @@ export default class Scene extends React.Component {
     document.addEventListener("mousemove", this.onDocumentMouseMove, false);
     document.addEventListener("mousedown", this.onDocumentMouseDown, false);
     document.addEventListener("mouseup", this.onDocumentMouseUp, false);
+    document.addEventListener("keydown", this.onDocumentKeyDown, true);
+    document.addEventListener("keyup", this.onDocumentKeyUp, true);
+    document.addEventListener("wheel", this.onMouseWheel, true);
   }
 
   componentDidUpdate(prevProps: any, prevState: any) {}
@@ -28,6 +31,9 @@ export default class Scene extends React.Component {
     document.removeEventListener("mousemove", this.onDocumentMouseMove);
     document.removeEventListener("mousedown", this.onDocumentMouseDown);
     document.removeEventListener("mouseup", this.onDocumentMouseUp);
+    document.removeEventListener("keydown", this.onDocumentKeyDown);
+    document.removeEventListener("keyup", this.onDocumentKeyUp);
+    document.removeEventListener("wheel", this.onMouseWheel);
   }
 
   // ******************* EVENT LISTENERS ******************* //
@@ -43,6 +49,15 @@ export default class Scene extends React.Component {
   onDocumentMouseUp = (event: any) => {
     this.viewGL.onDocumentMouseUp(event);
   };
+  onDocumentKeyDown = (event: any) => {
+    this.viewGL.onDocumentKeyDown(event);
+  }
+  onDocumentKeyUp = (event: any) => {
+    this.viewGL.onDocumentKeyUp(event);
+  }
+  onMouseWheel = (event: any) => {
+    this.viewGL.onMouseWheel(event);
+  }
 
   render() {
     return (

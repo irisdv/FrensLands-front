@@ -2,11 +2,10 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 
-export default class ViewGL {
+export default class ViewGL
+{
   private scene: THREE.Scene;
   private renderer: THREE.WebGLRenderer;
-  //private mapWidth: number;
-  //private mapLength: number;
 
   // Camera
   private camera: THREE.PerspectiveCamera;
@@ -19,6 +18,10 @@ export default class ViewGL {
   private stats: any;
 
   private mouse: THREE.Vector2;
+  private mousePressed: number;
+  private mouseMove: THREE.Vector2;
+  private tempMousePos: THREE.Vector2;
+  private mouseWheel: number;
 
   private compArray: any[];
   private frontBlockArray: any[];
@@ -26,21 +29,26 @@ export default class ViewGL {
 
   private firstLoad: number;
 
-  constructor(canvasRef: any) {
+  private keyMap: any = [];
+
+  constructor(canvasRef: any)
+  {
     // CREATE SCENE AND RENDERER
     this.scene = new THREE.Scene();
     this.mouse = new THREE.Vector2;
-
+    this.mousePressed = 0;
+    this.mouseWheel = 0;
+    this.mouseMove = new THREE.Vector2;
+    this.tempMousePos = new THREE.Vector2;
     this.firstLoad = 1;
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: canvasRef,
       antialias: true,
     });
+
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-
     this.clock = new THREE.Clock();
-
     const skyColor = 0xfff9e8;
     this.scene.background = new THREE.Color(0x64a8d1);
 
@@ -52,7 +60,7 @@ export default class ViewGL {
 
     // CAMERA
     this.camX = 0;
-    this.camY = 10;
+    this.camY = 30;
     this.camZ = 0;
     this.camera = new THREE.PerspectiveCamera(
       45,
@@ -62,10 +70,12 @@ export default class ViewGL {
     );
     this.camera.position.y = this.camY;
     this.camera.position.z = this.camZ;
-    this.controls = new OrbitControls(this.camera, canvasRef);
+    this.camera.rotateX(-1.57);
+
 
 
     // ******************* INIT ARRAYS ************************//
+
     var i = 0;
     this.compArray = [];
     while (i < 640)
@@ -103,6 +113,7 @@ export default class ViewGL {
 
     this.firstLoad = 0;
 
+    // ********************** FUNCTIONS IN CONSTRUCTOR ************************//
 
     function decompose(elem: any)
     {
@@ -119,72 +130,176 @@ export default class ViewGL {
       tempDecomp[7] = elem[14];                     //[current level
       tempDecomp[8] = elem[15];                     //[activity index or number of days active]
 
+      //tempDecomp[9] = objet3d
 
       console.log("tempDecomp", tempDecomp);
 
       return (tempDecomp);
-
     }
-      //tempDecomp[9] = objet3d
 
 
     // ******************* GET WORLD READY *******************//
+
+    // CREATE TERRAIN
     this.terrainCreate();
 
     // CALL ANIMATION LOOP
     this.update();
   }
-  // ****************** FUNCTIONS ********************** //
+  // ****************** FUNCTIONS OUT OF CONSTRUCTOR ********************** //
 
-  terrainCreate = () => {
-    var terrain: THREE.Mesh;
-    let terrainPlane = new THREE.PlaneGeometry(40, 16, 1, 1);
-    terrainPlane.rotateX(-Math.PI * 0.5);
-    const texture = new THREE.TextureLoader().load(
-      "resources/textures/Grass_Gen1.png"
-    );
+  terrainCreate = () =>
+  {
+      var terrain: THREE.Mesh;
+      let terrainPlane = new THREE.PlaneGeometry(40, 16, 1, 1);
+      terrainPlane.rotateX(-Math.PI * 0.5);
+      const texture = new THREE.TextureLoader().load(
+        "resources/textures/Grass_Gen1.png"
+      );
 
-    let mat = new THREE.MeshStandardMaterial({
+      let mat = new THREE.MeshStandardMaterial({
       map: texture,
       transparent: true,
       depthWrite: false,
       depthTest: true,
       // shading: 2
-    });
+      });
 
-    if (mat.map) {
-      mat.map.repeat = new THREE.Vector2(1, 1); // TEXTURE TILLING
-      mat.map.wrapS = THREE.RepeatWrapping; // REPEAT X
-      mat.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
-      mat.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+      if (mat.map)
+      {
+        mat.map.repeat = new THREE.Vector2(1, 1); // TEXTURE TILLING
+        mat.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+        mat.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+        mat.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+      }
+
+      terrain = new THREE.Mesh(terrainPlane, mat);
+      this.scene.add(terrain);
+    };
+
+
+  // CAMERA MOUSE CONTROL
+  mouseControls = () =>
+  {
+
+    if (this.mousePressed == 1)
+    {
+      this.mouseMove.x = 0;
+      this.mouseMove.y = 0;
+
+      var difX = (this.tempMousePos.x - this.mouse.x) * 100;
+      var difY = (this.tempMousePos.y - this.mouse.y) * 100;
+
+      if (difX < 0)
+      {
+        difX = difX * -1;
+      }
+      if (difY < 0)
+      {
+        difY = difY * -1;
+      }
+
+      if (this.tempMousePos.x < this.mouse.x)
+      {
+        this.mouseMove.x = 0.1 * difX;
+        this.camera.position.x -= this.mouseMove.x;
+      }
+      else if (this.tempMousePos.x > this.mouse.x)
+      {
+        this.mouseMove.x = 0.1 * difX;
+        this.camera.position.x += this.mouseMove.x;
+      }
+      else if (this.tempMousePos.x == this.mouse.x)
+      {
+        this.mouseMove.x = 0;
+      }
+
+      if (this.tempMousePos.y < this.mouse.y)
+      {
+        this.mouseMove.y = 0.1 * difY;
+        this.camera.position.z += this.mouseMove.y;
+      }
+      else if (this.tempMousePos.y > this.mouse.y)
+      {
+        this.mouseMove.y = 0.1 * difY;
+        this.camera.position.z -= this.mouseMove.y;
+      }
+      else if (this.tempMousePos.y == this.mouse.y)
+      {
+        this.mouseMove.y = 0;
+      }
     }
 
-    terrain = new THREE.Mesh(terrainPlane, mat);
-    this.scene.add(terrain);
-  };
+    this.tempMousePos.x = this.mouse.x;
+    this.tempMousePos.y = this.mouse.y;
+
+
+
+  }
 
   // ******************* PUBLIC EVENTS ******************* //
-  onWindowResize = (vpW: number, vpH: number) => {
+
+  onWindowResize = (vpW: number, vpH: number) =>
+  {
     this.camera.aspect = vpW / vpH;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(vpW, vpH);
-
-    // this.camera.aspect = window.innerWidth / window.innerHeight;
-    // this.camera.updateProjectionMatrix();
-    // this.renderer.setSize( window.innerWidth, window.innerHeight );
   };
 
-  onDocumentMouseDown = (event: any) => {
-    // mousePressed = true;
+  onDocumentMouseDown = (event: any) =>
+  {
     console.log("mousePressed", true);
+    this.mousePressed = 1;
   };
 
-  onDocumentMouseUp = (event: any) => {
-    // mousePressed = false; syncframe = 0;
+  onDocumentMouseUp = (event: any) =>
+  {
     console.log("mousePressed", false);
+    this.mousePressed = 0;
   };
 
-  onDocumentMouseMove = (event: any) => {
+  onMouseWheel = (event: any) =>
+  {
+
+    if (event.deltaY > 0)
+    {
+        this.mouseWheel = -1;
+        if (this.camera.position.y < 10)
+        {
+          this.camera.position.y -= 3;
+        }
+    }
+    else if (event.deltaY < 0)
+    {
+        this.mouseWheel = 1;
+        if (this.camera.position.y < 30)
+        {
+          this.camera.position.y += 3;
+        }
+    }
+    else
+    {
+        this.mouseWheel = 0;
+    }
+
+    this.camera.updateProjectionMatrix();
+    console.log("eventWheel", this.mouseWheel);
+  }
+
+  onDocumentKeyDown = (event: any) =>
+  {
+      var keyCode = event.code;
+      this.keyMap[keyCode] = true;
+  }
+
+  onDocumentKeyUp = (event: any) =>
+  {
+      var keyCode = event.code;
+      this.keyMap[keyCode] = false;
+  }
+
+  onDocumentMouseMove = (event: any) =>
+  {
 
     this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
@@ -196,45 +311,23 @@ export default class ViewGL {
     // mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
     // raycaster.setFromCamera( mouse.clone(), camera );
     //console.log("mouseMoved X", (event.clientX / window.innerWidth) * 2 - 1);
+
   };
 
   // ******************* TEST TO CLEAN LATER ******************//
 
-  /*
-  window.addEventListener( 'resize', onWindowResize, false );
-  document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-  document.addEventListener( 'mousedown', onDocumentMouseDown, false );
-  document.addEventListener( 'mouseup', onDocumentMouseUp, false );
-  }
 
-  function onWindowResize()
-  {
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
-    this.renderer.setSize( window.innerWidth, window.innerHeight );
-  }
 
-  function onDocumentMouseDown( event ) { mousePressed = true; }
-  function onDocumentMouseUp( event ) { mousePressed = false; syncframe = 0; }
-  function onDocumentMouseMove( event )
-  {
-
-  mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-  mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-  raycaster.setFromCamera( mouse.clone(), camera );
-
-}*/
 
   // ******************* RENDER LOOP ******************* //
-  update = (t?: any) => {
-    // cam
-    this.controls.target = new THREE.Vector3(
-      this.camera.position.x,
-      0,
-      this.camera.position.z
-    );
+  update = (t?: any) =>
+  {
 
-    this.controls.update();
+
+    // cam
+
+    this.mouseControls();
+
 
     // this.stats.update();
 
