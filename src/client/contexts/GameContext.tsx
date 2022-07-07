@@ -18,7 +18,6 @@ export interface IGameState {
   mapArray?: any[];
   updateBuildings: (t: number) => void;
   setAddress: (addr: string) => void;
-  //   currentTrack: number;
 }
 
 export const GameState: IGameState = {
@@ -29,22 +28,6 @@ export const GameState: IGameState = {
   updateBuildings: () => {},
   setAddress: () => {},
 };
-
-let gameCtx: any = null;
-
-// export const defaultState: IGameState = {
-//   getAudioContext: () => {
-//     if (gameCtx === null) {
-//       // @ts-ignore
-//       gameCtx = new (window.GameContext || window.webkitGameContext)({
-//         latencyHint: "playback",
-//         sampleRate: 44100,
-//       });
-//     }
-//     return gameCtx;
-//   },
-//   //   currentTrack: -1,
-// };
 
 const StateContext = React.createContext(GameState);
 const DispatchContext = React.createContext({});
@@ -104,20 +87,11 @@ function reducer(state: IGameState, action: Action): IGameState {
   }
 }
 
-// export const AppStateProvider = ({ children : React.ReactNode}) => {
 export const AppStateProvider: React.FC<
   React.PropsWithChildren<{ children: any }>
 > = (props: React.PropsWithChildren<{ children: any }>): React.ReactElement => {
   const [timer, setTimer] = useState(Date.now());
   const { contract: building } = useBuildingsContract();
-
-  //   const [GameStateContextState] = useState({
-  //     address: "",
-  //     tokenId: "",
-  //     buildingCount: 0,
-  //     mapArray: [],
-  //   });
-  //   const [addr, setAddr] = useState("");
 
   const [state, dispatch] = useReducer(reducer, GameState);
   //   const { tokenId, buildingCount, mapArray } = state;
@@ -132,7 +106,6 @@ export const AppStateProvider: React.FC<
   }, []);
 
   const updateBuildings = React.useCallback((t: number) => {
-    console.log("in function updateBuilding dispatch", t);
     dispatch({
       type: "set_buildingCount",
       buildingCount: t,
@@ -140,7 +113,6 @@ export const AppStateProvider: React.FC<
   }, []);
 
   const setAddress = React.useCallback((addr: string) => {
-    console.log("in function updateAddress dispatch", addr);
     dispatch({
       type: "set_account",
       address: addr,
@@ -150,7 +122,6 @@ export const AppStateProvider: React.FC<
   return (
     <StateContext.Provider
       value={{
-        // ...GameStateContextState,
         address: state.address,
         tokenId: state.tokenId,
         buildingCount: state.buildingCount,
@@ -158,7 +129,6 @@ export const AppStateProvider: React.FC<
         updateBuildings,
         setAddress,
       }}
-      //   value={state}
     >
       {/* <DispatchContext.Provider value={dispatch}> */}
       {props.children}
@@ -166,16 +136,6 @@ export const AppStateProvider: React.FC<
     </StateContext.Provider>
   );
 };
-
-// export const useState = () => {
-//   const context = React.useContext(StateContext);
-
-//   if (context === undefined) {
-//     throw new Error("useState must be used within a AppStateProvider");
-//   }
-
-//   return context;
-// };
 
 // export const useDispatch = () => {
 //   const context = React.useContext(DispatchContext);

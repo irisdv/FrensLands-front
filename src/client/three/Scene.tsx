@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import ViewGL from "./ViewGL";
 import { GameState } from "../contexts/GameContext";
 

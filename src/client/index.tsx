@@ -8,6 +8,7 @@ import {
   StarknetProvider,
 } from "@starknet-react/core";
 import { BrowserRouter } from "react-router-dom";
+import { AppStateProvider } from "./contexts/GameContext";
 
 const container = document.getElementById("root");
 const root = createRoot(container!); // createRoot(container!) if you use TypeScript
@@ -16,9 +17,12 @@ const root = createRoot(container!); // createRoot(container!) if you use TypeSc
 root.render(
   <React.StrictMode>
     {/* <StarknetProvider connectors={connectors}> */}
+
     <StarknetProvider connectors={[new InjectedConnector()]}>
       <BrowserRouter>
-        <App />
+        <AppStateProvider>
+          <App />
+        </AppStateProvider>
       </BrowserRouter>
     </StarknetProvider>
   </React.StrictMode>
