@@ -23,6 +23,8 @@ export default class ViewGL
   private tempMousePos: THREE.Vector2;
   private mouseWheel: number;
 
+  private raycaster = new THREE.Raycaster();
+
   private compArray: any[];
   private frontBlockArray: any[];
   private validatedBlockArray: any[];
@@ -310,30 +312,59 @@ export default class ViewGL
 
   onDocumentMouseMove = (event: any) =>
   {
-
     this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
-    //console.log ("mouseX", this.mouse.x);
-    //console.log ("mouseY", this.mouse.y);
-
-    //   mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    // mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-    // raycaster.setFromCamera( mouse.clone(), camera );
-    //console.log("mouseMoved X", (event.clientX / window.innerWidth) * 2 - 1);
-
   };
 
   // ******************* TEST TO CLEAN LATER ******************//
 
+  rayCast = () =>
+  {
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+    const intersects = this.raycaster.intersectObjects( this.scene.children );
+    var currRayPos = new THREE.Vector3;
+    var tempInter = [];
+    var foundHighest = 0;
+    var i = 0;
+    var j = 0;
+    var k = 0;
 
+    while (i < intersects.length)
+    {
+      //console.log("intersects", intersects[ i ].point);
+      tempInter[i] = intersects[i].point;
+      i++;
+  	}
+
+    while (foundHighest != 1)
+    {
+      var foundlowest = 0;
+
+      while (foundlowest != 1 || foundHighest != 1)
+      {
+        if (tempInter[j] != null && tempInter[j].y != null && tempInter[k].y != null && tempInter[j].y < tempInter[k].y)
+        {
+          tempInter[j] = null;
+          foundlowest = 1;
+        }
+        else
+        {
+          currRayPos = tempInter[j];
+          foundHighest = 1;
+        }
+        k++
+      }
+      j++;
+    }
+
+  }
 
 
   // ******************* RENDER LOOP ******************* //
   update = (t?: any) =>
   {
 
-
+    this.rayCast();
     // cam
 
     this.mouseControls();
