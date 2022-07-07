@@ -59,15 +59,16 @@ export default class ViewGL
     this.scene.add(light);
 
     // CAMERA
-    this.camX = 0;
+    this.camX = 20;
     this.camY = 30;
-    this.camZ = 0;
+    this.camZ = 8;
     this.camera = new THREE.PerspectiveCamera(
       45,
       window.innerWidth / window.innerHeight,
       1,
       1000
     );
+    this.camera.position.x = this.camX;
     this.camera.position.y = this.camY;
     this.camera.position.z = this.camZ;
     this.camera.rotateX(-1.57);
@@ -174,6 +175,8 @@ export default class ViewGL
       }
 
       terrain = new THREE.Mesh(terrainPlane, mat);
+      terrain.position.x = 20;
+      terrain.position.z = 8;
       this.scene.add(terrain);
     };
 
@@ -201,13 +204,19 @@ export default class ViewGL
 
       if (this.tempMousePos.x < this.mouse.x)
       {
-        this.mouseMove.x = 0.1 * difX;
-        this.camera.position.x -= this.mouseMove.x;
+        if (this.camera.position.x > 0)
+        {
+          this.mouseMove.x = 0.1 * difX;
+          this.camera.position.x -= this.mouseMove.x;
+        }
       }
       else if (this.tempMousePos.x > this.mouse.x)
       {
-        this.mouseMove.x = 0.1 * difX;
-        this.camera.position.x += this.mouseMove.x;
+        if (this.camera.position.x < 40)
+        {
+          this.mouseMove.x = 0.1 * difX;
+          this.camera.position.x += this.mouseMove.x;
+        }
       }
       else if (this.tempMousePos.x == this.mouse.x)
       {
@@ -216,13 +225,19 @@ export default class ViewGL
 
       if (this.tempMousePos.y < this.mouse.y)
       {
-        this.mouseMove.y = 0.1 * difY;
-        this.camera.position.z += this.mouseMove.y;
+        if (this.camera.position.z < 16)
+        {
+          this.mouseMove.y = 0.1 * difY;
+          this.camera.position.z += this.mouseMove.y;
+        }
       }
       else if (this.tempMousePos.y > this.mouse.y)
       {
-        this.mouseMove.y = 0.1 * difY;
-        this.camera.position.z -= this.mouseMove.y;
+        if (this.camera.position.z > 0)
+        {
+          this.mouseMove.y = 0.1 * difY;
+          this.camera.position.z -= this.mouseMove.y;
+        }
       }
       else if (this.tempMousePos.y == this.mouse.y)
       {
@@ -232,9 +247,6 @@ export default class ViewGL
 
     this.tempMousePos.x = this.mouse.x;
     this.tempMousePos.y = this.mouse.y;
-
-
-
   }
 
   // ******************* PUBLIC EVENTS ******************* //
@@ -264,7 +276,7 @@ export default class ViewGL
     if (event.deltaY > 0)
     {
         this.mouseWheel = -1;
-        if (this.camera.position.y < 10)
+        if (this.camera.position.y > 10)
         {
           this.camera.position.y -= 3;
         }
@@ -281,8 +293,6 @@ export default class ViewGL
     {
         this.mouseWheel = 0;
     }
-
-    this.camera.updateProjectionMatrix();
     console.log("eventWheel", this.mouseWheel);
   }
 
