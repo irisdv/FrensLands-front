@@ -1,9 +1,12 @@
 import React from "react";
 import ViewGL from "./ViewGL";
+import { GameState } from "../contexts/GameContext";
 
 export default class Scene extends React.Component {
   private canvasRef: any;
   private viewGL: any;
+
+  static contextGame = GameState;
 
   constructor(props: any) {
     super(props);
@@ -24,7 +27,10 @@ export default class Scene extends React.Component {
     document.addEventListener("wheel", this.onMouseWheel, true);
   }
 
-  componentDidUpdate(prevProps: any, prevState: any) {}
+  componentDidUpdate(prevProps: any, prevState: any) {
+    // Context data
+    console.log("New data received from parent components", prevProps);
+  }
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.handleResize);
@@ -51,13 +57,13 @@ export default class Scene extends React.Component {
   };
   onDocumentKeyDown = (event: any) => {
     this.viewGL.onDocumentKeyDown(event);
-  }
+  };
   onDocumentKeyUp = (event: any) => {
     this.viewGL.onDocumentKeyUp(event);
-  }
+  };
   onMouseWheel = (event: any) => {
     this.viewGL.onMouseWheel(event);
-  }
+  };
 
   render() {
     return (
