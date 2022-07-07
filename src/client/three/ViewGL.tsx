@@ -37,6 +37,7 @@ export default class ViewGL
   {
     // CREATE SCENE AND RENDERER
     this.scene = new THREE.Scene();
+    this.scene.name = "theScene";
     this.mouse = new THREE.Vector2;
     this.mousePressed = 0;
     this.mouseWheel = 0;
@@ -155,6 +156,7 @@ export default class ViewGL
   {
       var terrain: THREE.Mesh;
       let terrainPlane = new THREE.PlaneGeometry(40, 16, 1, 1);
+      terrainPlane.name = "terrainGeometry";
       terrainPlane.rotateX(-Math.PI * 0.5);
       const texture = new THREE.TextureLoader().load(
         "resources/textures/Grass_Gen1.png"
@@ -177,6 +179,7 @@ export default class ViewGL
       }
 
       terrain = new THREE.Mesh(terrainPlane, mat);
+      terrain.name = "terrainMesh";
       terrain.position.x = 21;
       terrain.position.z = 9;
       this.scene.add(terrain);
@@ -325,16 +328,17 @@ export default class ViewGL
     var currRayPos = new THREE.Vector3;
     var tempInter : any[] = [];
     var tempInterY : any[] = [];
-    var foundHighest = 0;
     var i = 0;
     var j = 0;
-    var k = 0;
 
     while (i < intersects.length)
     {
-      //console.log("intersects", intersects[ i ].point);
-      tempInter[i] = intersects[i].point;
-      tempInterY[i] = intersects[i].point.y;
+      if (intersects[i].point.y > -1 && intersects[i].point.x > 1 && intersects[i].point.z > 1)
+      {
+        //console.log("intersects", intersects[i].object);
+        tempInter[i] = intersects[i].point;
+        tempInterY[i] = intersects[i].point.y;
+      }
       i++;
   	}
 
@@ -348,7 +352,9 @@ export default class ViewGL
       }
       j++;
     }
-    console.log("currRayPosX", parseInt((currRayPos.x).toFixed(0)));
+    if (currRayPos != null)
+    {
+      console.log("currRayPosX", parseInt((currRayPos.x).toFixed(0)));
     /*if ((currRayPos.z.toFixed(0) != "0"))
     {
       console.log("currRayPosY", (parseInt((currRayPos.z).toFixed(0)) -16) * -1);
@@ -356,6 +362,7 @@ export default class ViewGL
     else
     {*/
       console.log("currRayPosY", parseInt((currRayPos.z).toFixed(0)));
+    }
     //}
   }
 
