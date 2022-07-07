@@ -61,9 +61,9 @@ export default class ViewGL
     this.scene.add(light);
 
     // CAMERA
-    this.camX = 20;
+    this.camX = 21;
     this.camY = 30;
-    this.camZ = 8;
+    this.camZ = 9;
     this.camera = new THREE.PerspectiveCamera(
       45,
       window.innerWidth / window.innerHeight,
@@ -177,8 +177,8 @@ export default class ViewGL
       }
 
       terrain = new THREE.Mesh(terrainPlane, mat);
-      terrain.position.x = 20;
-      terrain.position.z = 8;
+      terrain.position.x = 21;
+      terrain.position.z = 9;
       this.scene.add(terrain);
     };
 
@@ -323,7 +323,8 @@ export default class ViewGL
     this.raycaster.setFromCamera(this.mouse, this.camera);
     const intersects = this.raycaster.intersectObjects( this.scene.children );
     var currRayPos = new THREE.Vector3;
-    var tempInter = [];
+    var tempInter : any[] = [];
+    var tempInterY : any[] = [];
     var foundHighest = 0;
     var i = 0;
     var j = 0;
@@ -333,32 +334,46 @@ export default class ViewGL
     {
       //console.log("intersects", intersects[ i ].point);
       tempInter[i] = intersects[i].point;
+      tempInterY[i] = intersects[i].point.y;
       i++;
   	}
 
-    while (foundHighest != 1)
-    {
-      var foundlowest = 0;
+    tempInterY.sort(function(a, b){return a - b});
 
-      while (foundlowest != 1 || foundHighest != 1)
+    while (j < i)
+    {
+      if (tempInterY[0] == tempInter[j].y)
       {
-        if (tempInter[j] != null && tempInter[j].y != null && tempInter[k].y != null && tempInter[j].y < tempInter[k].y)
-        {
-          tempInter[j] = null;
-          foundlowest = 1;
-        }
-        else
-        {
-          currRayPos = tempInter[j];
-          foundHighest = 1;
-        }
-        k++
+        currRayPos = tempInter[j];
       }
       j++;
     }
-
+    console.log("currRayPosX", parseInt((currRayPos.x).toFixed(0)));
+    /*if ((currRayPos.z.toFixed(0) != "0"))
+    {
+      console.log("currRayPosY", (parseInt((currRayPos.z).toFixed(0)) -16) * -1);
+    }
+    else
+    {*/
+      console.log("currRayPosY", parseInt((currRayPos.z).toFixed(0)));
+    //}
   }
 
+
+  //   sortFunction = (a : any, b : any, c :any) =>
+  //   {
+  //   console.log('a', a)
+  //   console.log('b', b)
+  //   // if (a[0] === b[0]) {
+  //   //     return 0;
+  //   // }
+  //   // else {
+  //   //     return (a[0] < b[0]) ? -1 : 1;
+  //   // }
+  // }
+
+  // const points = [40, 100, 1, 5, 25, 10];
+  // points.sort(function(a, b){return a - b});
 
   // ******************* RENDER LOOP ******************* //
   update = (t?: any) =>
