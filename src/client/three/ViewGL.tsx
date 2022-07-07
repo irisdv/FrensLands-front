@@ -64,10 +64,10 @@ export default class ViewGL
 
     // CAMERA
     this.camX = 21;
-    this.camY = 30;
+    this.camY = 150;
     this.camZ = 9;
     this.camera = new THREE.PerspectiveCamera(
-      45,
+      5,
       window.innerWidth / window.innerHeight,
       1,
       1000
@@ -75,7 +75,7 @@ export default class ViewGL
     this.camera.position.x = this.camX;
     this.camera.position.y = this.camY;
     this.camera.position.z = this.camZ;
-    this.camera.rotateX(-1.57);
+    this.camera.rotateX(-Math.PI * 0.5);
 
 
 
@@ -148,6 +148,10 @@ export default class ViewGL
 
     // CREATE TERRAIN
     this.terrainCreate();
+
+    var testPos = new THREE.Vector2(24, 7);
+
+    this.createObject(testPos, 2, 1, "youpi",1 , 1, "Matchbox_Tiles_Objects_Outlined");
 
     // CALL ANIMATION LOOP
     this.update();
@@ -305,73 +309,7 @@ export default class ViewGL
     }
   }
 
-  // ******************* PUBLIC EVENTS ******************* //
-
-  onWindowResize = (vpW: number, vpH: number) =>
-  {
-    this.camera.aspect = vpW / vpH;
-    this.camera.updateProjectionMatrix();
-    this.renderer.setSize(vpW, vpH);
-  };
-
-  onDocumentMouseDown = (event: any) =>
-  {
-    console.log("mousePressed", true);
-    this.mousePressed = 1;
-  };
-
-  onDocumentMouseUp = (event: any) =>
-  {
-    console.log("mousePressed", false);
-    this.mousePressed = 0;
-  };
-
-  onMouseWheel = (event: any) =>
-  {
-
-    if (event.deltaY > 0)
-    {
-        this.mouseWheel = -1;
-        if (this.camera.position.y > 10)
-        {
-          this.camera.position.y -= 3;
-        }
-    }
-    else if (event.deltaY < 0)
-    {
-        this.mouseWheel = 1;
-        if (this.camera.position.y < 30)
-        {
-          this.camera.position.y += 3;
-        }
-    }
-    else
-    {
-        this.mouseWheel = 0;
-    }
-    console.log("eventWheel", this.mouseWheel);
-  }
-
-  onDocumentKeyDown = (event: any) =>
-  {
-      var keyCode = event.code;
-      this.keyMap[keyCode] = true;
-  }
-
-  onDocumentKeyUp = (event: any) =>
-  {
-      var keyCode = event.code;
-      this.keyMap[keyCode] = false;
-  }
-
-  onDocumentMouseMove = (event: any) =>
-  {
-    this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-  };
-
-  // ******************* TEST TO CLEAN LATER ******************//
-
+  // CREATE GEOMETRY AND MESH ON TERRAIN
   createObject = (pos : THREE.Vector2, sizeX : number, sizeY : number, name : String,
     type : number, progress : number, nameText : String) =>
   {
@@ -403,11 +341,127 @@ export default class ViewGL
     var newObjectMesh = new THREE.Mesh(newObject, matObj);
     newObjectMesh.name = name + "_mesh";
     newObjectMesh.position.x = pos.x + 0.5;
-    newObjectMesh.position.y = 1 + ((pos.y - 16) * -1) * 0.2; // Make sure the objects are higher at the bottom
+    newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
     newObjectMesh.position.z = pos.y + 0.5;
     this.scene.add(newObjectMesh);
-
   }
+
+  // REPLACE GEOMETRY AND MESH ON TERRAIN
+  replaceObject = (pos : THREE.Vector2, sizeX : number, sizeY : number, name : String,
+    type : number, progress : number, nameText : String) =>
+  {
+
+
+    //call delete function
+
+    let newObject = new THREE.PlaneGeometry(sizeX, sizeY, 1, 1);
+    newObject.name = name + "_geom";
+    newObject.rotateX(-Math.PI * 0.5);
+
+    const textObj = new THREE.TextureLoader().load(
+      "resources/textures/"+ nameText +".png"
+    );
+
+    let matObj = new THREE.MeshStandardMaterial({
+      map: textObj,
+      transparent: true,
+      depthWrite: false,
+      depthTest: true,
+      // shading: 2
+    });
+
+    if (matObj.map)
+    {
+      matObj.map.repeat = new THREE.Vector2(1, 1); // TEXTURE TILLING
+      matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+      matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+      matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+    }
+
+    var newObjectMesh = new THREE.Mesh(newObject, matObj);
+    newObjectMesh.name = name + "_mesh";
+    newObjectMesh.position.x = pos.x + 0.5;
+    newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
+    newObjectMesh.position.z = pos.y + 0.5;
+    this.scene.add(newObjectMesh);
+  }
+
+  // DELETE FORMER OBJECT IN SCENE USING NAME OR POS
+  deleteObject = (name : string) =>
+  {
+    this.scene.remove(this.scene.getObjectByName(name) as THREE.Group)
+    console.log("This object has been deleted : ", name);
+  }
+
+  // ******************* PUBLIC EVENTS ******************* //
+
+  onWindowResize = (vpW: number, vpH: number) =>
+  {
+    this.camera.aspect = vpW / vpH;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(vpW, vpH);
+  };
+
+  onDocumentMouseDown = (event: any) =>
+  {
+    console.log("mousePressed", true);
+    this.mousePressed = 1;
+  };
+
+  onDocumentMouseUp = (event: any) =>
+  {
+    console.log("mousePressed", false);
+    this.mousePressed = 0;
+  };
+
+  onMouseWheel = (event: any) =>
+  {
+
+    if (event.deltaY > 0)
+    {
+        this.mouseWheel = -1;
+        if (this.camera.position.y > 45)
+        {
+          this.camera.position.y -= 15;
+          this.deleteObject("youpi");
+        }
+    }
+    else if (event.deltaY < 0)
+    {
+        this.mouseWheel = 1;
+        if (this.camera.position.y < 180)
+        {
+          this.camera.position.y += 15;
+        }
+    }
+    else
+    {
+        this.mouseWheel = 0;
+    }
+    console.log("eventWheel", this.mouseWheel);
+  }
+
+  onDocumentKeyDown = (event: any) =>
+  {
+      var keyCode = event.code;
+      this.keyMap[keyCode] = true;
+  }
+
+  onDocumentKeyUp = (event: any) =>
+  {
+      var keyCode = event.code;
+      this.keyMap[keyCode] = false;
+  }
+
+  onDocumentMouseMove = (event: any) =>
+  {
+    this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+  };
+
+  // ******************* TEST TO CLEAN LATER ******************//
+
+
 
 
   // ******************* RENDER LOOP ******************* //
