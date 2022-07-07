@@ -16,6 +16,8 @@ export default class ViewGL
   private controls: any;
   private stats: any;
 
+  private terrain = new THREE.Mesh;
+
   private mouse: THREE.Vector2;
   private mousePressed: number;
   private mouseMove: THREE.Vector2;
@@ -118,6 +120,7 @@ export default class ViewGL
 
     // ********************** FUNCTIONS IN CONSTRUCTOR ************************//
 
+    // DECOMPOSE THE ARRAY OF DATA PER ELEMENT
     function decompose(elem: any)
     {
       var tempDecomp : any[] = [];
@@ -149,11 +152,12 @@ export default class ViewGL
     // CALL ANIMATION LOOP
     this.update();
   }
+
   // ****************** FUNCTIONS OUT OF CONSTRUCTOR ********************** //
 
+  // CREATE THE TERRAIN
   terrainCreate = () =>
   {
-      var terrain: THREE.Mesh;
       let terrainPlane = new THREE.PlaneGeometry(40, 16, 1, 1);
       terrainPlane.name = "terrainGeometry";
       terrainPlane.rotateX(-Math.PI * 0.5);
@@ -177,11 +181,11 @@ export default class ViewGL
         mat.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
       }
 
-      terrain = new THREE.Mesh(terrainPlane, mat);
-      terrain.name = "terrainMesh";
-      terrain.position.x = 21;
-      terrain.position.z = 9;
-      this.scene.add(terrain);
+      this.terrain = new THREE.Mesh(terrainPlane, mat);
+      this.terrain.name = "terrainMesh";
+      this.terrain.position.x = 21;
+      this.terrain.position.z = 9;
+      this.scene.add(this.terrain);
     };
 
 
@@ -253,6 +257,54 @@ export default class ViewGL
     this.tempMousePos.y = this.mouse.y;
   }
 
+  // RAYCASTING
+  rayCast = () =>
+  {
+    // TO RAYCAST ONLY TERRAIN
+    //var objects = [];
+    //objects[0] = this.terrain;
+
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+    const intersects = this.raycaster.intersectObjects(this.scene.children, true);
+    var currRayPos = new THREE.Vector3;
+    var tempInter : any[] = [];
+    var tempInterY : any[] = [];
+    var i = 0;
+    var k = 0;
+    var j = 0;
+
+    while (i < intersects.length)
+    {
+      if (intersects[i].point.y > -1 && intersects[i].point.x > 1 && intersects[i].point.z > 1)
+      {
+        //console.log("intersects", intersects[i].object);
+        tempInter[k] = intersects[i].point;
+        tempInterY[k] = intersects[i].point.y;
+        k++;
+      }
+      i++;
+  	}
+
+    tempInterY.sort(function(a, b){return a - b});
+
+    while (j < k)
+    {
+      if (tempInter[j] != null && tempInterY != null && tempInterY[0] == tempInter[j].y)
+      {
+        currRayPos = tempInter[j];
+        break;
+      }
+      j++;
+    }
+    if (currRayPos != null)
+    {
+      console.log("currRayPosX", parseInt((currRayPos.x).toFixed(2)));
+      //console.log("currRayPosX", (currRayPos.x).toFixed(2));
+      console.log("currRayPosY", parseInt((currRayPos.z).toFixed(2)));
+      //console.log("currRayPosY", (currRayPos.z).toFixed(2));
+    }
+  }
+
   // ******************* PUBLIC EVENTS ******************* //
 
   onWindowResize = (vpW: number, vpH: number) =>
@@ -320,86 +372,56 @@ export default class ViewGL
 
   // ******************* TEST TO CLEAN LATER ******************//
 
-  rayCast = () =>
+  createObject = (pos : THREE.Vector2, sizeX : number, sizeY : number, name : String,
+    type : number, progress : number, nameText : String) =>
   {
-    this.raycaster.setFromCamera(this.mouse, this.camera);
-    const intersects = this.raycaster.intersectObjects( this.scene.children );
-    var currRayPos = new THREE.Vector3;
-    var tempInter : any[] = [];
-    var tempInterY : any[] = [];
-    var i = 0;
-    var k = 0;
-    var j = 0;
 
-    while (i < intersects.length)
-    {
-      if (intersects[i].point.y > -1 && intersects[i].point.x > 1 && intersects[i].point.z > 1)
-      {
-        //console.log("intersects", intersects[i].object);
-        tempInter[k] = intersects[i].point;
-        tempInterY[k] = intersects[i].point.y;
-        k++;
-      }
-      i++;
-  	}
+    let newObject = new THREE.PlaneGeometry(sizeX, sizeY, 1, 1);
+    newObject.name = name + "_geom";
+    newObject.rotateX(-Math.PI * 0.5);
 
-    tempInterY.sort(function(a, b){return a - b});
+    const textObj = new THREE.TextureLoader().load(
+      "resources/textures/"+ nameText +".png"
+    );
 
-    while (j < i)
+    let matObj = new THREE.MeshStandardMaterial({
+      map: textObj,
+      transparent: true,
+      depthWrite: false,
+      depthTest: true,
+      // shading: 2
+    });
+
+    if (matObj.map)
     {
-      if (tempInter[j] && tempInterY[0] == tempInter[j].y)
-      {
-        currRayPos = tempInter[j];
-        break;
-      }
-      j++;
+      matObj.map.repeat = new THREE.Vector2(1, 1); // TEXTURE TILLING
+      matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+      matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+      matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
     }
-    if (currRayPos != null)
-    {
-      //console.log("currRayPosX", parseInt((currRayPos.x).toFixed(2)));
-      console.log("currRayPosX", (currRayPos.x).toFixed(2));
-    /*if ((currRayPos.z.toFixed(0) != "0"))
-    {
-      console.log("currRayPosY", (parseInt((currRayPos.z).toFixed(0)) -16) * -1);
-    }
-    else
-    {*/
-      //console.log("currRayPosY", parseInt((currRayPos.z).toFixed(2)));
-      console.log("currRayPosX", (currRayPos.x).toFixed(2));
-    }
-    //}
+
+    var newObjectMesh = new THREE.Mesh(newObject, matObj);
+    newObjectMesh.name = name + "_mesh";
+    newObjectMesh.position.x = pos.x;
+    newObjectMesh.position.y = 1 + ((pos.y - 16) * -1) * 0.2; // Make sure the objects are higher at the bottom
+    newObjectMesh.position.z = pos.y;
+    this.scene.add(newObjectMesh);
+
   }
 
 
-  //   sortFunction = (a : any, b : any, c :any) =>
-  //   {
-  //   console.log('a', a)
-  //   console.log('b', b)
-  //   // if (a[0] === b[0]) {
-  //   //     return 0;
-  //   // }
-  //   // else {
-  //   //     return (a[0] < b[0]) ? -1 : 1;
-  //   // }
-  // }
-
-  // const points = [40, 100, 1, 5, 25, 10];
-  // points.sort(function(a, b){return a - b});
-
   // ******************* RENDER LOOP ******************* //
+
   update = (t?: any) =>
   {
 
-    this.rayCast();
-    // cam
-
     this.mouseControls();
 
+    this.rayCast();
 
     // this.stats.update();
-
     this.renderer.render(this.scene, this.camera);
-
     requestAnimationFrame(this.update.bind(this));
+
   };
 }

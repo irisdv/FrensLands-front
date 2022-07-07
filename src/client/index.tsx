@@ -15,9 +15,8 @@ const root = createRoot(container!); // createRoot(container!) if you use TypeSc
 // const connectors = getInstalledInjectedConnectors();
 
 root.render(
-  <React.StrictMode>
-    {/* <StarknetProvider connectors={connectors}> */}
-
+  <>
+{/* <StarknetProvider connectors={connectors}> */}
     <StarknetProvider connectors={[new InjectedConnector()]}>
       <BrowserRouter>
         <AppStateProvider>
@@ -25,5 +24,5 @@ root.render(
         </AppStateProvider>
       </BrowserRouter>
     </StarknetProvider>
-  </React.StrictMode>
-);
+  </>
+); 
