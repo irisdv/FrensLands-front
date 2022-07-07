@@ -402,9 +402,9 @@ export default class ViewGL
 
     var newObjectMesh = new THREE.Mesh(newObject, matObj);
     newObjectMesh.name = name + "_mesh";
-    newObjectMesh.position.x = pos.x;
+    newObjectMesh.position.x = pos.x + 0.5;
     newObjectMesh.position.y = 1 + ((pos.y - 16) * -1) * 0.2; // Make sure the objects are higher at the bottom
-    newObjectMesh.position.z = pos.y;
+    newObjectMesh.position.z = pos.y + 0.5;
     this.scene.add(newObjectMesh);
 
   }
