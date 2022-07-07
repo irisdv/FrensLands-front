@@ -328,6 +328,7 @@ export default class ViewGL
     var tempInter : any[] = [];
     var tempInterY : any[] = [];
     var i = 0;
+    var k = 0;
     var j = 0;
 
     while (i < intersects.length)
@@ -335,8 +336,9 @@ export default class ViewGL
       if (intersects[i].point.y > -1 && intersects[i].point.x > 1 && intersects[i].point.z > 1)
       {
         //console.log("intersects", intersects[i].object);
-        tempInter[i] = intersects[i].point;
-        tempInterY[i] = intersects[i].point.y;
+        tempInter[k] = intersects[i].point;
+        tempInterY[k] = intersects[i].point.y;
+        k++;
       }
       i++;
   	}
@@ -348,19 +350,22 @@ export default class ViewGL
       if (tempInter[j] && tempInterY[0] == tempInter[j].y)
       {
         currRayPos = tempInter[j];
+        break;
       }
       j++;
     }
     if (currRayPos != null)
     {
-      console.log("currRayPosX", parseInt((currRayPos.x).toFixed(0)));
+      //console.log("currRayPosX", parseInt((currRayPos.x).toFixed(2)));
+      console.log("currRayPosX", (currRayPos.x).toFixed(2));
     /*if ((currRayPos.z.toFixed(0) != "0"))
     {
       console.log("currRayPosY", (parseInt((currRayPos.z).toFixed(0)) -16) * -1);
     }
     else
     {*/
-      console.log("currRayPosY", parseInt((currRayPos.z).toFixed(0)));
+      //console.log("currRayPosY", parseInt((currRayPos.z).toFixed(2)));
+      console.log("currRayPosX", (currRayPos.x).toFixed(2));
     }
     //}
   }
