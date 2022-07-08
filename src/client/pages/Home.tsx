@@ -7,6 +7,7 @@ import { TransactionList } from "../components/TransactionList";
 import { GetBuildingCount } from "../components/Buildings/GetBuildingCount";
 import { BuildBuildings } from "../components/Buildings/BuildBuildings";
 import { GetBuildings } from "../components/Buildings/GetBuildings";
+import { Link } from "react-router-dom";
 
 export default function Home() {
   // const { account } = useStarknet();
@@ -18,17 +19,232 @@ export default function Home() {
 
   return (
     <>
-      <div className="flex justify-center">
+      <div className="flex flex-row justify-center inline-block	">
         <div
           id="menuBar"
-          className="relative flex jutify-center items-center px-5"
+          className="relative flex jutify-center items-center px-5 inline-block"
         >
-          <div className="flex jutify-center px-2">
+          <div className="flex jutify-center pl-2 relative">
             <div id="menuGold"></div>
-            <div className="items-center">test</div>
+            <div className="flex items-center fontHPxl pb-2 menuItems">100</div>
+          </div>
+          <div className="flex jutify-center relative">
+            <div id="menuWood"></div>
+            <div className="flex items-center fontHPxl pb-2 menuItems">100</div>
+          </div>
+          <div className="flex jutify-center relative">
+            <div id="menuRock"></div>
+            <div className="flex items-center fontHPxl pb-2 menuItems">100</div>
+          </div>
+          <div className="flex jutify-center relative">
+            <div id="menuMetal"></div>
+            <div className="flex items-center fontHPxl pb-2 menuItems">100</div>
+          </div>
+          <div className="flex jutify-center relative">
+            <div id="menuCoal"></div>
+            <div className="flex items-center fontHPxl pb-2 menuItems">100</div>
+          </div>
+          <div className="flex jutify-center relative">
+            <div id="menuPop"></div>
+            <div className="flex items-center fontHPxl pb-2 menuItems">100</div>
+          </div>
+          <div className="flex jutify-center relative">
+            <div id="menuMeat"></div>
+            <div className="flex items-center fontHPxl pb-2 menuItems">100</div>
+          </div>
+          <div className="flex jutify-center relative">
+            <div id="menuCereal"></div>
+            <div className="flex items-center fontHPxl pb-2 menuItems">100</div>
+          </div>
+          <div className="flex jutify-center relative">
+            <div id="menuEnergy"></div>
+            <div className="flex items-center fontHPxl pb-2 menuItems">100</div>
           </div>
         </div>
       </div>
+      <br />
+      <br />
+      <h2>Building Frame data model</h2>
+      <div className="relative buildingFrame">
+        <div
+          className="grid grid-cols-2 inline-block"
+          style={{ height: "20px" }}
+        >
+          {/* TODO: Dynamic choice of title */}
+          <div
+            className="font8BITWonder uppercase text-center"
+            style={{ height: "20px" }}
+          >
+            Police Station
+          </div>
+          <div
+            className="relative flex jutify-center items-center inline-block"
+            style={{ paddingLeft: "8px" }}
+          >
+            {/* TODO: dynamic choice of className for icons + dynamic data */}
+            <div className="flex flex-row justify-center inline-block relative">
+              <div className="fontHPxl-sm">320</div>
+              <div className="smallGold mb-3" style={{}}></div>
+            </div>
+            <div className="flex flex-row justify-center inline-block relative">
+              <div className="fontHPxl-sm">320</div>
+              <div className="smallGold mb-3"></div>
+            </div>
+            <div className="flex flex-row justify-center inline-block relative">
+              <div className="fontHPxl-sm">320</div>
+              <div className="smallGold mb-3"></div>
+            </div>
+          </div>
+        </div>
+        {/* Add dynamic data */}
+        <div
+          className="relative flex jutify-center items-center inline-block"
+          style={{ height: "60px" }}
+        >
+          <div className="flex flex-row justify-center inline-block relative">
+            <div
+              className="font04B text-center mx-auto"
+              style={{
+                width: "56px",
+              }}
+            >
+              Image
+            </div>
+            <div
+              className="font04B text-center mx-auto"
+              style={{
+                fontSize: "12px",
+                paddingTop: "34px",
+                width: "61px",
+              }}
+            >
+              Security
+            </div>
+            <div
+              className="font04B mx-auto text-center"
+              style={{
+                fontSize: "12px",
+                paddingTop: "34px",
+                width: "51px",
+              }}
+            >
+              1{/* level */}
+            </div>
+            <div
+              className="font04B text-center mx-auto relative"
+              style={{
+                fontSize: "12px",
+                paddingTop: "34px",
+                width: "49px",
+              }}
+            >
+              2 x 2
+            </div>
+            <div
+              className="font04B text-center mx-auto relative"
+              style={{
+                fontSize: "12px",
+                paddingTop: "34px",
+                width: "50px",
+              }}
+            >
+              34,37
+            </div>
+          </div>
+        </div>
+        {/* Add dynamic data */}
+        <div
+          className="font04B"
+          style={{
+            height: "80px",
+            fontSize: "13px",
+            paddingLeft: "9px",
+            paddingTop: "6px",
+          }}
+        >
+          description
+        </div>
+        {/* If too build :  btn Build left w/ required resources : red if not enough resources, green if ok
+            If already built : btn centered Upgrade
+        */}
+        <div
+          className="relative flex jutify-center items-center inline-block"
+          style={{ height: "40px", paddingTop: "8px" }}
+        >
+          <div className="flex flex-row justify-center inline-block">
+            {/* Case button  */}
+            <div style={{ width: "160px", paddingTop: "10px" }}>
+              <a>
+                <div className="btnUpgrade"></div>
+              </a>
+            </div>
+            <div
+              className="relative flex jutify-center items-center inline-block"
+              style={{ width: "60px", paddingTop: "10px" }}
+            >
+              <div className="flex flex-row justify-center inline-block relative">
+                <div className="fontHPxl-sm">320</div>
+                <div className="smallGold mb-3" style={{}}></div>
+              </div>
+              <div className="flex flex-row justify-center inline-block relative">
+                <div className="fontHPxl-sm">320</div>
+                <div className="smallGold mb-3"></div>
+              </div>
+              <div className="flex flex-row justify-center inline-block relative">
+                <div className="fontHPxl-sm">320</div>
+                <div className="smallGold mb-3"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          className="grid grid-cols-2"
+          style={{ height: "20px", marginLeft: "160px" }}
+        >
+          <div
+            className="relative flex jutify-center items-center inline-block"
+            style={{ width: "60px", paddingTop: "10px" }}
+          >
+            <div className="flex flex-row justify-center inline-block relative">
+              <div className="fontHPxl-sm">320</div>
+              <div className="smallGold mb-3" style={{}}></div>
+            </div>
+            <div className="flex flex-row justify-center inline-block relative">
+              <div className="fontHPxl-sm">320</div>
+              <div className="smallGold mb-3"></div>
+            </div>
+            <div className="flex flex-row justify-center inline-block relative">
+              <div className="fontHPxl-sm">320</div>
+              <div className="smallGold mb-3"></div>
+            </div>
+          </div>
+        </div>
+        <div
+          className="grid grid-cols-2"
+          style={{ height: "20px", marginLeft: "160px" }}
+        >
+          <div
+            className="relative flex jutify-center items-center inline-block"
+            style={{ width: "60px", paddingTop: "10px" }}
+          >
+            <div className="flex flex-row justify-center inline-block relative">
+              <div className="fontHPxl-sm">320</div>
+              <div className="smallGold mb-3" style={{}}></div>
+            </div>
+            <div className="flex flex-row justify-center inline-block relative">
+              <div className="fontHPxl-sm">320</div>
+              <div className="smallGold mb-3"></div>
+            </div>
+            <div className="flex flex-row justify-center inline-block relative">
+              <div className="fontHPxl-sm">320</div>
+              <div className="smallGold mb-3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <br />
+      <br />
       <p>Page Homepage</p>
       <div>
         <ConnectWallet />

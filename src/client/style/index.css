@@ -2,6 +2,49 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+@font-face {
+    font-family: '04B_03';
+    font-style: normal;
+    font-weight: 400;
+    src: url('resources/fonts/04B_03__sub.TTF');
+}
+
+@font-face {
+    font-family: '8-BIT_WONDER';
+    font-style: normal;
+    font-weight: 400;
+    src: url('resources/fonts/8-BIT_WONDER_title.TTF');
+}
+
+@font-face {
+    font-family: 'Hpxl_Condensed';
+    font-style: normal;
+    font-weight: 400;
+    src: url('resources/fonts/Hpxl_CondensedV4_5.ttf');
+}
+
+.fontHPxl {
+    font-family: 'Hpxl_Condensed', monospace;
+    font-size: 22px
+}
+.fontHPxl {
+    font-family: 'Hpxl_Condensed', monospace;
+    font-size: 22px
+}
+.fontHPxl-sm {
+    font-family: 'Hpxl_Condensed', monospace;
+    font-size: 10px
+}
+
+.font04B {
+    font-family: '04B_03', monospace;
+}
+
+.font8BITWonder {
+    font-family: '8-BIT_WONDER', monospace;
+    font-size: 10px;
+}
+
 body {
     margin: 0px;
 }
@@ -13,7 +56,7 @@ body {
     width: 940px;
     background-position: -25px 0px;
     background-size: 1034px 591px; */
-    display:inline-block;
+    /* display:block; */
     background-image: url("resources/front/Matchbox_Tiles_UIMain.png");
     height:calc(36px * 1.5);
     width:calc(704px * 1.5);
@@ -49,6 +92,71 @@ body {
     background-size:calc(704px * 1.5) calc(384px * 1.5);
 }
 
+#menuWood {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMain.png");
+    height:calc(32px * 1.5);
+    width:calc(32px * 1.5);
+    background-position:calc(21 * 1.5 * 32px) calc(10 * 1.5 * 32px);
+    background-size:calc(704px * 1.5) calc(384px * 1.5);
+}
+#menuRock {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMain.png");
+    height:calc(32px * 1.5);
+    width:calc(32px * 1.5);
+    background-position:calc(20 * 1.5 * 32px) calc(10 * 1.5 * 32px);
+    background-size:calc(704px * 1.5) calc(384px * 1.5);
+}
+#menuMetal {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMain.png");
+    height:calc(32px * 1.5);
+    width:calc(32px * 1.5);
+    background-position:calc(19 * 1.5 * 32px) calc(10 * 1.5 * 32px);
+    background-size:calc(704px * 1.5) calc(384px * 1.5);
+}
+#menuCoal {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMain.png");
+    height:calc(32px * 1.5);
+    width:calc(32px * 1.5);
+    background-position:calc(18 * 1.5 * 32px) calc(10 * 1.5 * 32px);
+    background-size:calc(704px * 1.5) calc(384px * 1.5);
+}
+#menuPop {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMain.png");
+    height:calc(32px * 1.5);
+    width:calc(32px * 1.5);
+    background-position:calc(17 * 1.5 * 32px) calc(10 * 1.5 * 32px);
+    background-size:calc(704px * 1.5) calc(384px * 1.5);
+}
+#menuMeat {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMain.png");
+    height:calc(32px * 1.5);
+    width:calc(32px * 1.5);
+    background-position:calc(16 * 1.5 * 32px) calc(10 * 1.5 * 32px);
+    background-size:calc(704px * 1.5) calc(384px * 1.5);
+}
+#menuCereal {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMain.png");
+    height:calc(32px * 1.5);
+    width:calc(32px * 1.5);
+    background-position:calc(15 * 1.5 * 32px) calc(10 * 1.5 * 32px);
+    background-size:calc(704px * 1.5) calc(384px * 1.5);
+}
+#menuEnergy {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMain.png");
+    height:calc(32px * 1.5);
+    width:calc(32px * 1.5);
+    background-position:calc(14 * 1.5 * 32px) calc(10 * 1.5 * 32px);
+    background-size:calc(704px * 1.5) calc(384px * 1.5);
+}
+
 /* <div class="my-sprite" style="--n:2;--i:2;--j:2"></div> */
 .my-sprite {
     --n:1; /* scaling factor */
@@ -65,3 +173,76 @@ body {
     
     border:1px solid;
 }
+
+.menuItems {
+    margin-left: -5px
+}
+
+.buildingFrame {
+    background-image: url("resources/front/FrensLand_BuildingFrame.png");
+    height:calc(192px * 1.5);
+    width:calc(224px * 1.5);
+    background-size:calc(224px * 1.5) calc(192px * 1.5);
+    padding-left: 38px;
+    padding-right: 31px;
+    padding-top: 18px;
+    padding-bottom: 15px;
+}
+
+.smallGold {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMain.png");
+    height:calc(32px * 1);
+    width:calc(32px * 1);
+    background-position:calc(22 * 1 * 32px) calc(10 * 1 * 32px);
+    background-size:calc(704px * 1) calc(384px * 1);
+}
+
+
+.btnUpgrade {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMain.png");
+    height:calc(32px * 1);
+    width:calc(32px * 2);
+    background-position:calc(22 * 1 * 32px) calc(8 * 1 * 32px);
+    background-size:calc(704px * 1) calc(384px * 1);
+}
+.btnUpgrade:active {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMain.png");
+    height:calc(32px * 1);
+    width:calc(32px * 2);
+    background-position:calc(22 * 1 * 32px) calc(7 * 1 * 32px);
+    background-size:calc(704px * 1) calc(384px * 1);
+}
+
+.btnUpgradeRed {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMain.png");
+    height:calc(32px * 1);
+    width:calc(32px * 2);
+    background-position:calc(20 * 1 * 32px) calc(8 * 1 * 32px);
+    background-size:calc(704px * 1) calc(384px * 1);
+}
+.btnUpgradeRed:active {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMain.png");
+    height:calc(32px * 1);
+    width:calc(32px * 2);
+    background-position:calc(20 * 1 * 32px) calc(7 * 1 * 32px);
+    background-size:calc(704px * 1) calc(384px * 1);
+}
+
+.btnMaxed {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMain.png");
+    height:calc(32px * 1);
+    width:calc(32px * 2);
+    background-position:calc(22 * 1 * 32px) calc(6 * 1 * 32px);
+    background-size:calc(704px * 1) calc(384px * 1);
+}
+
+
+
+
+/* TODO : Building Images by ids .building+id */
