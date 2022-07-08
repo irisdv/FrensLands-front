@@ -24,6 +24,7 @@ export default class ViewGL
   private tempBuildMeshProgress: number = 0;
   private tempBuildMeshName: number = 0;
   private tempBuildMeshTextName = "";
+  private tempBuildMeshUpdate: number = 0;
 
   private mouse: THREE.Vector2;
   private mousePressed: number;
@@ -405,8 +406,9 @@ export default class ViewGL
 
     if (matObj.map)
     {
-      matObj.map.repeat = new THREE.Vector2(0.09, 0.09); // TEXTURE TILLING ADAPTED TO BUILDING TILES
-      matObj.map.offset.set(0.00, 0.00); // POSITION OF BUILDING ON TEXTURE
+      matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625); // TEXTURE TILLING ADAPTED TO BUILDING TILES
+      //matObj.map.offset.set(0.00, 0.00); // POSITION OF BUILDING ON TEXTURE
+      matObj.map.offset.set((4 * (1 / 16)), (4 * (1 / 16)));
       matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
       matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
       matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
@@ -419,6 +421,7 @@ export default class ViewGL
     this.tempBuildMeshSize = size;
     this.tempBuildMeshName = name;
     //this.tempBuildMesh = null;
+    this.tempBuildMeshUpdate = 1;
 
     this.tempBuildMesh = new THREE.Mesh(newObject, matObj);
     this.tempBuildMesh.name = name.toString();
@@ -430,7 +433,7 @@ export default class ViewGL
 
   updateTempBuildMesh = () =>
   {
-    if (this.tempBuildMesh != null)
+    if (this.tempBuildMeshUpdate == 1)
     {
       this.tempBuildMesh.position.x = this.currBlockPos.x - 0.5; // - 0.5 = CENTER OF BLOCK
       this.tempBuildMesh.position.y = this.currBlockPos.y - 0.5;
@@ -453,21 +456,23 @@ export default class ViewGL
             this.tempBuildMeshType, this.tempBuildMeshProgress, "Matchbox_Tiles_Objects_RedVersion");
         }
       }
-/*
-      if (left_click)
+
+      if (this.mousePressed = 1) // NEED TO DO IT WITH RIGHT CLICK
       {
         var pos = new THREE.Vector2;
         pos.x = this.tempBuildMesh.position.x;
         pos.y = this.tempBuildMesh.position.y;
 
+        this.tempBuildMeshUpdate = 0;
+
         this.createObject(pos, this.tempBuildMeshSize, this.tempBuildMeshName, this.tempBuildMeshType,
           this.tempBuildMeshProgress, "Matchbox_Tiles_Objects");
       }
-      else if (right_click)
+      else if (this.keyMap['KeyESC'] == true) // NEED TO TEST THE KEY
       {
+        this.tempBuildMeshUpdate = 0;
         this.deleteObject(this.tempBuildMeshName);
       }
-*/
     }
   }
 
@@ -508,7 +513,7 @@ export default class ViewGL
     {
       matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625); // TEXTURE TILLING ADAPTED TO BUILDING TILES
       //matObj.map.offset.set(0.00, 0.00); // POSITION OF BUILDING ON TEXTURE
-      matObj.map.offset.set((4 * (1 / 16)), (4 * (1 / 16)));
+      matObj.map.offset.set((4 * (1 / 16)), (4 * (1 / 16))); //TEMPORARY
       matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
       matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
       matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
@@ -656,10 +661,16 @@ export default class ViewGL
 
   update = (t?: any) =>
   {
+    if(this.keyMap['Space'] == true)
+    {
+      this.createObject_FindSpace(4, 9898, 1, 1, "Matchbox_Tiles_Objects_RedVersion");
+    }
 
     this.mouseControls();
 
     this.rayCast();
+
+    this.updateTempBuildMesh();
 
     // this.stats.update();
     this.renderer.render(this.scene, this.camera);
