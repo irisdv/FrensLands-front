@@ -19,6 +19,11 @@ export default class ViewGL
   private terrain = new THREE.Mesh;
   private textArrRef: any[];
   private tempBuildMesh = new THREE.Mesh;
+  private tempBuildMeshSize: number = 0;
+  private tempBuildMeshType: number = 0;
+  private tempBuildMeshProgress: number = 0;
+  private tempBuildMeshName: number = 0;
+  private tempBuildMeshTextName = "";
 
   private mouse: THREE.Vector2;
   private mousePressed: number;
@@ -161,7 +166,7 @@ export default class ViewGL
 
     var testPos = new THREE.Vector2(24, 7);
 
-    this.createObject(testPos, 4, 11788, 1, 1, "debug");
+    this.createObject(testPos, 4, 11788, 1, 1, "Matchbox_Tiles_Objects");
 
     // CALL ANIMATION LOOP
     this.update();
@@ -357,8 +362,8 @@ export default class ViewGL
   {
     var posText = new THREE.Vector2;
 
-    posText.x = (this.textArrRef[type].x * (1 / 16)) - ((1 / 16) / 2);
-    posText.y = (this.textArrRef[type].y * (1 / 16)) - ((1 / 16) / 2);
+    posText.x = (this.textArrRef[type].x * (1 / 16));
+    posText.y = (this.textArrRef[type].y * (1 / 16));
 
     return (posText);
   }
@@ -369,6 +374,7 @@ export default class ViewGL
   createObject_FindSpace = (size : number, name : number,
     type : number, progress : number, nameText : String) =>
   {
+
     let newObject = new THREE.PlaneGeometry;
     if (size == 1)
     {
@@ -406,9 +412,16 @@ export default class ViewGL
       matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
     }
 
+    // NEED TO STORE DATE WHEN TEMP BUILDING IS DELETED TO CHANGE TEXTURE
+    this.tempBuildMeshType = type;
+    this.tempBuildMeshProgress = progress;
+    this.tempBuildMeshTextName = nameText.toString();
+    this.tempBuildMeshSize = size;
+    this.tempBuildMeshName = name;
+    //this.tempBuildMesh = null;
+
     this.tempBuildMesh = new THREE.Mesh(newObject, matObj);
     this.tempBuildMesh.name = name.toString();
-    //this.tempBuildMesh.size = size; // NEED TO STORE SIZE OF BUILDING
     this.tempBuildMesh.position.x = this.currBlockPos.x;
     this.tempBuildMesh.position.y = 0.2 + (this.mouse.y * 0.02); // Make sure the objects are higher at the bottom
     this.tempBuildMesh.position.z = this.currBlockPos.y;
@@ -419,13 +432,42 @@ export default class ViewGL
   {
     if (this.tempBuildMesh != null)
     {
-      this.tempBuildMesh.position.x = this.currBlockPos.x - 0.5;
+      this.tempBuildMesh.position.x = this.currBlockPos.x - 0.5; // - 0.5 = CENTER OF BLOCK
       this.tempBuildMesh.position.y = this.currBlockPos.y - 0.5;
 
-      //if (this.checkFree(this.currBlockPos, this.tempBuildMesh.size) == 1)
-      //{
+      if (this.checkFree(this.currBlockPos, this.tempBuildMeshSize) == 1)
+      {
+        if (this.tempBuildMeshTextName != "Matchbox_Tiles_Objects_GreenVersion")
+        {
+          this.deleteObject(this.tempBuildMeshName);
+          this.createObject_FindSpace(this.tempBuildMeshSize, this.tempBuildMeshName,
+            this.tempBuildMeshType, this.tempBuildMeshProgress, "Matchbox_Tiles_Objects_GreenVersion");
+        }
+      }
+      else if (this.checkFree(this.currBlockPos, this.tempBuildMeshSize) == 1)
+      {
+        if (this.tempBuildMeshTextName != "Matchbox_Tiles_Objects_RedVersion")
+        {
+          this.deleteObject(this.tempBuildMeshName);
+          this.createObject_FindSpace(this.tempBuildMeshSize, this.tempBuildMeshName,
+            this.tempBuildMeshType, this.tempBuildMeshProgress, "Matchbox_Tiles_Objects_RedVersion");
+        }
+      }
+/*
+      if (left_click)
+      {
+        var pos = new THREE.Vector2;
+        pos.x = this.tempBuildMesh.position.x;
+        pos.y = this.tempBuildMesh.position.y;
 
-      //}
+        this.createObject(pos, this.tempBuildMeshSize, this.tempBuildMeshName, this.tempBuildMeshType,
+          this.tempBuildMeshProgress, "Matchbox_Tiles_Objects");
+      }
+      else if (right_click)
+      {
+        this.deleteObject(this.tempBuildMeshName);
+      }
+*/
     }
   }
 
@@ -464,8 +506,9 @@ export default class ViewGL
 
     if (matObj.map)
     {
-      matObj.map.repeat = new THREE.Vector2(0.09, 0.09); // TEXTURE TILLING ADAPTED TO BUILDING TILES
-      matObj.map.offset.set(0.00, 0.00); // POSITION OF BUILDING ON TEXTURE
+      matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625); // TEXTURE TILLING ADAPTED TO BUILDING TILES
+      //matObj.map.offset.set(0.00, 0.00); // POSITION OF BUILDING ON TEXTURE
+      matObj.map.offset.set((4 * (1 / 16)), (4 * (1 / 16)));
       matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
       matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
       matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
