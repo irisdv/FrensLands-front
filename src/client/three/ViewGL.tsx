@@ -151,7 +151,7 @@ export default class ViewGL
 
     var testPos = new THREE.Vector2(24, 7);
 
-    this.createObject(testPos, 2, 1, "youpi",1 , 1, "Matchbox_Tiles_Objects");
+    this.createObject(testPos, 2, 2, 11788, 1, 1, "debug");
 
     // CALL ANIMATION LOOP
     this.update();
@@ -269,7 +269,8 @@ export default class ViewGL
     //objects[0] = this.terrain;
 
     this.raycaster.setFromCamera(this.mouse, this.camera);
-    const intersects = this.raycaster.intersectObjects(this.scene.children, true);
+    const intersects = this.raycaster.intersectObjects(this.scene.children, true); // RAYCAST ALL SCENE
+    //const intersects = this.raycaster.intersectObjects(objects, true); // RAYCAST ONLY TERRAIN
     var currRayPos = new THREE.Vector3;
     var tempInter : any[] = [];
     var tempInterY : any[] = [];
@@ -309,8 +310,47 @@ export default class ViewGL
     }
   }
 
+  checkFree = (pos : THREE.Vector2, numB : number) =>
+  {
+    if (numB == 1)
+    {
+      if (this.frontBlockArray[pos.y][pos.x][3] == 0)
+      {
+        return (1);
+      }
+    }
+    else if (numB == 2)
+    {
+      if (this.frontBlockArray[pos.y][pos.x][3] == 0
+        && this.frontBlockArray[pos.y][pos.x + 1] != null && this.frontBlockArray[pos.y][pos.x + 1][3] == 0)
+      {
+        return (1);
+      }
+    }
+    else if (numB == 4)
+    {
+      if (this.frontBlockArray[pos.y][pos.x][3] == 0
+        && this.frontBlockArray[pos.y][pos.x + 1] != null && this.frontBlockArray[pos.y][pos.x + 1][3] == 0
+        && this.frontBlockArray[pos.y + 1][pos.x] != null && this.frontBlockArray[pos.y + 1][pos.x][3] == 0
+        && this.frontBlockArray[pos.y + 1][pos.x + 1] != null && this.frontBlockArray[pos.y + 1][pos.x + 1][3] == 0)
+      {
+        return (1);
+      }
+
+    }
+    return (0);
+  }
+
+  findTextByID = () =>
+  {
+
+
+
+
+  }
+
   // CREATE GEOMETRY AND MESH ON TERRAIN
-  createObject = (pos : THREE.Vector2, sizeX : number, sizeY : number, name : String,
+  createObject = (pos : THREE.Vector2, sizeX : number, sizeY : number, name : number,
     type : number, progress : number, nameText : String) =>
   {
 
@@ -333,7 +373,7 @@ export default class ViewGL
     if (matObj.map)
     {
       matObj.map.repeat = new THREE.Vector2(0.09, 0.09); // TEXTURE TILLING ADAPTED TO BUILDING TILES
-      matObj.map.offset.set(0.41, 0.29); // POSITION OF BUILDING ON TEXTURE
+      matObj.map.offset.set(0.00, 0.00); // POSITION OF BUILDING ON TEXTURE
       matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
       matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
       matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
@@ -348,12 +388,12 @@ export default class ViewGL
   }
 
   // REPLACE GEOMETRY AND MESH ON TERRAIN
-  replaceObject = (pos : THREE.Vector2, sizeX : number, sizeY : number, name : String,
+  replaceObject = (pos : THREE.Vector2, sizeX : number, sizeY : number, name : number,
     type : number, progress : number, nameText : String) =>
   {
 
-
     //call delete function
+    this.deleteObject(name);
 
     let newObject = new THREE.PlaneGeometry(sizeX, sizeY, 1, 1);
     newObject.name = name + "_geom";
@@ -388,9 +428,9 @@ export default class ViewGL
   }
 
   // DELETE FORMER OBJECT IN SCENE USING NAME OR POS
-  deleteObject = (name : string) =>
+  deleteObject = (name : number) =>
   {
-    this.scene.remove(this.scene.getObjectByName(name) as THREE.Group)
+    this.scene.remove(this.scene.getObjectByName(name.toString()) as THREE.Group)
     console.log("This object has been deleted : ", name);
   }
 
@@ -424,7 +464,7 @@ export default class ViewGL
         if (this.camera.position.y > 45)
         {
           this.camera.position.y -= 15;
-          this.deleteObject("youpi");
+          this.deleteObject(11788);
         }
     }
     else if (event.deltaY < 0)
