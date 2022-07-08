@@ -18,6 +18,7 @@ export default class ViewGL
 
   private terrain = new THREE.Mesh;
   private textArrRef: any[];
+  private tempBuildMesh = new THREE.Mesh;
 
   private mouse: THREE.Vector2;
   private mousePressed: number;
@@ -26,6 +27,8 @@ export default class ViewGL
   private mouseWheel: number;
 
   private raycaster = new THREE.Raycaster();
+  private currRayPos = new THREE.Vector3;
+  private currBlockPos = new THREE.Vector2;
 
   private compArray: any[];
   private frontBlockArray: any[];
@@ -158,7 +161,7 @@ export default class ViewGL
 
     var testPos = new THREE.Vector2(24, 7);
 
-    this.createObject(testPos, 2, 2, 11788, 1, 1, "debug");
+    this.createObject(testPos, 4, 11788, 1, 1, "debug");
 
     // CALL ANIMATION LOOP
     this.update();
@@ -278,7 +281,7 @@ export default class ViewGL
     this.raycaster.setFromCamera(this.mouse, this.camera);
     const intersects = this.raycaster.intersectObjects(this.scene.children, true); // RAYCAST ALL SCENE
     //const intersects = this.raycaster.intersectObjects(objects, true); // RAYCAST ONLY TERRAIN
-    var currRayPos = new THREE.Vector3;
+    var tempRayPos = new THREE.Vector3;
     var tempInter : any[] = [];
     var tempInterY : any[] = [];
     var i = 0;
@@ -303,17 +306,19 @@ export default class ViewGL
     {
       if (tempInter[j] != null && tempInterY != null && tempInterY[0] == tempInter[j].y)
       {
-        currRayPos = tempInter[j];
+        tempRayPos = tempInter[j];
         break;
       }
       j++;
     }
-    if (currRayPos != null)
+    if (tempRayPos != null)
     {
-      console.log("currRayPosX", parseInt((currRayPos.x).toFixed(2)));
-      //console.log("currRayPosX", (currRayPos.x).toFixed(2));
-      console.log("currRayPosY", parseInt((currRayPos.z).toFixed(2)));
-      //console.log("currRayPosY", (currRayPos.z).toFixed(2));
+      this.currBlockPos.x = parseInt((tempRayPos.x).toFixed(2));
+      this.currBlockPos.y = parseInt((tempRayPos.z).toFixed(2));
+      this.currRayPos = tempRayPos;
+      //console.log("currRayPosX", parseInt((tempRayPos.x).toFixed(2)));
+      //console.log("currRayPosY", parseInt((tempRayPos.z).toFixed(2)));
+      console.log("currBlockPos", this.currBlockPos);
     }
   }
 
@@ -361,10 +366,22 @@ export default class ViewGL
 
   // CREATE TEMPORARY BUILDING THAT FOLLOWS CURSOR AND CHANGES COLOR BASED ON POSSIBLE
   // SPACE OR NOT + GETS DELETE IF SPACE FOUND AND ACTIVATED OR CREATION CANCELED
-  createObject_FindSpace = (pos : THREE.Vector2, sizeX : number, sizeY : number, name : number,
+  createObject_FindSpace = (size : number, name : number,
     type : number, progress : number, nameText : String) =>
   {
-    let newObject = new THREE.PlaneGeometry(sizeX, sizeY, 1, 1);
+    let newObject = new THREE.PlaneGeometry;
+    if (size == 1)
+    {
+      newObject = new THREE.PlaneGeometry(1, 1, 1, 1);
+    }
+    else if (size == 2)
+    {
+      newObject = new THREE.PlaneGeometry(2, 1, 1, 1);
+    }
+    else if (size == 4)
+    {
+      newObject = new THREE.PlaneGeometry(2, 2, 1, 1);
+    }
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
@@ -389,20 +406,47 @@ export default class ViewGL
       matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
     }
 
-    var newObjectMesh = new THREE.Mesh(newObject, matObj);
-    newObjectMesh.name = name + "_mesh";
-    newObjectMesh.position.x = pos.x + 0.5;
-    newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
-    newObjectMesh.position.z = pos.y + 0.5;
-    this.scene.add(newObjectMesh);
+    this.tempBuildMesh = new THREE.Mesh(newObject, matObj);
+    this.tempBuildMesh.name = name.toString();
+    //this.tempBuildMesh.size = size; // NEED TO STORE SIZE OF BUILDING
+    this.tempBuildMesh.position.x = this.currBlockPos.x;
+    this.tempBuildMesh.position.y = 0.2 + (this.mouse.y * 0.02); // Make sure the objects are higher at the bottom
+    this.tempBuildMesh.position.z = this.currBlockPos.y;
+    this.scene.add(this.tempBuildMesh);
+  }
+
+  updateTempBuildMesh = () =>
+  {
+    if (this.tempBuildMesh != null)
+    {
+      this.tempBuildMesh.position.x = this.currBlockPos.x - 0.5;
+      this.tempBuildMesh.position.y = this.currBlockPos.y - 0.5;
+
+      //if (this.checkFree(this.currBlockPos, this.tempBuildMesh.size) == 1)
+      //{
+
+      //}
+    }
   }
 
   // CREATE GEOMETRY AND MESH ON TERRAIN
-  createObject = (pos : THREE.Vector2, sizeX : number, sizeY : number, name : number,
+  createObject = (pos : THREE.Vector2, size : number, name : number,
     type : number, progress : number, nameText : String) =>
   {
 
-    let newObject = new THREE.PlaneGeometry(sizeX, sizeY, 1, 1);
+    let newObject = new THREE.PlaneGeometry;
+    if (size == 1)
+    {
+      newObject = new THREE.PlaneGeometry(1, 1, 1, 1);
+    }
+    else if (size == 2)
+    {
+      newObject = new THREE.PlaneGeometry(2, 1, 1, 1);
+    }
+    else if (size == 4)
+    {
+      newObject = new THREE.PlaneGeometry(2, 2, 1, 1);
+    }
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
@@ -428,7 +472,7 @@ export default class ViewGL
     }
 
     var newObjectMesh = new THREE.Mesh(newObject, matObj);
-    newObjectMesh.name = name + "_mesh";
+    newObjectMesh.name = name.toString();
     newObjectMesh.position.x = pos.x + 0.5;
     newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
     newObjectMesh.position.z = pos.y + 0.5;
@@ -436,14 +480,26 @@ export default class ViewGL
   }
 
   // REPLACE GEOMETRY AND MESH ON TERRAIN
-  replaceObject = (pos : THREE.Vector2, sizeX : number, sizeY : number, name : number,
+  replaceObject = (pos : THREE.Vector2, size : number, name : number,
     type : number, progress : number, nameText : String) =>
   {
 
     //call delete function
     this.deleteObject(name);
 
-    let newObject = new THREE.PlaneGeometry(sizeX, sizeY, 1, 1);
+    let newObject = new THREE.PlaneGeometry;
+    if (size == 1)
+    {
+      newObject = new THREE.PlaneGeometry(1, 1, 1, 1);
+    }
+    else if (size == 2)
+    {
+      newObject = new THREE.PlaneGeometry(2, 1, 1, 1);
+    }
+    else if (size == 4)
+    {
+      newObject = new THREE.PlaneGeometry(2, 2, 1, 1);
+    }
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
@@ -468,7 +524,7 @@ export default class ViewGL
     }
 
     var newObjectMesh = new THREE.Mesh(newObject, matObj);
-    newObjectMesh.name = name + "_mesh";
+    newObjectMesh.name = name.toString();
     newObjectMesh.position.x = pos.x + 0.5;
     newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
     newObjectMesh.position.z = pos.y + 0.5;
