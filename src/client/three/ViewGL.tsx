@@ -17,6 +17,7 @@ export default class ViewGL
   private stats: any;
 
   private terrain = new THREE.Mesh;
+  private textArrRef: any[];
 
   private mouse: THREE.Vector2;
   private mousePressed: number;
@@ -81,6 +82,12 @@ export default class ViewGL
 
     // ******************* INIT ARRAYS ************************//
 
+
+    // INIT TEXT REF ARRAYS
+    this.textArrRef = [];
+
+
+    // INIT ARRAY OF DATA [RECEIVED FROM BC]
     var i = 0;
     this.compArray = [];
     while (i < 640)
@@ -341,12 +348,53 @@ export default class ViewGL
     return (0);
   }
 
-  findTextByID = () =>
+  findTextByID = (type : number) =>
   {
+    var posText = new THREE.Vector2;
+
+    posText.x = (this.textArrRef[type].x * (1 / 16)) - ((1 / 16) / 2);
+    posText.y = (this.textArrRef[type].y * (1 / 16)) - ((1 / 16) / 2);
+
+    return (posText);
+  }
 
 
+  // CREATE TEMPORARY BUILDING THAT FOLLOWS CURSOR AND CHANGES COLOR BASED ON POSSIBLE
+  // SPACE OR NOT + GETS DELETE IF SPACE FOUND AND ACTIVATED OR CREATION CANCELED
+  createObject_FindSpace = (pos : THREE.Vector2, sizeX : number, sizeY : number, name : number,
+    type : number, progress : number, nameText : String) =>
+  {
+    let newObject = new THREE.PlaneGeometry(sizeX, sizeY, 1, 1);
+    newObject.name = name + "_geom";
+    newObject.rotateX(-Math.PI * 0.5);
 
+    const textObj = new THREE.TextureLoader().load(
+      "resources/textures/"+ nameText +".png"
+    );
 
+    let matObj = new THREE.MeshStandardMaterial({
+      map: textObj,
+      transparent: true,
+      depthWrite: false,
+      depthTest: true,
+      // shading: 2
+    });
+
+    if (matObj.map)
+    {
+      matObj.map.repeat = new THREE.Vector2(0.09, 0.09); // TEXTURE TILLING ADAPTED TO BUILDING TILES
+      matObj.map.offset.set(0.00, 0.00); // POSITION OF BUILDING ON TEXTURE
+      matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+      matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+      matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+    }
+
+    var newObjectMesh = new THREE.Mesh(newObject, matObj);
+    newObjectMesh.name = name + "_mesh";
+    newObjectMesh.position.x = pos.x + 0.5;
+    newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
+    newObjectMesh.position.z = pos.y + 0.5;
+    this.scene.add(newObjectMesh);
   }
 
   // CREATE GEOMETRY AND MESH ON TERRAIN
