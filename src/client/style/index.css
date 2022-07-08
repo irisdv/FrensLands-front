@@ -1,0 +1,67 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+body {
+    margin: 0px;
+}
+
+#menuBar {
+    /* background: url("resources/front/Matchbox_Tiles_UIMain.png");
+    display: inline-block;
+    height: 54px;
+    width: 940px;
+    background-position: -25px 0px;
+    background-size: 1034px 591px; */
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMain.png");
+    height:calc(32px * 1.5);
+    width:calc(704px * 1.5);
+    background-position:calc(22 * 1.5 * 32px) calc(0 * 1.5 * 32px);
+    background-size:calc(704px * 1.5) calc(394px * 1.5);
+    /* height: 81px;
+    width: 1080px;
+    background-position: 0px 0px;
+    background-size: 1080px 432px; */
+    /* img size : 704 × 394 */
+}
+
+/* #menuGold {
+    background: url("resources/front/Matchbox_Tiles_UIMain.png");
+    display: inline-block;
+    height: 64px;
+    width: 64px;
+    background-position: calc(1.5 * 54px) 0px;
+    background-size: calc(704px * 1.5) calc(394px * 1.5); */
+    /* height: 81px;
+    width: 1080px;
+    background-position: 0px 0px;
+    background-size: 1080px 432px; */
+    /* img size : 704 × 394 */
+/* } */
+
+#menuGold {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMain.png");
+    height:calc(32px * 1.5);
+    width:calc(32px * 1.5);
+    background-position:calc(22 * 1.5 * 32px) calc(10 * 1.5 * 32px);
+    background-size:calc(704px * 1.5) calc(384px * 1.5);
+}
+
+/* <div class="my-sprite" style="--n:2;--i:2;--j:2"></div> */
+.my-sprite {
+    --n:1; /* scaling factor */
+    /* coordinates of the image */
+    --i:3; 
+    --j:0; 
+
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMain.png");
+    height:calc(100px / var(--n));
+    width:calc(100px / var(--n));
+    background-position:calc(var(--i)/var(--n) * 100px) calc(var(--j)/var(--n) * 100px);
+    background-size:calc(500px / var(--n)) calc(400px / var(--n));
+    
+    border:1px solid;
+}

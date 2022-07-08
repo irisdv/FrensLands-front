@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import ViewGL from "./ViewGL";
 import { GameState } from "../contexts/GameContext";
+import { gsap, SteppedEase } from "gsap";
 
 export default class Scene extends React.Component {
   private canvasRef: any;
@@ -67,8 +68,10 @@ export default class Scene extends React.Component {
 
   render() {
     return (
-      <div className="canvasContainer">
-        <canvas ref={this.canvasRef} />
+      <div>
+        <div className="canvasContainer">
+          <canvas ref={this.canvasRef} />
+        </div>
       </div>
     );
   }
