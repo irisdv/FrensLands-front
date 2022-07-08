@@ -19,15 +19,13 @@ export default function Home() {
   return (
     <>
       <div className="flex justify-center">
-        <div id="menuBar" className="relative flex jutify-center px-5">
-          <div className="flex jutify-center">
+        <div
+          id="menuBar"
+          className="relative flex jutify-center items-center px-5"
+        >
+          <div className="flex jutify-center px-2">
             <div id="menuGold"></div>
-            {/* <div
-              className="my-sprite"
-              style={{ "--n": "2", "--i": "2", "--j": "2" }}
-            ></div> */}
-            {/* <div class="my-sprite" style="--n:2;--i:2;--j:2"></div> */}
-            <div>test</div>
+            <div className="items-center">test</div>
           </div>
         </div>
       </div>

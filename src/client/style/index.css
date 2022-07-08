@@ -15,10 +15,10 @@ body {
     background-size: 1034px 591px; */
     display:inline-block;
     background-image: url("resources/front/Matchbox_Tiles_UIMain.png");
-    height:calc(32px * 1.5);
+    height:calc(36px * 1.5);
     width:calc(704px * 1.5);
     background-position:calc(22 * 1.5 * 32px) calc(0 * 1.5 * 32px);
-    background-size:calc(704px * 1.5) calc(394px * 1.5);
+    background-size:calc(704px * 1.5) calc(394px * 2);
     /* height: 81px;
     width: 1080px;
     background-position: 0px 0px;
