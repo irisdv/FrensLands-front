@@ -73,6 +73,9 @@ export default class ViewGL {
     this.camera.position.x = this.camX;
     this.camera.position.y = this.camY;
     this.camera.position.z = this.camZ;
+    // var fov = 45;
+    // var vFOV = fov * (Math.PI / 180); // convert to radians
+    // this.camera.position.z = window.innerHeight / (2 * Math.tan(vFOV / 2));
     this.camera.rotateX(-Math.PI * 0.5);
 
     // ******************* INIT ARRAYS ************************//

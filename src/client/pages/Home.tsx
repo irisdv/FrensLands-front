@@ -8,6 +8,7 @@ import { GetBuildingCount } from "../components/Buildings/GetBuildingCount";
 import { BuildBuildings } from "../components/Buildings/BuildBuildings";
 import { GetBuildings } from "../components/Buildings/GetBuildings";
 import { Link } from "react-router-dom";
+import { MenuBar } from "../components/GameUI/MenuBar";
 
 export default function Home() {
   // const { account } = useStarknet();
@@ -19,49 +20,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="flex flex-row justify-center inline-block	">
-        <div
-          id="menuBar"
-          className="relative flex jutify-center items-center px-5 inline-block"
-        >
-          <div className="flex jutify-center pl-2 relative">
-            <div id="menuGold"></div>
-            <div className="flex items-center fontHPxl pb-2 menuItems">100</div>
-          </div>
-          <div className="flex jutify-center relative">
-            <div id="menuWood"></div>
-            <div className="flex items-center fontHPxl pb-2 menuItems">100</div>
-          </div>
-          <div className="flex jutify-center relative">
-            <div id="menuRock"></div>
-            <div className="flex items-center fontHPxl pb-2 menuItems">100</div>
-          </div>
-          <div className="flex jutify-center relative">
-            <div id="menuMetal"></div>
-            <div className="flex items-center fontHPxl pb-2 menuItems">100</div>
-          </div>
-          <div className="flex jutify-center relative">
-            <div id="menuCoal"></div>
-            <div className="flex items-center fontHPxl pb-2 menuItems">100</div>
-          </div>
-          <div className="flex jutify-center relative">
-            <div id="menuPop"></div>
-            <div className="flex items-center fontHPxl pb-2 menuItems">100</div>
-          </div>
-          <div className="flex jutify-center relative">
-            <div id="menuMeat"></div>
-            <div className="flex items-center fontHPxl pb-2 menuItems">100</div>
-          </div>
-          <div className="flex jutify-center relative">
-            <div id="menuCereal"></div>
-            <div className="flex items-center fontHPxl pb-2 menuItems">100</div>
-          </div>
-          <div className="flex jutify-center relative">
-            <div id="menuEnergy"></div>
-            <div className="flex items-center fontHPxl pb-2 menuItems">100</div>
-          </div>
-        </div>
-      </div>
+      <MenuBar />
       <br />
       <br />
       <h2>Building Frame data model</h2>
