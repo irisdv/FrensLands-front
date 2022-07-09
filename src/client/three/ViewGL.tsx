@@ -119,6 +119,11 @@ export default class ViewGL
     // INIT TEXT REF ARRAYS
     this.textArrRef = [];
 
+    var x = 1;
+    var y = 1;
+
+    //while ()
+
 
     // INIT ARRAY OF DATA [RECEIVED FROM BC]
     var i = 0;
@@ -174,7 +179,7 @@ export default class ViewGL
   decompose = (elem: any) =>
   {
     var tempDecomp : any[] = [];
-    elem.toString()
+    elem.toString();
 
     tempDecomp[0] = elem[0] + elem[1];            //[pos:x]
     tempDecomp[1] = elem[2] + elem[3];            //[pos:y]
@@ -381,7 +386,7 @@ export default class ViewGL
 
   checkFree = (pos : THREE.Vector2, numB : number) =>
   {
-    if (pos.x >= 1 && pos.x <= 40 && pos.y >= 1 && pos.y <= 16 && pos.y - 1 != 0)
+    if (pos.x >= 1 && pos.x <= 40 && pos.y >= 1 && pos.y <= 16)
     {
       if (numB == 1)
       {
@@ -400,7 +405,7 @@ export default class ViewGL
           return (1);
         }
       }
-      else if (numB == 4)
+      else if (pos.y - 1 != 0 && numB == 4)
       {
         if (this.frontBlockArray[pos.y][pos.x] != null && this.frontBlockArray[pos.y][pos.x][3] == 0
           && this.frontBlockArray[pos.y][pos.x + 1] != null && this.frontBlockArray[pos.y][pos.x + 1][3] == 0
