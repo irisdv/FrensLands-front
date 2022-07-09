@@ -17,6 +17,8 @@ export default class ViewGL
   private stats: any;
 
   private terrain = new THREE.Mesh;
+  private terrainBorder = new THREE.Mesh;
+  private terrainBackground = new THREE.Mesh;
   private textArrRef: any[];
   private tempBuildMesh = new THREE.Mesh;
   private tempBuildMeshSize: number = 0;
@@ -91,8 +93,8 @@ export default class ViewGL
 
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.clock = new THREE.Clock();
-    const skyColor = 0xfff9e8;
-    this.scene.background = new THREE.Color(0x64a8d1);
+    const skyColor = 0x73bed3;
+    this.scene.background = new THREE.Color(0x73bed3);
 
     // ADD LIGHT & FOG
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.9));
@@ -188,6 +190,8 @@ export default class ViewGL
 
     // CREATE TERRAIN
     this.terrainCreate();
+    this.terrainBorderCreate();
+    this.terrainBackgroundCreate();
 
     // CALL ANIMATION LOOP
     this.update();
@@ -256,7 +260,7 @@ export default class ViewGL
       terrainPlane.name = "terrainGeometry";
       terrainPlane.rotateX(-Math.PI * 0.5);
       const texture = new THREE.TextureLoader().load(
-        "resources/textures/Grass_Gen1.png"
+        "resources/textures/World1_GrassBackground.png"
       );
 
       let mat = new THREE.MeshStandardMaterial({
@@ -279,8 +283,76 @@ export default class ViewGL
       this.terrain.name = "terrainMesh";
       this.terrain.position.x = 21;
       this.terrain.position.z = 9;
+      this.terrain.position.y = 0;
       this.scene.add(this.terrain);
-    };
+  };
+
+  terrainBorderCreate = () =>
+  {
+      let terrainBorderPlane = new THREE.PlaneGeometry(44, 21, 1, 1);
+      terrainBorderPlane.name = "terrainBorderGeometry";
+      terrainBorderPlane.rotateX(-Math.PI * 0.5);
+      const texture = new THREE.TextureLoader().load(
+        "resources/textures/World1_GrassBoundaries.png"
+      );
+
+      let mat = new THREE.MeshStandardMaterial({
+      map: texture,
+      transparent: true,
+      depthWrite: false,
+      depthTest: true,
+      // shading: 2
+      });
+
+      if (mat.map)
+      {
+        mat.map.repeat = new THREE.Vector2(1, 1); // TEXTURE TILLING
+        mat.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+        mat.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+        mat.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+      }
+
+      this.terrainBorder = new THREE.Mesh(terrainBorderPlane, mat);
+      this.terrainBorder.name = "terrainBorderMesh";
+      this.terrainBorder.position.x = 20.94;
+      this.terrainBorder.position.z = 9;
+      this.terrainBorder.position.y = -0.1;
+      this.scene.add(this.terrainBorder);
+  };
+
+
+  terrainBackgroundCreate = () =>
+  {
+      let terrainBackgroundPlane = new THREE.PlaneGeometry(150, 150, 1, 1);
+      terrainBackgroundPlane.name = "terrainBackgroundGeometry";
+      terrainBackgroundPlane.rotateX(-Math.PI * 0.5);
+      const texture = new THREE.TextureLoader().load(
+        "resources/textures/Water_Tile.png"
+      );
+
+      let mat = new THREE.MeshStandardMaterial({
+      map: texture,
+      transparent: true,
+      depthWrite: false,
+      depthTest: true,
+      // shading: 2
+      });
+
+      if (mat.map)
+      {
+        mat.map.repeat = new THREE.Vector2(1, 1); // TEXTURE TILLING
+        mat.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+        mat.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+        mat.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+      }
+
+      this.terrainBackground = new THREE.Mesh(terrainBackgroundPlane, mat);
+      this.terrainBackground.name = "terrainBackgroundMesh";
+      this.terrainBackground.position.x = 21;
+      this.terrainBackground.position.z = 9;
+      this.terrainBackground.position.y = -0.2;
+      this.scene.add(this.terrainBackground);
+  };
 
 
   // CAMERA MOUSE CONTROL
