@@ -10,10 +10,11 @@ import React, {
 import * as starknet from "starknet";
 import { defaultProvider, number, uint256 } from "starknet";
 import { toBN } from "starknet/dist/utils/number";
+import { bnToUint256, uint256ToBN } from 'starknet/dist/utils/uint256'
 import { BuildingFrame } from "../components/GameUI/BuildingFrame";
 
 import { useBuildingsContract } from "../hooks/buildings";
-import { useMapsContract } from "../hooks/maps";
+import { useWorldsContract } from "../hooks/worlds";
 
 export interface IGameState {
   address?: string | undefined;
@@ -122,7 +123,7 @@ export const AppStateProvider: React.FC<
 > = (props: React.PropsWithChildren<{ children: any }>): React.ReactElement => {
   const [timer, setTimer] = useState(Date.now());
   const { contract: building } = useBuildingsContract();
-  const { contract: maps } = useMapsContract();
+  const { contract: worlds } = useWorldsContract();
 
   const [state, dispatch] = useReducer(reducer, GameState);
   //   const { tokenId, buildingCount, mapArray } = state;
@@ -137,30 +138,36 @@ export const AppStateProvider: React.FC<
   // }, []);
 
   useEffect(() => {
-    if (starknet && maps && state.tokenId) {
+    if (starknet && worlds
+      // DEBUG
+      // && state.tokenId
+      ) {
       setTimeout(async () => {
         // Check token_id of user
-        let _mapArray;
+        let _mapArray : any[] = [];
         try {
-          _mapArray = await maps.call("get_map_array", [
-            // TODO : replace with
-            uint256.bnToUint256(state.tokenId as any),
+          var elem = await worlds.call("get_map_array", [
+            uint256.bnToUint256(1),
           ]);
-          // var elem = toBN(_mapArray[0]);
-          // var newMap = elem.toNumber();
-          var newMap = _mapArray[0];
-          console.log("New Map", newMap);
+          var i = 0
+          elem.forEach((_map) => {
+            while (i < 640) {
+              var elem = toBN(_map[i])
+              _mapArray.push(elem.toString())
+              i++;
+            }
+          })
           dispatch({
             type: "set_mapArray",
-            mapArray: newMap,
+            mapArray: _mapArray,
           });
         } catch (e) {
-          console.warn("Error when retrieving total_supply");
+          console.warn("Error when retrieving get_map_array in M01_Worlds");
           console.warn(e);
         }
       }, 0);
     }
-  }, []);
+  }, [state.mapArray]);
 
   const updateBuildings = React.useCallback((t: number) => {
     dispatch({

@@ -7,6 +7,6 @@ export function useBuildingsContract() {
   return useContract({
     abi: BuildingsAbi as Abi,
     address:
-      "0x064562830982399a2ad3b827e00feebcb0b224a7c6df4f2b280edbf8d023294a",
+      "0x00799bbcbc6eb80913457f2d6bdcd15f3a95d9a9fb300d01a08c4732fd511047",
   });
 }
