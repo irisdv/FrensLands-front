@@ -34,7 +34,22 @@ export default function Home() {
   const { contract: worlds } = useWorldsContract();
   const { contract: maps } = useMapsContract();
 
-  const { updateTokenId } = useGameContext();
+  const { setAddress, updateTokenId, address, tokenId } = useGameContext();
+
+  useEffect(() => {
+    if (account && !address) {
+      setAddress(account);
+      updateTokenId(account);
+      console.log('1')
+    }
+  }, [account, address])
+
+  useEffect(() => {
+    if (account && !tokenId) {
+      updateTokenId(account);
+      console.log('2')
+    }
+  }, [account, tokenId])
 
   const { data: fetchBalanceNFTResult } = useStarknetCall({
     contract: maps,
@@ -52,7 +67,7 @@ export default function Home() {
 
       console.log("Balance NFT value test", balance);
 
-      // Call updateTokenId()
+      if (balance == 1 && account) updateTokenId(account)
 
       return { NFTbalance: balance };
     }
@@ -94,18 +109,20 @@ export default function Home() {
 
   const startGame = () => {
     console.log('startingGame')
-    startGameInvoke({
-      args: [
-        "0x05a3753f79d6c6c3700c3652a3eaa00bb431ea21b0c155ba8883d130634ab001",
-        "0x00ad6ce9bad182f1154847ad1c0a7d0e4b903747ecec5fd19b1c15e5f08e2825",
-        "0x058ecb92d757b11cd3a42e68043071211b583196504e5773c483858767d08ea2"
-      ],
-      metadata: {
-        method: "start_game",
-        message: "Starting a game of Frens Lands",
-      },
-    });
-    setMinting(true);
+    if (tokenId) {
+      startGameInvoke({
+        args: [
+          uint256.bnToUint256(tokenId),
+          "0x05a3753f79d6c6c3700c3652a3eaa00bb431ea21b0c155ba8883d130634ab001",
+          "0x00ad6ce9bad182f1154847ad1c0a7d0e4b903747ecec5fd19b1c15e5f08e2825",
+          "0x058e5ae1868b9bb3d6f6e4689dda8a882bc7ea0469654cf7c1acddeb17f79c6a"
+        ],
+        metadata: {
+          method: "start_game",
+          message: "Starting a game of Frens Lands",
+        },
+      });
+    }
   }
 
   console.log("account", account);
@@ -114,15 +131,20 @@ export default function Home() {
 
   return (
     <>
+          <div>gm {account}</div>
+      {/* <GetBuildingCount />
+      <BuildBuildings /> */}
+      {/* <h2>Recent Transactions</h2>
+      <TransactionList /> */}
       <p>My balance NFT: {BalanceNFTValue && BalanceNFTValue.NFTbalance}</p>
 
       <ConnectWallet/>
 
       {BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&
-      <button className="btnMint" onClick={() => mintMap()}></button>
+      <button className="pixelated btnMint" onClick={() => mintMap()}></button>
       }
       {BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 &&
-      <button className="btnPlay" onClick={() => startGame()}></button>
+      <button className="pixelated btnPlay" onClick={() => startGame()}></button>
     }
 
       {/* {account && (
@@ -209,12 +231,6 @@ export default function Home() {
           </div>
         </div>
       </div> */}
-
-      <div>gm {account}</div>
-      {/* <GetBuildingCount />
-      <BuildBuildings /> */}
-      <h2>Recent Transactions</h2>
-      <TransactionList />
     </>
   );
 }

@@ -17,6 +17,7 @@ import { useBuildingsContract } from "../hooks/buildings";
 import { useWorldsContract } from "../hooks/worlds";
 import { useResourcesContract } from "../hooks/resources";
 import { useFrensCoinsContract } from "../hooks/frenscoins";
+import { useMapsContract } from "../hooks/maps";
 import { useERC1155Contract } from "../hooks/erc1155";
 import { useStarknet } from "@starknet-react/core";
 import { GetBlockResponse } from 'starknet'
@@ -233,6 +234,7 @@ export const AppStateProvider: React.FC<
   const { contract: resources } = useResourcesContract();
   const { contract: erc1155 } = useERC1155Contract();
   const { contract: coins } = useFrensCoinsContract();
+  const { contract: maps } = useMapsContract();
 
   const { library } = useStarknet()
   const [block, setBlock] = useState<GetBlockResponse | undefined>(undefined)
@@ -333,11 +335,26 @@ export const AppStateProvider: React.FC<
     });
   }, []);
 
-  const updateTokenId = React.useCallback((id: any) => {
-    dispatch({
-      type: "set_tokenId",
-      tokenId: id,
-    });
+  const updateTokenId = React.useCallback(async (account: any) => {
+    let _token_id;
+    if (maps && account) {
+      console.log('account context', account)
+      try {
+        _token_id = await maps.call("tokenOfOwnerByIndex", [
+            account, uint256.bnToUint256(1)
+        ]);
+      console.log('_token_id', _token_id)
+      // var elem = toBN(_erc1155Balance)
+      // var newBalance = elem.toNumber()
+      // dispatch({
+      //   type: "set_tokenId",
+      //   tokenId: toBN(_token_id).toString(),
+      // });
+      } catch (e) {
+        console.warn("Error when retrieving tokenOwner by Index ");
+        console.warn(e);
+      }
+    }
   }, []);
 
   // const showBuildingFrame = (id: any): React.ReactNode => {
