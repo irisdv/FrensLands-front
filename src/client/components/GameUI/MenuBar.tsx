@@ -11,6 +11,10 @@ export function MenuBar() {
   //   const [watch, setWatch] = useState(true);
     const { contract: resources } = useResourcesContract();
 
+    const { data: block } = useStarknetBlock()
+
+    console.log('data', block)
+
 
   //   const { data: counterBuildingsResult } = useStarknetCall({
   //     contract: building,
@@ -33,6 +37,12 @@ export function MenuBar() {
 
   // Choper les ressources pour chaque Resources ID
   // Donc ID allant de 1 à 5
+
+  useEffect(() => {
+    if (block ) {
+
+    }
+  }, [block])
 
   const claimResources = () => {
     console.log('claimingResources');
