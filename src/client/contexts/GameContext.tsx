@@ -18,8 +18,15 @@ import { useWorldsContract } from "../hooks/worlds";
 import { useResourcesContract } from "../hooks/resources";
 import { useFrensCoinsContract } from "../hooks/frenscoins";
 import { useERC1155Contract } from "../hooks/erc1155";
+import { useStarknet } from "@starknet-react/core";
+import { GetBlockResponse } from 'starknet'
+
 
 export interface IGameState {
+  lastUpdated: string;
+  currentBlock: number;
+  blockGame?: string;
+  loading: boolean; 
   address?: string | undefined;
   tokenId?: string;
   buildingCount?: number;
@@ -34,7 +41,6 @@ export interface IGameState {
   populationBusy?: number;
   populationFree?: number;
   coal?: number;
-  lastBlockNumber?: string;
   updateBuildings: (t: number) => void;
   setAddress: (addr: string) => void;
   updateTokenId: (id: string) => void;
@@ -45,6 +51,10 @@ export interface IGameState {
 }
 
 export const GameState: IGameState = {
+  lastUpdated: "",
+  currentBlock: 0,
+  blockGame: "",
+  loading: false, 
   address: undefined,
   tokenId: "test",
   buildingCount: undefined,
@@ -59,7 +69,6 @@ export const GameState: IGameState = {
   coal: 0,
   populationBusy: 0,
   populationFree: 0,
-  lastBlockNumber: "",
   // startBlockNumber: "", // start_block_(tokenId)
   updateBuildings: () => {},
   setAddress: () => {},
@@ -71,6 +80,12 @@ export const GameState: IGameState = {
 
 const StateContext = React.createContext(GameState);
 const DispatchContext = React.createContext({});
+
+interface SetLastUpdatedAt {
+  type: 'set_last_updated_at';
+  blockHash: string;
+  currentBlock: number
+}
 
 interface SetAccount {
   type: "set_account";
@@ -128,7 +143,7 @@ interface SetERC1155Resources {
 
 interface SetLastBlock {
   type: "set_lastBlock";
-  lastBlockNumber?: string;
+  blockGame?: string;
 }
 
 interface SetPopulation {
@@ -149,6 +164,7 @@ type Action =
   | SetERC1155Resources
   | SetLastBlock
   | SetPopulation
+  | SetLastUpdatedAt
   | SetError;
 
 function reducer(state: IGameState, action: Action): IGameState {
@@ -194,7 +210,10 @@ function reducer(state: IGameState, action: Action): IGameState {
         };
     }
     case "set_lastBlock": {
-      return { ...state, lastBlockNumber: action.lastBlockNumber };
+      return { ...state, blockGame: action.blockGame };
+    }
+    case "set_last_updated_at": {
+      return {...state, loading: false, lastUpdated: action.blockHash, currentBlock: state.currentBlock}
     }
     case "set_error": {
       throw new Error(`Unhandled action type: ${action.type}`);
@@ -215,181 +234,90 @@ export const AppStateProvider: React.FC<
   const { contract: erc1155 } = useERC1155Contract();
   const { contract: coins } = useFrensCoinsContract();
 
-  const [state, dispatch] = useReducer(reducer, GameState);
-  //   const { tokenId, buildingCount, mapArray } = state;
+  const { library } = useStarknet()
+  const [block, setBlock] = useState<GetBlockResponse | undefined>(undefined)
+  const [loading, setLoading] = useState<boolean | undefined>(undefined)
+  const [error, setError] = useState<string | undefined>(undefined)
 
-  // useEffect(() => {
-  //   const tid = setTimeout(() => {
-  //     setTimer(Date.now());
-  //   }, 5000);
-  //   return () => {
-  //     clearTimeout(tid);
-  //   };
-  // }, []);
+  const [state, dispatch] = useReducer(reducer, GameState);
+
+
+  const fetchBlock = useCallback(() => {
+    if (library) {
+      library
+        .getBlock()
+        .then((newBlock) => {
+          setBlock((oldBlock) => {
+            if (oldBlock?.block_hash === newBlock.block_hash) {
+              return oldBlock
+            }
+            // Reset error and return new block.
+            setError(undefined)
+            return newBlock
+          })
+        })
+        .catch(() => {
+          setError('failed fetching block')
+        })
+        .finally(() => setLoading(false))
+    }
+  }, [library, setLoading, setError, setBlock])
 
   useEffect(() => {
-    if (starknet && worlds
-      // DEBUG
-      // && state.tokenId
-      ) {
-      setTimeout(async () => {
-        // Check token_id of user
-        let _mapArray : any[] = [];
-        try {
-          var elem = await worlds.call("get_map_array", [
-            uint256.bnToUint256(1),
-          ]);
-          var i = 0
-          elem.forEach((_map) => {
-            while (i < 640) {
-              var elem = toBN(_map[i])
-              _mapArray.push(elem.toString())
-              i++;
-            }
-          })
-          dispatch({
-            type: "set_mapArray",
-            mapArray: _mapArray,
-          });
-        } catch (e) {
-          console.warn("Error when retrieving get_map_array in M01_Worlds");
-          console.warn(e);
-        }
-      }, 0);
+    // Set to loading on first load
+    setLoading(true)
+
+    // Fetch block immediately
+    fetchBlock()
+
+    const intervalId = setInterval(() => {
+      fetchBlock()
+    }, 5000)
+
+    return () => clearInterval(intervalId)
+  }, [fetchBlock])
+
+  // Refresh on block change
+  useEffect(() => {
+    if (block?.block_hash) {
+      if (block?.block_hash == state.lastUpdated) return
+
+      console.log('block number', block.block_number)
+
+      refreshPopulation(resources)
+      refreshResources(erc1155)
+      refreshMapArray(worlds)
+      refreshBalance(coins)
+      refreshEnergyLevel(resources)
+      refreshBlockGame(resources)
+      dispatch({ type: 'set_last_updated_at', blockHash: block.block_hash, currentBlock: block.block_number })
     }
-    if (starknet && resources 
-            // DEBUG
-      // && state.tokenId
-      ) {
-        setTimeout(async () => {
-          // DEBUG tokenId to replace
-          let _energyLevel : any;
-          try {
-            _energyLevel = await resources.call("get_energy_level", [
-              uint256.bnToUint256(1),
-            ]);
-            var elem = toBN(_energyLevel)
-            var newEnergy = elem.toNumber()
-            dispatch({
-              type: "set_energy",
-              energy: newEnergy as number
-            });
-          } catch (e) {
-            console.warn("Error when retrieving get_energy_level in M02_Resources");
-            console.warn(e);
-          }
-        }, 0);
-      }
-      if (starknet && coins 
-        // DEBUG
-      // && state.tokenId
-      ) {
-      setTimeout(async () => {
-        // DEBUG address of owner to replace : account
-        let _frensCoinsBalance : any;
-        try {
-          _frensCoinsBalance = await coins.call("balanceOf", [
-            "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
-          ]);
-          var elem = toBN(_frensCoinsBalance)
-          var newBalance = elem.toNumber()
-          console.log('newBalance', newBalance)
-          dispatch({
-            type: "set_frensCoins",
-            frensCoins: newBalance as number
-          });
-        } catch (e) {
-          console.warn("Error when retrieving get_energy_level in M02_Resources");
-          console.warn(e);
-        }
-      }, 0);
-    }
-      if (starknet && erc1155 
-        // DEBUG
-        // && state.tokenId
-        ) {
-      setTimeout(async () => {
-      // DEBUG address of owner to replace : account
-        let _erc1155Balance : any;
-        try {
-          _erc1155Balance = await erc1155.call("balanceOfBatch", [
-            [
-              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
-              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a", 
-              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a", 
-              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a", 
-              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
-              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
-              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
-              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a"
-            ],
-            [uint256.bnToUint256(0), uint256.bnToUint256(1), uint256.bnToUint256(2), uint256.bnToUint256(3), uint256.bnToUint256(5), uint256.bnToUint256(6), uint256.bnToUint256(8)]
-          ]);
-          console.log('_erc1155Balance', toBN(_erc1155Balance[0]).toNumber())
-          var elem = toBN(_erc1155Balance)
-          var newBalance = elem.toNumber()
-          console.log('newBalance', newBalance)
-          dispatch({
-            type: "set_erc1155Res",
-            wood: toBN(_erc1155Balance[1]).toNumber(),
-            rock: toBN(_erc1155Balance[2]).toNumber(),
-            meat: toBN(_erc1155Balance[3]).toNumber(),
-            cereal: toBN(_erc1155Balance[5]).toNumber(),
-            metal: toBN(_erc1155Balance[6]).toNumber(),
-            coal: toBN(_erc1155Balance[8]).toNumber(),
-          });
-        } catch (e) {
-          console.warn("Error when retrieving resources ");
-          console.warn(e);
-        }
-      }, 0);
-    }
-  if (starknet && resources 
-    // DEBUG
-    // && state.tokenId
-    ) {
-      setTimeout(async () => {
-      // DEBUG TokenId
-      let _lastestBlock : any;
-      try {
-        _lastestBlock = await resources.call("get_latest_block", [
-          uint256.bnToUint256(0)
-        ]);
-        console.log('_lastestBlock', _lastestBlock)
-        dispatch({
-          type: "set_lastBlock",
-          lastBlockNumber: toBN(_lastestBlock).toString()
-        });
-      } catch (e) {
-        console.warn("Error when retrieving get_latest_block in M02_Resources");
-        console.warn(e);
-      }
-    }, 0);
-  }
-  if (starknet && resources 
-    // DEBUG
-    // && state.tokenId
-    ) {
-      setTimeout(async () => {
-      // DEBUG TokenId
-      let _newPopulation : any;
-      try {
-        _newPopulation = await resources.call("get_population", [
-          uint256.bnToUint256(1)
-        ]);
-        console.log('_newPopulation', _newPopulation)
-        dispatch({
-          type: "set_population",
-          populationBusy: toBN(_newPopulation[1]).toNumber(),
-          populationFree: toBN(_newPopulation[0]).toNumber()
-        });
-      } catch (e) {
-        console.warn("Error when retrieving get_population in M02_Resources");
-        console.warn(e);
-      }
-    }, 0);
-  }
-  }, [state.tokenId, state.mapArray, state.energy, state.frensCoins, state.wood, state.lastBlockNumber]);
+  }, [block?.block_hash, state.lastUpdated])
+
+  // Refresh on args changed
+  useEffect(() => {
+    refreshPopulation(resources)
+  }, [state.tokenId, starknet, state.address])
+
+  useEffect(() => {
+    refreshResources(erc1155)
+  }, [state.tokenId, starknet, state.address])
+
+  useEffect(() => {
+    refreshMapArray(worlds)
+  }, [state.tokenId, starknet, state.address])
+
+  useEffect(() => {
+    refreshBalance(coins)
+  }, [state.tokenId, starknet, state.address])
+
+  useEffect(() => {
+    refreshEnergyLevel(resources)
+  }, [state.tokenId, starknet, state.address])
+
+  useEffect(() => {
+    refreshBlockGame(resources)
+  }, [state.tokenId, starknet, state.address])
 
   const updateBuildings = React.useCallback((t: number) => {
     dispatch({
@@ -424,6 +352,138 @@ export const AppStateProvider: React.FC<
   //   );
   // };
 
+  const refreshPopulation = React.useCallback(async (resources : any) => {
+    let _newPopulation : any;
+    try {
+      _newPopulation = await resources.call("get_population", [
+        uint256.bnToUint256(1)
+      ]);
+      console.log('_newPopulation', _newPopulation)
+      dispatch({
+        type: "set_population",
+        populationBusy: toBN(_newPopulation[1]).toNumber(),
+        populationFree: toBN(_newPopulation[0]).toNumber()
+      });
+      } catch (e) {
+        console.warn("Error when retrieving get_population in M02_Resources");
+        console.warn(e);
+      }
+  }, []);
+
+  const refreshResources = React.useCallback(async (erc1155 : any) => {
+    let _erc1155Balance : any;
+        try {
+          _erc1155Balance = await erc1155.call("balanceOfBatch", [
+            [
+              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
+              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a", 
+              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a", 
+              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a", 
+              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
+              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
+              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
+              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a"
+            ],
+            [uint256.bnToUint256(0), uint256.bnToUint256(1), uint256.bnToUint256(2), uint256.bnToUint256(3), uint256.bnToUint256(5), uint256.bnToUint256(6), uint256.bnToUint256(8)]
+          ]);
+          console.log('_erc1155Balance', toBN(_erc1155Balance[0]).toNumber())
+          var elem = toBN(_erc1155Balance)
+          var newBalance = elem.toNumber()
+          console.log('newBalance', newBalance)
+          dispatch({
+            type: "set_erc1155Res",
+            wood: toBN(_erc1155Balance[1]).toNumber(),
+            rock: toBN(_erc1155Balance[2]).toNumber(),
+            meat: toBN(_erc1155Balance[3]).toNumber(),
+            cereal: toBN(_erc1155Balance[5]).toNumber(),
+            metal: toBN(_erc1155Balance[6]).toNumber(),
+            coal: toBN(_erc1155Balance[8]).toNumber(),
+          });
+        } catch (e) {
+          console.warn("Error when retrieving resources ");
+          console.warn(e);
+        }
+  }, []);
+
+  const refreshMapArray = React.useCallback(async (worlds : any) => {
+    let _mapArray : any[] = [];
+    try {
+      var elem = await worlds.call("get_map_array", [
+        uint256.bnToUint256(1),
+      ]);
+      var i = 0
+      elem.forEach((_map : any) => {
+        while (i < 640) {
+          var elem = toBN(_map[i])
+          _mapArray.push(elem.toString())
+          i++;
+        }
+      })
+      dispatch({
+        type: "set_mapArray",
+        mapArray: _mapArray,
+      });
+    } catch (e) {
+      console.warn("Error when retrieving get_map_array in M01_Worlds");
+      console.warn(e);
+    }
+  }, []);
+
+  const refreshBalance = React.useCallback(async (coins : any) => {
+    let _frensCoinsBalance : any;
+        try {
+          _frensCoinsBalance = await coins.call("balanceOf", [
+            "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
+          ]);
+          var elem = toBN(_frensCoinsBalance)
+          var newBalance = elem.toNumber()
+          console.log('newBalance', newBalance)
+          dispatch({
+            type: "set_frensCoins",
+            frensCoins: newBalance as number
+          });
+        } catch (e) {
+          console.warn("Error when retrieving get_energy_level in M02_Resources");
+          console.warn(e);
+        }
+      }, []);
+
+    const refreshEnergyLevel = React.useCallback(async (resources : any) => {
+        // DEBUG tokenId to replace
+        let _energyLevel : any;
+        try {
+          _energyLevel = await resources.call("get_energy_level", [
+            uint256.bnToUint256(1),
+          ]);
+          var elem = toBN(_energyLevel)
+          var newEnergy = elem.toNumber()
+          dispatch({
+            type: "set_energy",
+            energy: newEnergy as number
+          });
+        } catch (e) {
+          console.warn("Error when retrieving get_energy_level in M02_Resources");
+          console.warn(e);
+        }
+    }, []);
+
+    const refreshBlockGame = React.useCallback(async (resources : any) => {
+      let _lastestBlock : any;
+      try {
+        _lastestBlock = await resources.call("get_latest_block", [
+          uint256.bnToUint256(0)
+        ]);
+        console.log('_lastestBlock', _lastestBlock)
+        dispatch({
+          type: "set_lastBlock",
+          blockGame: toBN(_lastestBlock).toString()
+        });
+      } catch (e) {
+        console.warn("Error when retrieving get_latest_block in M02_Resources");
+        console.warn(e);
+      }
+    }, []);
+
   const updateBuildingFrame = React.useCallback(
     (show: boolean, data: any[]) => {
       dispatch({
@@ -441,6 +501,10 @@ export const AppStateProvider: React.FC<
   return (
     <StateContext.Provider
       value={{
+        lastUpdated: state.lastUpdated,
+        currentBlock: state.currentBlock,
+        blockGame: state.blockGame,
+        loading: state.loading,
         address: state.address,
         tokenId: state.tokenId,
         buildingCount: state.buildingCount,
@@ -455,7 +519,6 @@ export const AppStateProvider: React.FC<
         populationBusy: state.populationBusy,
         populationFree: state.populationFree,
         coal: state.coal,
-        lastBlockNumber: state.lastBlockNumber,
         frameData: state.frameData,
         showFrame: state.showFrame,
         updateBuildings,

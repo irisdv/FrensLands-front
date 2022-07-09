@@ -7,13 +7,15 @@ import { useGameContext } from "../../hooks/useGameContext";
 import { useResourcesContract } from "../../hooks/resources";
 
 export function MenuBar() {
-  const {frensCoins, wood, rock, meat, metal, coal, cereal, energy, populationBusy, populationFree, lastBlockNumber} = useGameContext();
+  const {frensCoins, wood, rock, meat, metal, coal, cereal, energy, populationBusy, populationFree, blockGame, currentBlock} = useGameContext();
   //   const [watch, setWatch] = useState(true);
     const { contract: resources } = useResourcesContract();
 
     const { data: block } = useStarknetBlock()
 
     console.log('data', block)
+    console.log('currentBlock', currentBlock)
+    console.log("blockGame", blockGame)
 
 
   //   const { data: counterBuildingsResult } = useStarknetCall({
@@ -133,10 +135,10 @@ export function MenuBar() {
               </div>
             </div>
             <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
-              <div className="btnUpgrade" onClick={() => claimResources()}></div>
+              <div className="btnClaim" onClick={() => claimResources()}></div>
             </div>
             <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
-              Expected wait time 
+              {/* Expected wait time  */}
             </div>
             
           </div>

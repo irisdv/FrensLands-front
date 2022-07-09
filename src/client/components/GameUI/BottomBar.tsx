@@ -16,13 +16,13 @@ export function BottomBar() {
     <>
       <div className="absolute" style={{ bottom: "0px", right: "0px" }}>
         <div className="flex flex-row justify-center inline-block">
-          <div
-            className="btnBottom pixelated"
-            onClick={() => showBuildingFrame()}
-          ></div>
-          <div className="btnBottom pixelated"></div>
-          <div className="btnBottom pixelated"></div>
-          <div className="btnBottom pixelated"></div>
+          <div className="btnBottom pixelated"onClick={() => showBuildingFrame()}>
+            <div className="menuNature pixelated"></div>
+          </div>
+          <div className="btnBottom pixelated"><div className="menuSecurity pixelated"></div></div>
+          <div className="btnBottom pixelated"><div className="menuEntertainment pixelated"></div></div>
+          <div className="btnBottom pixelated"><div className="menuHouse pixelated"></div></div>
+          <div className="btnBottom pixelated"><div className="menuShop pixelated"></div></div>
         </div>
       </div>
     </>

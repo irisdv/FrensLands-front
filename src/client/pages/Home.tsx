@@ -20,6 +20,7 @@ import { useMapsContract } from "../hooks/maps";
 import { uint256 } from "starknet";
 import { useGameContext } from "../hooks/useGameContext";
 import { useWorldsContract } from "../hooks/worlds";
+import { ConnectWallet } from "../components/ConnectWallet";
 
 export default function Home() {
   // const { account } = useStarknet();
@@ -66,10 +67,23 @@ export default function Home() {
     method: "get_map",
   });
 
+  const {
+    data: dataStartGame,
+    loading: loadingStartGame,
+    invoke: startGameInvoke,
+  } = useStarknetInvoke({
+    contract: worlds,
+    method: "start_game",
+  });
+
+  // DEBUG : enlever les arguments 
   const mintMap = () => {
     console.log("invoking mintingMap", Date.now());
     getMapInvoke({
-      args: [uint256.bnToUint256(2)],
+      args: [
+        "0x0250e9ece43985c06a98398f99748b1cc07d181a28ffa25a77c72f14fd4dd4c2",
+        "0x05a3753f79d6c6c3700c3652a3eaa00bb431ea21b0c155ba8883d130634ab001"
+      ],
       metadata: {
         method: "get_map",
         message: "Mint Frens Lands map",
@@ -78,15 +92,40 @@ export default function Home() {
     setMinting(true);
   };
 
+  const startGame = () => {
+    console.log('startingGame')
+    startGameInvoke({
+      args: [
+        "0x05a3753f79d6c6c3700c3652a3eaa00bb431ea21b0c155ba8883d130634ab001",
+        "0x00ad6ce9bad182f1154847ad1c0a7d0e4b903747ecec5fd19b1c15e5f08e2825",
+        "0x058ecb92d757b11cd3a42e68043071211b583196504e5773c483858767d08ea2"
+      ],
+      metadata: {
+        method: "start_game",
+        message: "Starting a game of Frens Lands",
+      },
+    });
+    setMinting(true);
+  }
+
   console.log("account", account);
-  console.log("dataGetMap", dataGetMap);
-  console.log("loadingGetMap", loadingGetMap);
+  console.log("dataStartGame", dataGetMap);
+  console.log("startGameInvoke", loadingGetMap);
 
   return (
     <>
-      <p>balance NFT: {BalanceNFTValue && BalanceNFTValue.NFTbalance}</p>
+      <p>My balance NFT: {BalanceNFTValue && BalanceNFTValue.NFTbalance}</p>
 
-      {account && (
+      <ConnectWallet/>
+
+      {BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&
+      <button className="btnMint" onClick={() => mintMap()}></button>
+      }
+      {BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 &&
+      <button className="btnPlay" onClick={() => startGame()}></button>
+    }
+
+      {/* {account && (
         <div>
           <button
             onClick={() => {
@@ -96,10 +135,10 @@ export default function Home() {
             Play game
           </button>
         </div>
-      )}
-      <div>
+      )} */}
+      {/* <div> */}
         {/* <h2>Liste of Maps</h2> */}
-        <div className="p-5 grid md:grid-cols-2">
+        {/* <div className="p-5 grid md:grid-cols-2">
           <div className="p-5">
             <div className="max-w-lg rounded overflow-hidden shadow-lg">
               <img
@@ -169,297 +208,11 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-
-      <h2>Building Frame data model</h2>
-      <div className="relative buildingFrame">
-        <div
-          className="grid grid-cols-2 inline-block"
-          style={{ height: "20px" }}
-        >
-          {/* TODO: Dynamic choice of title */}
-          <div
-            className="font8BITWonder uppercase text-center"
-            style={{ height: "20px" }}
-          >
-            Police Station
-          </div>
-          <div
-            className="relative flex jutify-center items-center inline-block"
-            style={{ paddingLeft: "8px" }}
-          >
-            {/* TODO: dynamic choice of className for icons + dynamic data */}
-            <div className="flex flex-row justify-center inline-block relative">
-              <div
-                className="fontHPxl-sm"
-                style={{ position: "absolute", top: "-9px", left: "20px" }}
-              >
-                320
-              </div>
-              <div
-                className="smallGold mb-3"
-                style={{ position: "absolute", top: "-34px", left: "23px" }}
-              ></div>
-            </div>
-            <div className="flex flex-row justify-center inline-block relative">
-              <div
-                className="fontHPxl-sm"
-                style={{ position: "absolute", top: "-9px", left: "68px" }}
-              >
-                320
-              </div>
-              <div
-                className="smallGold mb-3"
-                style={{ position: "absolute", top: "-34px", left: "70px" }}
-              ></div>
-            </div>
-            <div className="flex flex-row justify-center inline-block relative">
-              <div
-                className="fontHPxl-sm"
-                style={{ position: "absolute", top: "-9px", left: "117px" }}
-              >
-                320
-              </div>
-              <div
-                className="smallGold mb-3"
-                style={{ position: "absolute", top: "-34px", left: "119px" }}
-              ></div>
-            </div>
-          </div>
-        </div>
-        {/* Add dynamic data */}
-        <div
-          className="relative flex jutify-center items-center inline-block"
-          style={{ height: "85px" }}
-        >
-          <div className="flex flex-row justify-center inline-block relative">
-            <div
-              className="font04B text-center mx-auto"
-              style={{
-                width: "68px",
-              }}
-            >
-              Image
-            </div>
-            <div
-              className="font04B text-center mx-auto"
-              style={{
-                fontSize: "12px",
-                paddingTop: "34px",
-                width: "85px",
-              }}
-            >
-              Security
-            </div>
-            <div
-              className="font04B mx-auto text-center"
-              style={{
-                fontSize: "12px",
-                paddingTop: "34px",
-                width: "67px",
-              }}
-            >
-              1{/* level */}
-            </div>
-            <div
-              className="font04B text-center mx-auto relative"
-              style={{
-                fontSize: "12px",
-                paddingTop: "34px",
-                width: "65px",
-              }}
-            >
-              2 x 2
-            </div>
-            <div
-              className="font04B text-center mx-auto relative"
-              style={{
-                fontSize: "12px",
-                paddingTop: "34px",
-                width: "64px",
-              }}
-            >
-              34,37
-            </div>
-          </div>
-        </div>
-        {/* Add dynamic data */}
-        <div
-          className="font04B"
-          style={{
-            height: "109px",
-            fontSize: "13px",
-            paddingLeft: "9px",
-            paddingTop: "6px",
-          }}
-        >
-          description
-        </div>
-        {/* If too build :  btn Build left w/ required resources : red if not enough resources, green if ok
-            If already built : btn centered Upgrade
-        */}
-        <div
-          className="relative flex jutify-center items-center inline-block"
-          style={{ height: "45px", paddingTop: "8px" }}
-        >
-          <div className="flex flex-row justify-center inline-block">
-            {/* Case button  */}
-            <div style={{ width: "206px", paddingTop: "10px" }}>
-              <a>
-                <div className="btnUpgrade"></div>
-              </a>
-            </div>
-            <div
-              className="relative flex jutify-center items-center inline-block"
-              style={{ width: "60px", height: "80px", paddingTop: "10px" }}
-            >
-              <div className="flex flex-row justify-center inline-block relative">
-                <div
-                  className="fontHPxl-sm"
-                  style={{ position: "absolute", top: "-15px", left: "0px" }}
-                >
-                  320
-                </div>
-                <div
-                  className="smallGold mb-3"
-                  style={{ position: "absolute", top: "-39px", left: "3px" }}
-                ></div>
-              </div>
-              <div className="flex flex-row justify-center inline-block relative">
-                <div
-                  className="fontHPxl-sm"
-                  style={{ position: "absolute", top: "-15px", left: "50px" }}
-                >
-                  320
-                </div>
-                <div
-                  className="smallGold mb-3"
-                  style={{ position: "absolute", top: "-39px", left: "52px" }}
-                ></div>
-              </div>
-              <div className="flex flex-row justify-center inline-block relative">
-                <div
-                  className="fontHPxl-sm"
-                  style={{ position: "absolute", top: "-15px", left: "95px" }}
-                >
-                  320
-                </div>
-                <div
-                  className="smallGold mb-3"
-                  style={{ position: "absolute", top: "-39px", left: "97px" }}
-                ></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          className="grid grid-cols-2"
-          style={{ height: "30px", marginLeft: "205px" }}
-        >
-          <div
-            className="relative flex jutify-center items-center inline-block"
-            style={{ width: "60px", paddingTop: "10px" }}
-          >
-            <div className="flex flex-row justify-center inline-block relative">
-              <div
-                className="fontHPxl-sm"
-                style={{ position: "absolute", top: "-15px", left: "0px" }}
-              >
-                320
-              </div>
-              <div
-                className="smallGold mb-3"
-                style={{ position: "absolute", top: "-39px", left: "3px" }}
-              ></div>
-            </div>
-            <div className="flex flex-row justify-center inline-block relative">
-              <div
-                className="fontHPxl-sm"
-                style={{ position: "absolute", top: "-15px", left: "50px" }}
-              >
-                320
-              </div>
-              <div
-                className="smallGold mb-3"
-                style={{ position: "absolute", top: "-39px", left: "52px" }}
-              ></div>
-            </div>
-            <div className="flex flex-row justify-center inline-block relative">
-              <div
-                className="fontHPxl-sm"
-                style={{ position: "absolute", top: "-15px", left: "95px" }}
-              >
-                320
-              </div>
-              <div
-                className="smallGold mb-3"
-                style={{ position: "absolute", top: "-39px", left: "97px" }}
-              ></div>
-            </div>
-          </div>
-        </div>
-        <div
-          className="grid grid-cols-2"
-          style={{ height: "30px", marginLeft: "205px" }}
-        >
-          <div
-            className="relative flex jutify-center items-center inline-block"
-            style={{ width: "60px", paddingTop: "10px" }}
-          >
-            <div className="flex flex-row justify-center inline-block relative">
-              <div
-                className="fontHPxl-sm"
-                style={{ position: "absolute", top: "-15px", left: "0px" }}
-              >
-                320
-              </div>
-              <div
-                className="smallGold mb-3"
-                style={{ position: "absolute", top: "-39px", left: "3px" }}
-              ></div>
-            </div>
-            <div className="flex flex-row justify-center inline-block relative">
-              <div
-                className="fontHPxl-sm"
-                style={{ position: "absolute", top: "-15px", left: "50px" }}
-              >
-                320
-              </div>
-              <div
-                className="smallGold mb-3"
-                style={{ position: "absolute", top: "-39px", left: "52px" }}
-              ></div>
-            </div>
-            <div className="flex flex-row justify-center inline-block relative">
-              <div
-                className="fontHPxl-sm"
-                style={{ position: "absolute", top: "-15px", left: "95px" }}
-              >
-                320
-              </div>
-              <div
-                className="smallGold mb-3"
-                style={{ position: "absolute", top: "-39px", left: "97px" }}
-              ></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <br />
-      <br />
-      <p>Page Homepage</p>
-      <div></div>
       <div>gm {account}</div>
-      <TestGenMap />
-      <GetBuildingCount />
-      <BuildBuildings />
+      {/* <GetBuildingCount />
+      <BuildBuildings /> */}
       <h2>Recent Transactions</h2>
       <TransactionList />
     </>
