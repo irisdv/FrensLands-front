@@ -16,6 +16,8 @@ import { BuildingFrame } from "../components/GameUI/BuildingFrame";
 import { useBuildingsContract } from "../hooks/buildings";
 import { useWorldsContract } from "../hooks/worlds";
 import { useResourcesContract } from "../hooks/resources";
+import { useFrensCoinsContract } from "../hooks/frenscoins";
+import { useERC1155Contract } from "../hooks/erc1155";
 
 export interface IResources {
   energy: number;
@@ -171,6 +173,8 @@ export const AppStateProvider: React.FC<
   const { contract: building } = useBuildingsContract();
   const { contract: worlds } = useWorldsContract();
   const { contract: resources } = useResourcesContract();
+  const { contract: erc1155 } = useERC1155Contract();
+  const { contract: coins } = useFrensCoinsContract();
 
   const [state, dispatch] = useReducer(reducer, GameState);
   //   const { tokenId, buildingCount, mapArray } = state;
@@ -226,16 +230,7 @@ export const AppStateProvider: React.FC<
               uint256.bnToUint256(1),
             ]);
             var elem = toBN(_energyLevel)
-            console.log('elem', elem)
             var newEnergy = elem.toNumber()
-
-            // elem.forEach((_map) => {
-            //   while (i < 640) {
-            //     var elem = toBN(_map[i])
-            //     _mapArray.push(elem.toString())
-            //     i++;
-            //   }
-            // })
             dispatch({
               type: "set_energy",
               energy: newEnergy as number
@@ -246,7 +241,55 @@ export const AppStateProvider: React.FC<
           }
         }, 0);
       }
-  }, [state.mapArray]);
+  if (starknet && coins 
+        // DEBUG
+      // && state.tokenId
+      ) {
+    setTimeout(async () => {
+      // DEBUG address of owner to replace : account
+      let _frensCoinsBalance : any;
+      try {
+        _frensCoinsBalance = await coins.call("balanceOf", [
+          "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
+        ]);
+        var elem = toBN(_frensCoinsBalance)
+        var newBalance = elem.toNumber()
+        console.log('newBalance', newBalance)
+        dispatch({
+          type: "set_frensCoins",
+          frensCoins: newBalance as number
+        });
+      } catch (e) {
+        console.warn("Error when retrieving get_energy_level in M02_Resources");
+        console.warn(e);
+      }
+    }, 0);
+  }
+  if (starknet && coins 
+    // DEBUG
+    // && state.tokenId
+    ) {
+  setTimeout(async () => {
+  // DEBUG address of owner to replace : account
+    let _erc1155Balance : any;
+    try {
+      _erc1155Balance = await coins.call("balanceOf", [
+        "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
+      ]);
+      var elem = toBN(_frensCoinsBalance)
+      var newBalance = elem.toNumber()
+      console.log('newBalance', newBalance)
+      dispatch({
+        type: "set_frensCoins",
+        frensCoins: newBalance as number
+      });
+    } catch (e) {
+      console.warn("Error when retrieving get_energy_level in M02_Resources");
+      console.warn(e);
+    }
+  }, 0);
+}
+  }, [state.mapArray, state.energy, state.frensCoins, state.]);
 
   const updateBuildings = React.useCallback((t: number) => {
     dispatch({

@@ -38,6 +38,7 @@ export default class ViewGL
   private raycaster = new THREE.Raycaster();
   private currRayPos = new THREE.Vector3;
   private currBlockPos = new THREE.Vector2;
+  private selectedObj = new THREE.Vector2;
 
   private greenText = "Matchbox_Tiles_Objects_GreenVersion";
   private redText = "Matchbox_Tiles_Objects_RedVersion";
@@ -205,10 +206,8 @@ export default class ViewGL
     tempDecomp[4] = elem[7] + elem[8] + elem[9];  //[UNIQUE ID]
     tempDecomp[5] = elem[10] + elem[11];          //[health]
     tempDecomp[6] = elem[12] + elem[13];          //[quantity ress or pop]
-    tempDecomp[7] = elem[14];                     //[current level
+    tempDecomp[7] = elem[14];                     //[current level]
     tempDecomp[8] = elem[15];                     //[activity index or number of days active]
-
-    //tempDecomp[9] = objet3d
 
     this.debugPrint(2, "tempDecomp", tempDecomp);
 
@@ -401,6 +400,38 @@ export default class ViewGL
     }
   }
 
+  // OBJECT MOUSE SELECTION
+  selectObject = () =>
+  {
+    if (this.currBlockPos && this.currBlockPos.x != null && this.currBlockPos.y != null && this.currBlockPos.x > 0 &&
+    this.currBlockPos.x < 40 && this.currBlockPos.y > 0 && this.currBlockPos.y < 16)
+    {
+      var pos : THREE.Vector2 = new THREE.Vector2;
+      pos.x = this.currBlockPos.x;
+      pos.y = this.currBlockPos.y;
+
+      if (this.frontBlockArray && this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x] != null &&
+        this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != 0)
+      {
+        console.log("SELECTION OF ", this.frontBlockArray[pos.y][pos.x][4]);
+
+        this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
+          this.frontBlockArray[pos.y][pos.x][4],
+          this.frontBlockArray[pos.y][pos.x][3], 1, this.outlinedText);
+
+        this.selectedObj = pos;
+      }
+      console.log('this.selectedObj', this.selectedObj)
+      if (this.selectedObj.x != this.currRayPos.x || this.selectedObj.y != this.currRayPos.y)
+      {
+        this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
+          this.frontBlockArray[pos.y][pos.x][4],
+          this.frontBlockArray[pos.y][pos.x][3], 1, this.normalText);
+      }
+
+    }
+  }
+
   // CHECK IF BLOCKS ARE FREE BASED ON BUILDING SIZE
   checkFree = (pos : THREE.Vector2, numB : number) =>
   {
@@ -452,8 +483,8 @@ export default class ViewGL
     {
       while (x < 16)
       {
-        this.debugPrint(1, "type", type);
-        this.debugPrint(1, "this.textArrRef[y][x]", this.textArrRef[y][x]);
+        //this.debugPrint(2, "type", type);
+        //this.debugPrint(2, "this.textArrRef[y][x]", this.textArrRef[y][x]);
         if (type == this.textArrRef[y][x])
         {
           posText.x = (x * (1 / 16));
@@ -655,9 +686,10 @@ export default class ViewGL
     newObjectMesh.position.z = pos.y;// + 0.5;
     this.scene.add(newObjectMesh);
     this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][3] = type;
-    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][0] = pos.x - 0.5;
-    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][1] = pos.y - 0.5;
+    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][0] = pos.x;// - 0.5;
+    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][1] = pos.y;// - 0.5;
     this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][4] = name;
+    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][7] = size;
   }
 
   // REPLACE GEOMETRY AND MESH ON TERRAIN
@@ -712,14 +744,15 @@ export default class ViewGL
 
     var newObjectMesh = new THREE.Mesh(newObject, matObj);
     newObjectMesh.name = name.toString();
-    newObjectMesh.position.x = pos.x + 0.5;
+    newObjectMesh.position.x = pos.x;
     newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
-    newObjectMesh.position.z = pos.y + 0.5;
+    newObjectMesh.position.z = pos.y;
     this.scene.add(newObjectMesh);
-    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][3] = type;
-    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][0] = pos.x - 0.5;
-    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][1] = pos.y - 0.5;
-    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][4] = name;
+    this.frontBlockArray[pos.y][pos.x][3] = type;
+    this.frontBlockArray[pos.y][pos.x][0] = pos.x;// - 0.5;
+    this.frontBlockArray[pos.y][pos.x][1] = pos.y;// - 0.5;
+    this.frontBlockArray[pos.y][pos.x][4] = name;
+    this.frontBlockArray[pos.y][pos.x][7] = size;
   }
 
   // DELETE FORMER OBJECT IN SCENE USING NAME OR POS
@@ -867,6 +900,10 @@ export default class ViewGL
 
     this.updateTempBuildMesh();
 
+    if (this.placementActive == 0)
+    {
+      this.selectObject();
+    }
     // this.stats.update();
     this.renderer.render(this.scene, this.camera);
     requestAnimationFrame(this.update.bind(this));
