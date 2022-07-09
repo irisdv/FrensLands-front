@@ -44,6 +44,16 @@ export default class ViewGL
 
   private keyMap: any = [];
 
+
+  // *********************** TEST *********************** //
+
+  private test = 1;
+
+
+  // *********************** TEST *********************** //
+
+
+
   constructor(canvasRef: any)
   {
     // CREATE SCENE AND RENDERER
@@ -674,11 +684,14 @@ export default class ViewGL
 
   // ******************* RENDER LOOP ******************* //
 
+
   update = (t?: any) =>
   {
-    if(this.keyMap['Space'] == true)
+    if(this.keyMap['Space'] == true && this.test == 1)
     {
       this.createObject_FindSpace(4, 9898, 1, 1, "Matchbox_Tiles_Objects_RedVersion");
+      this.test = 0;
+
     }
 
     this.mouseControls();
