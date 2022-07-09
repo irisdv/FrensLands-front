@@ -57,6 +57,7 @@ export default class ViewGL
 
   private timeClick = 1;
   private tempTime = Date.now();
+  private tempTime2 = Date.now();
 
 
   // *********************** DEBUG/TEST *********************** //
@@ -899,9 +900,10 @@ export default class ViewGL
 
     this.updateTempBuildMesh();
 
-    if (this.placementActive == 0)
+    if (this.placementActive == 0 && time - this.tempTime2 > 100)
     {
       this.selectObject();
+      this.tempTime2 = Date.now();
     }
     // this.stats.update();
     this.renderer.render(this.scene, this.camera);
