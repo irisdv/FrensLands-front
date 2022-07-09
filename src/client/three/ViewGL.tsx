@@ -404,25 +404,32 @@ export default class ViewGL
   // OBJECT MOUSE SELECTION
   selectObject = () =>
   {
-    if (this.currBlockPos && this.currBlockPos.x != null && this.currBlockPos.y != null && this.currBlockPos.x > 0 &&
-    this.currBlockPos.x < 40 && this.currBlockPos.y > 0 && this.currBlockPos.y < 16)
+    if (this.currBlockPos && this.currBlockPos.x != null && this.currBlockPos.y != null &&
+       this.currBlockPos.x > 0 && this.currBlockPos.x < 40 && this.currBlockPos.y > 0 &&
+       this.currBlockPos.y < 16 && this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x] != null &&
+       this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != null &&
+       this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != 0
+    )
     {
       var pos : THREE.Vector2 = new THREE.Vector2;
       pos.x = this.currBlockPos.x;
       pos.y = this.currBlockPos.y;
 
-      if (this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x] != null &&
-        this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != null &&
-        this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != 0)
-      {
-        console.log("SELECTION OF ", this.frontBlockArray[pos.y][pos.x][4]);
+      console.log("SELECTION OF ", this.frontBlockArray[pos.y][pos.x][4]);
 
-        this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
-          this.frontBlockArray[pos.y][pos.x][4],
-          this.frontBlockArray[pos.y][pos.x][3], 1, this.outlinedText);
+      this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
+        this.UbuildingIDs++, this.frontBlockArray[pos.y][pos.x][3], 1, this.outlinedText,
+        this.frontBlockArray[pos.y][pos.x][4]);
 
-        this.selectedObj = pos;
-      }
+      this.selectedObj = pos;
+    }
+
+    if (this.currBlockPos && this.currBlockPos.x != null && this.currBlockPos.y != null)
+    {
+      var pos : THREE.Vector2 = new THREE.Vector2;
+      pos.x = this.currBlockPos.x;
+      pos.y = this.currBlockPos.y;
+
       if (this.selectedObj != null && this.selectedObj.x != 0 && this.selectedObj.y != 0 &&
           this.selectedObj.x != this.currBlockPos.x || this.selectedObj.y != this.currBlockPos.y &&
           this.frontBlockArray[pos.y][pos.x] != null && this.frontBlockArray[pos.y][pos.x][3] != 0)
@@ -430,10 +437,9 @@ export default class ViewGL
         this.selectedObj = new THREE.Vector2(0, 0);
 
         this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
-          this.frontBlockArray[pos.y][pos.x][4],
-          this.frontBlockArray[pos.y][pos.x][3], 1, this.normalText);
+          this.UbuildingIDs++, this.frontBlockArray[pos.y][pos.x][3], 1, this.normalText,
+          this.frontBlockArray[pos.y][pos.x][4]);
       }
-
     }
   }
 
@@ -699,7 +705,7 @@ export default class ViewGL
 
   // REPLACE GEOMETRY AND MESH ON TERRAIN
   replaceObject = (pos : THREE.Vector2, size : number, name : number,
-    type : number, progress : number, nameText : String) =>
+    type : number, progress : number, nameText : String, nameToDelete : number) =>
   {
 
     //call delete function
