@@ -324,7 +324,7 @@ export default class ViewGL
       this.currRayPos = tempRayPos;
       //console.log("currRayPosX", parseInt((tempRayPos.x).toFixed(2)));
       //console.log("currRayPosY", parseInt((tempRayPos.z).toFixed(2)));
-      console.log("currBlockPos", this.currBlockPos);
+      //console.log("currBlockPos", this.currBlockPos);
     }
   }
 
@@ -334,6 +334,7 @@ export default class ViewGL
     {
       if (this.frontBlockArray[pos.y][pos.x][3] == 0)
       {
+        console.log("A");
         return (1);
       }
     }
@@ -342,6 +343,7 @@ export default class ViewGL
       if (this.frontBlockArray[pos.y][pos.x][3] == 0
         && this.frontBlockArray[pos.y][pos.x + 1] != null && this.frontBlockArray[pos.y][pos.x + 1][3] == 0)
       {
+        console.log("B");
         return (1);
       }
     }
@@ -352,14 +354,16 @@ export default class ViewGL
         && this.frontBlockArray[pos.y + 1][pos.x] != null && this.frontBlockArray[pos.y + 1][pos.x][3] == 0
         && this.frontBlockArray[pos.y + 1][pos.x + 1] != null && this.frontBlockArray[pos.y + 1][pos.x + 1][3] == 0)
       {
+        console.log("C");
         return (1);
       }
 
     }
+    console.log("D");
     return (0);
   }
 
-  findTextByID = (type : number) =>
+  findTextByID = (type : number) => // NEED TO FINISH IT WHEN TEXTARRREF IS DONE
   {
     var posText = new THREE.Vector2;
 
@@ -422,6 +426,7 @@ export default class ViewGL
     this.tempBuildMeshName = name;
     //this.tempBuildMesh = null;
     this.tempBuildMeshUpdate = 1;
+    console.log("E_CREATE_FUNC");
 
     this.tempBuildMesh = new THREE.Mesh(newObject, matObj);
     this.tempBuildMesh.name = name.toString();
@@ -435,29 +440,34 @@ export default class ViewGL
   {
     if (this.tempBuildMeshUpdate == 1)
     {
+      var   spaceValid = 0;
+
       this.tempBuildMesh.position.x = this.currBlockPos.x - 0.5; // - 0.5 = CENTER OF BLOCK
-      this.tempBuildMesh.position.y = this.currBlockPos.y - 0.5;
+      this.tempBuildMesh.position.z = this.currBlockPos.y - 0.5;
 
       if (this.checkFree(this.currBlockPos, this.tempBuildMeshSize) == 1)
       {
         if (this.tempBuildMeshTextName != "Matchbox_Tiles_Objects_GreenVersion")
         {
+          console.log("F_GREEN");
+          spaceValid = 1;
           this.deleteObject(this.tempBuildMeshName);
           this.createObject_FindSpace(this.tempBuildMeshSize, this.tempBuildMeshName,
             this.tempBuildMeshType, this.tempBuildMeshProgress, "Matchbox_Tiles_Objects_GreenVersion");
         }
       }
-      else if (this.checkFree(this.currBlockPos, this.tempBuildMeshSize) == 1)
+      else if (this.checkFree(this.currBlockPos, this.tempBuildMeshSize) == 0)
       {
         if (this.tempBuildMeshTextName != "Matchbox_Tiles_Objects_RedVersion")
         {
+            console.log("G_RED");
           this.deleteObject(this.tempBuildMeshName);
           this.createObject_FindSpace(this.tempBuildMeshSize, this.tempBuildMeshName,
             this.tempBuildMeshType, this.tempBuildMeshProgress, "Matchbox_Tiles_Objects_RedVersion");
         }
       }
 
-      if (this.mousePressed = 1) // NEED TO DO IT WITH RIGHT CLICK
+      if (this.keyMap['KeyW'] == true && spaceValid == 1) // NEED TO DO IT WITH RIGHT CLICK
       {
         var pos = new THREE.Vector2;
         pos.x = this.tempBuildMesh.position.x;
@@ -465,11 +475,13 @@ export default class ViewGL
 
         this.tempBuildMeshUpdate = 0;
 
+        console.log("H_W");
         this.createObject(pos, this.tempBuildMeshSize, this.tempBuildMeshName, this.tempBuildMeshType,
           this.tempBuildMeshProgress, "Matchbox_Tiles_Objects");
       }
-      else if (this.keyMap['KeyESC'] == true) // NEED TO TEST THE KEY
+      else if (this.keyMap['KeyQ'] == true) // NEED TO TEST THE KEY
       {
+        console.log("I_ESC");
         this.tempBuildMeshUpdate = 0;
         this.deleteObject(this.tempBuildMeshName);
       }
