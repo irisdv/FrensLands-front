@@ -17,6 +17,8 @@ export default class ViewGL
   private stats: any;
 
   private terrain = new THREE.Mesh;
+  private terrainBorder = new THREE.Mesh;
+  private terrainBackground = new THREE.Mesh;
   private textArrRef: any[];
   private tempBuildMesh = new THREE.Mesh;
   private tempBuildMeshSize: number = 0;
@@ -91,8 +93,8 @@ export default class ViewGL
 
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.clock = new THREE.Clock();
-    const skyColor = 0xfff9e8;
-    this.scene.background = new THREE.Color(0x64a8d1);
+    const skyColor = 0x73bed3;
+    this.scene.background = new THREE.Color(0x73bed3);
 
     // ADD LIGHT & FOG
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.9));
@@ -188,6 +190,8 @@ export default class ViewGL
 
     // CREATE TERRAIN
     this.terrainCreate();
+    this.terrainBorderCreate();
+    this.terrainBackgroundCreate();
 
     // CALL ANIMATION LOOP
     this.update();
@@ -256,7 +260,7 @@ export default class ViewGL
       terrainPlane.name = "terrainGeometry";
       terrainPlane.rotateX(-Math.PI * 0.5);
       const texture = new THREE.TextureLoader().load(
-        "resources/textures/Grass_Gen1.png"
+        "resources/textures/World1_GrassBackground.png"
       );
 
       let mat = new THREE.MeshStandardMaterial({
@@ -279,8 +283,76 @@ export default class ViewGL
       this.terrain.name = "terrainMesh";
       this.terrain.position.x = 21;
       this.terrain.position.z = 9;
+      this.terrain.position.y = 0;
       this.scene.add(this.terrain);
-    };
+  };
+
+  terrainBorderCreate = () =>
+  {
+      let terrainBorderPlane = new THREE.PlaneGeometry(44, 21, 1, 1);
+      terrainBorderPlane.name = "terrainBorderGeometry";
+      terrainBorderPlane.rotateX(-Math.PI * 0.5);
+      const texture = new THREE.TextureLoader().load(
+        "resources/textures/World1_GrassBoundaries.png"
+      );
+
+      let mat = new THREE.MeshStandardMaterial({
+      map: texture,
+      transparent: true,
+      depthWrite: false,
+      depthTest: true,
+      // shading: 2
+      });
+
+      if (mat.map)
+      {
+        mat.map.repeat = new THREE.Vector2(1, 1); // TEXTURE TILLING
+        mat.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+        mat.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+        mat.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+      }
+
+      this.terrainBorder = new THREE.Mesh(terrainBorderPlane, mat);
+      this.terrainBorder.name = "terrainBorderMesh";
+      this.terrainBorder.position.x = 20.94;
+      this.terrainBorder.position.z = 9;
+      this.terrainBorder.position.y = -0.1;
+      this.scene.add(this.terrainBorder);
+  };
+
+
+  terrainBackgroundCreate = () =>
+  {
+      let terrainBackgroundPlane = new THREE.PlaneGeometry(150, 150, 1, 1);
+      terrainBackgroundPlane.name = "terrainBackgroundGeometry";
+      terrainBackgroundPlane.rotateX(-Math.PI * 0.5);
+      const texture = new THREE.TextureLoader().load(
+        "resources/textures/Water_Tile.png"
+      );
+
+      let mat = new THREE.MeshStandardMaterial({
+      map: texture,
+      transparent: true,
+      depthWrite: false,
+      depthTest: true,
+      // shading: 2
+      });
+
+      if (mat.map)
+      {
+        mat.map.repeat = new THREE.Vector2(1, 1); // TEXTURE TILLING
+        mat.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+        mat.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+        mat.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+      }
+
+      this.terrainBackground = new THREE.Mesh(terrainBackgroundPlane, mat);
+      this.terrainBackground.name = "terrainBackgroundMesh";
+      this.terrainBackground.position.x = 21;
+      this.terrainBackground.position.z = 9;
+      this.terrainBackground.position.y = -0.2;
+      this.scene.add(this.terrainBackground);
+  };
 
 
   // CAMERA MOUSE CONTROL
@@ -421,9 +493,9 @@ export default class ViewGL
       this.objectSelected = 1;
       this.UbuildingIDs = this.UbuildingIDs + 1;
 
-      //this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
-      //  this.UbuildingIDs, this.frontBlockArray[pos.y][pos.x][3], 1, this.outlinedText,
-      //  this.frontBlockArray[pos.y][pos.x][4]);
+      this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
+        this.UbuildingIDs, this.frontBlockArray[pos.y][pos.x][3], 1, this.outlinedText,
+        this.frontBlockArray[pos.y][pos.x][4]);
 
       this.selectedObj = pos;
     }
@@ -435,20 +507,22 @@ export default class ViewGL
         this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x] != null &&
         this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != 0)
     {
-      this.selectedObj = new THREE.Vector2(0, 0);
+
 
       var pos : THREE.Vector2 = new THREE.Vector2;
-      pos.x = this.currBlockPos.x;
-      pos.y = this.currBlockPos.y;
+      pos.x = this.selectedObj.x;
+      pos.y = this.selectedObj.y;
 
       this.debugPrint(1, "OBJECT UNSELECTED");
       this.objectSelected = 0;
 
       this.UbuildingIDs = this.UbuildingIDs + 1;
 
-      //this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
-      //  this.UbuildingIDs, this.frontBlockArray[pos.y][pos.x][3], 1, this.normalText,
-      //  this.frontBlockArray[pos.y][pos.x][4]);
+      this.replaceObject(pos, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][7],
+        this.UbuildingIDs, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][3], 1,
+        this.normalText, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][4]);
+
+      this.selectedObj = new THREE.Vector2(0, 0);
     }
   }
 
@@ -529,7 +603,7 @@ export default class ViewGL
   {
 
     let newObject = new THREE.PlaneGeometry;
-    if (size == 1)
+    /*if (size == 1)
     {
       newObject = new THREE.PlaneGeometry(1, 1, 1, 1);
     }
@@ -538,9 +612,9 @@ export default class ViewGL
       newObject = new THREE.PlaneGeometry(2, 1, 1, 1);
     }
     else if (size == 4)
-    {
+    {*/
       newObject = new THREE.PlaneGeometry(2, 2, 1, 1);
-    }
+    //}
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
@@ -658,7 +732,7 @@ export default class ViewGL
   {
 
     let newObject = new THREE.PlaneGeometry;
-    if (size == 1)
+    /*if (size == 1)
     {
       newObject = new THREE.PlaneGeometry(1, 1, 1, 1);
     }
@@ -667,9 +741,9 @@ export default class ViewGL
       newObject = new THREE.PlaneGeometry(2, 1, 1, 1);
     }
     else if (size == 4)
-    {
+    {*/
       newObject = new THREE.PlaneGeometry(2, 2, 1, 1);
-    }
+    //}
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
@@ -721,7 +795,7 @@ export default class ViewGL
     this.deleteObject(nameToDelete);
 
     let newObject = new THREE.PlaneGeometry;
-    if (size == 1)
+    /*if (size == 1)
     {
       newObject = new THREE.PlaneGeometry(1, 1, 1, 1);
     }
@@ -730,9 +804,9 @@ export default class ViewGL
       newObject = new THREE.PlaneGeometry(2, 1, 1, 1);
     }
     else if (size == 4)
-    {
+    {*/
       newObject = new THREE.PlaneGeometry(2, 2, 1, 1);
-    }
+    //}
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
@@ -764,13 +838,13 @@ export default class ViewGL
 
     var newObjectMesh = new THREE.Mesh(newObject, matObj);
     newObjectMesh.name = name.toString();
-    newObjectMesh.position.x = pos.x;// + 0.5;
+    newObjectMesh.position.x = pos.x + 0.5;
     newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
-    newObjectMesh.position.z = pos.y;// + 0.5;
+    newObjectMesh.position.z = pos.y + 0.5;
     this.scene.add(newObjectMesh);
     this.frontBlockArray[pos.y][pos.x][3] = type;
-    this.frontBlockArray[pos.y][pos.x][0] = pos.x;// - 0.5;
-    this.frontBlockArray[pos.y][pos.x][1] = pos.y;// - 0.5;
+    this.frontBlockArray[pos.y][pos.x][0] = pos.x + 0.5;
+    this.frontBlockArray[pos.y][pos.x][1] = pos.y - 0.5;
     this.frontBlockArray[pos.y][pos.x][4] = name;
     this.frontBlockArray[pos.y][pos.x][7] = size;
   }
@@ -896,7 +970,7 @@ export default class ViewGL
     if (this.keyMap['Space'] == true && this.timeClick == 1 && this.placementActive == 0)
     {
       this.placementActive = 1;
-      this.createObject_FindSpace(4, 9898, this.typeTest, 1, this.redText);
+      this.createObject_FindSpace(1, 9898, this.typeTest, 1, this.redText);
       this.typeTest++;
     }
 
@@ -920,10 +994,10 @@ export default class ViewGL
 
     this.updateTempBuildMesh();
 
-    if (this.placementActive == 0 && time - this.tempTime2 > 100)
+    if (this.placementActive == 0)// && time - this.tempTime2 > 10)
     {
       this.selectObject();
-      this.tempTime2 = Date.now();
+      //this.tempTime2 = Date.now();
     }
     // this.stats.update();
     this.renderer.render(this.scene, this.camera);
