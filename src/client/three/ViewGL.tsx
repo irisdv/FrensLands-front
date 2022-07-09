@@ -101,7 +101,8 @@ export default class ViewGL
     this.compArray = [];
     while (i < 640)
     {
-      this.compArray[i] = "1234567891234567";
+      //this.compArray[i] = "1234567891234567"; //TEST FULL BLOCKS
+      this.compArray[i] = "1234500891234567"; //TEST EMPTY BLOCKS
       i++;
     }
 
@@ -426,7 +427,7 @@ export default class ViewGL
     this.tempBuildMeshName = name;
     //this.tempBuildMesh = null;
     this.tempBuildMeshUpdate = 1;
-    console.log("E_CREATE_FUNC");
+    console.log("E_CREATE_TEMPFINDSPACE_FUNC");
 
     this.tempBuildMesh = new THREE.Mesh(newObject, matObj);
     this.tempBuildMesh.name = name.toString();
@@ -458,9 +459,10 @@ export default class ViewGL
       }
       else if (this.checkFree(this.currBlockPos, this.tempBuildMeshSize) == 0)
       {
+        console.log("G_RED1");
         if (this.tempBuildMeshTextName != "Matchbox_Tiles_Objects_RedVersion")
         {
-            console.log("G_RED");
+          console.log("G_RED2");
           this.deleteObject(this.tempBuildMeshName);
           this.createObject_FindSpace(this.tempBuildMeshSize, this.tempBuildMeshName,
             this.tempBuildMeshType, this.tempBuildMeshProgress, "Matchbox_Tiles_Objects_RedVersion");
@@ -530,6 +532,7 @@ export default class ViewGL
       matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
       matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
     }
+    console.log("G_CREATEOBJ_FUNC");
 
     var newObjectMesh = new THREE.Mesh(newObject, matObj);
     newObjectMesh.name = name.toString();
