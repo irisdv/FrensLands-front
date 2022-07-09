@@ -482,8 +482,8 @@ export default class ViewGL
     {
       while (x < 16)
       {
-        this.debugPrint(1, "type", type);
-        this.debugPrint(1, "this.textArrRef[y][x]", this.textArrRef[y][x]);
+        //this.debugPrint(2, "type", type);
+        //this.debugPrint(2, "this.textArrRef[y][x]", this.textArrRef[y][x]);
         if (type == this.textArrRef[y][x])
         {
           posText.x = (x * (1 / 16));
