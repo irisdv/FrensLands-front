@@ -421,9 +421,9 @@ export default class ViewGL
       this.objectSelected = 1;
       this.UbuildingIDs = this.UbuildingIDs + 1;
 
-      //this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
-      //  this.UbuildingIDs, this.frontBlockArray[pos.y][pos.x][3], 1, this.outlinedText,
-      //  this.frontBlockArray[pos.y][pos.x][4]);
+      this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
+        this.UbuildingIDs, this.frontBlockArray[pos.y][pos.x][3], 1, this.outlinedText,
+        this.frontBlockArray[pos.y][pos.x][4]);
 
       this.selectedObj = pos;
     }
@@ -435,20 +435,22 @@ export default class ViewGL
         this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x] != null &&
         this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != 0)
     {
-      this.selectedObj = new THREE.Vector2(0, 0);
+
 
       var pos : THREE.Vector2 = new THREE.Vector2;
-      pos.x = this.currBlockPos.x;
-      pos.y = this.currBlockPos.y;
+      pos.x = this.selectedObj.x;
+      pos.y = this.selectedObj.y;
 
       this.debugPrint(1, "OBJECT UNSELECTED");
       this.objectSelected = 0;
 
       this.UbuildingIDs = this.UbuildingIDs + 1;
 
-      //this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
-      //  this.UbuildingIDs, this.frontBlockArray[pos.y][pos.x][3], 1, this.normalText,
-      //  this.frontBlockArray[pos.y][pos.x][4]);
+      this.replaceObject(pos, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][7],
+        this.UbuildingIDs, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][3], 1,
+        this.normalText, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][4]);
+
+      this.selectedObj = new THREE.Vector2(0, 0);
     }
   }
 
@@ -529,7 +531,7 @@ export default class ViewGL
   {
 
     let newObject = new THREE.PlaneGeometry;
-    if (size == 1)
+    /*if (size == 1)
     {
       newObject = new THREE.PlaneGeometry(1, 1, 1, 1);
     }
@@ -538,9 +540,9 @@ export default class ViewGL
       newObject = new THREE.PlaneGeometry(2, 1, 1, 1);
     }
     else if (size == 4)
-    {
+    {*/
       newObject = new THREE.PlaneGeometry(2, 2, 1, 1);
-    }
+    //}
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
@@ -658,7 +660,7 @@ export default class ViewGL
   {
 
     let newObject = new THREE.PlaneGeometry;
-    if (size == 1)
+    /*if (size == 1)
     {
       newObject = new THREE.PlaneGeometry(1, 1, 1, 1);
     }
@@ -667,9 +669,9 @@ export default class ViewGL
       newObject = new THREE.PlaneGeometry(2, 1, 1, 1);
     }
     else if (size == 4)
-    {
+    {*/
       newObject = new THREE.PlaneGeometry(2, 2, 1, 1);
-    }
+    //}
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
@@ -721,7 +723,7 @@ export default class ViewGL
     this.deleteObject(nameToDelete);
 
     let newObject = new THREE.PlaneGeometry;
-    if (size == 1)
+    /*if (size == 1)
     {
       newObject = new THREE.PlaneGeometry(1, 1, 1, 1);
     }
@@ -730,9 +732,9 @@ export default class ViewGL
       newObject = new THREE.PlaneGeometry(2, 1, 1, 1);
     }
     else if (size == 4)
-    {
+    {*/
       newObject = new THREE.PlaneGeometry(2, 2, 1, 1);
-    }
+    //}
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
@@ -764,13 +766,13 @@ export default class ViewGL
 
     var newObjectMesh = new THREE.Mesh(newObject, matObj);
     newObjectMesh.name = name.toString();
-    newObjectMesh.position.x = pos.x;// + 0.5;
+    newObjectMesh.position.x = pos.x + 0.5;
     newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
-    newObjectMesh.position.z = pos.y;// + 0.5;
+    newObjectMesh.position.z = pos.y + 0.5;
     this.scene.add(newObjectMesh);
     this.frontBlockArray[pos.y][pos.x][3] = type;
-    this.frontBlockArray[pos.y][pos.x][0] = pos.x;// - 0.5;
-    this.frontBlockArray[pos.y][pos.x][1] = pos.y;// - 0.5;
+    this.frontBlockArray[pos.y][pos.x][0] = pos.x + 0.5;
+    this.frontBlockArray[pos.y][pos.x][1] = pos.y - 0.5;
     this.frontBlockArray[pos.y][pos.x][4] = name;
     this.frontBlockArray[pos.y][pos.x][7] = size;
   }
@@ -896,7 +898,7 @@ export default class ViewGL
     if (this.keyMap['Space'] == true && this.timeClick == 1 && this.placementActive == 0)
     {
       this.placementActive = 1;
-      this.createObject_FindSpace(4, 9898, this.typeTest, 1, this.redText);
+      this.createObject_FindSpace(1, 9898, this.typeTest, 1, this.redText);
       this.typeTest++;
     }
 
@@ -920,10 +922,10 @@ export default class ViewGL
 
     this.updateTempBuildMesh();
 
-    if (this.placementActive == 0 && time - this.tempTime2 > 100)
+    if (this.placementActive == 0)// && time - this.tempTime2 > 10)
     {
       this.selectObject();
-      this.tempTime2 = Date.now();
+      //this.tempTime2 = Date.now();
     }
     // this.stats.update();
     this.renderer.render(this.scene, this.camera);
