@@ -52,16 +52,18 @@ export default class ViewGL
 
   private keyMap: any = [];
 
-
   private UbuildingIDs: number = 0;
 
   private timeClick = 1;
   private tempTime = Date.now();
 
 
-  // *********************** TEST *********************** //
+  // *********************** DEBUG/TEST *********************** //
 
-  // *********************** TEST *********************** //
+  private debugMode = 2;
+
+
+  // *********************** DEBUG/TEST *********************** //
 
 
   constructor(canvasRef: any)
@@ -142,11 +144,11 @@ export default class ViewGL
 
       while (indexJ < 41)
       {
-        this.validatedBlockArray[indexI][indexJ] = decompose(this.compArray[i]);
+        this.validatedBlockArray[indexI][indexJ] = this.decompose(this.compArray[i]);
 
         if (this.firstLoad == 1)
         {
-          this.frontBlockArray[indexI][indexJ] = decompose(this.compArray[i]);
+          this.frontBlockArray[indexI][indexJ] = this.decompose(this.compArray[i]);
         }
         indexJ++;
         i++;
@@ -157,46 +159,72 @@ export default class ViewGL
 
     this.firstLoad = 0;
 
-    // ********************** FUNCTIONS IN CONSTRUCTOR ************************//
-
-    // DECOMPOSE THE ARRAY OF DATA PER ELEMENT
-    function decompose(elem: any)
-    {
-      var tempDecomp : any[] = [];
-      elem.toString()
-
-      tempDecomp[0] = elem[0] + elem[1];            //[pos:x]
-      tempDecomp[1] = elem[2] + elem[3];            //[pos:y]
-      tempDecomp[2] = elem[4];                      //[mat type]
-      tempDecomp[3] = elem[5] + elem[6];            //[ress or bat type]
-      tempDecomp[4] = elem[7] + elem[8] + elem[9];  //[UNIQUE ID]
-      tempDecomp[5] = elem[10] + elem[11];          //[health]
-      tempDecomp[6] = elem[12] + elem[13];          //[quantity ress or pop]
-      tempDecomp[7] = elem[14];                     //[current level
-      tempDecomp[8] = elem[15];                     //[activity index or number of days active]
-
-      //tempDecomp[9] = objet3d
-
-      console.log("tempDecomp", tempDecomp);
-
-      return (tempDecomp);
-    }
-
-
     // ******************* GET WORLD READY *******************//
 
     // CREATE TERRAIN
     this.terrainCreate();
-
-    var testPos = new THREE.Vector2(24, 7);
-
-    this.createObject(testPos, 4, 11788, 1, 1, this.normalText);
 
     // CALL ANIMATION LOOP
     this.update();
   }
 
   // ****************** FUNCTIONS OUT OF CONSTRUCTOR ********************** //
+
+  // DECOMPOSE THE ARRAY OF DATA PER ELEMENT
+  decompose = (elem: any) =>
+  {
+    var tempDecomp : any[] = [];
+    elem.toString()
+
+    tempDecomp[0] = elem[0] + elem[1];            //[pos:x]
+    tempDecomp[1] = elem[2] + elem[3];            //[pos:y]
+    tempDecomp[2] = elem[4];                      //[mat type]
+    tempDecomp[3] = elem[5] + elem[6];            //[ress or bat type]
+    tempDecomp[4] = elem[7] + elem[8] + elem[9];  //[UNIQUE ID]
+    tempDecomp[5] = elem[10] + elem[11];          //[health]
+    tempDecomp[6] = elem[12] + elem[13];          //[quantity ress or pop]
+    tempDecomp[7] = elem[14];                     //[current level
+    tempDecomp[8] = elem[15];                     //[activity index or number of days active]
+
+    //tempDecomp[9] = objet3d
+
+    this.debugPrint(1, "tempDecomp", tempDecomp);
+
+    return (tempDecomp);
+  }
+
+  debugPrint = (type: number, string: String, varToPrint?: any) =>
+  {
+    if (this.debugMode == 2)
+    {
+      if (type == 2 || type == 1)
+      {
+        if (varToPrint != null)
+        {
+          console.log(string, varToPrint);
+        }
+        else
+        {
+          console.log(string);
+        }
+      }
+    }
+    else if (this.debugMode == 1)
+    {
+      if (type == 1)
+      {
+        if (varToPrint != null)
+        {
+          console.log(string, varToPrint);
+        }
+        else
+        {
+          console.log(string);
+        }
+      }
+    }
+  }
+
 
   // CREATE THE TERRAIN
   terrainCreate = () =>
@@ -321,7 +349,7 @@ export default class ViewGL
     {
       if (intersects[i].point.y > -1 && intersects[i].point.x > 1 && intersects[i].point.z > 1)
       {
-        //console.log("intersects", intersects[i].object);
+        //this.debugPrint(1, "intersects", intersects[i].object);
         tempInter[k] = intersects[i].point;
         tempInterY[k] = intersects[i].point.y;
         k++;
@@ -345,9 +373,9 @@ export default class ViewGL
       this.currBlockPos.x = parseInt((tempRayPos.x).toFixed(2));
       this.currBlockPos.y = parseInt((tempRayPos.z).toFixed(2));
       this.currRayPos = tempRayPos;
-      //console.log("currRayPosX", parseInt((tempRayPos.x).toFixed(2)));
-      //console.log("currRayPosY", parseInt((tempRayPos.z).toFixed(2)));
-      //console.log("currBlockPos", this.currBlockPos);
+      this.debugPrint(2, "currRayPosX", parseInt((tempRayPos.x).toFixed(2)));
+      this.debugPrint(2, "currRayPosY", parseInt((tempRayPos.z).toFixed(2)));
+      //this.debugPrint(2, "currBlockPos", this.currBlockPos);
     }
   }
 
@@ -359,7 +387,7 @@ export default class ViewGL
       {
         if (this.frontBlockArray[pos.y][pos.x][3] != null && this.frontBlockArray[pos.y][pos.x][3] == 0)
         {
-          console.log("A");
+          this.debugPrint(2, "A");
           return (1);
         }
       }
@@ -368,26 +396,25 @@ export default class ViewGL
         if (this.frontBlockArray[pos.y][pos.x][3] != null && this.frontBlockArray[pos.y][pos.x][3] == 0
           && this.frontBlockArray[pos.y][pos.x + 1] != null && this.frontBlockArray[pos.y][pos.x + 1][3] == 0)
         {
-          console.log("B");
+          this.debugPrint(2, "B");
           return (1);
         }
       }
       else if (numB == 4)
       {
-        console.log("BEFOREBUG6");
         if (this.frontBlockArray[pos.y][pos.x] != null && this.frontBlockArray[pos.y][pos.x][3] == 0
           && this.frontBlockArray[pos.y][pos.x + 1] != null && this.frontBlockArray[pos.y][pos.x + 1][3] == 0
           && this.frontBlockArray[pos.y - 1][pos.x] != null && this.frontBlockArray[pos.y - 1][pos.x][3] == 0
           && this.frontBlockArray[pos.y - 1][pos.x + 1] != null && this.frontBlockArray[pos.y - 1][pos.x + 1][3] == 0
         )
         {
-          console.log("C");
+          this.debugPrint(2, "C");
           return (1);
         }
 
       }
     }
-    console.log("D");
+    this.debugPrint(2, "D");
     return (0);
   }
 
@@ -454,7 +481,7 @@ export default class ViewGL
     this.tempBuildMeshName = name;
     //this.tempBuildMesh = null;
     this.tempBuildMeshUpdate = 1;
-    console.log("E_CREATE_TEMPFINDSPACE_FUNC");
+    this.debugPrint(2, "E_CREATE_TEMPFINDSPACE_FUNC");
 
     this.tempBuildMesh = new THREE.Mesh(newObject, matObj);
     this.tempBuildMesh.name = name.toString();
@@ -466,7 +493,6 @@ export default class ViewGL
 
   updateTempBuildMesh = () =>
   {
-    console.log("BEFOREBUG3");
     if (this.tempBuildMeshUpdate == 1)
     {
       var   spaceValid = 0;
@@ -477,16 +503,15 @@ export default class ViewGL
       blockRightPos.x = this.currBlockPos.x;
       blockRightPos.y = this.currBlockPos.y;
 
-      console.log("blockRightPos",blockRightPos);
+      this.debugPrint(2, "blockRightPos", blockRightPos);
 
-      console.log("BEFOREBUG4");
       if (this.checkFree(blockRightPos, this.tempBuildMeshSize) == 1)
       {
         spaceValid = 1;
-        console.log("F_GREEN1");
+        this.debugPrint(2, "F_GREEN1");
         if (this.tempBuildMeshTextName != this.greenText)
         {
-          console.log("F_GREEN2");
+          this.debugPrint(2, "F_GREEN2");
           this.deleteObject(this.tempBuildMeshName);
           this.createObject_FindSpace(this.tempBuildMeshSize, this.tempBuildMeshName,
             this.tempBuildMeshType, this.tempBuildMeshProgress, this.greenText);
@@ -494,17 +519,15 @@ export default class ViewGL
       }
       else if (this.checkFree(blockRightPos, this.tempBuildMeshSize) == 0)
       {
-        console.log("G_RED1");
+        this.debugPrint(2, "G_RED1");
         if (this.tempBuildMeshTextName != this.redText)
         {
-          console.log("G_RED2");
+          this.debugPrint(2, "G_RED2");
           this.deleteObject(this.tempBuildMeshName);
           this.createObject_FindSpace(this.tempBuildMeshSize, this.tempBuildMeshName,
             this.tempBuildMeshType, this.tempBuildMeshProgress, this.redText);
         }
       }
-
-      console.log("BEFOREBUG1");
 
       if (this.mouseLeftPressed == 1 && spaceValid == 1 && this.placementActive == 1) // NEED TO DO IT WITH RIGHT CLICK
       {
@@ -514,7 +537,7 @@ export default class ViewGL
 
         this.tempBuildMeshUpdate = 0;
 
-        console.log("H_ClickLeft");
+        this.debugPrint(2, "H_ClickLeft");
         this.createObject(pos, this.tempBuildMeshSize, this.UbuildingIDs + 1, this.tempBuildMeshType,
           this.tempBuildMeshProgress, this.normalText);
         this.deleteObject(this.tempBuildMeshName);
@@ -522,12 +545,11 @@ export default class ViewGL
       }
       if (this.mouseMiddlePressed == 1 && this.placementActive == 1) // NEED TO TEST THE KEY
       {
-        console.log("I_ClickMiddle");
+        this.debugPrint(2, "I_ClickMiddle");
         this.tempBuildMeshUpdate = 0;
         this.deleteObject(this.tempBuildMeshName);
         this.placementActive = 0;
       }
-      console.log("BEFOREBUG2");
     }
   }
 
@@ -573,7 +595,7 @@ export default class ViewGL
       matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
       matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
     }
-    console.log("G_CREATEOBJ_FUNC");
+    this.debugPrint(2, "G_CREATEOBJ_FUNC");
 
     var newObjectMesh = new THREE.Mesh(newObject, matObj);
     newObjectMesh.name = name.toString();
@@ -639,7 +661,7 @@ export default class ViewGL
   deleteObject = (name : number) =>
   {
     this.scene.remove(this.scene.getObjectByName(name.toString()) as THREE.Group)
-    console.log("This object has been deleted : ", name);
+    this.debugPrint(1, "This object has been deleted : ", name);
   }
 
   // ******************* PUBLIC EVENTS ******************* //
@@ -653,40 +675,38 @@ export default class ViewGL
 
   onDocumentMouseDown = (event: any) =>
   {
-    console.log("eventON", event.button);
     if (event.button == 2)
     {
-      console.log("mouseRightPressed", true);
+      this.debugPrint(1, "mouseRightPressed", true);
       this.mouseRightPressed = 1;
     }
     if (event.button == 0)
     {
-      console.log("mouseLeftPressed", true);
+      this.debugPrint(1, "mouseLeftPressed", true);
       this.mouseLeftPressed = 1;
     }
     if (event.button == 1)
     {
-      console.log("mouseMiddlePressed", true);
+      this.debugPrint(1, "mouseMiddlePressed", true);
       this.mouseMiddlePressed = 1;
     }
   };
 
   onDocumentMouseUp = (event: any) =>
   {
-    console.log("eventOFF", event.button);
     if (event.button == 2)
     {
-      console.log("mouseRightPressed", false);
+      this.debugPrint(1, "mouseRightPressed", false);
       this.mouseRightPressed = 0;
     }
     if (event.button == 0)
     {
-      console.log("mouseLeftPressed", false);
+      this.debugPrint(1, "mouseLeftPressed", false);
       this.mouseLeftPressed = 0;
     }
     if (event.button == 1)
     {
-      console.log("mouseMiddlePressed", false);
+      this.debugPrint(1, "mouseMiddlePressed", false);
       this.mouseMiddlePressed = 0;
     }
   };
@@ -700,7 +720,6 @@ export default class ViewGL
         if (this.camera.position.y > 45)
         {
           this.camera.position.y -= 15;
-          this.deleteObject(11788);
         }
     }
     else if (event.deltaY < 0)
@@ -715,7 +734,7 @@ export default class ViewGL
     {
         this.mouseWheel = 0;
     }
-    console.log("eventWheel", this.mouseWheel);
+    this.debugPrint(1, "eventWheel", this.mouseWheel);
   }
 
   onDocumentKeyDown = (event: any) =>
@@ -756,10 +775,23 @@ export default class ViewGL
       this.tempTime = Date.now();
     }
 
-    if(this.keyMap['Space'] == true && this.timeClick == 1 && this.placementActive == 0)
+    if (this.keyMap['Space'] == true && this.timeClick == 1 && this.placementActive == 0)
     {
       this.placementActive = 1;
       this.createObject_FindSpace(4, 9898, 1, 1, this.redText);
+    }
+
+    if (this.keyMap['keyD'] == true && this.timeClick == 1) // NOT WORKING !
+    {
+      this.debugPrint(2, "DEBUG MODE CHANGED TO ", this.debugMode);
+      if (this.debugMode < 2)
+      {
+        this.debugMode = this.debugMode + 1;
+      }
+      else
+      {
+        this.debugMode = 0;
+      }
     }
 
     this.mouseControls();
