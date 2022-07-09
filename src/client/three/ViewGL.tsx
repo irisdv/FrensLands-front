@@ -353,36 +353,39 @@ export default class ViewGL
 
   checkFree = (pos : THREE.Vector2, numB : number) =>
   {
-    if (numB == 1)
+    if (pos.x >= 1 && pos.x <= 40 && pos.y >= 1 && pos.y <= 16 && pos.y - 1 != 0)
     {
-      if (this.frontBlockArray[pos.y][pos.x][3] != null && this.frontBlockArray[pos.y][pos.x][3] == 0)
+      if (numB == 1)
       {
-        console.log("A");
-        return (1);
+        if (this.frontBlockArray[pos.y][pos.x][3] != null && this.frontBlockArray[pos.y][pos.x][3] == 0)
+        {
+          console.log("A");
+          return (1);
+        }
       }
-    }
-    else if (numB == 2)
-    {
-      if (this.frontBlockArray[pos.y][pos.x][3] != null && this.frontBlockArray[pos.y][pos.x][3] == 0
-        && this.frontBlockArray[pos.y][pos.x + 1] != null && this.frontBlockArray[pos.y][pos.x + 1][3] == 0)
+      else if (numB == 2)
       {
-        console.log("B");
-        return (1);
+        if (this.frontBlockArray[pos.y][pos.x][3] != null && this.frontBlockArray[pos.y][pos.x][3] == 0
+          && this.frontBlockArray[pos.y][pos.x + 1] != null && this.frontBlockArray[pos.y][pos.x + 1][3] == 0)
+        {
+          console.log("B");
+          return (1);
+        }
       }
-    }
-    else if (numB == 4)
-    {
-      console.log("BEFOREBUG6");
-      if (this.frontBlockArray[pos.y][pos.x] != null //&& this.frontBlockArray[pos.y][pos.x][3] == 0
-        //&& this.frontBlockArray[pos.y][pos.x + 1] != null && this.frontBlockArray[pos.y][pos.x + 1][3] == 0
-        //&& this.frontBlockArray[pos.y + 1][pos.x] != null && this.frontBlockArray[pos.y + 1][pos.x][3] == 0
-        //&& this.frontBlockArray[pos.y + 1][pos.x + 1] != null && this.frontBlockArray[pos.y + 1][pos.x + 1][3] == 0
-      )
+      else if (numB == 4)
       {
-        console.log("C");
-        return (1);
-      }
+        console.log("BEFOREBUG6");
+        if (this.frontBlockArray[pos.y][pos.x] != null && this.frontBlockArray[pos.y][pos.x][3] == 0
+          && this.frontBlockArray[pos.y][pos.x + 1] != null && this.frontBlockArray[pos.y][pos.x + 1][3] == 0
+          && this.frontBlockArray[pos.y - 1][pos.x] != null && this.frontBlockArray[pos.y - 1][pos.x][3] == 0
+          && this.frontBlockArray[pos.y - 1][pos.x + 1] != null && this.frontBlockArray[pos.y - 1][pos.x + 1][3] == 0
+        )
+        {
+          console.log("C");
+          return (1);
+        }
 
+      }
     }
     console.log("D");
     return (0);
