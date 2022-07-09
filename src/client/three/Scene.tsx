@@ -25,6 +25,7 @@ export default class Scene extends React.Component {
     document.addEventListener("keydown", this.onDocumentKeyDown, true);
     document.addEventListener("keyup", this.onDocumentKeyUp, true);
     document.addEventListener("wheel", this.onMouseWheel, true);
+    document.addEventListener("contextmenu", function (e){e.preventDefault()}, false);
   }
 
   componentDidUpdate(prevProps: any, prevState: any) {
@@ -40,6 +41,7 @@ export default class Scene extends React.Component {
     document.removeEventListener("keydown", this.onDocumentKeyDown);
     document.removeEventListener("keyup", this.onDocumentKeyUp);
     document.removeEventListener("wheel", this.onMouseWheel);
+    document.removeEventListener("contextmenu", function (e){e.preventDefault()});
   }
 
   // ******************* EVENT LISTENERS ******************* //

@@ -28,7 +28,9 @@ export default class ViewGL
   private placementActive: number = 0;
 
   private mouse: THREE.Vector2;
-  private mousePressed: number;
+  private mouseRightPressed: number;
+  private mouseLeftPressed: number;
+  private mouseMiddlePressed: number;
   private mouseMove: THREE.Vector2;
   private tempMousePos: THREE.Vector2;
   private mouseWheel: number;
@@ -68,7 +70,9 @@ export default class ViewGL
     this.scene = new THREE.Scene();
     this.scene.name = "theScene";
     this.mouse = new THREE.Vector2;
-    this.mousePressed = 0;
+    this.mouseRightPressed = 0;
+    this.mouseLeftPressed = 0;
+    this.mouseMiddlePressed = 0;
     this.mouseWheel = 0;
     this.mouseMove = new THREE.Vector2;
     this.tempMousePos = new THREE.Vector2;
@@ -232,7 +236,7 @@ export default class ViewGL
   mouseControls = () =>
   {
 
-    if (this.mousePressed == 1)
+    if (this.mouseRightPressed == 1)
     {
       this.mouseMove.x = 0;
       this.mouseMove.y = 0;
@@ -351,7 +355,7 @@ export default class ViewGL
   {
     if (numB == 1)
     {
-      if (this.frontBlockArray[pos.y][pos.x][3] == 0)
+      if (this.frontBlockArray[pos.y][pos.x][3] != null && this.frontBlockArray[pos.y][pos.x][3] == 0)
       {
         console.log("A");
         return (1);
@@ -359,7 +363,7 @@ export default class ViewGL
     }
     else if (numB == 2)
     {
-      if (this.frontBlockArray[pos.y][pos.x][3] == 0
+      if (this.frontBlockArray[pos.y][pos.x][3] != null && this.frontBlockArray[pos.y][pos.x][3] == 0
         && this.frontBlockArray[pos.y][pos.x + 1] != null && this.frontBlockArray[pos.y][pos.x + 1][3] == 0)
       {
         console.log("B");
@@ -368,7 +372,8 @@ export default class ViewGL
     }
     else if (numB == 4)
     {
-      if (this.frontBlockArray[pos.y][pos.x][3] == 0
+      console.log("BEFOREBUG6");
+      if (this.frontBlockArray[pos.y][pos.x][3] != null && this.frontBlockArray[pos.y][pos.x][3] == 0
         && this.frontBlockArray[pos.y][pos.x + 1] != null && this.frontBlockArray[pos.y][pos.x + 1][3] == 0
         && this.frontBlockArray[pos.y + 1][pos.x] != null && this.frontBlockArray[pos.y + 1][pos.x][3] == 0
         && this.frontBlockArray[pos.y + 1][pos.x + 1] != null && this.frontBlockArray[pos.y + 1][pos.x + 1][3] == 0)
@@ -457,13 +462,15 @@ export default class ViewGL
 
   updateTempBuildMesh = () =>
   {
+    console.log("BEFOREBUG3");
     if (this.tempBuildMeshUpdate == 1)
     {
       var   spaceValid = 0;
 
-      this.tempBuildMesh.position.x = this.currBlockPos.x - 0.5; // - 0.5 = CENTER OF BLOCK
-      this.tempBuildMesh.position.z = this.currBlockPos.y - 0.5;
+      this.tempBuildMesh.position.x = this.currBlockPos.x + 0.5; // + 0.5 = CENTER OF BLOCK
+      this.tempBuildMesh.position.z = this.currBlockPos.y + 0.5;
 
+      console.log("BEFOREBUG4");
       if (this.checkFree(this.currBlockPos, this.tempBuildMeshSize) == 1)
       {
         spaceValid = 1;
@@ -488,7 +495,9 @@ export default class ViewGL
         }
       }
 
-      if (this.keyMap['KeyW'] == true && spaceValid == 1 && this.placementActive == 1) // NEED TO DO IT WITH RIGHT CLICK
+      console.log("BEFOREBUG1");
+
+      if (this.mouseLeftPressed == 1 && spaceValid == 1 && this.placementActive == 1) // NEED TO DO IT WITH RIGHT CLICK
       {
         var pos = new THREE.Vector2;
         pos.x = this.tempBuildMesh.position.x;
@@ -496,19 +505,20 @@ export default class ViewGL
 
         this.tempBuildMeshUpdate = 0;
 
-        console.log("H_W");
+        console.log("H_ClickLeft");
         this.createObject(pos, this.tempBuildMeshSize, this.UbuildingIDs + 1, this.tempBuildMeshType,
           this.tempBuildMeshProgress, this.normalText);
         this.deleteObject(this.tempBuildMeshName);
         this.placementActive = 0;
       }
-      if (this.keyMap['KeyQ'] == true && this.placementActive == 1) // NEED TO TEST THE KEY
+      if (this.mouseMiddlePressed == 1 && this.placementActive == 1) // NEED TO TEST THE KEY
       {
-        console.log("I_ESC");
+        console.log("I_ClickMiddle");
         this.tempBuildMeshUpdate = 0;
         this.deleteObject(this.tempBuildMeshName);
         this.placementActive = 0;
       }
+      console.log("BEFOREBUG2");
     }
   }
 
@@ -558,9 +568,9 @@ export default class ViewGL
 
     var newObjectMesh = new THREE.Mesh(newObject, matObj);
     newObjectMesh.name = name.toString();
-    newObjectMesh.position.x = pos.x + 0.5;
+    newObjectMesh.position.x = pos.x;// + 0.5;
     newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
-    newObjectMesh.position.z = pos.y + 0.5;
+    newObjectMesh.position.z = pos.y;// + 0.5;
     this.scene.add(newObjectMesh);
   }
 
@@ -634,15 +644,42 @@ export default class ViewGL
 
   onDocumentMouseDown = (event: any) =>
   {
-    event.button[1];
-    console.log("mousePressed", true);
-    this.mousePressed = 1;
+    console.log("eventON", event.button);
+    if (event.button == 2)
+    {
+      console.log("mouseRightPressed", true);
+      this.mouseRightPressed = 1;
+    }
+    if (event.button == 0)
+    {
+      console.log("mouseLeftPressed", true);
+      this.mouseLeftPressed = 1;
+    }
+    if (event.button == 1)
+    {
+      console.log("mouseMiddlePressed", true);
+      this.mouseMiddlePressed = 1;
+    }
   };
 
   onDocumentMouseUp = (event: any) =>
   {
-    console.log("mousePressed", false);
-    this.mousePressed = 0;
+    console.log("eventOFF", event.button);
+    if (event.button == 2)
+    {
+      console.log("mouseRightPressed", false);
+      this.mouseRightPressed = 0;
+    }
+    if (event.button == 0)
+    {
+      console.log("mouseLeftPressed", false);
+      this.mouseLeftPressed = 0;
+    }
+    if (event.button == 1)
+    {
+      console.log("mouseMiddlePressed", false);
+      this.mouseMiddlePressed = 0;
+    }
   };
 
   onMouseWheel = (event: any) =>
@@ -660,7 +697,7 @@ export default class ViewGL
     else if (event.deltaY < 0)
     {
         this.mouseWheel = 1;
-        if (this.camera.position.y < 180)
+        if (this.camera.position.y < 300)
         {
           this.camera.position.y += 15;
         }
