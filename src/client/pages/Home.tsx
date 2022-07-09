@@ -84,14 +84,7 @@ export default function Home() {
 
   return (
     <>
-      <MenuBar />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-
-      <p>balance {BalanceNFTValue && BalanceNFTValue.NFTbalance}</p>
+      <p>balance NFT: {BalanceNFTValue && BalanceNFTValue.NFTbalance}</p>
 
       {account && (
         <div>
@@ -105,7 +98,7 @@ export default function Home() {
         </div>
       )}
       <div>
-        <h2>Liste of Maps</h2>
+        {/* <h2>Liste of Maps</h2> */}
         <div className="p-5 grid md:grid-cols-2">
           <div className="p-5">
             <div className="max-w-lg rounded overflow-hidden shadow-lg">
