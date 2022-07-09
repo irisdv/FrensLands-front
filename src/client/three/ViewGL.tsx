@@ -41,7 +41,8 @@ export default class ViewGL
   private currRayPos = new THREE.Vector3;
   private currBlockPos = new THREE.Vector2;
   private selectedObj = new THREE.Vector2;
-  private objectSelected : number = 0;
+  private objectSelected: number = 0;
+  private objectPopupOpen: number = 0;
 
   private greenText = "Matchbox_Tiles_Objects_GreenVersion";
   private redText = "Matchbox_Tiles_Objects_RedVersion";
@@ -523,6 +524,12 @@ export default class ViewGL
         this.normalText, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][4]);
 
       this.selectedObj = new THREE.Vector2(0, 0);
+    }
+
+    if (this.objectSelected == 1 && this.mouseLeftPressed == 1)
+    {
+      this.debugPrint(1, "OBJECT POPUP OPEN");
+      this.objectPopupOpen = 1;
     }
   }
 
