@@ -131,16 +131,16 @@ export default class ViewGL
     this.frontBlockArray = [];
     this.validatedBlockArray = [];
 
-    var indexI = 0;
-    var indexJ = 0;
+    var indexI = 1;
+    var indexJ = 1;
     i = 0;
 
-    while (indexI < 16)
+    while (indexI < 17)
     {
       this.validatedBlockArray[indexI] = [];
       this.frontBlockArray[indexI] = [];
 
-      while (indexJ < 40)
+      while (indexJ < 41)
       {
         this.validatedBlockArray[indexI][indexJ] = decompose(this.compArray[i]);
 
@@ -151,7 +151,7 @@ export default class ViewGL
         indexJ++;
         i++;
       }
-      indexJ = 0;
+      indexJ = 1;
       indexI++;
     }
 
@@ -373,10 +373,11 @@ export default class ViewGL
     else if (numB == 4)
     {
       console.log("BEFOREBUG6");
-      if (this.frontBlockArray[pos.y][pos.x][3] != null && this.frontBlockArray[pos.y][pos.x][3] == 0
-        && this.frontBlockArray[pos.y][pos.x + 1] != null && this.frontBlockArray[pos.y][pos.x + 1][3] == 0
-        && this.frontBlockArray[pos.y + 1][pos.x] != null && this.frontBlockArray[pos.y + 1][pos.x][3] == 0
-        && this.frontBlockArray[pos.y + 1][pos.x + 1] != null && this.frontBlockArray[pos.y + 1][pos.x + 1][3] == 0)
+      if (this.frontBlockArray[pos.y][pos.x] != null //&& this.frontBlockArray[pos.y][pos.x][3] == 0
+        //&& this.frontBlockArray[pos.y][pos.x + 1] != null && this.frontBlockArray[pos.y][pos.x + 1][3] == 0
+        //&& this.frontBlockArray[pos.y + 1][pos.x] != null && this.frontBlockArray[pos.y + 1][pos.x][3] == 0
+        //&& this.frontBlockArray[pos.y + 1][pos.x + 1] != null && this.frontBlockArray[pos.y + 1][pos.x + 1][3] == 0
+      )
       {
         console.log("C");
         return (1);
@@ -469,9 +470,14 @@ export default class ViewGL
 
       this.tempBuildMesh.position.x = this.currBlockPos.x + 0.5; // + 0.5 = CENTER OF BLOCK
       this.tempBuildMesh.position.z = this.currBlockPos.y + 0.5;
+      var blockRightPos = new THREE.Vector2;
+      blockRightPos.x = this.currBlockPos.x;
+      blockRightPos.y = this.currBlockPos.y;
+
+      console.log("blockRightPos",blockRightPos);
 
       console.log("BEFOREBUG4");
-      if (this.checkFree(this.currBlockPos, this.tempBuildMeshSize) == 1)
+      if (this.checkFree(blockRightPos, this.tempBuildMeshSize) == 1)
       {
         spaceValid = 1;
         console.log("F_GREEN1");
@@ -483,7 +489,7 @@ export default class ViewGL
             this.tempBuildMeshType, this.tempBuildMeshProgress, this.greenText);
         }
       }
-      else if (this.checkFree(this.currBlockPos, this.tempBuildMeshSize) == 0)
+      else if (this.checkFree(blockRightPos, this.tempBuildMeshSize) == 0)
       {
         console.log("G_RED1");
         if (this.tempBuildMeshTextName != this.redText)
