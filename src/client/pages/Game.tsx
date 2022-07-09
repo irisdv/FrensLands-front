@@ -36,6 +36,16 @@ export default function Game() {
   }, [counterBuildingsResult]);
 
   return (
-    <>{render ? <Scene {...useGameContext()} /> : <p>Loading socket</p>}</>
+    <>
+      {render ? (
+        <>
+          <div className="relative">
+            <Scene {...useGameContext()} />
+          </div>
+        </>
+      ) : (
+        <p>Loading socket</p>
+      )}
+    </>
   );
 }
