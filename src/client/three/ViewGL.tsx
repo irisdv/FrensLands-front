@@ -654,6 +654,10 @@ export default class ViewGL
     newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
     newObjectMesh.position.z = pos.y;// + 0.5;
     this.scene.add(newObjectMesh);
+    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][3] = type;
+    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][0] = pos.x - 0.5;
+    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][1] = pos.y - 0.5;
+    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][4] = name;
   }
 
   // REPLACE GEOMETRY AND MESH ON TERRAIN
@@ -712,6 +716,10 @@ export default class ViewGL
     newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
     newObjectMesh.position.z = pos.y + 0.5;
     this.scene.add(newObjectMesh);
+    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][3] = type;
+    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][0] = pos.x - 0.5;
+    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][1] = pos.y - 0.5;
+    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][4] = name;
   }
 
   // DELETE FORMER OBJECT IN SCENE USING NAME OR POS
