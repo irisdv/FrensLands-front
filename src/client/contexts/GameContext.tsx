@@ -19,17 +19,6 @@ import { useResourcesContract } from "../hooks/resources";
 import { useFrensCoinsContract } from "../hooks/frenscoins";
 import { useERC1155Contract } from "../hooks/erc1155";
 
-export interface IResources {
-  energy: number;
-  frensCoins: number;
-  wood: number;
-  rock: number;
-  meat: number;
-  cereal: number;
-  metal: number;
-  coal: number;
-}
-
 export interface IGameState {
   address?: string | undefined;
   tokenId?: string;
@@ -42,7 +31,10 @@ export interface IGameState {
   meat?: number;
   cereal?: number;
   metal?: number;
+  populationBusy?: number;
+  populationFree?: number;
   coal?: number;
+  lastBlockNumber?: string;
   updateBuildings: (t: number) => void;
   setAddress: (addr: string) => void;
   updateTokenId: (id: string) => void;
@@ -65,6 +57,10 @@ export const GameState: IGameState = {
   cereal: 0,
   metal: 0,
   coal: 0,
+  populationBusy: 0,
+  populationFree: 0,
+  lastBlockNumber: "",
+  // startBlockNumber: "", // start_block_(tokenId)
   updateBuildings: () => {},
   setAddress: () => {},
   updateTokenId: () => {},
@@ -120,6 +116,27 @@ interface SetFrensCoins {
   frensCoins?: number;
 }
 
+interface SetERC1155Resources {
+  type: "set_erc1155Res";
+  wood?: number;
+  rock?: number;
+  meat?: number,
+  cereal?: number,
+  metal?: number,
+  coal?: number,
+}
+
+interface SetLastBlock {
+  type: "set_lastBlock";
+  lastBlockNumber?: string;
+}
+
+interface SetPopulation {
+  type: "set_population";
+  populationBusy?: number;
+  populationFree?: number
+}
+
 type Action =
   | SetAccount
   | SetTokenId
@@ -129,6 +146,9 @@ type Action =
   | SetShowFrame
   | SetEnergy
   | SetFrensCoins
+  | SetERC1155Resources
+  | SetLastBlock
+  | SetPopulation
   | SetError;
 
 function reducer(state: IGameState, action: Action): IGameState {
@@ -156,6 +176,25 @@ function reducer(state: IGameState, action: Action): IGameState {
     }
     case "set_frensCoins": {
       return { ...state, frensCoins: action.frensCoins };
+    }
+    case "set_population": {
+      return { ...state, 
+        populationBusy: action.populationBusy, 
+        populationFree: action.populationFree 
+      };
+    }
+    case "set_erc1155Res": {
+      return { ...state, 
+          wood: action.wood,
+          rock: action.rock,
+          meat: action.meat,
+          cereal: action.cereal,
+          metal: action.metal,
+          coal: action.coal,
+        };
+    }
+    case "set_lastBlock": {
+      return { ...state, lastBlockNumber: action.lastBlockNumber };
     }
     case "set_error": {
       throw new Error(`Unhandled action type: ${action.type}`);
@@ -241,55 +280,116 @@ export const AppStateProvider: React.FC<
           }
         }, 0);
       }
-  if (starknet && coins 
+      if (starknet && coins 
         // DEBUG
       // && state.tokenId
       ) {
-    setTimeout(async () => {
+      setTimeout(async () => {
+        // DEBUG address of owner to replace : account
+        let _frensCoinsBalance : any;
+        try {
+          _frensCoinsBalance = await coins.call("balanceOf", [
+            "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
+          ]);
+          var elem = toBN(_frensCoinsBalance)
+          var newBalance = elem.toNumber()
+          console.log('newBalance', newBalance)
+          dispatch({
+            type: "set_frensCoins",
+            frensCoins: newBalance as number
+          });
+        } catch (e) {
+          console.warn("Error when retrieving get_energy_level in M02_Resources");
+          console.warn(e);
+        }
+      }, 0);
+    }
+      if (starknet && erc1155 
+        // DEBUG
+        // && state.tokenId
+        ) {
+      setTimeout(async () => {
       // DEBUG address of owner to replace : account
-      let _frensCoinsBalance : any;
+        let _erc1155Balance : any;
+        try {
+          _erc1155Balance = await erc1155.call("balanceOfBatch", [
+            [
+              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
+              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a", 
+              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a", 
+              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a", 
+              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
+              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
+              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
+              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a"
+            ],
+            [uint256.bnToUint256(0), uint256.bnToUint256(1), uint256.bnToUint256(2), uint256.bnToUint256(3), uint256.bnToUint256(5), uint256.bnToUint256(6), uint256.bnToUint256(8)]
+          ]);
+          console.log('_erc1155Balance', toBN(_erc1155Balance[0]).toNumber())
+          var elem = toBN(_erc1155Balance)
+          var newBalance = elem.toNumber()
+          console.log('newBalance', newBalance)
+          dispatch({
+            type: "set_erc1155Res",
+            wood: toBN(_erc1155Balance[1]).toNumber(),
+            rock: toBN(_erc1155Balance[2]).toNumber(),
+            meat: toBN(_erc1155Balance[3]).toNumber(),
+            cereal: toBN(_erc1155Balance[5]).toNumber(),
+            metal: toBN(_erc1155Balance[6]).toNumber(),
+            coal: toBN(_erc1155Balance[8]).toNumber(),
+          });
+        } catch (e) {
+          console.warn("Error when retrieving resources ");
+          console.warn(e);
+        }
+      }, 0);
+    }
+  if (starknet && resources 
+    // DEBUG
+    // && state.tokenId
+    ) {
+      setTimeout(async () => {
+      // DEBUG TokenId
+      let _lastestBlock : any;
       try {
-        _frensCoinsBalance = await coins.call("balanceOf", [
-          "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
+        _lastestBlock = await resources.call("get_latest_block", [
+          uint256.bnToUint256(0)
         ]);
-        var elem = toBN(_frensCoinsBalance)
-        var newBalance = elem.toNumber()
-        console.log('newBalance', newBalance)
+        console.log('_lastestBlock', _lastestBlock)
         dispatch({
-          type: "set_frensCoins",
-          frensCoins: newBalance as number
+          type: "set_lastBlock",
+          lastBlockNumber: toBN(_lastestBlock).toString()
         });
       } catch (e) {
-        console.warn("Error when retrieving get_energy_level in M02_Resources");
+        console.warn("Error when retrieving get_latest_block in M02_Resources");
         console.warn(e);
       }
     }, 0);
   }
-  if (starknet && coins 
+  if (starknet && resources 
     // DEBUG
     // && state.tokenId
     ) {
-  setTimeout(async () => {
-  // DEBUG address of owner to replace : account
-    let _erc1155Balance : any;
-    try {
-      _erc1155Balance = await coins.call("balanceOf", [
-        "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
-      ]);
-      var elem = toBN(_frensCoinsBalance)
-      var newBalance = elem.toNumber()
-      console.log('newBalance', newBalance)
-      dispatch({
-        type: "set_frensCoins",
-        frensCoins: newBalance as number
-      });
-    } catch (e) {
-      console.warn("Error when retrieving get_energy_level in M02_Resources");
-      console.warn(e);
-    }
-  }, 0);
-}
-  }, [state.mapArray, state.energy, state.frensCoins, state.]);
+      setTimeout(async () => {
+      // DEBUG TokenId
+      let _newPopulation : any;
+      try {
+        _newPopulation = await resources.call("get_population", [
+          uint256.bnToUint256(1)
+        ]);
+        console.log('_newPopulation', _newPopulation)
+        dispatch({
+          type: "set_population",
+          populationBusy: toBN(_newPopulation[1]).toNumber(),
+          populationFree: toBN(_newPopulation[0]).toNumber()
+        });
+      } catch (e) {
+        console.warn("Error when retrieving get_population in M02_Resources");
+        console.warn(e);
+      }
+    }, 0);
+  }
+  }, [state.tokenId, state.mapArray, state.energy, state.frensCoins, state.wood, state.lastBlockNumber]);
 
   const updateBuildings = React.useCallback((t: number) => {
     dispatch({
@@ -352,7 +452,10 @@ export const AppStateProvider: React.FC<
         meat: state.meat,
         cereal: state.cereal,
         metal: state.metal,
+        populationBusy: state.populationBusy,
+        populationFree: state.populationFree,
         coal: state.coal,
+        lastBlockNumber: state.lastBlockNumber,
         frameData: state.frameData,
         showFrame: state.showFrame,
         updateBuildings,
@@ -361,19 +464,10 @@ export const AppStateProvider: React.FC<
         updateBuildingFrame,
       }}
     >
-      {/* <DispatchContext.Provider value={dispatch}> */}
       {props.children}
-      {/* </DispatchContext.Provider> */}
     </StateContext.Provider>
   );
 };
-
-// export const useDispatch = () => {
-//   const context = React.useContext(DispatchContext);
-//   if (context === undefined) {
-//     throw new Error("useDispatch must be used within a DispatchProvider");
-//   }
-// };
 
 export default StateContext;
 

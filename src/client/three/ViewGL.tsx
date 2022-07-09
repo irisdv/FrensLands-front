@@ -38,7 +38,7 @@ export default class ViewGL
   private raycaster = new THREE.Raycaster();
   private currRayPos = new THREE.Vector3;
   private currBlockPos = new THREE.Vector2;
-  private selectedObj = new THREE.Vector2;
+  private selectedObj : THREE.Vector2 = new THREE.Vector2;
 
   private greenText = "Matchbox_Tiles_Objects_GreenVersion";
   private redText = "Matchbox_Tiles_Objects_RedVersion";
@@ -57,6 +57,7 @@ export default class ViewGL
 
   private timeClick = 1;
   private tempTime = Date.now();
+  private tempTime2 = Date.now();
 
 
   // *********************** DEBUG/TEST *********************** //
@@ -410,7 +411,8 @@ export default class ViewGL
       pos.x = this.currBlockPos.x;
       pos.y = this.currBlockPos.y;
 
-      if (this.frontBlockArray && this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x] != null &&
+      if (this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x] != null &&
+        this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != null &&
         this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != 0)
       {
         console.log("SELECTION OF ", this.frontBlockArray[pos.y][pos.x][4]);
@@ -421,9 +423,12 @@ export default class ViewGL
 
         this.selectedObj = pos;
       }
-      console.log('this.selectedObj', this.selectedObj)
-      if (this.selectedObj.x != this.currRayPos.x || this.selectedObj.y != this.currRayPos.y)
+      if (this.selectedObj != null && this.selectedObj.x != 0 && this.selectedObj.y != 0 &&
+          this.selectedObj.x != this.currBlockPos.x || this.selectedObj.y != this.currBlockPos.y &&
+          this.frontBlockArray[pos.y][pos.x] != null && this.frontBlockArray[pos.y][pos.x][3] != 0)
       {
+        this.selectedObj = new THREE.Vector2(0, 0);
+
         this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
           this.frontBlockArray[pos.y][pos.x][4],
           this.frontBlockArray[pos.y][pos.x][3], 1, this.normalText);
@@ -900,9 +905,10 @@ export default class ViewGL
 
     this.updateTempBuildMesh();
 
-    if (this.placementActive == 0)
+    if (this.placementActive == 0 && time - this.tempTime2 > 100)
     {
       this.selectObject();
+      this.tempTime2 = Date.now();
     }
     // this.stats.update();
     this.renderer.render(this.scene, this.camera);

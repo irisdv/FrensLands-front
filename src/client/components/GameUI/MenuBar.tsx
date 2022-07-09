@@ -1,16 +1,16 @@
-import { useStarknet, useStarknetCall } from "@starknet-react/core";
+import { useStarknet, useStarknetCall, useStarknetBlock } from "@starknet-react/core";
 import React, { useMemo, useState, useRef, useEffect } from "react";
-import { useBuildingsContract } from "../../hooks/buildings";
+// import { useBuildingsContract } from "../../hooks/buildings";
 import { number, uint256 } from "starknet";
 import { toBN } from "starknet/dist/utils/number";
 import { useGameContext } from "../../hooks/useGameContext";
+import { useResourcesContract } from "../../hooks/resources";
 
 export function MenuBar() {
-  // if (account) {
-  const {} = useGameContext();
-  // // }
+  const {frensCoins, wood, rock, meat, metal, coal, cereal, energy, populationBusy, populationFree, lastBlockNumber} = useGameContext();
   //   const [watch, setWatch] = useState(true);
-  //   const { contract: building } = useBuildingsContract();
+    const { contract: resources } = useResourcesContract();
+
 
   //   const { data: counterBuildingsResult } = useStarknetCall({
   //     contract: building,
@@ -34,6 +34,10 @@ export function MenuBar() {
   // Choper les ressources pour chaque Resources ID
   // Donc ID allant de 1 à 5
 
+  const claimResources = () => {
+    console.log('claimingResources');
+  }
+
   //   Gestion du block Number
 
   return (
@@ -55,7 +59,7 @@ export function MenuBar() {
                 className="flex items-center fontHPxl pb-1 menuItems pixelated"
                 style={{ marginTop: "-2px" }}
               >
-                100
+                {energy ? energy : 0}
               </div>
             </div>
             <div
@@ -67,93 +71,64 @@ export function MenuBar() {
                 className="flex items-center fontHPxl pb-1 menuItems pixelated"
                 style={{ marginTop: "-2px" }}
               >
-                100
+                {wood ? wood : 0}
               </div>
             </div>
-            <div
-              className="flex jutify-center relative"
-              style={{ marginTop: "-13px" }}
-            >
+            <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
               <div id="menuRock" className="pixelated"></div>
-              <div
-                className="flex items-center fontHPxl pb-1 menuItems pixelated"
-                style={{ marginTop: "-2px" }}
-              >
-                100
+              <div className="flex items-center fontHPxl pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
+                {rock ? rock : 0}
               </div>
             </div>
-            <div
-              className="flex jutify-center relative"
-              style={{ marginTop: "-13px" }}
-            >
+            <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
               <div id="menuMetal" className="pixelated"></div>
-              <div
-                className="flex items-center fontHPxl pb-1 menuItems pixelated"
-                style={{ marginTop: "-2px" }}
-              >
-                100
+              <div className="flex items-center fontHPxl pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
+                {metal ? metal : 0}
               </div>
             </div>
-            <div
-              className="flex jutify-center relative"
-              style={{ marginTop: "-13px" }}
-            >
+            <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
               <div id="menuCoal" className="pixelated"></div>
-              <div
-                className="flex items-center fontHPxl pb-1 menuItems pixelated"
-                style={{ marginTop: "-2px" }}
-              >
-                100
+              <div className="flex items-center fontHPxl pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
+                {coal ? coal : 0}
               </div>
             </div>
-            <div
-              className="flex jutify-center relative"
-              style={{ marginTop: "-13px" }}
-            >
+            <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
               <div id="menuPop" className="pixelated"></div>
-              <div
-                className="flex items-center fontHPxl pb-1 menuItems pixelated"
-                style={{ marginTop: "-2px" }}
-              >
-                100
+              <div className="flex items-center fontHPxl pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
+              {populationBusy ? populationBusy : 0}
               </div>
             </div>
-            <div
-              className="flex jutify-center relative"
-              style={{ marginTop: "-13px" }}
-            >
+            <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
+              <div id="menuPopFree" className="pixelated"></div>
+              <div className="flex items-center fontHPxl pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
+                {populationFree ? populationFree : 0}
+              </div>
+            </div>
+            <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
               <div id="menuMeat" className="pixelated"></div>
-              <div
-                className="flex items-center fontHPxl pb-1 menuItems pixelated"
-                style={{ marginTop: "-2px" }}
-              >
-                100
+              <div className="flex items-center fontHPxl pb-1 menuItems pixelated"  style={{ marginTop: "-2px" }}>
+                {meat ? meat : 0}
               </div>
             </div>
-            <div
-              className="flex jutify-center relative"
-              style={{ marginTop: "-13px" }}
-            >
+            <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
               <div id="menuCereal" className="pixelated"></div>
-              <div
-                className="flex items-center fontHPxl pb-1 menuItems pixelated"
-                style={{ marginTop: "-2px" }}
-              >
-                100
+              <div className="flex items-center fontHPxl pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
+                {cereal ? cereal : 0}
               </div>
             </div>
-            <div
-              className="flex jutify-center relative"
-              style={{ marginTop: "-13px" }}
-            >
+            <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
               <div id="menuEnergy" className="pixelated"></div>
-              <div
-                className="flex items-center fontHPxl pb-1 menuItems pixelated"
-                style={{ marginTop: "-2px" }}
-              >
-                100
+              <div className="flex items-center fontHPxl pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
+                {energy ? energy : 0}
               </div>
             </div>
+            <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
+              <div className="btnUpgrade" onClick={() => claimResources()}></div>
+            </div>
+            <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
+              Expected wait time 
+            </div>
+            
           </div>
           <div className="btnRight pixelated"></div>
         </div>

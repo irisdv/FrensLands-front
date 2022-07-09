@@ -134,6 +134,14 @@ body {
     background-position:calc(15 * 1 * 64px) calc(18 * 1 * 64px);
     background-size:calc(1280px * 1) calc(1280px * 1);
 }
+#menuPopFree {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(15 * 1 * 64px) calc(19 * 1 * 64px);
+    background-size:calc(1280px * 1) calc(1280px * 1);
+}
 #menuMeat {
     display:inline-block;
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
@@ -206,7 +214,7 @@ body {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
     width:calc(64px * 2);
-    background-position:calc(22 * 1 * 64px) calc(8 * 1 * 64px);
+    background-position:calc(20 * 1 * 64px) calc(16 * 1 * 64px);
     background-size:calc(1280px * 1) calc(1280px * 1);
 }
 .btnUpgrade:active {
@@ -214,7 +222,7 @@ body {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
     width:calc(64px * 2);
-    background-position:calc(22 * 1 * 64px) calc(7 * 1 * 64px);
+    background-position:calc(20 * 1 * 64px) calc(15 * 1 * 64px);
     background-size:calc(1280px * 1) calc(1280px * 1);
 }
 
@@ -223,7 +231,7 @@ body {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
     width:calc(64px * 2);
-    background-position:calc(20 * 1 * 64px) calc(8 * 1 * 64px);
+    background-position:calc(18 * 1 * 64px) calc(16 * 1 * 64px);
     background-size:calc(1280px * 1) calc(1280px * 1);
 }
 .btnUpgradeRed:active {
@@ -231,7 +239,7 @@ body {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
     width:calc(64px * 2);
-    background-position:calc(20 * 1 * 64px) calc(7 * 1 * 64px);
+    background-position:calc(18 * 1 * 64px) calc(15 * 1 * 64px);
     background-size:calc(1280px * 1) calc(1280px * 1);
 }
 
