@@ -62,6 +62,8 @@ export default class ViewGL
 
   private debugMode = 1;
 
+  private typeTest = 1;
+
   // *********************** DEBUG/TEST *********************** //
 
 
@@ -124,9 +126,9 @@ export default class ViewGL
 
     while (y >= 0)
     {
+      this.textArrRef[y] = [];
       while (x < 16)
       {
-        this.textArrRef[y] = [];
         this.textArrRef[y][x] = value;
         this.debugPrint(1, "textArrRef");
         this.debugPrint(1,"y = ",y);
@@ -504,7 +506,7 @@ export default class ViewGL
     });
 
     var textureType : any = new THREE.Vector2;
-    textureType = this.findTextByID(32);
+    textureType = this.findTextByID(type);
 
     if (matObj.map)
     {
@@ -525,7 +527,7 @@ export default class ViewGL
     this.tempBuildMeshName = name;
     //this.tempBuildMesh = null;
     this.tempBuildMeshUpdate = 1;
-    this.debugPrint(2, "E_CREATE_TEMPFINDSPACE_FUNC");
+    this.debugPrint(1, "E_CREATE_TEMPFINDSPACE_FUNC");
 
     this.tempBuildMesh = new THREE.Mesh(newObject, matObj);
     this.tempBuildMesh.name = name.toString();
@@ -535,6 +537,8 @@ export default class ViewGL
     this.scene.add(this.tempBuildMesh);
   }
 
+  // UPDATE THE MESH THAT FOLLOWS THE CURSOR WHEN PLACING OBJECT
+  // AND CHANGE TEXTURE IF SPACE FREE OR NOT
   updateTempBuildMesh = () =>
   {
     if (this.tempBuildMeshUpdate == 1)
@@ -630,16 +634,19 @@ export default class ViewGL
       // shading: 2
     });
 
+    var textureType : any = new THREE.Vector2;
+    textureType = this.findTextByID(type);
+
     if (matObj.map)
     {
       matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625); // TEXTURE TILLING ADAPTED TO BUILDING TILES
-      //matObj.map.offset.set(0.00, 0.00); // POSITION OF BUILDING ON TEXTURE
-      matObj.map.offset.set((4 * (1 / 16)), (4 * (1 / 16))); //TEMPORARY
+      //matObj.map.offset.set((4 * (1 / 16)), (4 * (1 / 16))); //TEMPORARY
+      matObj.map.offset.set(textureType.x, textureType.y);
       matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
       matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
       matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
     }
-    this.debugPrint(2, "G_CREATEOBJ_FUNC");
+    this.debugPrint(1, "G_CREATEOBJ_FUNC");
 
     var newObjectMesh = new THREE.Mesh(newObject, matObj);
     newObjectMesh.name = name.toString();
@@ -685,13 +692,19 @@ export default class ViewGL
       // shading: 2
     });
 
+    var textureType : any = new THREE.Vector2;
+    textureType = this.findTextByID(type);
+
     if (matObj.map)
     {
-      matObj.map.repeat = new THREE.Vector2(1, 1); // TEXTURE TILLING
+      matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625); // TEXTURE TILLING ADAPTED TO BUILDING TILES
+      //matObj.map.offset.set((4 * (1 / 16)), (4 * (1 / 16))); //TEMPORARY
+      matObj.map.offset.set(textureType.x, textureType.y);
       matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
       matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
       matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
     }
+    this.debugPrint(1, "G_REPLACEOBJ_FUNC");
 
     var newObjectMesh = new THREE.Mesh(newObject, matObj);
     newObjectMesh.name = name.toString();
@@ -822,7 +835,8 @@ export default class ViewGL
     if (this.keyMap['Space'] == true && this.timeClick == 1 && this.placementActive == 0)
     {
       this.placementActive = 1;
-      this.createObject_FindSpace(4, 9898, 1, 1, this.redText);
+      this.createObject_FindSpace(4, 9898, this.typeTest, 1, this.redText);
+      this.typeTest++;
     }
 
     if (this.keyMap['KeyD'] == true && this.timeClick == 1) // NOT WORKING !
