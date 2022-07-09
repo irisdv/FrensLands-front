@@ -60,7 +60,7 @@ export default class ViewGL
 
   // *********************** DEBUG/TEST *********************** //
 
-  private debugMode = 2;
+  private debugMode = 1;
 
 
   // *********************** DEBUG/TEST *********************** //
@@ -781,15 +781,16 @@ export default class ViewGL
       this.createObject_FindSpace(4, 9898, 1, 1, this.redText);
     }
 
-    if (this.keyMap['keyD'] == true && this.timeClick == 1) // NOT WORKING !
+    if (this.keyMap['KeyD'] == true && this.timeClick == 1) // NOT WORKING !
     {
-      this.debugPrint(2, "DEBUG MODE CHANGED TO ", this.debugMode);
       if (this.debugMode < 2)
       {
         this.debugMode = this.debugMode + 1;
+        this.debugPrint(1, "DEBUG MODE CHANGED TO ", this.debugMode);
       }
       else
       {
+        this.debugPrint(1, "DEBUG MODE CHANGED TO 0");
         this.debugMode = 0;
       }
     }
