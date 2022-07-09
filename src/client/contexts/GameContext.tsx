@@ -15,15 +15,36 @@ import { BuildingFrame } from "../components/GameUI/BuildingFrame";
 
 import { useBuildingsContract } from "../hooks/buildings";
 import { useWorldsContract } from "../hooks/worlds";
+import { useResourcesContract } from "../hooks/resources";
+
+export interface IResources {
+  energy: number;
+  frensCoins: number;
+  wood: number;
+  rock: number;
+  meat: number;
+  cereal: number;
+  metal: number;
+  coal: number;
+}
 
 export interface IGameState {
   address?: string | undefined;
   tokenId?: string;
   buildingCount?: number;
   mapArray?: any[];
+  energy?: number;
+  frensCoins?: number;
+  wood?: number;
+  rock?: number;
+  meat?: number;
+  cereal?: number;
+  metal?: number;
+  coal?: number;
   updateBuildings: (t: number) => void;
   setAddress: (addr: string) => void;
   updateTokenId: (id: string) => void;
+  // updateResources: () => void;
   showFrame?: boolean;
   frameData?: any;
   updateBuildingFrame: (show: boolean, data: []) => void;
@@ -34,6 +55,14 @@ export const GameState: IGameState = {
   tokenId: "test",
   buildingCount: undefined,
   mapArray: [],
+  energy: 0,
+  frensCoins: 0,
+  wood: 0,
+  rock: 0,
+  meat: 0,
+  cereal: 0,
+  metal: 0,
+  coal: 0,
   updateBuildings: () => {},
   setAddress: () => {},
   updateTokenId: () => {},
@@ -80,6 +109,15 @@ interface SetShowFrame {
   showFrame?: boolean;
 }
 
+interface SetEnergy {
+  type: "set_energy";
+  energy?: number;
+}
+interface SetFrensCoins {
+  type: "set_frensCoins";
+  frensCoins?: number;
+}
+
 type Action =
   | SetAccount
   | SetTokenId
@@ -87,6 +125,8 @@ type Action =
   | SetMapArray
   | SetFrameData
   | SetShowFrame
+  | SetEnergy
+  | SetFrensCoins
   | SetError;
 
 function reducer(state: IGameState, action: Action): IGameState {
@@ -109,6 +149,12 @@ function reducer(state: IGameState, action: Action): IGameState {
     case "set_showFrame": {
       return { ...state, showFrame: action.showFrame };
     }
+    case "set_energy": {
+      return { ...state, energy: action.energy };
+    }
+    case "set_frensCoins": {
+      return { ...state, frensCoins: action.frensCoins };
+    }
     case "set_error": {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -124,6 +170,7 @@ export const AppStateProvider: React.FC<
   const [timer, setTimer] = useState(Date.now());
   const { contract: building } = useBuildingsContract();
   const { contract: worlds } = useWorldsContract();
+  const { contract: resources } = useResourcesContract();
 
   const [state, dispatch] = useReducer(reducer, GameState);
   //   const { tokenId, buildingCount, mapArray } = state;
@@ -167,6 +214,38 @@ export const AppStateProvider: React.FC<
         }
       }, 0);
     }
+    if (starknet && resources 
+            // DEBUG
+      // && state.tokenId
+      ) {
+        setTimeout(async () => {
+          // DEBUG tokenId to replace
+          let _energyLevel : any;
+          try {
+            _energyLevel = await resources.call("get_energy_level", [
+              uint256.bnToUint256(1),
+            ]);
+            var elem = toBN(_energyLevel)
+            console.log('elem', elem)
+            var newEnergy = elem.toNumber()
+
+            // elem.forEach((_map) => {
+            //   while (i < 640) {
+            //     var elem = toBN(_map[i])
+            //     _mapArray.push(elem.toString())
+            //     i++;
+            //   }
+            // })
+            dispatch({
+              type: "set_energy",
+              energy: newEnergy as number
+            });
+          } catch (e) {
+            console.warn("Error when retrieving get_energy_level in M02_Resources");
+            console.warn(e);
+          }
+        }, 0);
+      }
   }, [state.mapArray]);
 
   const updateBuildings = React.useCallback((t: number) => {
@@ -223,6 +302,14 @@ export const AppStateProvider: React.FC<
         tokenId: state.tokenId,
         buildingCount: state.buildingCount,
         mapArray: state.mapArray,
+        energy: state.energy,
+        frensCoins: state.frensCoins,
+        wood: state.wood,
+        rock: state.rock,
+        meat: state.meat,
+        cereal: state.cereal,
+        metal: state.metal,
+        coal: state.coal,
         frameData: state.frameData,
         showFrame: state.showFrame,
         updateBuildings,

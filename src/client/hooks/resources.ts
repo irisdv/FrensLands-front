@@ -3,7 +3,7 @@ import { Abi } from "starknet";
 
 import ResourcesAbi from "../abi/M02_Resources_abi.json";
 
-export function useWorldsContract() {
+export function useResourcesContract() {
   return useContract({
     abi: ResourcesAbi as Abi,
     address:
