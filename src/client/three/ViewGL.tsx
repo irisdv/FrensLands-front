@@ -25,6 +25,7 @@ export default class ViewGL
   private tempBuildMeshName: number = 0;
   private tempBuildMeshTextName = "";
   private tempBuildMeshUpdate: number = 0;
+  private placementActive: number = 0;
 
   private mouse: THREE.Vector2;
   private mousePressed: number;
@@ -36,6 +37,11 @@ export default class ViewGL
   private currRayPos = new THREE.Vector3;
   private currBlockPos = new THREE.Vector2;
 
+  private greenText = "Matchbox_Tiles_Objects_GreenVersion";
+  private redText = "Matchbox_Tiles_Objects_RedVersion";
+  private normalText = "Matchbox_Tiles_Objects";
+  private outlinedText = "Matchbox_Tiles_Objects_Outlined";
+
   private compArray: any[];
   private frontBlockArray: any[];
   private validatedBlockArray: any[];
@@ -45,13 +51,15 @@ export default class ViewGL
   private keyMap: any = [];
 
 
+  private UbuildingIDs: number = 0;
+
+  private timeClick = 1;
+  private tempTime = Date.now();
+
+
   // *********************** TEST *********************** //
 
-  private test = 1;
-
-
   // *********************** TEST *********************** //
-
 
 
   constructor(canvasRef: any)
@@ -178,7 +186,7 @@ export default class ViewGL
 
     var testPos = new THREE.Vector2(24, 7);
 
-    this.createObject(testPos, 4, 11788, 1, 1, "Matchbox_Tiles_Objects");
+    this.createObject(testPos, 4, 11788, 1, 1, this.normalText);
 
     // CALL ANIMATION LOOP
     this.update();
@@ -458,44 +466,48 @@ export default class ViewGL
 
       if (this.checkFree(this.currBlockPos, this.tempBuildMeshSize) == 1)
       {
-        if (this.tempBuildMeshTextName != "Matchbox_Tiles_Objects_GreenVersion")
+        spaceValid = 1;
+        console.log("F_GREEN1");
+        if (this.tempBuildMeshTextName != this.greenText)
         {
-          console.log("F_GREEN");
-          spaceValid = 1;
+          console.log("F_GREEN2");
           this.deleteObject(this.tempBuildMeshName);
           this.createObject_FindSpace(this.tempBuildMeshSize, this.tempBuildMeshName,
-            this.tempBuildMeshType, this.tempBuildMeshProgress, "Matchbox_Tiles_Objects_GreenVersion");
+            this.tempBuildMeshType, this.tempBuildMeshProgress, this.greenText);
         }
       }
       else if (this.checkFree(this.currBlockPos, this.tempBuildMeshSize) == 0)
       {
         console.log("G_RED1");
-        if (this.tempBuildMeshTextName != "Matchbox_Tiles_Objects_RedVersion")
+        if (this.tempBuildMeshTextName != this.redText)
         {
           console.log("G_RED2");
           this.deleteObject(this.tempBuildMeshName);
           this.createObject_FindSpace(this.tempBuildMeshSize, this.tempBuildMeshName,
-            this.tempBuildMeshType, this.tempBuildMeshProgress, "Matchbox_Tiles_Objects_RedVersion");
+            this.tempBuildMeshType, this.tempBuildMeshProgress, this.redText);
         }
       }
 
-      if (this.keyMap['KeyW'] == true && spaceValid == 1) // NEED TO DO IT WITH RIGHT CLICK
+      if (this.keyMap['KeyW'] == true && spaceValid == 1 && this.placementActive == 1) // NEED TO DO IT WITH RIGHT CLICK
       {
         var pos = new THREE.Vector2;
         pos.x = this.tempBuildMesh.position.x;
-        pos.y = this.tempBuildMesh.position.y;
+        pos.y = this.tempBuildMesh.position.z;
 
         this.tempBuildMeshUpdate = 0;
 
         console.log("H_W");
-        this.createObject(pos, this.tempBuildMeshSize, this.tempBuildMeshName, this.tempBuildMeshType,
-          this.tempBuildMeshProgress, "Matchbox_Tiles_Objects");
+        this.createObject(pos, this.tempBuildMeshSize, this.UbuildingIDs + 1, this.tempBuildMeshType,
+          this.tempBuildMeshProgress, this.normalText);
+        this.deleteObject(this.tempBuildMeshName);
+        this.placementActive = 0;
       }
-      else if (this.keyMap['KeyQ'] == true) // NEED TO TEST THE KEY
+      if (this.keyMap['KeyQ'] == true && this.placementActive == 1) // NEED TO TEST THE KEY
       {
         console.log("I_ESC");
         this.tempBuildMeshUpdate = 0;
         this.deleteObject(this.tempBuildMeshName);
+        this.placementActive = 0;
       }
     }
   }
@@ -622,6 +634,7 @@ export default class ViewGL
 
   onDocumentMouseDown = (event: any) =>
   {
+    event.button[1];
     console.log("mousePressed", true);
     this.mousePressed = 1;
   };
@@ -661,6 +674,8 @@ export default class ViewGL
 
   onDocumentKeyDown = (event: any) =>
   {
+      event.preventDefault();
+      event.stopPropagation(); 
       var keyCode = event.code;
       this.keyMap[keyCode] = true;
   }
@@ -687,11 +702,18 @@ export default class ViewGL
 
   update = (t?: any) =>
   {
-    if(this.keyMap['Space'] == true && this.test == 1)
-    {
-      this.createObject_FindSpace(4, 9898, 1, 1, "Matchbox_Tiles_Objects_RedVersion");
-      this.test = 0;
+    var time = Date.now();
 
+    if (time - this.tempTime > 100)
+    {
+      this.timeClick = 1;
+      this.tempTime = Date.now();
+    }
+
+    if(this.keyMap['Space'] == true && this.timeClick == 1 && this.placementActive == 0)
+    {
+      this.placementActive = 1;
+      this.createObject_FindSpace(4, 9898, 1, 1, this.redText);
     }
 
     this.mouseControls();
@@ -704,5 +726,6 @@ export default class ViewGL
     this.renderer.render(this.scene, this.camera);
     requestAnimationFrame(this.update.bind(this));
 
+    this.timeClick = 0;
   };
 }
