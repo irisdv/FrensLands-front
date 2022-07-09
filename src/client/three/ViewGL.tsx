@@ -62,7 +62,6 @@ export default class ViewGL
 
   private debugMode = 1;
 
-
   // *********************** DEBUG/TEST *********************** //
 
 
@@ -119,10 +118,26 @@ export default class ViewGL
     // INIT TEXT REF ARRAYS
     this.textArrRef = [];
 
-    var x = 1;
-    var y = 1;
+    var x = 0;
+    var y = 15;
+    var value = 1;
 
-    //while ()
+    while (y >= 0)
+    {
+      while (x < 16)
+      {
+        this.textArrRef[y] = [];
+        this.textArrRef[y][x] = value;
+        this.debugPrint(1, "textArrRef");
+        this.debugPrint(1,"y = ",y);
+        this.debugPrint(1,"x = ",x);
+        this.debugPrint(1, "value = ", this.textArrRef[y][x]);
+        x++;
+        value++;
+      }
+      x = 0;
+      y--;
+    }
 
 
     // INIT ARRAY OF DATA [RECEIVED FROM BC]
@@ -193,7 +208,7 @@ export default class ViewGL
 
     //tempDecomp[9] = objet3d
 
-    this.debugPrint(1, "tempDecomp", tempDecomp);
+    this.debugPrint(2, "tempDecomp", tempDecomp);
 
     return (tempDecomp);
   }
@@ -384,6 +399,7 @@ export default class ViewGL
     }
   }
 
+  // CHECK IF BLOCKS ARE FREE BASED ON BUILDING SIZE
   checkFree = (pos : THREE.Vector2, numB : number) =>
   {
     if (pos.x >= 1 && pos.x <= 40 && pos.y >= 1 && pos.y <= 16)
@@ -423,14 +439,33 @@ export default class ViewGL
     return (0);
   }
 
-  findTextByID = (type : number) => // NEED TO FINISH IT WHEN TEXTARRREF IS DONE
+  //FIND TEXTURE POSITION WITH BUILDING TYPE NUMBER
+  findTextByID = (type : number) =>
   {
     var posText = new THREE.Vector2;
+    var x = 0;
+    var y = 15;
 
-    posText.x = (this.textArrRef[type].x * (1 / 16));
-    posText.y = (this.textArrRef[type].y * (1 / 16));
-
-    return (posText);
+    while (y >= 0)
+    {
+      while (x < 16)
+      {
+        this.debugPrint(1, "type", type);
+        this.debugPrint(1, "this.textArrRef[y][x]", this.textArrRef[y][x]);
+        if (type == this.textArrRef[y][x])
+        {
+          posText.x = (x * (1 / 16));
+          posText.y = (y * (1 / 16));
+          this.debugPrint(1, "posText Found");
+          return (posText);
+        }
+        x++;
+      }
+      x = 0;
+      y--;
+    }
+    this.debugPrint(1, "posText Not Found");
+    return (0);
   }
 
 
@@ -468,11 +503,15 @@ export default class ViewGL
       // shading: 2
     });
 
+    var textureType : any = new THREE.Vector2;
+    textureType = this.findTextByID(32);
+
     if (matObj.map)
     {
       matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625); // TEXTURE TILLING ADAPTED TO BUILDING TILES
       //matObj.map.offset.set(0.00, 0.00); // POSITION OF BUILDING ON TEXTURE
-      matObj.map.offset.set((4 * (1 / 16)), (4 * (1 / 16)));
+      //matObj.map.offset.set((0 * (1 / 16)), (6 * (1 / 16))); // X/Y
+      matObj.map.offset.set(textureType.x, textureType.y);
       matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
       matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
       matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
