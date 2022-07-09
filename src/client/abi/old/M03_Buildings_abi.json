@@ -21,17 +21,17 @@
             {
                 "name": "upgrade_cost",
                 "offset": 0,
-                "type": "MultipleResources"
+                "type": "Cost"
             },
             {
                 "name": "daily_cost",
                 "offset": 4,
-                "type": "MultipleResources"
+                "type": "Cost"
             },
             {
                 "name": "daily_harvest",
                 "offset": 8,
-                "type": "MultipleResources"
+                "type": "Cost"
             },
             {
                 "name": "pop_max",
@@ -51,7 +51,7 @@
     {
         "members": [
             {
-                "name": "nb_resources",
+                "name": "resources_id",
                 "offset": 0,
                 "type": "felt"
             },
@@ -71,23 +71,27 @@
                 "type": "felt"
             }
         ],
-        "name": "MultipleResources",
+        "name": "Cost",
         "size": 4,
         "type": "struct"
     },
     {
         "data": [
             {
-                "name": "previousOwner",
+                "name": "owner",
                 "type": "felt"
             },
             {
-                "name": "newOwner",
+                "name": "token_id",
+                "type": "Uint256"
+            },
+            {
+                "name": "type",
                 "type": "felt"
             }
         ],
         "keys": [],
-        "name": "OwnershipTransferred",
+        "name": "Build",
         "type": "event"
     },
     {
@@ -99,66 +103,37 @@
             {
                 "name": "token_id",
                 "type": "Uint256"
-            }
-        ],
-        "keys": [],
-        "name": "StartPayTaxes",
-        "type": "event"
-    },
-    {
-        "data": [
-            {
-                "name": "owner",
-                "type": "felt"
             },
             {
-                "name": "data",
-                "type": "BuildingFixedData"
+                "name": "type",
+                "type": "felt"
             }
         ],
         "keys": [],
-        "name": "EndPayTaxes",
+        "name": "DestroyBuilding",
         "type": "event"
     },
     {
         "inputs": [
             {
-                "name": "address_of_controller",
-                "type": "felt"
-            }
-        ],
-        "name": "initializer",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            },
-            {
-                "name": "daily_harvest_len",
+                "name": "type_len",
                 "type": "felt"
             },
             {
-                "name": "daily_harvest",
+                "name": "type",
                 "type": "felt*"
             },
             {
-                "name": "operation",
+                "name": "level",
                 "type": "felt"
-            }
-        ],
-        "name": "fill_ressources_harvest",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
+            },
             {
-                "name": "tokenId",
-                "type": "Uint256"
+                "name": "building_cost_len",
+                "type": "felt"
+            },
+            {
+                "name": "building_cost",
+                "type": "felt*"
             },
             {
                 "name": "daily_cost_len",
@@ -169,165 +144,163 @@
                 "type": "felt*"
             },
             {
-                "name": "operation",
-                "type": "felt"
-            }
-        ],
-        "name": "fill_ressources_cost",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            },
-            {
-                "name": "daily_gold",
+                "name": "daily_harvest_len",
                 "type": "felt"
             },
             {
-                "name": "daily_energy",
-                "type": "felt"
+                "name": "daily_harvest",
+                "type": "felt*"
             },
-            {
-                "name": "operation",
-                "type": "felt"
-            }
-        ],
-        "name": "fill_gold_energy_harvest",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            },
-            {
-                "name": "daily_gold",
-                "type": "felt"
-            },
-            {
-                "name": "daily_energy",
-                "type": "felt"
-            },
-            {
-                "name": "operation",
-                "type": "felt"
-            }
-        ],
-        "name": "fill_gold_energy_cost",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            }
-        ],
-        "name": "claim_resources",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            },
-            {
-                "name": "allocate",
-                "type": "felt"
-            },
-            {
-                "name": "number",
-                "type": "felt"
-            }
-        ],
-        "name": "update_population",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            },
-            {
-                "name": "_block_nb",
-                "type": "felt"
-            }
-        ],
-        "name": "update_block_number",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            }
-        ],
-        "name": "_receive_resources_erc20",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            }
-        ],
-        "name": "get_block_start",
-        "outputs": [
-            {
-                "name": "block_number",
-                "type": "felt"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            }
-        ],
-        "name": "get_latest_block",
-        "outputs": [
-            {
-                "name": "block_number",
-                "type": "felt"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            }
-        ],
-        "name": "get_population",
-        "outputs": [
             {
                 "name": "pop_len",
                 "type": "felt"
             },
             {
                 "name": "pop",
+                "type": "felt*"
+            }
+        ],
+        "name": "constructor",
+        "outputs": [],
+        "type": "constructor"
+    },
+    {
+        "inputs": [
+            {
+                "name": "token_id",
+                "type": "Uint256"
+            },
+            {
+                "name": "building_id",
+                "type": "felt"
+            },
+            {
+                "name": "level",
+                "type": "felt"
+            },
+            {
+                "name": "position",
+                "type": "felt"
+            },
+            {
+                "name": "allocated_population",
+                "type": "felt"
+            }
+        ],
+        "name": "upgrade",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "token_id",
+                "type": "Uint256"
+            },
+            {
+                "name": "building_id",
+                "type": "felt"
+            }
+        ],
+        "name": "destroy",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "token_id",
+                "type": "Uint256"
+            },
+            {
+                "name": "building_id",
+                "type": "felt"
+            },
+            {
+                "name": "level",
+                "type": "felt"
+            }
+        ],
+        "name": "repair",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "token_id",
+                "type": "Uint256"
+            },
+            {
+                "name": "building_id",
+                "type": "felt"
+            },
+            {
+                "name": "level",
+                "type": "felt"
+            }
+        ],
+        "name": "move",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "token_id",
+                "type": "Uint256"
+            }
+        ],
+        "name": "get_building_count",
+        "outputs": [
+            {
+                "name": "count",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "type",
+                "type": "felt"
+            },
+            {
+                "name": "level",
+                "type": "felt"
+            }
+        ],
+        "name": "view_fixed_data",
+        "outputs": [
+            {
+                "name": "data",
+                "type": "BuildingFixedData"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "token_id",
+                "type": "Uint256"
+            },
+            {
+                "name": "building_id",
+                "type": "felt"
+            }
+        ],
+        "name": "get_building_data",
+        "outputs": [
+            {
+                "name": "data_len",
+                "type": "felt"
+            },
+            {
+                "name": "data",
                 "type": "felt*"
             }
         ],
