@@ -21,17 +21,17 @@
             {
                 "name": "upgrade_cost",
                 "offset": 0,
-                "type": "Cost"
+                "type": "MultipleResources"
             },
             {
                 "name": "daily_cost",
                 "offset": 4,
-                "type": "Cost"
+                "type": "MultipleResources"
             },
             {
                 "name": "daily_harvest",
                 "offset": 8,
-                "type": "Cost"
+                "type": "MultipleResources"
             },
             {
                 "name": "pop_max",
@@ -51,7 +51,7 @@
     {
         "members": [
             {
-                "name": "resources_id",
+                "name": "nb_resources",
                 "offset": 0,
                 "type": "felt"
             },
@@ -71,7 +71,7 @@
                 "type": "felt"
             }
         ],
-        "name": "Cost",
+        "name": "MultipleResources",
         "size": 4,
         "type": "struct"
     },
@@ -167,11 +167,22 @@
     {
         "inputs": [
             {
-                "name": "token_id",
+                "name": "address_of_controller",
+                "type": "felt"
+            }
+        ],
+        "name": "initializer",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "tokenId",
                 "type": "Uint256"
             },
             {
-                "name": "building_id",
+                "name": "building_type_id",
                 "type": "felt"
             },
             {
@@ -179,7 +190,7 @@
                 "type": "felt"
             },
             {
-                "name": "position",
+                "name": "pos_start",
                 "type": "felt"
             },
             {
@@ -194,11 +205,11 @@
     {
         "inputs": [
             {
-                "name": "token_id",
+                "name": "tokenId",
                 "type": "Uint256"
             },
             {
-                "name": "building_id",
+                "name": "building_unique_id",
                 "type": "felt"
             }
         ],
@@ -247,18 +258,28 @@
     {
         "inputs": [
             {
-                "name": "token_id",
+                "name": "tokenId",
                 "type": "Uint256"
-            }
-        ],
-        "name": "get_building_count",
-        "outputs": [
+            },
             {
-                "name": "count",
+                "name": "building_type_id_len",
                 "type": "felt"
+            },
+            {
+                "name": "building_type_id",
+                "type": "felt*"
+            },
+            {
+                "name": "level_len",
+                "type": "felt"
+            },
+            {
+                "name": "level",
+                "type": "felt*"
             }
         ],
-        "stateMutability": "view",
+        "name": "initialize_resources",
+        "outputs": [],
         "type": "function"
     },
     {
@@ -287,6 +308,44 @@
             {
                 "name": "token_id",
                 "type": "Uint256"
+            }
+        ],
+        "name": "get_building_count",
+        "outputs": [
+            {
+                "name": "count",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "token_id",
+                "type": "Uint256"
+            }
+        ],
+        "name": "get_all_building_ids",
+        "outputs": [
+            {
+                "name": "data_len",
+                "type": "felt"
+            },
+            {
+                "name": "data",
+                "type": "felt*"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "token_id",
+                "type": "Uint256"
             },
             {
                 "name": "building_id",
@@ -302,6 +361,27 @@
             {
                 "name": "data",
                 "type": "felt*"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "building_type",
+                "type": "felt"
+            },
+            {
+                "name": "level",
+                "type": "felt"
+            }
+        ],
+        "name": "get_upgrade_cost",
+        "outputs": [
+            {
+                "name": "res",
+                "type": "felt"
             }
         ],
         "stateMutability": "view",

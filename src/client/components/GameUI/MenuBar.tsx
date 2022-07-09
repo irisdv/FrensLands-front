@@ -3,8 +3,12 @@ import React, { useMemo, useState, useRef, useEffect } from "react";
 import { useBuildingsContract } from "../../hooks/buildings";
 import { number, uint256 } from "starknet";
 import { toBN } from "starknet/dist/utils/number";
+import { useGameContext } from "../../hooks/useGameContext";
 
 export function MenuBar() {
+  // if (account) {
+  const {} = useGameContext();
+  // // }
   //   const [watch, setWatch] = useState(true);
   //   const { contract: building } = useBuildingsContract();
 
@@ -36,10 +40,10 @@ export function MenuBar() {
     <>
       <div className="absolute">
         <div className="flex flex-row justify-center inline-block">
-          <div className="btnHome pixelated"></div>
+          <div className="btnHome pixelated" style={{ left: "5px" }}></div>
           <div
             id="menuBar"
-            className="relative flex jutify-center items-center px-5 inline-block pixelated"
+            className="relative flex jutify-center items-center inline-block pixelated"
             style={{ fontSize: "16px" }}
           >
             <div

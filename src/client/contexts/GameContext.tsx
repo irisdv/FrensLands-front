@@ -4,12 +4,16 @@ import React, {
   useState,
   useCallback,
   useContext,
+  Fragment,
+  ReactFragment,
 } from "react";
 import * as starknet from "starknet";
 import { defaultProvider, number, uint256 } from "starknet";
 import { toBN } from "starknet/dist/utils/number";
+import { BuildingFrame } from "../components/GameUI/BuildingFrame";
 
 import { useBuildingsContract } from "../hooks/buildings";
+import { useMapsContract } from "../hooks/maps";
 
 export interface IGameState {
   address?: string | undefined;
@@ -18,6 +22,10 @@ export interface IGameState {
   mapArray?: any[];
   updateBuildings: (t: number) => void;
   setAddress: (addr: string) => void;
+  updateTokenId: (id: string) => void;
+  showFrame?: boolean;
+  frameData?: any;
+  updateBuildingFrame: (show: boolean, data: []) => void;
 }
 
 export const GameState: IGameState = {
@@ -27,6 +35,10 @@ export const GameState: IGameState = {
   mapArray: [],
   updateBuildings: () => {},
   setAddress: () => {},
+  updateTokenId: () => {},
+  showFrame: false,
+  frameData: undefined,
+  updateBuildingFrame: (show, data) => {},
 };
 
 const StateContext = React.createContext(GameState);
@@ -57,11 +69,23 @@ interface SetError {
   error: Error;
 }
 
+interface SetFrameData {
+  type: "set_frameData";
+  frameData?: any[];
+}
+
+interface SetShowFrame {
+  type: "set_showFrame";
+  showFrame?: boolean;
+}
+
 type Action =
   | SetAccount
   | SetTokenId
   | SetBuildingCount
   | SetMapArray
+  | SetFrameData
+  | SetShowFrame
   | SetError;
 
 function reducer(state: IGameState, action: Action): IGameState {
@@ -78,6 +102,12 @@ function reducer(state: IGameState, action: Action): IGameState {
     case "set_mapArray": {
       return { ...state, mapArray: action.mapArray };
     }
+    case "set_frameData": {
+      return { ...state, frameData: action.frameData };
+    }
+    case "set_showFrame": {
+      return { ...state, showFrame: action.showFrame };
+    }
     case "set_error": {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -92,17 +122,44 @@ export const AppStateProvider: React.FC<
 > = (props: React.PropsWithChildren<{ children: any }>): React.ReactElement => {
   const [timer, setTimer] = useState(Date.now());
   const { contract: building } = useBuildingsContract();
+  const { contract: maps } = useMapsContract();
 
   const [state, dispatch] = useReducer(reducer, GameState);
   //   const { tokenId, buildingCount, mapArray } = state;
 
+  // useEffect(() => {
+  //   const tid = setTimeout(() => {
+  //     setTimer(Date.now());
+  //   }, 5000);
+  //   return () => {
+  //     clearTimeout(tid);
+  //   };
+  // }, []);
+
   useEffect(() => {
-    const tid = setTimeout(() => {
-      setTimer(Date.now());
-    }, 5000);
-    return () => {
-      clearTimeout(tid);
-    };
+    if (starknet && maps && state.tokenId) {
+      setTimeout(async () => {
+        // Check token_id of user
+        let _mapArray;
+        try {
+          _mapArray = await maps.call("get_map_array", [
+            // TODO : replace with
+            uint256.bnToUint256(state.tokenId as any),
+          ]);
+          // var elem = toBN(_mapArray[0]);
+          // var newMap = elem.toNumber();
+          var newMap = _mapArray[0];
+          console.log("New Map", newMap);
+          dispatch({
+            type: "set_mapArray",
+            mapArray: newMap,
+          });
+        } catch (e) {
+          console.warn("Error when retrieving total_supply");
+          console.warn(e);
+        }
+      }, 0);
+    }
   }, []);
 
   const updateBuildings = React.useCallback((t: number) => {
@@ -119,6 +176,39 @@ export const AppStateProvider: React.FC<
     });
   }, []);
 
+  const updateTokenId = React.useCallback((id: any) => {
+    dispatch({
+      type: "set_tokenId",
+      tokenId: id,
+    });
+  }, []);
+
+  // const showBuildingFrame = (id: any): React.ReactNode => {
+  //   console.log("show component, id", id);
+  //   console.log("PROPS PROPS");
+  //   return (
+  //     <>
+  //       {/* <React.ReactNode> */}
+  //       <BuildingFrame {...id} />
+  //       {/* </React.ReactNode> */}
+  //     </>
+  //   );
+  // };
+
+  const updateBuildingFrame = React.useCallback(
+    (show: boolean, data: any[]) => {
+      dispatch({
+        type: "set_showFrame",
+        showFrame: show,
+      });
+      dispatch({
+        type: "set_frameData",
+        frameData: data,
+      });
+    },
+    []
+  );
+
   return (
     <StateContext.Provider
       value={{
@@ -126,8 +216,12 @@ export const AppStateProvider: React.FC<
         tokenId: state.tokenId,
         buildingCount: state.buildingCount,
         mapArray: state.mapArray,
+        frameData: state.frameData,
+        showFrame: state.showFrame,
         updateBuildings,
         setAddress,
+        updateTokenId,
+        updateBuildingFrame,
       }}
     >
       {/* <DispatchContext.Provider value={dispatch}> */}

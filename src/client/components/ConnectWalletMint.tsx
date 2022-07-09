@@ -1,34 +1,35 @@
 import React, { useMemo } from "react";
 // import { useStarknet, useConnectors } from "@starknet-react/core";
 import { useStarknet, InjectedConnector } from "@starknet-react/core";
+import { MintMap } from "./Worlds/MintMap";
 
-export function ConnectWallet() {
+export function ConnectWalletMint() {
   // const { account } = useStarknet();
   // const { available, connect, disconnect } = useConnectors();
   const { account, connect, connectors, disconnect } = useStarknet();
   const injected = useMemo(() => new InjectedConnector(), []);
 
+  const mintMap = () => {
+    console.log("mintingMap");
+  };
+
   if (account) {
     return (
-      <div>
-        <p>Account: {account}</p>
-        <button onClick={() => disconnect()}>Disconnect</button>
-      </div>
+      <>
+        <div onClick={() => mintMap()} className="btnMint"></div>
+      </>
     );
   }
 
   return (
     <div>
-      {/* {available.map((connector) => (
-        <button key={connector.id()} onClick={() => connect(connector)}>
-          {`Connect ${connector.name()}`}
-        </button>
-      ))} */}
       {connectors.map((connector) =>
         connector.available() ? (
-          <button key={connector.id()} onClick={() => connect(connector)}>
-            Connect your wallet
-          </button>
+          <div
+            key={connector.id()}
+            onClick={() => connect(connector)}
+            className="btnConnect"
+          ></div>
         ) : null
       )}
     </div>
