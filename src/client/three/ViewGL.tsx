@@ -38,7 +38,8 @@ export default class ViewGL
   private raycaster = new THREE.Raycaster();
   private currRayPos = new THREE.Vector3;
   private currBlockPos = new THREE.Vector2;
-  private selectedObj : THREE.Vector2 = new THREE.Vector2;
+  private selectedObj = new THREE.Vector2;
+  private objectSelected : number = 0;
 
   private greenText = "Matchbox_Tiles_Objects_GreenVersion";
   private redText = "Matchbox_Tiles_Objects_RedVersion";
@@ -404,7 +405,8 @@ export default class ViewGL
   // OBJECT MOUSE SELECTION
   selectObject = () =>
   {
-    if (this.currBlockPos && this.currBlockPos.x != null && this.currBlockPos.y != null &&
+    if (this.objectSelected == 0 &&
+       this.currBlockPos && this.currBlockPos.x != null && this.currBlockPos.y != null &&
        this.currBlockPos.x > 0 && this.currBlockPos.x < 40 && this.currBlockPos.y > 0 &&
        this.currBlockPos.y < 16 && this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x] != null &&
        this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != null &&
@@ -415,31 +417,38 @@ export default class ViewGL
       pos.x = this.currBlockPos.x;
       pos.y = this.currBlockPos.y;
 
-      console.log("SELECTION OF ", this.frontBlockArray[pos.y][pos.x][4]);
+      this.debugPrint(1, "OBJECT SELECTED");
+      this.objectSelected = 1;
+      this.UbuildingIDs = this.UbuildingIDs + 1;
 
-      this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
-        this.UbuildingIDs++, this.frontBlockArray[pos.y][pos.x][3], 1, this.outlinedText,
-        this.frontBlockArray[pos.y][pos.x][4]);
+      //this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
+      //  this.UbuildingIDs, this.frontBlockArray[pos.y][pos.x][3], 1, this.outlinedText,
+      //  this.frontBlockArray[pos.y][pos.x][4]);
 
       this.selectedObj = pos;
     }
 
-    if (this.currBlockPos && this.currBlockPos.x != null && this.currBlockPos.y != null)
+    if (this.objectSelected == 1 &&
+        this.currBlockPos && this.currBlockPos.x != null && this.currBlockPos.y != null &&
+        this.selectedObj != null && this.selectedObj.x != 0 && this.selectedObj.y != 0 &&
+        this.selectedObj.x != this.currBlockPos.x || this.selectedObj.y != this.currBlockPos.y &&
+        this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x] != null &&
+        this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != 0)
     {
+      this.selectedObj = new THREE.Vector2(0, 0);
+
       var pos : THREE.Vector2 = new THREE.Vector2;
       pos.x = this.currBlockPos.x;
       pos.y = this.currBlockPos.y;
 
-      if (this.selectedObj != null && this.selectedObj.x != 0 && this.selectedObj.y != 0 &&
-          this.selectedObj.x != this.currBlockPos.x || this.selectedObj.y != this.currBlockPos.y &&
-          this.frontBlockArray[pos.y][pos.x] != null && this.frontBlockArray[pos.y][pos.x][3] != 0)
-      {
-        this.selectedObj = new THREE.Vector2(0, 0);
+      this.debugPrint(1, "OBJECT UNSELECTED");
+      this.objectSelected = 0;
 
-        this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
-          this.UbuildingIDs++, this.frontBlockArray[pos.y][pos.x][3], 1, this.normalText,
-          this.frontBlockArray[pos.y][pos.x][4]);
-      }
+      this.UbuildingIDs = this.UbuildingIDs + 1;
+
+      //this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
+      //  this.UbuildingIDs, this.frontBlockArray[pos.y][pos.x][3], 1, this.normalText,
+      //  this.frontBlockArray[pos.y][pos.x][4]);
     }
   }
 
@@ -709,7 +718,7 @@ export default class ViewGL
   {
 
     //call delete function
-    this.deleteObject(name);
+    this.deleteObject(nameToDelete);
 
     let newObject = new THREE.PlaneGeometry;
     if (size == 1)
@@ -751,13 +760,13 @@ export default class ViewGL
       matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
       matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
     }
-    this.debugPrint(1, "G_REPLACEOBJ_FUNC");
+    this.debugPrint(1, "G_CREATEOBJ_FUNC");
 
     var newObjectMesh = new THREE.Mesh(newObject, matObj);
     newObjectMesh.name = name.toString();
-    newObjectMesh.position.x = pos.x;
+    newObjectMesh.position.x = pos.x;// + 0.5;
     newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
-    newObjectMesh.position.z = pos.y;
+    newObjectMesh.position.z = pos.y;// + 0.5;
     this.scene.add(newObjectMesh);
     this.frontBlockArray[pos.y][pos.x][3] = type;
     this.frontBlockArray[pos.y][pos.x][0] = pos.x;// - 0.5;
