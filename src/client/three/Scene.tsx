@@ -3,6 +3,7 @@ import ViewGL from "./ViewGL";
 import { GameState } from "../contexts/GameContext";
 import { gsap, SteppedEase } from "gsap";
 import { MenuBar } from "../components/GameUI/MenuBar";
+import { BottomBar } from "../components/GameUI/BottomBar";
 
 export default class Scene extends React.Component {
   private canvasRef: any;
@@ -76,6 +77,7 @@ export default class Scene extends React.Component {
         <div className="canvasContainer">
           <canvas ref={this.canvasRef} />
         </div>
+        <BottomBar />
       </div>
     );
   }
