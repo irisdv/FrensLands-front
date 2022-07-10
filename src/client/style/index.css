@@ -53,39 +53,14 @@ body {
 
 }
 
+/* -------------------- MENU BAR -------------------- */
 #menuBar {
-    /* background: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
-    display: inline-block;
-    height: 54px;
-    width: 940px;
-    background-position: -25px 0px;
-    background-size: 1034px 591px; */
-    /* display:block; */
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
     width:calc(1408px * 1);
     background-position:calc(22 * 1 * 64px) calc(0 * 1* 64px);
     background-size:calc(1408px* 1) calc(768px * 1);
-    /* height: 81px;
-    width: 1080px;
-    background-position: 0px 0px;
-    background-size: 1080px 464px; */
-    /* img size : 704 × 394 */
 }
-
-/* #menuGold {
-    background: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
-    display: inline-block;
-    height: 64px;
-    width: 64px;
-    background-position: calc(1 * 54px) 0px;
-    background-size: calc(768px * 1) calc(768px * 1); */
-    /* height: 81px;
-    width: 1080px;
-    background-position: 0px 0px;
-    background-size: 1080px 432px; */
-    /* img size : 704 × 394 */
-/* } */
 
 #menuGold {
     display:inline-block;
@@ -206,54 +181,9 @@ body {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
     width:calc(64px * 1);
-    background-position:calc(22 * 1 * 64px) calc(22 * 1 * 64px);
+    background-position:calc(22 * 1 * 64px) calc(21 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
 }
-
-
-.btnUpgrade {
-    display:inline-block;
-    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
-    height:calc(64px * 1);
-    width:calc(64px * 2);
-    background-position:calc(21 * 1 * 64px) calc(22 * 1 * 64px);
-    background-size:calc(1408px * 1) calc(768px * 1);
-}
-.btnUpgrade:active {
-    display:inline-block;
-    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
-    height:calc(64px * 1);
-    width:calc(64px * 2);
-    background-position:calc(20 * 1 * 64px) calc(22 * 1 * 64px);
-    background-size:calc(1408px * 1) calc(768px * 1);
-}
-
-.btnUpgradeRed {
-    display:inline-block;
-    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
-    height:calc(64px * 1);
-    width:calc(64px * 2);
-    background-position:calc(19 * 1 * 64px) calc(22 * 1 * 64px);
-    background-size:calc(1408px * 1) calc(768px * 1);
-}
-.btnUpgradeRed:active {
-    display:inline-block;
-    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
-    height:calc(64px * 1);
-    width:calc(64px * 2);
-    background-position:calc(18 * 1 * 64px) calc(22 * 1 * 64px);
-    background-size:calc(1408px * 1) calc(768px * 1);
-}
-
-.btnMaxed {
-    display:inline-block;
-    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
-    height:calc(64px * 1);
-    width:calc(64px * 2);
-    background-position:calc(17 * 1 * 64px) calc(22 * 1 * 64px);
-    background-size:calc(1408px * 1) calc(768px * 1);
-}
-
 
 .btnHome {
     display:inline-block;
@@ -308,6 +238,62 @@ body {
     background-position:calc(21 * 1 * 64px) calc(2 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
 }
+
+.backgroundImg {
+    background-image: url("resources/front/UI_MainScreen.png");
+    width: 100vw;
+    height: 100vh;
+    background-repeat: no-repeat;
+}
+
+
+/* -------------------- HOMEPAGE -------------------- */
+
+.btnUpgrade {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(21 * 1 * 64px) calc(22 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+.btnUpgrade:active {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(20 * 1 * 64px) calc(22 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+
+.btnUpgradeRed {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(19 * 1 * 64px) calc(22 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+.btnUpgradeRed:active {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(18 * 1 * 64px) calc(22 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+
+.btnMaxed {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(17 * 1 * 64px) calc(22 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+
+
+
 
 .btnBottom {
     display:inline-block;
@@ -537,9 +523,9 @@ body {
 .building19 {
     display:inline-block;
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
-    height:calc(64px * 1);
-    width:calc(64px * 1);
-    background-position:calc(47 * 1 * 32px) calc(15 * 1 * 32px);
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(47 * 2 * 64px) calc(15 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
 }
 .building20 {

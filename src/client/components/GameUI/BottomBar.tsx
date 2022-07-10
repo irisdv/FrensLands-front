@@ -8,17 +8,20 @@ import { useGameContext } from "../../hooks/useGameContext";
 // import { BuildingFrame } from "./BuildingFrame";
 
 export function BottomBar() {
-  const { address } = useGameContext();
+  const { address, showFrame, updateBuildingFrame } = useGameContext();
   const [displayNature, setDisplayNature] = useState(false)
 
-  const showBuildingFrame = () => {};
+  const setDisplayFrame = (display : boolean, id : any) => {
+    console.log('showFrame component', showFrame)
+    updateBuildingFrame(true, {"id": id});
 
+  };
   return (
     <>
       <div className="absolute" style={{ bottom: "60px", right: "0px" }}>
         <div className="flex flex-row justify-center inline-block">
-          <div className="btnCategory pixelated"onClick={() => setDisplayNature(true)}>
-            <div className=" pixelated"></div>
+          <div className="btnCategory pixelated relative" onClick={() => setDisplayFrame(true, 19)}>
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "-29px"}}></div>
           </div>
           <div className="btnCategory pixelated"><div className=" pixelated"></div></div>
           <div className="btnCategory pixelated"><div className=" pixelated"></div></div>

@@ -7,8 +7,20 @@ import { useGameContext } from "../../hooks/useGameContext";
 
 export function BuildingFrame(props: any) {
   const { showFrame, frameData } = useGameContext();
-  console.log("showFrame", showFrame);
+  console.log("HERE HERE HERE", showFrame);
   console.log("frameData", frameData);
+
+  const [show, setShow] = useState(false)
+
+  useEffect(() => {
+    if (showFrame) {
+      setShow(true)
+    } else {
+      setShow(false)
+    }
+
+  }, [show, showFrame, frameData])
+
 
   if (!showFrame) {
     return <></>;
@@ -16,10 +28,11 @@ export function BuildingFrame(props: any) {
 
   return (
     <>
+
       <div
         id="bFrame"
         className="absolute buildingFrame"
-        // style=`{{display: ${showFrame}}}`
+        style={{right: "-113px", bottom: "0", height: "640px", width: "640px"}}
       >
         <div
           className="grid grid-cols-2 inline-block"
@@ -29,7 +42,8 @@ export function BuildingFrame(props: any) {
             className="font8BITWonder uppercase text-center"
             style={{ height: "20px" }}
           >
-            {frameData && frameData.name ? frameData.name : ""}
+            {/* {frameData && frameData.name ? frameData.name : ""} */}
+            {/* {frameData && frameData.id ? frameData.id : ""} */}
           </div>
           <div
             className="relative flex jutify-center items-center inline-block"

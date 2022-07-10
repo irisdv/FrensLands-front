@@ -7,6 +7,6 @@ export function useResourcesContract() {
   return useContract({
     abi: ResourcesAbi as Abi,
     address:
-      "0x0747833bccf3a112fe3b6ace0fe636fe92361734565539778ecdaefad7c48b4b",
+      "0x072c5b060c922f01383d432624fa389bf8b087013b9702b669c484857d23eea1",
   });
 }
