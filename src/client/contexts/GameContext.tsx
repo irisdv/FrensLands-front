@@ -452,6 +452,7 @@ export const AppStateProvider: React.FC<
         while (i < 640) {
           var elem = toBN(_map[i])
           _mapArray.push(elem.toString())
+          if (elem.toString().length != 16) console.log(elem.toString())
           i++;
         }
       })

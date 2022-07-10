@@ -50,10 +50,10 @@ export function BuildingFrame(props: any) {
       args: [
           uint256.bnToUint256(1),
           id,
-          "0x05e10dc2d99756ff7e339912a8723ecb9c596e8ecd4f3c3a9d03eb06096b153f",
-          "0x072c5b060c922f01383d432624fa389bf8b087013b9702b669c484857d23eea1",
-          "0x0574fe8bbe799ce7583ef1aefe4c6cf1135dc21c092471982e56b038355f8249",
-          "0x04e8653b61e068c01e95f4df9e7504b6c71f2937e2bf00ec6734f4b2d33c13e0"
+          "0x02b8f3e7a283dcf5703ab165d0b3785e4e903742102743735da4c64e8ac0dfc6",
+          "0x070bc995b48d153a40ad566cab6d3be143e7be7074dd93c0059fd540e3ca2596",
+          "0x04bad6d5f54e70c1edd8127fa3a7e3633a0c6b2a8753f0c7ead7503df111d77f",
+          "0x04a628b88797fd3d99609c0d362c9cda04480c79930b867cdcf55454a95c4b8f"
       ],
       metadata: {
         method: "get_map",
