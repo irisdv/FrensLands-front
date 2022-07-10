@@ -52,6 +52,7 @@ export default class ViewGL
   private compArray: any[];
   private frontBlockArray: any[];
   private validatedBlockArray: any[];
+  private rightBuildingType: any[];
 
   private firstLoad: number;
 
@@ -64,6 +65,7 @@ export default class ViewGL
   private tempTime2 = Date.now();
 
   private rawData : any = {};
+  private chainEvent: number = 0;
 
   // *********************** DEBUG/TEST *********************** //
 
@@ -119,14 +121,17 @@ export default class ViewGL
     this.camera.position.z = this.camZ;
     this.camera.rotateX(-Math.PI * 0.5);
 
-
-
     // ******************* INIT ARRAYS ************************//
 
-
-    // INIT TEXT REF ARRAYS
+    // INIT ARRAYS
+    this.rightBuildingType = [];
     this.textArrRef = [];
+    this.frontBlockArray = [];
+    this.validatedBlockArray = [];
+    this.compArray = [];
 
+
+    // INIT TEXTUES ARRAY
     var x = 0;
     var y = 15;
     var value = 1;
@@ -137,10 +142,10 @@ export default class ViewGL
       while (x < 16)
       {
         this.textArrRef[y][x] = value;
-        this.debugPrint(1, "textArrRef");
-        this.debugPrint(1,"y = ",y);
-        this.debugPrint(1,"x = ",x);
-        this.debugPrint(1, "value = ", this.textArrRef[y][x]);
+        this.debugPrint(2, "textArrRef");
+        this.debugPrint(2,"y = ",y);
+        this.debugPrint(2,"x = ",x);
+        this.debugPrint(2, "value = ", this.textArrRef[y][x]);
         x++;
         value++;
       }
@@ -148,6 +153,142 @@ export default class ViewGL
       y--;
     }
 
+    // ******************* GET WORLD READY *******************//
+
+    //if (this.chainEvent == 1)
+    //{
+    this.getTypeFromCompArr();
+    this.generateRessources();
+
+    // CREATE TERRAIN
+    this.terrainCreate();
+    this.terrainBorderCreate();
+    this.terrainBackgroundCreate();
+
+    // CALL ANIMATION LOOP
+    this.update();
+    //}
+  }
+
+  // ****************** FUNCTIONS OUT OF CONSTRUCTOR ********************** //
+
+  // DECOMPOSE THE ARRAY OF DATA PER ELEMENT
+  decompose = (elem: any) =>
+  {
+    var tempDecomp : any[] = [];
+    elem.toString();
+
+    tempDecomp[0] = elem[0] + elem[1];            //[pos:x]
+    tempDecomp[1] = elem[2] + elem[3];            //[pos:y]
+    tempDecomp[2] = elem[4];                      //[mat type]
+    tempDecomp[3] = elem[5] + elem[6];            //[ress or bat type]
+    tempDecomp[4] = elem[7] + elem[8] + elem[9];  //[UNIQUE ID]
+    tempDecomp[5] = elem[10] + elem[11];          //[health]
+    tempDecomp[6] = elem[12] + elem[13];          //[quantity ress or pop]
+    tempDecomp[7] = elem[14];                     //[current level]
+    tempDecomp[8] = elem[15];                     //[activity index or number of days active]
+
+    this.debugPrint(2, "tempDecomp", tempDecomp);
+
+    return (tempDecomp);
+  }
+
+  getTypeFromCompArr = () =>
+  {
+
+    this.rightBuildingType[0] = 0;
+    this.rightBuildingType[1] = 1;
+    this.rightBuildingType[2] = 179//[161,163,165,177,178,179,180,181,182];
+    this.rightBuildingType[3] = 15//[15,14,30,31];
+    this.rightBuildingType[4] = 3;
+    this.rightBuildingType[5] = 10;
+    this.rightBuildingType[6] = 5;
+    this.rightBuildingType[7] = 8;
+    this.rightBuildingType[8] = 7;
+    this.rightBuildingType[9] = 6;
+    this.rightBuildingType[10] = 59;
+    this.rightBuildingType[11] = 11;
+    this.rightBuildingType[12] = 9;
+    this.rightBuildingType[13] = 12;
+    this.rightBuildingType[14] = 13;
+    this.rightBuildingType[15] = 60;
+    this.rightBuildingType[16] = 52;
+    this.rightBuildingType[17] = 58;
+    this.rightBuildingType[18] = 61;
+    this.rightBuildingType[19] = 4;
+    this.rightBuildingType[20] = 20;
+    this.rightBuildingType[21] = 14;
+    this.rightBuildingType[22] = 49;
+    this.rightBuildingType[23] = 57;
+    this.rightBuildingType[24] = 100;
+
+    /*
+
+   Cabin = 1
+   Cabin Destroyed = 2
+   Rock = 161,163,165,177,178,179,180,181,182
+   Tree = 15,14,30,31
+   House = 3 (Upgrade 1 : 10 / Upgrade 2 : 39)
+   Lumberjack = 4
+   Hotel = 5 (Upgrade 1 : 37   / Upgrade 2 : 38)
+   Restaurant =  6
+   Grocery Store = 7
+   Bakery = 8
+   Library = 9
+   Bar = 11
+   Swimming Pool = 12
+   Cinema = 13
+   Coal Plant = 14
+   Gold Mine = 17 (Builded = 18)
+   Coal Mine = 19 (Builded = 20)
+   Phosphore Mine = 21 (Builded = 22 )
+   Metal Mine = 23 (Builded = 24)
+   Wheat Farm = 52
+   Police Station = 49  (Upgrade = 56)
+   Hospital = 57
+   Vegetable Farm = 58
+   Mall = 59
+   Market = 60
+   Cow Farm = 61
+   Under Construction 1X1 = 81
+   Under Construction 2X1 = 82
+   Under Construction 2X2 = 83
+   Green Tile 2X2 :  209  ( Red = 210)
+
+   Green Tile 1X1  : 225 (Red = 226)
+   Green Tile 2X1 : 229 - 230
+
+    ON CHAIN
+
+    Cabin = 1
+    Rock = 2
+    Tree = 3
+    House = 4
+    Appartment = 5
+    Hotel = 6
+    Boulangerie = 7
+    GroceryShop = 8
+    Restaurant = 9
+    Mall = 10
+    Bar = 11
+    Library = 12
+    SwimmingPool = 13
+    Cinema = 14
+    Market = 15
+    CerealFarm = 16
+    VegetableFarm = 17
+    CowFarm = 18
+    TreeFarm = 19
+    Mine = 20
+    CoalPlant = 21
+    PoliceStation = 22
+    Hospital = 23
+    Lab = 24
+    */
+  }
+
+  generateRessources = () =>
+  {
 
     // INIT ARRAY OF DATA [RECEIVED FROM BC]
     var i = 0;
@@ -158,9 +299,6 @@ export default class ViewGL
       this.compArray[i] = "1234500891234567"; //TEST EMPTY BLOCKS
       i++;
     }
-
-    this.frontBlockArray = [];
-    this.validatedBlockArray = [];
 
     var indexI = 1;
     var indexJ = 1;
@@ -188,38 +326,6 @@ export default class ViewGL
 
     this.firstLoad = 0;
 
-    // ******************* GET WORLD READY *******************//
-
-    // CREATE TERRAIN
-    this.terrainCreate();
-    this.terrainBorderCreate();
-    this.terrainBackgroundCreate();
-
-    // CALL ANIMATION LOOP
-    this.update();
-  }
-
-  // ****************** FUNCTIONS OUT OF CONSTRUCTOR ********************** //
-
-  // DECOMPOSE THE ARRAY OF DATA PER ELEMENT
-  decompose = (elem: any) =>
-  {
-    var tempDecomp : any[] = [];
-    elem.toString();
-
-    tempDecomp[0] = elem[0] + elem[1];            //[pos:x]
-    tempDecomp[1] = elem[2] + elem[3];            //[pos:y]
-    tempDecomp[2] = elem[4];                      //[mat type]
-    tempDecomp[3] = elem[5] + elem[6];            //[ress or bat type]
-    tempDecomp[4] = elem[7] + elem[8] + elem[9];  //[UNIQUE ID]
-    tempDecomp[5] = elem[10] + elem[11];          //[health]
-    tempDecomp[6] = elem[12] + elem[13];          //[quantity ress or pop]
-    tempDecomp[7] = elem[14];                     //[current level]
-    tempDecomp[8] = elem[15];                     //[activity index or number of days active]
-
-    this.debugPrint(2, "tempDecomp", tempDecomp);
-
-    return (tempDecomp);
   }
 
   debugPrint = (type: number, string: String, varToPrint?: any) =>
@@ -253,7 +359,6 @@ export default class ViewGL
       }
     }
   }
-
 
   // CREATE THE TERRAIN
   terrainCreate = () =>
@@ -645,13 +750,14 @@ export default class ViewGL
     }
     else if (size == 4)
     {*/
-      newObject = new THREE.PlaneGeometry(3, 3, 1, 1);
+      newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1);
     //}
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
     const textObj = new THREE.TextureLoader().load(
-      "resources/textures/"+ nameText +".png"
+      //"resources/textures/"+ nameText +".png"
+      "resources/textures/"+ nameText +"_nogrid.png"
     );
 
     let matObj = new THREE.MeshStandardMaterial({
@@ -663,12 +769,11 @@ export default class ViewGL
     });
 
     var textureType : any = new THREE.Vector2;
-    textureType = this.findTextByID(type);
+    textureType = this.findTextByID(this.rightBuildingType[type]);
 
     if (matObj.map)
     {
       matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625); // TEXTURE TILLING ADAPTED TO BUILDING TILES
-      //matObj.map.offset.set(0.00, 0.00); // POSITION OF BUILDING ON TEXTURE
       //matObj.map.offset.set((0 * (1 / 16)), (6 * (1 / 16))); // X/Y
       matObj.map.offset.set(textureType.x, textureType.y);
       matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
@@ -774,13 +879,14 @@ export default class ViewGL
     }
     else if (size == 4)
     {*/
-      newObject = new THREE.PlaneGeometry(3, 3, 1, 1);
+      newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1);
     //}
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
     const textObj = new THREE.TextureLoader().load(
-      "resources/textures/"+ nameText +".png"
+      //"resources/textures/"+ nameText +".png"
+      "resources/textures/"+ nameText +"_nogrid.png"
     );
 
     let matObj = new THREE.MeshStandardMaterial({
@@ -792,7 +898,7 @@ export default class ViewGL
     });
 
     var textureType : any = new THREE.Vector2;
-    textureType = this.findTextByID(type);
+    textureType = this.findTextByID(this.rightBuildingType[type]);
 
     if (matObj.map)
     {
@@ -837,13 +943,14 @@ export default class ViewGL
     }
     else if (size == 4)
     {*/
-      newObject = new THREE.PlaneGeometry(3, 3, 1, 1);
+      newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1);
     //}
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
     const textObj = new THREE.TextureLoader().load(
-      "resources/textures/"+ nameText +".png"
+      //"resources/textures/"+ nameText +".png"
+      "resources/textures/"+ nameText +"_nogrid.png"
     );
 
     let matObj = new THREE.MeshStandardMaterial({
@@ -855,7 +962,7 @@ export default class ViewGL
     });
 
     var textureType : any = new THREE.Vector2;
-    textureType = this.findTextByID(type);
+    textureType = this.findTextByID(this.rightBuildingType[type]);
 
     if (matObj.map)
     {
@@ -986,13 +1093,9 @@ export default class ViewGL
     if (Object.keys(this.rawData).length == 0) {
       this.rawData = data;
     }
-    // Here save les data qui sont mises à jour
+    this.compArray = this.rawData.mapArray;
+    this.chainEvent = 1;
   }
-
-  // ******************* TEST TO CLEAN LATER ******************//
-
-
-
 
   // ******************* RENDER LOOP ******************* //
 
