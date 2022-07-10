@@ -290,7 +290,7 @@ export default class ViewGL
 
   terrainBorderCreate = () =>
   {
-      let terrainBorderPlane = new THREE.PlaneGeometry(44, 21, 1, 1);
+      let terrainBorderPlane = new THREE.PlaneGeometry(43.9, 21, 1, 1);
       terrainBorderPlane.name = "terrainBorderGeometry";
       terrainBorderPlane.rotateX(-Math.PI * 0.5);
       const texture = new THREE.TextureLoader().load(
@@ -466,11 +466,25 @@ export default class ViewGL
     }
     if (tempRayPos != null)
     {
-      this.currBlockPos.x = parseInt((tempRayPos.x).toFixed(2));
-      this.currBlockPos.y = parseInt((tempRayPos.z).toFixed(2));
-      this.currRayPos = tempRayPos;
-      this.debugPrint(2, "currRayPosX", parseInt((tempRayPos.x).toFixed(2)));
-      this.debugPrint(2, "currRayPosY", parseInt((tempRayPos.z).toFixed(2)));
+      var rayX = parseInt((tempRayPos.x).toFixed(2));
+      var rayY = parseInt((tempRayPos.z).toFixed(2));
+
+      if (rayX < 40 && rayX > 0 && rayY < 16 && rayY > 0)
+      {
+        this.debugPrint(1, "VALID RAYCAST");
+        this.currBlockPos.x = rayX;
+        this.currBlockPos.y = rayY;
+        //this.currRayPos = tempRayPos;
+      }
+      else
+      {
+        this.debugPrint(1, "INVALID RAYCAST");
+        this.currBlockPos.x = 0;
+        this.currBlockPos.y = 0;
+      //  this.currRayPos = tempRayPos;
+      }
+      this.debugPrint(2, "rayX", rayX);
+      this.debugPrint(2, "rayY", rayY);
       //this.debugPrint(2, "currBlockPos", this.currBlockPos);
     }
   }
@@ -478,53 +492,58 @@ export default class ViewGL
   // OBJECT MOUSE SELECTION
   selectObject = () =>
   {
-    if (this.objectSelected == 0 &&
-       this.currBlockPos && this.currBlockPos.x != null && this.currBlockPos.y != null &&
-       this.currBlockPos.x > 0 && this.currBlockPos.x < 40 && this.currBlockPos.y > 0 &&
-       this.currBlockPos.y < 16 && this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x] != null &&
-       this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != null &&
-       this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != 0
-    )
+    if (this.objectSelected == 0)
     {
-      var pos : THREE.Vector2 = new THREE.Vector2;
-      pos.x = this.currBlockPos.x;
-      pos.y = this.currBlockPos.y;
+      if (this.currBlockPos && this.currBlockPos.x != null && this.currBlockPos.y != null &&
+         this.currBlockPos.x > 0 && this.currBlockPos.x < 40 && this.currBlockPos.y > 0 &&
+         this.currBlockPos.y < 16 && this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x] != null &&
+         this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != null &&
+         this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != 0
+      )
+      {
+        var pos : THREE.Vector2 = new THREE.Vector2;
+        pos.x = this.currBlockPos.x;
+        pos.y = this.currBlockPos.y;
 
-      this.debugPrint(1, "OBJECT SELECTED");
-      this.objectSelected = 1;
-      this.UbuildingIDs = this.UbuildingIDs + 1;
+        this.debugPrint(1, "OBJECT SELECTED");
+        this.objectSelected = 1;
+        this.UbuildingIDs = this.UbuildingIDs + 1;
 
-      this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
-        this.UbuildingIDs, this.frontBlockArray[pos.y][pos.x][3], 1, this.outlinedText,
-        this.frontBlockArray[pos.y][pos.x][4]);
+        this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
+          this.UbuildingIDs, this.frontBlockArray[pos.y][pos.x][3], 1, this.outlinedText,
+          this.frontBlockArray[pos.y][pos.x][4]);
 
-      this.selectedObj = pos;
+        this.selectedObj = pos;
+      }
     }
 
-    if (this.objectSelected == 1 &&
-        this.currBlockPos && this.currBlockPos.x != null && this.currBlockPos.y != null &&
-        this.selectedObj != null && this.selectedObj.x != 0 && this.selectedObj.y != 0 &&
-        this.selectedObj.x != this.currBlockPos.x || this.selectedObj.y != this.currBlockPos.y &&
-        this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x] != null &&
-        this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != 0)
+    if (this.objectSelected == 1)
     {
+      this.debugPrint(1, "CONDITION", this.objectSelected);
+      if (this.currBlockPos && this.currBlockPos.x != null && this.currBlockPos.y != null &&
+          this.selectedObj != null && this.selectedObj.x != 0 && this.selectedObj.y != 0 &&
+          this.selectedObj.x != this.currBlockPos.x || this.selectedObj.y != this.currBlockPos.y &&
+          this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x] != null &&
+          this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != 0)
+      {
 
+        var pos : THREE.Vector2 = new THREE.Vector2;
+        pos.x = this.selectedObj.x;
+        pos.y = this.selectedObj.y;
 
-      var pos : THREE.Vector2 = new THREE.Vector2;
-      pos.x = this.selectedObj.x;
-      pos.y = this.selectedObj.y;
+        this.debugPrint(1, "OBJECT UNSELECTED");
+        this.objectSelected = 0;
 
-      this.debugPrint(1, "OBJECT UNSELECTED");
-      this.objectSelected = 0;
+        this.UbuildingIDs = this.UbuildingIDs + 1;
 
-      this.UbuildingIDs = this.UbuildingIDs + 1;
+        this.replaceObject(pos, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][7],
+          this.UbuildingIDs, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][3], 1,
+          this.normalText, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][4]);
 
-      this.replaceObject(pos, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][7],
-        this.UbuildingIDs, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][3], 1,
-        this.normalText, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][4]);
-
-      this.selectedObj = new THREE.Vector2(0, 0);
+        this.selectedObj = new THREE.Vector2(0, 0);
+      }
     }
+
 
     if (this.objectSelected == 1 && this.mouseLeftPressed == 1)
     {
@@ -620,7 +639,7 @@ export default class ViewGL
     }
     else if (size == 4)
     {*/
-      newObject = new THREE.PlaneGeometry(2, 2, 1, 1);
+      newObject = new THREE.PlaneGeometry(3, 3, 1, 1);
     //}
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
@@ -749,7 +768,7 @@ export default class ViewGL
     }
     else if (size == 4)
     {*/
-      newObject = new THREE.PlaneGeometry(2, 2, 1, 1);
+      newObject = new THREE.PlaneGeometry(3, 3, 1, 1);
     //}
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
@@ -812,7 +831,7 @@ export default class ViewGL
     }
     else if (size == 4)
     {*/
-      newObject = new THREE.PlaneGeometry(2, 2, 1, 1);
+      newObject = new THREE.PlaneGeometry(3, 3, 1, 1);
     //}
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
