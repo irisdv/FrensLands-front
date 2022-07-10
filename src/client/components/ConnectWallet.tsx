@@ -11,8 +11,8 @@ export function ConnectWallet() {
   if (account) {
     return (
       <div>
-        <p>Account: {account}</p>
-        <button onClick={() => disconnect()}>Disconnect</button>
+        {/* <p>Account: {account}</p>
+        <button onClick={() => disconnect()}>Disconnect</button> */}
       </div>
     );
   }
@@ -26,8 +26,7 @@ export function ConnectWallet() {
       ))} */}
       {connectors.map((connector) =>
         connector.available() ? (
-          <button key={connector.id()} onClick={() => connect(connector)}>
-            Connect your wallet
+          <button className="btnPlay pixelated" key={connector.id()} onClick={() => connect(connector)}>
           </button>
         ) : null
       )}

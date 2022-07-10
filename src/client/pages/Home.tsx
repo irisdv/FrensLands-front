@@ -176,35 +176,45 @@ export default function Home() {
     <>
       <div className="backgroundImg relative pixelated">
 
-          <img className="absolute m-auto pixelated" src="resources/front/UI_MainScreenPlanet.png" 
+      <img className="absolute m-auto pixelated" src="resources/front/UI_MainScreenPlanet.png" 
           style={{width : "640px", height: "640px", marginTop: '40px', marginLeft: "320px"}} />
 
           <div className="text-white">gm {account}</div>
 
-      <p className="text-white">My balance NFT: {BalanceNFTValue && BalanceNFTValue.NFTbalance}</p>
-      <div>
-        {/* {
-          transactions.map(transaction => {
-            <div>
-            <p key={transaction.transactionHash}>
-              hash : {transaction.transactionHash} 
-              // return <Notif key={transaction.transactionHash} transaction={transaction} />
-            </p>
+          <p className="text-white">My balance NFT: {BalanceNFTValue && BalanceNFTValue.NFTbalance}</p>
+          <div>
+            {/* {
+              transactions.map(transaction => {
+                <div>
+                <p key={transaction.transactionHash}>
+                  hash : {transaction.transactionHash} 
+                  // return <Notif key={transaction.transactionHash} transaction={transaction} />
+                </p>
+              </div>
+              })
+            } */}
           </div>
-          })
-         } */}
-      </div>
+         <div style={{height: "128px", width: "128px", marginTop: "256px", marginLeft: "576px"}} className="absolute"> 
+              {account ? 
+                BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 ?
+                 <button className="pixelated btnMint" onClick={() => mintMap()}></button>
 
-      <ConnectWallet/>
+                 :
+                  <>
+                    <p className="text-white">Initialize game</p>
+                    <button className="pixelated btnPlay" onClick={() => startGame()}></button>
 
-      <button onClick={() => getCoins()}>Get your Frens Coins</button>
+                    <p className="text-white">Get your FrensCoins</p>
+                    <button className="pixelated btnPlay" onClick={() => getCoins()}>Get your Frens Coins</button>
 
-      {BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&
-      <button className="pixelated btnMint" onClick={() => mintMap()}></button>
-      }
-      {BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 &&
-      <button className="pixelated btnPlay" onClick={() => startGame()}></button>
-    }
+                    <p className="text-white">Now let's play !</p>
+                    <button className="pixelated btnPlay" onClick={() => navigate("/game")}></button>
+                  </>
+              :  
+                <ConnectWallet/>
+              }
+          </div>
+
 
       {/* {account && (
         <div>
