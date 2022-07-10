@@ -23,6 +23,10 @@ import { useStarknet } from "@starknet-react/core";
 import { GetBlockResponse } from 'starknet'
 
 
+export interface IFrame {
+  id?: string;
+}
+
 export interface IGameState {
   lastUpdated: string;
   currentBlock: number;
@@ -47,7 +51,7 @@ export interface IGameState {
   updateTokenId: (id: string) => void;
   // updateResources: () => void;
   showFrame?: boolean;
-  frameData?: {};
+  frameData?: IFrame;
   updateBuildingFrame: (show: boolean, data: {}) => void;
 }
 
@@ -121,7 +125,7 @@ interface SetError {
 interface SetShowFrame {
   type: "set_showFrame";
   showFrame?: boolean;
-  frameData?: {};
+  frameData?: IFrame;
 }
 
 interface SetEnergy {

@@ -63,6 +63,7 @@ export default class ViewGL
   private tempTime = Date.now();
   private tempTime2 = Date.now();
 
+  private rawData : any = {};
 
   // *********************** DEBUG/TEST *********************** //
 
@@ -548,7 +549,12 @@ export default class ViewGL
     if (this.objectSelected == 1 && this.mouseLeftPressed == 1)
     {
       this.debugPrint(1, "OBJECT POPUP OPEN");
+      // To open popup
+      this.rawData.updateBuildingFrame(true, {"id": 1});
       this.objectPopupOpen = 1;
+
+      // To close popup
+      // this.rawData.updateBuildingFrame(false, {});
     }
   }
 
@@ -974,6 +980,14 @@ export default class ViewGL
     this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
   };
+
+  onReceivedUpdatedData = (data: any) => {
+    // Store once all the data receive so we can access callback functions
+    if (Object.keys(this.rawData).length == 0) {
+      this.rawData = data;
+    }
+    // Here save les data qui sont mises à jour
+  }
 
   // ******************* TEST TO CLEAN LATER ******************//
 

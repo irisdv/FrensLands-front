@@ -43,7 +43,7 @@ export function BuildingFrame(props: any) {
             style={{ height: "20px" }}
           >
             {/* {frameData && frameData.name ? frameData.name : ""} */}
-            {/* {frameData && frameData.id ? frameData.id : ""} */}
+            {frameData && frameData.id ? "ID building: "+frameData.id : ""}
           </div>
           <div
             className="relative flex jutify-center items-center inline-block"
