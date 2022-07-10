@@ -545,27 +545,17 @@ body {
 
 /* TODO : Building Images by ids .building+id */
 
-/* - **Boulangerie** 7 : 6 6
-- **Mall** 10 3 4
-- **grocery shop** 8 : 7 6
-- **restaurants** 9 8 6
-- **Market** 15 2 1*/
-
-      /* - **cinema 14 1 3
-- **bars** 11 3 3
-- **library** 12 5 3 
-- **swimming pool** 13  2 3 */
-
       /* - **Hospital 23
 - **police station 22
 - **agriculture/biology lab (cure disease, unlock new farms and updates, etc 24 */
 
-/* - **cereal farm : game art done** 16 4 1 
+/* 
 - **vegetable farm** 17
-- **cow farm** 18 1 1 
 - **tree farm** 19
 - **Mines** 20
 - **coal plant** 21 */
+
+
 
 /* VegetableFarm = 17
 CowFarm = 18
@@ -576,12 +566,132 @@ PoliceStation = 22
 Hospital = 23
 Lab = 24 */
 
-      /* - **house (different sizes)** 4 11 6
-- **apartments building (different sizes)** 5 4 6
-- **hotels** 6  : 9 6*/
+.building4 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(11 * 2 * 64px) calc(6 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+}
+.building5 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(4 * 2 * 64px) calc(6 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+}
+.building6 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(9 * 2 * 64px) calc(6 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+}
+.building7 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(6 * 2 * 64px) calc(6 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+}
+.building8 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(7 * 2 * 64px) calc(6 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+}
+.building9 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(8 * 2 * 64px) calc(6 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+}
+.building10 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(3 * 2 * 64px) calc(4 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+}
+.building11 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(3 * 2 * 64px) calc(3 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+}
+.building12 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(5 * 2 * 64px) calc(3 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+}
+.building13 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(2 * 2 * 64px) calc(3 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+}
+.building14 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(1 * 2 * 64px) calc(3 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+}
+.building15 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(2 * 2 * 64px) calc(1 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+}
+.building16 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(4 * 2 * 64px) calc(1 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+}
+.building17 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(4 * 2 * 64px) calc(1 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+}
+.building18 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(1 * 2 * 64px) calc(1 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+}
 
-/* Ligne milieu  */
-/* Ligne du bas  */
+
+
+
+
+
 .building19 {
     display:inline-block;
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
@@ -620,54 +730,5 @@ Lab = 24 */
     height:calc(64px * 1);
     width:calc(64px * 1);
     background-position:calc(27 * 1 * 32px) calc(15 * 1 * 32px);
-    background-size:calc(1664px * 1) calc(384px * 1);
-}
-.building24 {
-    display:inline-block;
-    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
-    height:calc(64px * 1);
-    width:calc(64px * 1);
-    background-position:calc(23 * 1 * 32px) calc(15 * 1 * 32px);
-    background-size:calc(1664px * 1) calc(384px * 1);
-}
-.building25 {
-    display:inline-block;
-    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
-    height:calc(64px * 1);
-    width:calc(64px * 1);
-    background-position:calc(19 * 1 * 32px) calc(15 * 1 * 32px);
-    background-size:calc(1664px * 1) calc(384px * 1);
-}
-.building26 {
-    display:inline-block;
-    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
-    height:calc(64px * 1);
-    width:calc(64px * 1);
-    background-position:calc(15 * 1 * 32px) calc(15 * 1 * 32px);
-    background-size:calc(1664px * 1) calc(384px * 1);
-}
-.building27 {
-    display:inline-block;
-    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
-    height:calc(64px * 1);
-    width:calc(64px * 1);
-    background-position:calc(11 * 1 * 32px) calc(15 * 1 * 32px);
-    background-size:calc(1664px * 1) calc(384px * 1);
-}
-.building28 {
-    display:inline-block;
-    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
-    height:calc(64px * 1);
-    width:calc(64px * 1);
-    background-position:calc(7 * 1 * 32px) calc(15 * 1 * 32px);
-    background-size:calc(1664px * 1) calc(384px * 1);
-}
-/* bas à droite */
-.building29 {
-    display:inline-block;
-    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
-    height:calc(64px * 1);
-    width:calc(64px * 1);
-    background-position:calc(3 * 1 * 32px) calc(15 * 1 * 32px);
     background-size:calc(1664px * 1) calc(384px * 1);
 }

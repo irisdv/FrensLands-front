@@ -35,19 +35,19 @@ export function BottomBar() {
       <div className="absolute" style={{ bottom: "60px", right: "0px", display: `${displayNature ? "block" : "none"}` }}>
         <div className="flex flex-row justify-center inline-block">
           <div className="btnCategory pixelated relative" onClick={() => setDisplayingFrame(0, 19)}>
-            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "-29px"}}></div>
+            <div className="building17 pixelated absolute" style={{bottom: "-30px", left: "-29px"}}></div>
           </div>
           <div className="btnCategory pixelated" onClick={() => setDisplayingFrame(0, 19)}>
-            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "35px"}}></div>
+            <div className="building18 pixelated absolute" style={{bottom: "-30px", left: "35px"}}></div>
           </div>
           <div className="btnCategory pixelated">
             <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "99px"}}></div>
           </div>
           <div className="btnCategory pixelated">
-            <div className="building19 pixelated absolute" style={{bottom: "-30px", right: "29px"}}></div>
+            <div className="building20 pixelated absolute" style={{bottom: "-30px", right: "29px"}}></div>
           </div>
           <div className="btnCategory pixelated">
-            <div className="building19 pixelated absolute" style={{bottom: "-30px", right: "-35px"}}></div>
+            <div className="building21 pixelated absolute" style={{bottom: "-30px", right: "-35px"}}></div>
           </div>
         </div>
       </div>
@@ -55,24 +55,16 @@ export function BottomBar() {
       {/* - **Hospital 23
 - **police station 22
 - **agriculture/biology lab (cure disease, unlock new farms and updates, etc 24 */}
-
-
       <div className="absolute" style={{ bottom: "60px", right: "0px", display: `${displaySecurity ? "block" : "none"}` }}>
         <div className="flex flex-row justify-center inline-block">
-          <div className="btnCategory pixelated relative" onClick={() => setDisplayingFrame(0, 19)}>
-            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "-29px"}}></div>
-          </div>
           <div className="btnCategory pixelated" onClick={() => setDisplayingFrame(0, 19)}>
-            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "35px"}}></div>
+            <div className="building22 pixelated absolute" style={{bottom: "-30px", left: "35px"}}></div>
           </div>
           <div className="btnCategory pixelated">
-            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "99px"}}></div>
+            <div className="building23 pixelated absolute" style={{bottom: "-30px", left: "99px"}}></div>
           </div>
           <div className="btnCategory pixelated">
-            <div className="building19 pixelated absolute" style={{bottom: "-30px", right: "29px"}}></div>
-          </div>
-          <div className="btnCategory pixelated">
-            <div className="building19 pixelated absolute" style={{bottom: "-30px", right: "-35px"}}></div>
+            <div className="building24 pixelated absolute" style={{bottom: "-30px", right: "29px"}}></div>
           </div>
         </div>
       </div>
@@ -83,20 +75,17 @@ export function BottomBar() {
 - **swimming pool** 13 */}
       <div className="absolute" style={{ bottom: "60px", right: "0px", display: `${displayEntertainment ? "block" : "none"}` }}>
         <div className="flex flex-row justify-center inline-block">
-          <div className="btnCategory pixelated relative" onClick={() => setDisplayingFrame(0, 19)}>
-            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "-29px"}}></div>
-          </div>
           <div className="btnCategory pixelated" onClick={() => setDisplayingFrame(0, 19)}>
-            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "35px"}}></div>
+            <div className="building11 pixelated absolute" style={{bottom: "-30px", left: "35px"}}></div>
           </div>
           <div className="btnCategory pixelated">
-            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "99px"}}></div>
+            <div className="building12 pixelated absolute" style={{bottom: "-30px", left: "99px"}}></div>
           </div>
           <div className="btnCategory pixelated">
-            <div className="building19 pixelated absolute" style={{bottom: "-30px", right: "29px"}}></div>
+            <div className="building13 pixelated absolute" style={{bottom: "-30px", right: "29px"}}></div>
           </div>
           <div className="btnCategory pixelated">
-            <div className="building19 pixelated absolute" style={{bottom: "-30px", right: "-35px"}}></div>
+            <div className="building14 pixelated absolute" style={{bottom: "-30px", right: "-35px"}}></div>
           </div>
         </div>
       </div>
@@ -107,19 +96,13 @@ export function BottomBar() {
       <div className="absolute" style={{ bottom: "60px", right: "0px", display: `${displayHousing ? "block" : "none"}` }}>
         <div className="flex flex-row justify-center inline-block">
           <div className="btnCategory pixelated relative" onClick={() => setDisplayingFrame(0, 19)}>
-            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "-29px"}}></div>
+            <div className="building4 pixelated absolute" style={{bottom: "-30px", left: "-29px"}}></div>
           </div>
           <div className="btnCategory pixelated" onClick={() => setDisplayingFrame(0, 19)}>
-            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "35px"}}></div>
+            <div className="building5 pixelated absolute" style={{bottom: "-30px", left: "35px"}}></div>
           </div>
           <div className="btnCategory pixelated">
-            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "99px"}}></div>
-          </div>
-          <div className="btnCategory pixelated">
-            <div className="building19 pixelated absolute" style={{bottom: "-30px", right: "29px"}}></div>
-          </div>
-          <div className="btnCategory pixelated">
-            <div className="building19 pixelated absolute" style={{bottom: "-30px", right: "-35px"}}></div>
+            <div className="building6 pixelated absolute" style={{bottom: "-30px", left: "99px"}}></div>
           </div>
         </div>
       </div>
