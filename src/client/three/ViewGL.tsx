@@ -64,8 +64,9 @@ export default class ViewGL
   private tempTime = Date.now();
   private tempTime2 = Date.now();
 
-  private rawData : any = {};
+  private rawData: any = {};
   private chainEvent: number = 0;
+  private chainDataAdded: number = 0;
 
   // *********************** DEBUG/TEST *********************** //
 
@@ -155,8 +156,8 @@ export default class ViewGL
 
     // ******************* GET WORLD READY *******************//
 
-    //if (this.chainEvent == 1)
-    //{
+    if (this.chainDataAdded == 1)
+    {
     this.getTypeFromCompArr();
     this.generateRessources();
 
@@ -167,7 +168,7 @@ export default class ViewGL
 
     // CALL ANIMATION LOOP
     this.update();
-    //}
+    }
   }
 
   // ****************** FUNCTIONS OUT OF CONSTRUCTOR ********************** //
@@ -1090,11 +1091,14 @@ export default class ViewGL
 
   onReceivedUpdatedData = (data: any) => {
     // Store once all the data receive so we can access callback functions
-    if (Object.keys(this.rawData).length == 0) {
+    this.chainEvent = 1;
+
+    if (Object.keys(this.rawData).length == 0)
+    {
       this.rawData = data;
     }
     this.compArray = this.rawData.mapArray;
-    this.chainEvent = 1;
+    this.chainDataAdded = 1;
   }
 
   // ******************* RENDER LOOP ******************* //
