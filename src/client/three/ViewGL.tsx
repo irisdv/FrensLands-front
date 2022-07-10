@@ -343,7 +343,8 @@ export default class ViewGL
       {
         if (this.frontBlockArray[indexI][indexJ] != null
             && this.frontBlockArray[indexI][indexJ][3] != null
-            && this.frontBlockArray[indexI][indexJ][3] != 0)
+            && this.frontBlockArray[indexI][indexJ][3] != 0//)
+            && this.frontBlockArray[indexI][indexJ][4] != 0)//DEBUG CONDITION "ANTI 0"
         {
           var pos = new THREE.Vector2;
           pos.x = this.frontBlockArray[indexI][indexJ][0] + 0.5;
@@ -369,6 +370,12 @@ export default class ViewGL
           this.debugPrint(1, "GENTYPE", this.frontBlockArray[indexI][indexJ][3]);
 
         }
+
+        if (this.frontBlockArray[indexI][indexJ][4] == 0) // DEBUG CONDITION WITH "ANTI 0"
+        {
+          this.frontBlockArray[indexI][indexJ][3] = 0;
+        }
+
         indexJ++;
       }
       indexJ = 1;
