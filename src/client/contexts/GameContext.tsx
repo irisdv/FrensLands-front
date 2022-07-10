@@ -464,23 +464,21 @@ export const AppStateProvider: React.FC<
 
   const refreshBalance = React.useCallback(async (coins : any) => {
     let _frensCoinsBalance : any;
-    // if (state.address) {
+    if (state.address) {
         try {
           _frensCoinsBalance = await coins.call("balanceOf", [
             state.address,
           ]);
-          console.log('_frensCoinsBalance', uint256.uint256ToBN(_frensCoinsBalance[0][1]).toNumber())
-          var elem = toBN(_frensCoinsBalance)
-          var newBalance = elem.toNumber()
+          console.log('_frensCoinsBalance', uint256.uint256ToBN(_frensCoinsBalance[0]).toNumber())
           dispatch({
             type: "set_frensCoins",
-            frensCoins: newBalance as number
+            frensCoins: uint256.uint256ToBN(_frensCoinsBalance[0]).toNumber()
           });
         } catch (e) {
-          console.warn("Error when retrieving get_energy_level in M02_Resources");
+          console.warn("Error when retrieving balance of coins");
           console.warn(e);
         }
-      // }
+      }
       }, [state.address]);
 
     const refreshEnergyLevel = React.useCallback(async (resources : any) => {
@@ -500,7 +498,7 @@ export const AppStateProvider: React.FC<
           console.warn("Error when retrieving get_energy_level in M02_Resources");
           console.warn(e);
         }
-    }, []);
+    }, [state.address]);
 
     const refreshBlockGame = React.useCallback(async (resources : any) => {
       let _lastestBlock : any;

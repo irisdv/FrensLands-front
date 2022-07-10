@@ -9,12 +9,9 @@ import { ConnectWallet } from "../ConnectWallet";
 
 export function MenuBar() {
   const {setAddress, frensCoins, wood, rock, meat, metal, coal, cereal, energy, populationBusy, populationFree, blockGame, currentBlock} = useGameContext();
-  //   const [watch, setWatch] = useState(true);
-    const { contract: resources } = useResourcesContract();
+    // const { contract: resources } = useResourcesContract();
 
     const { data: block } = useStarknetBlock()
-
-    console.log('wood', wood)
 
     const {account} = useStarknet()
 
@@ -23,8 +20,8 @@ export function MenuBar() {
     }, [account])
 
     // console.log('data', block)
-    console.log('currentBlock', currentBlock)
-    console.log("blockGame", blockGame)
+    // console.log('currentBlock', currentBlock)
+    // console.log("blockGame", blockGame)
 
 
   //   const { data: counterBuildingsResult } = useStarknetCall({
@@ -49,11 +46,11 @@ export function MenuBar() {
   // Choper les ressources pour chaque Resources ID
   // Donc ID allant de 1 à 5
 
-  useEffect(() => {
-    if (block ) {
+  // useEffect(() => {
+  //   if (block ) {
 
-    }
-  }, [block])
+  //   }
+  // }, [block])
 
   const claimResources = () => {
     console.log('claimingResources');

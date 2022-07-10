@@ -93,6 +93,24 @@ export default function Home() {
     }
   }, [fetchBalanceNFTResult]);
 
+  const { data: fetchGameStatus } = useStarknetCall({
+    contract: worlds,
+    method: "get_game_status",
+    args: [tokenId],
+    options: { watch },
+  });
+
+  const GameStatusValue = useMemo(() => {
+    console.log("GameStatusResult", fetchGameStatus);
+    if (fetchGameStatus && fetchGameStatus.length > 0) {
+      var elem = uint256.uint256ToBN(fetchGameStatus[0]);
+      console.log("status game", elem);
+      var balance = elem.toNumber();
+
+      return { gameStatus: balance };
+    }
+  }, [fetchGameStatus, tokenId]);
+
   const {
     data: dataGetMap,
     loading: loadingGetMap,
@@ -148,7 +166,7 @@ export default function Home() {
     }
   }
 
-  console.log('balance NFT', BalanceNFTValue && BalanceNFTValue.NFTbalance)
+  // console.log('balance NFT', BalanceNFTValue && BalanceNFTValue.NFTbalance)
 
   return (
     <>

@@ -10,36 +10,186 @@ import { useGameContext } from "../../hooks/useGameContext";
 export function BottomBar() {
   const { address, showFrame, updateBuildingFrame } = useGameContext();
   const [displayNature, setDisplayNature] = useState(false)
+  const [displayEntertainment, setDisplayEntertainment] = useState(false)
+  const [displayHousing, setDisplayHousing] = useState(false)
+  const [displaySecurity, setDisplaySecurity] = useState(false)
+  const [displayShop, setDisplayShop] = useState(false)
+  const [displayFrame, setDisplayFrame] = useState(false)
   
   // 0 : build a new building
   // 1: update a building 
-  const setDisplayFrame = (display : boolean, type: number, id : any) => {
-    console.log('showFrame component', showFrame)
-    updateBuildingFrame(true, {"id": id, "type": type});
-
+  const setDisplayingFrame = (type: number, id : any) => {
+    console.log('displayFrame', displayFrame)
+    setDisplayFrame(!displayFrame);
+    updateBuildingFrame(!displayFrame, {"id": id, "type": type});
   };
   return (
     <>
-      <div className="absolute" style={{ bottom: "60px", right: "0px" }}>
+      {/* Menu Nature */}
+      {/* - **cereal farm : game art done**
+- **vegetable farm** 17
+- **cow farm** 18
+- **tree farm** 19
+- **Mines** 20
+- **coal plant** 21 */}
+      <div className="absolute" style={{ bottom: "60px", right: "0px", display: `${displayNature ? "block" : "none"}` }}>
         <div className="flex flex-row justify-center inline-block">
-          <div className="btnCategory pixelated relative" onClick={() => setDisplayFrame(true, 0, 19)}>
+          <div className="btnCategory pixelated relative" onClick={() => setDisplayingFrame(0, 19)}>
             <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "-29px"}}></div>
           </div>
-          <div className="btnCategory pixelated"><div className=" pixelated"></div></div>
-          <div className="btnCategory pixelated"><div className=" pixelated"></div></div>
-          <div className="btnCategory pixelated"><div className=" pixelated"></div></div>
-          <div className="btnCategory pixelated"><div className=" pixelated"></div></div>
+          <div className="btnCategory pixelated" onClick={() => setDisplayingFrame(0, 19)}>
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "35px"}}></div>
+          </div>
+          <div className="btnCategory pixelated">
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "99px"}}></div>
+          </div>
+          <div className="btnCategory pixelated">
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", right: "29px"}}></div>
+          </div>
+          <div className="btnCategory pixelated">
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", right: "-35px"}}></div>
+          </div>
+        </div>
+      </div>
+      {/* Menu Security */}
+      {/* - **Hospital 23
+- **police station 22
+- **agriculture/biology lab (cure disease, unlock new farms and updates, etc 24 */}
+
+
+      <div className="absolute" style={{ bottom: "60px", right: "0px", display: `${displaySecurity ? "block" : "none"}` }}>
+        <div className="flex flex-row justify-center inline-block">
+          <div className="btnCategory pixelated relative" onClick={() => setDisplayingFrame(0, 19)}>
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "-29px"}}></div>
+          </div>
+          <div className="btnCategory pixelated" onClick={() => setDisplayingFrame(0, 19)}>
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "35px"}}></div>
+          </div>
+          <div className="btnCategory pixelated">
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "99px"}}></div>
+          </div>
+          <div className="btnCategory pixelated">
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", right: "29px"}}></div>
+          </div>
+          <div className="btnCategory pixelated">
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", right: "-35px"}}></div>
+          </div>
+        </div>
+      </div>
+      {/* Menu Entertainment */}
+      {/* - **cinema 14
+- **bars** 11
+- **library** 12
+- **swimming pool** 13 */}
+      <div className="absolute" style={{ bottom: "60px", right: "0px", display: `${displayEntertainment ? "block" : "none"}` }}>
+        <div className="flex flex-row justify-center inline-block">
+          <div className="btnCategory pixelated relative" onClick={() => setDisplayingFrame(0, 19)}>
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "-29px"}}></div>
+          </div>
+          <div className="btnCategory pixelated" onClick={() => setDisplayingFrame(0, 19)}>
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "35px"}}></div>
+          </div>
+          <div className="btnCategory pixelated">
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "99px"}}></div>
+          </div>
+          <div className="btnCategory pixelated">
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", right: "29px"}}></div>
+          </div>
+          <div className="btnCategory pixelated">
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", right: "-35px"}}></div>
+          </div>
+        </div>
+      </div>
+      {/* Menu House */}
+      {/* - **house (different sizes)** 4
+- **apartments building (different sizes)** 5
+- **hotels** 6 */} 
+      <div className="absolute" style={{ bottom: "60px", right: "0px", display: `${displayHousing ? "block" : "none"}` }}>
+        <div className="flex flex-row justify-center inline-block">
+          <div className="btnCategory pixelated relative" onClick={() => setDisplayingFrame(0, 19)}>
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "-29px"}}></div>
+          </div>
+          <div className="btnCategory pixelated" onClick={() => setDisplayingFrame(0, 19)}>
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "35px"}}></div>
+          </div>
+          <div className="btnCategory pixelated">
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "99px"}}></div>
+          </div>
+          <div className="btnCategory pixelated">
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", right: "29px"}}></div>
+          </div>
+          <div className="btnCategory pixelated">
+            <div className="building19 pixelated absolute" style={{bottom: "-30px", right: "-35px"}}></div>
+          </div>
+        </div>
+      </div>
+      {/* Menu Shops */}
+      <div className="absolute" style={{ bottom: "60px", right: "0px", display: `${displayShop ? "block" : "none"}` }}>
+        <div className="flex flex-row justify-center inline-block">
+          <div className="btnCategory pixelated relative" onClick={() => setDisplayingFrame(0, 19)}>
+            <div className="building7 pixelated absolute" style={{bottom: "-30px", left: "-29px"}}></div>
+          </div>
+          <div className="btnCategory pixelated" onClick={() => setDisplayingFrame(0, 19)}>
+            <div className="building10 pixelated absolute" style={{bottom: "-30px", left: "35px"}}></div>
+          </div>
+          <div className="btnCategory pixelated">
+            <div className="building8 pixelated absolute" style={{bottom: "-30px", left: "99px"}}></div>
+          </div>
+          <div className="btnCategory pixelated">
+            <div className="building9 pixelated absolute" style={{bottom: "-30px", right: "29px"}}></div>
+          </div>
+          <div className="btnCategory pixelated">
+            <div className="building15 pixelated absolute" style={{bottom: "-30px", right: "-35px"}}></div>
+          </div>
         </div>
       </div>
       <div className="absolute" style={{ bottom: "0px", right: "0px" }}>
         <div className="flex flex-row justify-center inline-block">
-          <div className="btnBottom pixelated"onClick={() => setDisplayNature(true)}>
+          <div className="btnBottom pixelated"onClick={() => {
+              setDisplayNature(!displayNature) 
+              setDisplaySecurity(false)
+              setDisplayEntertainment(false)
+              setDisplayHousing(false)
+              setDisplayShop(false)
+            }}>
             <div className="menuNature pixelated"></div>
           </div>
-          <div className="btnBottom pixelated"><div className="menuSecurity pixelated"></div></div>
-          <div className="btnBottom pixelated"><div className="menuEntertainment pixelated"></div></div>
-          <div className="btnBottom pixelated"><div className="menuHouse pixelated"></div></div>
-          <div className="btnBottom pixelated"><div className="menuShop pixelated"></div></div>
+          <div className="btnBottom pixelated" onClick={() => {
+            setDisplaySecurity(!displaySecurity)
+            setDisplayNature(false)
+            setDisplayEntertainment(false)
+            setDisplayHousing(false)
+            setDisplayShop(false)
+          }}>
+            <div className="menuSecurity pixelated"></div>
+          </div>
+          <div className="btnBottom pixelated" onClick={() => {
+            setDisplayEntertainment(!displayEntertainment)
+            setDisplaySecurity(false)
+            setDisplayNature(false)
+            setDisplayHousing(false)
+            setDisplayShop(false)
+          }}>
+            <div className="menuEntertainment pixelated"></div>
+          </div>
+          <div className="btnBottom pixelated" onClick={() => {
+            setDisplayHousing(!displayHousing)
+            setDisplaySecurity(false)
+            setDisplayNature(false)
+            setDisplayEntertainment(false)
+            setDisplayShop(false)
+            }}>
+            <div className="menuHouse pixelated"></div>
+          </div>
+          <div className="btnBottom pixelated" onClick={() => {
+            setDisplayShop(!displayShop)
+            setDisplaySecurity(false)
+            setDisplayNature(false)
+            setDisplayEntertainment(false)
+            setDisplayHousing(false)
+          }}>
+            <div className="menuShop pixelated"></div>
+          </div>
         </div>
       </div>
     </>
