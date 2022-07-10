@@ -3,20 +3,57 @@
         {
             "id": 1,
             "name": "Cabin",
-            "cost_update": [],
-            "daily_cost": [],
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_update": [],
             "daily_harvest": [],
             "description": ""
         },
         {
             "id": 2,
             "name": "Tree",
-            "cost_update": [],
-            "daily_cost": []
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 12
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_update": [],
+            "daily_harvest": [],
+            "description": ""
         },
         {
             "id": 3,
-            "name": "Rock"
+            "name": "Stone",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 12
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_update": [],
+            "daily_harvest": [],
+            "description": ""
         }
         
     ]

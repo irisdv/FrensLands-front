@@ -391,7 +391,7 @@ export const AppStateProvider: React.FC<
             ],
             [uint256.bnToUint256(0), uint256.bnToUint256(1), uint256.bnToUint256(2), uint256.bnToUint256(3), uint256.bnToUint256(5), uint256.bnToUint256(6), uint256.bnToUint256(8)]
           ]);
-          console.log('_erc1155Balance', toBN(_erc1155Balance[0]).toNumber())
+          console.log('_erc1155Balance', _erc1155Balance)
           var elem = toBN(_erc1155Balance)
           var newBalance = elem.toNumber()
           console.log('newBalance', newBalance)

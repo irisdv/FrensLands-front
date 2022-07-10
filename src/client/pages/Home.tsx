@@ -41,22 +41,18 @@ export default function Home() {
 
   const { setAddress, updateTokenId, address, tokenId } = useGameContext();
 
-  console.log('transactions', transactions)
+  // console.log('transactions', transactions)
 
   useEffect(() => {
-    console.log('useEffet 1')
     if (account && !address) {
       setAddress(account);
       updateTokenId(account);
-      console.log('1')
     }
   }, [account, address])
 
   useEffect(() => {
-    console.log('useEffet 2')
     if (account && !tokenId) {
       updateTokenId(account);
-      console.log('2')
     }
   }, [account, tokenId])
 
@@ -64,7 +60,6 @@ export default function Home() {
     console.log('Setting up game')
     if (account && !tokenId) {
       updateTokenId(account);
-      console.log('2')
     }
   }, [transaction])
 
@@ -173,9 +168,9 @@ export default function Home() {
     // }
   }
 
-  console.log("account", account);
-  console.log("dataStartGame", dataGetMap);
-  console.log("startGameInvoke", loadingGetMap);
+  // console.log("account", account);
+  // console.log("dataStartGame", dataGetMap);
+  // console.log("startGameInvoke", loadingGetMap);
 
   return (
     <>
