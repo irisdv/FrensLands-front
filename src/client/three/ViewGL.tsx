@@ -348,8 +348,8 @@ export default class ViewGL
             && this.frontBlockArray[indexI][indexJ][4] != 0)//DEBUG CONDITION "ANTI 0"
         {
           var pos = new THREE.Vector2;
-          pos.x = this.frontBlockArray[indexI][indexJ][0] + 0.5;
-          pos.y = this.frontBlockArray[indexI][indexJ][1] + 0.5;
+          pos.x = this.frontBlockArray[indexI][indexJ][0];// + 0.5;
+          pos.y = this.frontBlockArray[indexI][indexJ][1];// + 0.5;
 
           if (pos.x > 40 || pos.y < 1 || pos.x < 1 || pos.y > 16)
           {
@@ -366,7 +366,7 @@ export default class ViewGL
 
           //this.createObjectFomChain(pos, 1, this.frontBlockArray[indexI][indexJ][4],
             //this.frontBlockArray[indexI][indexJ][3], 1, this.normalText);
-          this.createObjectFomChain(pos, 1, this.UbuildingIDs,
+          this.createObjectFomChain(pos, 1, this.frontBlockArray[indexI][indexJ][4],
               this.frontBlockArray[indexI][indexJ][3], 1, this.normalText);
 
           this.UbuildingIDs++;
@@ -880,8 +880,8 @@ export default class ViewGL
     {
       var   spaceValid = 0;
 
-      this.tempBuildMesh.position.x = this.currBlockPos.x + 0.5; // + 0.5 = CENTER OF BLOCK
-      this.tempBuildMesh.position.z = this.currBlockPos.y + 0.5;
+      this.tempBuildMesh.position.x = this.currBlockPos.x;// + 0.5; // + 0.5 = CENTER OF BLOCK
+      this.tempBuildMesh.position.z = this.currBlockPos.y;// + 0.5;
       var blockRightPos = new THREE.Vector2;
       blockRightPos.x = this.currBlockPos.x;
       blockRightPos.y = this.currBlockPos.y;
@@ -921,7 +921,7 @@ export default class ViewGL
         this.tempBuildMeshUpdate = 0;
 
         this.debugPrint(2, "H_ClickLeft");
-        this.createObject(pos, this.tempBuildMeshSize, this.UbuildingIDs + 1, this.tempBuildMeshType,
+        this.createObjectPlayer(pos, this.tempBuildMeshSize, this.UbuildingIDs + 1, this.tempBuildMeshType,
           this.tempBuildMeshProgress, this.normalText);
         this.deleteObject(this.tempBuildMeshName);
         this.placementActive = 0;
@@ -995,6 +995,67 @@ export default class ViewGL
     this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][1] = pos.y;// - 0.5;
     this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][4] = name;
     this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][7] = size;
+  }
+
+  // PLAYER CREATES GEOMETRY AND MESH ON TERRAIN ON CLICK
+  createObjectPlayer = (pos : THREE.Vector2, size : number, name : number,
+    type : number, progress : number, nameText : String) =>
+  {
+
+    let newObject = new THREE.PlaneGeometry;
+    /*if (size == 1)
+    {
+      newObject = new THREE.PlaneGeometry(1, 1, 1, 1);
+    }
+    else if (size == 2)
+    {
+      newObject = new THREE.PlaneGeometry(2, 1, 1, 1);
+    }
+    else if (size == 4)
+    {*/
+      newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1);
+    //}
+    newObject.name = name + "_geom";
+    newObject.rotateX(-Math.PI * 0.5);
+
+    const textObj = new THREE.TextureLoader().load(
+      //"resources/textures/"+ nameText +".png"
+      "resources/textures/"+ nameText +"_nogrid.png"
+    );
+
+    let matObj = new THREE.MeshStandardMaterial({
+      map: textObj,
+      transparent: true,
+      depthWrite: false,
+      depthTest: true,
+      // shading: 2
+    });
+
+    var textureType : any = new THREE.Vector2;
+    textureType = this.findTextByID(this.rightBuildingType[type]);
+
+    if (matObj.map)
+    {
+      matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625); // TEXTURE TILLING ADAPTED TO BUILDING TILES
+      //matObj.map.offset.set((4 * (1 / 16)), (4 * (1 / 16))); //TEMPORARY
+      matObj.map.offset.set(textureType.x, textureType.y);
+      matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+      matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+      matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+    }
+    this.debugPrint(1, "G_CREATEOBJ_FUNC");
+
+    var newObjectMesh = new THREE.Mesh(newObject, matObj);
+    newObjectMesh.name = name.toString();
+    newObjectMesh.position.x = pos.x;// + 0.5;
+    newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
+    newObjectMesh.position.z = pos.y;// + 0.5;
+    this.scene.add(newObjectMesh);
+    this.frontBlockArray[pos.y][pos.x][3] = type;
+    this.frontBlockArray[pos.y][pos.x][0] = pos.x;// - 0.5;
+    this.frontBlockArray[pos.y][pos.x][1] = pos.y;// - 0.5;
+    this.frontBlockArray[pos.y][pos.x][4] = name;
+    this.frontBlockArray[pos.y][pos.x][7] = size;
   }
 
   // CREATE GEOMETRY AND MESH ON TERRAIN FROM CHAIN DATA
