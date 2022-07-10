@@ -176,28 +176,28 @@ export default class ViewGL
     if (elem.length < 16)
     {
       this.debugPrint(1, "Adapted Decomp");
-      tempDecomp[0] = elem[0];                      //[pos:x]
-      tempDecomp[1] = elem[1] + elem[2];            //[pos:y]
-      tempDecomp[2] = elem[3];                      //[mat type]
-      tempDecomp[3] = elem[4] + elem[5];            //[ress or bat type]
-      tempDecomp[4] = elem[6] + elem[7] + elem[8];  //[UNIQUE ID]
-      tempDecomp[5] = elem[9] + elem[10];           //[health]
-      tempDecomp[6] = elem[11] + elem[12];          //[quantity ress or pop]
-      tempDecomp[7] = elem[13];                     //[current level]
-      tempDecomp[8] = elem[14];                     //[activity index or number of days active]
+      tempDecomp[0] = parseInt(elem[0]);                      //[pos:x]
+      tempDecomp[1] = parseInt(elem[1] + elem[2]);            //[pos:y]
+      tempDecomp[2] = parseInt(elem[3]);                      //[mat type]
+      tempDecomp[3] = parseInt(elem[4] + elem[5]);            //[ress or bat type]
+      tempDecomp[4] = parseInt(elem[6] + elem[7] + elem[8]);  //[UNIQUE ID]
+      tempDecomp[5] = parseInt(elem[9] + elem[10]);           //[health]
+      tempDecomp[6] = parseInt(elem[11] + elem[12]);          //[quantity ress or pop]
+      tempDecomp[7] = parseInt(elem[13]);                     //[current level]
+      tempDecomp[8] = parseInt(elem[14]);                     //[activity index or number of days active]
     }
     else
     {
       this.debugPrint(1, "Classic Decomp");
-      tempDecomp[0] = elem[0] + elem[1];            //[pos:x]
-      tempDecomp[1] = elem[2] + elem[3];            //[pos:y]
-      tempDecomp[2] = elem[4];                      //[mat type]
-      tempDecomp[3] = elem[5] + elem[6];            //[ress or bat type]
-      tempDecomp[4] = elem[7] + elem[8] + elem[9];  //[UNIQUE ID]
-      tempDecomp[5] = elem[10] + elem[11];          //[health]
-      tempDecomp[6] = elem[12] + elem[13];          //[quantity ress or pop]
-      tempDecomp[7] = elem[14];                     //[current level]
-      tempDecomp[8] = elem[15];                     //[activity index or number of days active]
+      tempDecomp[0] = parseInt(elem[0] + elem[1]);            //[pos:x]
+      tempDecomp[1] = parseInt(elem[2] + elem[3]);            //[pos:y]
+      tempDecomp[2] = parseInt(elem[4]);                      //[mat type]
+      tempDecomp[3] = parseInt(elem[5] + elem[6]);            //[ress or bat type]
+      tempDecomp[4] = parseInt(elem[7] + elem[8] + elem[9]);  //[UNIQUE ID]
+      tempDecomp[5] = parseInt(elem[10] + elem[11]);          //[health]
+      tempDecomp[6] = parseInt(elem[12] + elem[13]);          //[quantity ress or pop]
+      tempDecomp[7] = parseInt(elem[14]);                     //[current level]
+      tempDecomp[8] = parseInt(elem[15]);                     //[activity index or number of days active]
     }
     this.debugPrint(2, "tempDecomp", tempDecomp);
 
@@ -341,16 +341,18 @@ export default class ViewGL
     {
       while (indexJ < 41)
       {
-        if (this.frontBlockArray[indexI][indexJ] != null && this.frontBlockArray[indexI][indexJ][3] != null
-              && this.frontBlockArray[indexI][indexJ][3] != "0" && this.frontBlockArray[indexI][indexJ][3] != "00")
+        if (this.frontBlockArray[indexI][indexJ] != null
+            && this.frontBlockArray[indexI][indexJ][3] != null
+            && this.frontBlockArray[indexI][indexJ][3] != 0)
         {
           var pos = new THREE.Vector2;
-          pos.x = parseInt(this.frontBlockArray[indexI][indexJ][0]);
-          pos.y = parseInt(this.frontBlockArray[indexI][indexJ][1]);
+          pos.x = this.frontBlockArray[indexI][indexJ][0] + 0.5;
+          pos.y = this.frontBlockArray[indexI][indexJ][1] + 0.5;
 
           this.createObjectFomChain(pos, 1, this.frontBlockArray[indexI][indexJ][4],
-            parseInt(this.frontBlockArray[indexI][indexJ][3]), 1, this.normalText);
+            this.frontBlockArray[indexI][indexJ][3], 1, this.normalText);
 
+          this.UbuildingIDs++;
           this.debugPrint(1, "GENTYPE", this.frontBlockArray[indexI][indexJ][3]);
 
         }
@@ -640,18 +642,32 @@ export default class ViewGL
          this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != 0
       )
       {
+
         var pos : THREE.Vector2 = new THREE.Vector2;
         pos.x = this.currBlockPos.x;
         pos.y = this.currBlockPos.y;
+
+        this.debugPrint(1, "BEF this.frontBlockArray[pos.y][pos.x][0]", this.frontBlockArray[pos.y][pos.x][0]);
+        this.debugPrint(1, "BEF this.frontBlockArray[pos.y][pos.x][1]", this.frontBlockArray[pos.y][pos.x][1]);
+        this.debugPrint(1, "BEF this.frontBlockArray[pos.y][pos.x][3]", this.frontBlockArray[pos.y][pos.x][3]);
+        this.debugPrint(1, "BEF this.frontBlockArray[pos.y][pos.x][4]", this.frontBlockArray[pos.y][pos.x][4]);
 
         this.debugPrint(1, "OBJECT SELECTED");
         this.objectSelected = 1;
         this.UbuildingIDs = this.UbuildingIDs + 1;
 
+        this.debugPrint(1, "this.UbuildingIDs", this.UbuildingIDs);
+        this.debugPrint(1, "this.frontBlockArray[pos.y][pos.x][4]", this.frontBlockArray[pos.y][pos.x][4]);
+
         this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
           this.UbuildingIDs,
           this.frontBlockArray[pos.y][pos.x][3], 1, this.outlinedText,
           this.frontBlockArray[pos.y][pos.x][4]);
+
+        this.debugPrint(1, "BEF this.frontBlockArray[pos.y][pos.x][3]", this.frontBlockArray[pos.y][pos.x][0]);
+        this.debugPrint(1, "BEF this.frontBlockArray[pos.y][pos.x][3]", this.frontBlockArray[pos.y][pos.x][1]);
+        this.debugPrint(1, "BEF this.frontBlockArray[pos.y][pos.x][3]", this.frontBlockArray[pos.y][pos.x][3]);
+        this.debugPrint(1, "BEF this.frontBlockArray[pos.y][pos.x][4]", this.frontBlockArray[pos.y][pos.x][4]);
 
         this.selectedObj = pos;
       }
