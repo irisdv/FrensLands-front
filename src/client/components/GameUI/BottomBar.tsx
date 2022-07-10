@@ -44,10 +44,10 @@ export function BottomBar() {
             <div className="building19 pixelated absolute" style={{bottom: "-30px", left: "99px"}}></div>
           </div>
           <div className="btnCategory pixelated">
-            <div className="building20 pixelated absolute" style={{bottom: "-30px", right: "29px"}}></div>
+            <div className="building20 pixelated absolute" style={{bottom: "0x", right: "58px"}}></div>
           </div>
           <div className="btnCategory pixelated">
-            <div className="building21 pixelated absolute" style={{bottom: "-30px", right: "-35px"}}></div>
+            <div className="building21 pixelated absolute" style={{bottom: "1px", right: "-4px"}}></div>
           </div>
         </div>
       </div>
@@ -58,13 +58,13 @@ export function BottomBar() {
       <div className="absolute" style={{ bottom: "60px", right: "0px", display: `${displaySecurity ? "block" : "none"}` }}>
         <div className="flex flex-row justify-center inline-block">
           <div className="btnCategory pixelated" onClick={() => setDisplayingFrame(0, 19)}>
-            <div className="building22 pixelated absolute" style={{bottom: "-30px", left: "35px"}}></div>
+            <div className="building22 pixelated absolute" style={{bottom: "0px", left: "0px"}}></div>
           </div>
           <div className="btnCategory pixelated">
-            <div className="building23 pixelated absolute" style={{bottom: "-30px", left: "99px"}}></div>
+            <div className="building23 pixelated absolute" style={{bottom: "0px", left: "68px"}}></div>
           </div>
           <div className="btnCategory pixelated">
-            <div className="building24 pixelated absolute" style={{bottom: "-30px", right: "29px"}}></div>
+            <div className="building24 pixelated absolute" style={{bottom: "0px", right: "29px"}}></div>
           </div>
         </div>
       </div>
@@ -102,7 +102,7 @@ export function BottomBar() {
             <div className="building5 pixelated absolute" style={{bottom: "-30px", left: "35px"}}></div>
           </div>
           <div className="btnCategory pixelated">
-            <div className="building6 pixelated absolute" style={{bottom: "-30px", left: "99px"}}></div>
+            <div className="building6 pixelated absolute" style={{bottom: "-30px", left: "95px"}}></div>
           </div>
         </div>
       </div>
@@ -110,19 +110,19 @@ export function BottomBar() {
       <div className="absolute" style={{ bottom: "60px", right: "0px", display: `${displayShop ? "block" : "none"}` }}>
         <div className="flex flex-row justify-center inline-block">
           <div className="btnCategory pixelated relative" onClick={() => setDisplayingFrame(0, 19)}>
-            <div className="building7 pixelated absolute" style={{bottom: "-30px", left: "-29px"}}></div>
+            <div className="building7 pixelated absolute" style={{bottom: "-31px", left: "-31px"}}></div>
           </div>
           <div className="btnCategory pixelated" onClick={() => setDisplayingFrame(0, 19)}>
-            <div className="building10 pixelated absolute" style={{bottom: "-30px", left: "35px"}}></div>
+            <div className="building10 pixelated absolute" style={{bottom: "-33px", left: "34px"}}></div>
           </div>
           <div className="btnCategory pixelated">
-            <div className="building8 pixelated absolute" style={{bottom: "-30px", left: "99px"}}></div>
+            <div className="building8 pixelated absolute" style={{bottom: "-30px", left: "95px"}}></div>
           </div>
           <div className="btnCategory pixelated">
             <div className="building9 pixelated absolute" style={{bottom: "-30px", right: "29px"}}></div>
           </div>
           <div className="btnCategory pixelated">
-            <div className="building15 pixelated absolute" style={{bottom: "-30px", right: "-35px"}}></div>
+            <div className="building15 pixelated absolute" style={{bottom: "-15px", right: "-39px"}}></div>
           </div>
         </div>
       </div>

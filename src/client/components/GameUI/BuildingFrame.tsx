@@ -101,65 +101,33 @@ export function BuildingFrame(props: any) {
           >
             {/* TODO: dynamic choice of className for icons + dynamic data */}
             <div className="flex flex-row justify-center inline-block relative">
-              <div
-                className="fontHPxl-sm"
-                style={{ position: "absolute", top: "-9px", left: "20px" }}
-              >
+              <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "20px" }}>
                 <span id="GoldFrame">320</span>
               </div>
-              <div
-                className="smallGold mb-3"
-                style={{ position: "absolute", top: "-34px", left: "23px" }}
-              ></div>
+              <div className="smallGold mb-3" style={{ position: "absolute", top: "-34px", left: "23px" }}></div>
             </div>
             <div className="flex flex-row justify-center inline-block relative">
-              <div
-                className="fontHPxl-sm"
-                style={{ position: "absolute", top: "-9px", left: "68px" }}
-              >
+              <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "68px" }}>
                 320
               </div>
-              <div
-                className="smallGold mb-3"
-                style={{ position: "absolute", top: "-34px", left: "70px" }}
-              ></div>
+              <div className="smallGold mb-3" style={{ position: "absolute", top: "-34px", left: "70px" }}></div>
             </div>
             <div className="flex flex-row justify-center inline-block relative">
-              <div
-                className="fontHPxl-sm"
-                style={{ position: "absolute", top: "-9px", left: "117px" }}
-              >
+              <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "117px" }}>
                 320
               </div>
-              <div
-                className="smallGold mb-3"
-                style={{ position: "absolute", top: "-34px", left: "119px" }}
-              ></div>
+              <div className="smallGold mb-3" style={{ position: "absolute", top: "-34px", left: "119px" }}></div>
             </div>
           </div>
         </div>
         {/* Add dynamic data */}
-        <div
-          className="relative flex jutify-center items-center inline-block"
-          style={{ height: "85px" }}
+        <div className="relative flex jutify-center items-center inline-block" style={{ height: "85px" }}
         >
           <div className="flex flex-row justify-center inline-block relative">
-            <div
-              className="font04B text-center mx-auto"
-              style={{
-                width: "68px",
-              }}
-            >
-              Image
-            </div>
-            <div
-              className="font04B text-center mx-auto"
-              style={{
-                fontSize: "12px",
-                paddingTop: "34px",
-                width: "85px",
-              }}
-            >
+            <div  className="font04B text-center mx-auto relative"  style={{width: "68px"}}>
+              <div className={"building"+`${frameData?.id}`} style={{left: "-26px", top: "-39px", position: "absolute"}}></div>
+              </div>
+            <div className="font04B text-center mx-auto" style={{fontSize: "12px", paddingTop: "34px", width: "85px"}}>
               Security
             </div>
             <div
