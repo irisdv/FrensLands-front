@@ -23,6 +23,10 @@ import { useStarknet } from "@starknet-react/core";
 import { GetBlockResponse } from 'starknet'
 
 
+export interface IFrame {
+  id?: string;
+}
+
 export interface IGameState {
   lastUpdated: string;
   currentBlock: number;
@@ -47,8 +51,8 @@ export interface IGameState {
   updateTokenId: (id: string) => void;
   // updateResources: () => void;
   showFrame?: boolean;
-  frameData?: any;
-  updateBuildingFrame: (show: boolean, data: []) => void;
+  frameData?: IFrame;
+  updateBuildingFrame: (show: boolean, data: {}) => void;
 }
 
 export const GameState: IGameState = {
@@ -113,14 +117,15 @@ interface SetError {
   error: Error;
 }
 
-interface SetFrameData {
-  type: "set_frameData";
-  frameData?: any[];
-}
+// interface SetFrameData {
+//   type: "set_frameData";
+//   frameData?: any[];
+// }
 
 interface SetShowFrame {
   type: "set_showFrame";
   showFrame?: boolean;
+  frameData?: IFrame;
 }
 
 interface SetEnergy {
@@ -158,7 +163,7 @@ type Action =
   | SetTokenId
   | SetBuildingCount
   | SetMapArray
-  | SetFrameData
+  // | SetFrameData
   | SetShowFrame
   | SetEnergy
   | SetFrensCoins
@@ -182,11 +187,11 @@ function reducer(state: IGameState, action: Action): IGameState {
     case "set_mapArray": {
       return { ...state, mapArray: action.mapArray };
     }
-    case "set_frameData": {
-      return { ...state, frameData: action.frameData };
-    }
+    // case "set_frameData": {
+    //   return { ...state, frameData: action.frameData };
+    // }
     case "set_showFrame": {
-      return { ...state, showFrame: action.showFrame };
+      return { ...state, showFrame: action.showFrame, frameData: action.frameData };
     }
     case "set_energy": {
       return { ...state, energy: action.energy };
@@ -341,9 +346,9 @@ export const AppStateProvider: React.FC<
       console.log('account context', account)
       try {
         _token_id = await maps.call("tokenOfOwnerByIndex", [
-            account, uint256.bnToUint256(1)
+            account as string, uint256.bnToUint256(1)
         ]);
-      console.log('_token_id', _token_id)
+      console.log('tokenOfOwnerByIndex result', _token_id)
       // var elem = toBN(_erc1155Balance)
       // var newBalance = elem.toNumber()
       // dispatch({
@@ -502,15 +507,17 @@ export const AppStateProvider: React.FC<
     }, []);
 
   const updateBuildingFrame = React.useCallback(
-    (show: boolean, data: any[]) => {
+    (show: boolean, data: {}) => {
+      console.log('in context', data)
       dispatch({
         type: "set_showFrame",
         showFrame: show,
-      });
-      dispatch({
-        type: "set_frameData",
         frameData: data,
       });
+      // dispatch({
+      //   type: "set_frameData",
+      //   frameData: data,
+      // });
     },
     []
   );

@@ -3,6 +3,7 @@ import {
   useStarknet,
   useStarknetCall,
   useStarknetInvoke,
+  useStarknetTransactionManager,
   InjectedConnector,
 } from "@starknet-react/core";
 import { ConnectWalletMint } from "../components/ConnectWalletMint";
@@ -25,10 +26,11 @@ import { ConnectWallet } from "../components/ConnectWallet";
 export default function Home() {
   // const { account } = useStarknet();
   // const { available, connect, disconnect } = useConnectors();
+  let navigate = useNavigate();
   const { account, connect, connectors, disconnect } = useStarknet();
   const injected = useMemo(() => new InjectedConnector(), []);
   const [minting, setMinting] = useState(false);
-  let navigate = useNavigate();
+  const { transactions } = useStarknetTransactionManager()
 
   const [watch, setWatch] = useState(true);
   const { contract: worlds } = useWorldsContract();
@@ -36,7 +38,10 @@ export default function Home() {
 
   const { setAddress, updateTokenId, address, tokenId } = useGameContext();
 
+  console.log('transactions', transactions)
+
   useEffect(() => {
+    console.log('useEffet 1')
     if (account && !address) {
       setAddress(account);
       updateTokenId(account);
@@ -45,6 +50,7 @@ export default function Home() {
   }, [account, address])
 
   useEffect(() => {
+    console.log('useEffet 2')
     if (account && !tokenId) {
       updateTokenId(account);
       console.log('2')
@@ -96,33 +102,34 @@ export default function Home() {
     console.log("invoking mintingMap", Date.now());
     getMapInvoke({
       args: [
-        "0x0250e9ece43985c06a98398f99748b1cc07d181a28ffa25a77c72f14fd4dd4c2",
-        "0x05a3753f79d6c6c3700c3652a3eaa00bb431ea21b0c155ba8883d130634ab001"
+        "0x01cab2703e4813d008149a72a7fc238bb790c76546ee79199d5767bd7ffa9b9c",
+        "0x05975fef9b94e841a78e9826a95415874a476b04b8836eb8149a5cafdaef4fe3"
       ],
       metadata: {
         method: "get_map",
         message: "Mint Frens Lands map",
       },
     });
+    const transactionStatus = useStarknetTransactionManager();
     setMinting(true);
   };
 
   const startGame = () => {
     console.log('startingGame')
-    if (tokenId) {
+    // if (tokenId) {
       startGameInvoke({
         args: [
-          uint256.bnToUint256(tokenId),
-          "0x05a3753f79d6c6c3700c3652a3eaa00bb431ea21b0c155ba8883d130634ab001",
-          "0x00ad6ce9bad182f1154847ad1c0a7d0e4b903747ecec5fd19b1c15e5f08e2825",
-          "0x058e5ae1868b9bb3d6f6e4689dda8a882bc7ea0469654cf7c1acddeb17f79c6a"
+          uint256.bnToUint256(1),
+          "0x05975fef9b94e841a78e9826a95415874a476b04b8836eb8149a5cafdaef4fe3",
+          "0x008dc9007070e128f4036edc623d5b6d0f264b7e736089618ea255919320a094",
+          "0x0747833bccf3a112fe3b6ace0fe636fe92361734565539778ecdaefad7c48b4b"
         ],
         metadata: {
           method: "start_game",
           message: "Starting a game of Frens Lands",
         },
       });
-    }
+    // }
   }
 
   console.log("account", account);
@@ -131,12 +138,14 @@ export default function Home() {
 
   return (
     <>
-          <div>gm {account}</div>
-      {/* <GetBuildingCount />
-      <BuildBuildings /> */}
-      {/* <h2>Recent Transactions</h2>
-      <TransactionList /> */}
-      <p>My balance NFT: {BalanceNFTValue && BalanceNFTValue.NFTbalance}</p>
+      <div className="backgroundImg relative">
+
+          <img className="absolute m-auto" src="resources/front/UI_MainScreenPlanet.png" 
+          style={{width : "640px", height: "640px", marginTop: '40px', marginLeft: "320px"}} />
+
+          <div className="text-white">gm {account}</div>
+
+      <p className="text-white">My balance NFT: {BalanceNFTValue && BalanceNFTValue.NFTbalance}</p>
 
       <ConnectWallet/>
 
@@ -231,6 +240,8 @@ export default function Home() {
           </div>
         </div>
       </div> */}
+      </div>
+      {/* </div> */}
     </>
   );
 }

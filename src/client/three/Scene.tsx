@@ -4,6 +4,8 @@ import { GameState } from "../contexts/GameContext";
 import { gsap, SteppedEase } from "gsap";
 import { MenuBar } from "../components/GameUI/MenuBar";
 import { BottomBar } from "../components/GameUI/BottomBar";
+import { useGameContext } from "../hooks/useGameContext";
+import { BuildingFrame } from "../components/GameUI/BuildingFrame";
 
 export default class Scene extends React.Component {
   private canvasRef: any;
@@ -33,7 +35,8 @@ export default class Scene extends React.Component {
 
   componentDidUpdate(prevProps: any, prevState: any) {
     // Context data
-    console.log("New data received from parent components", prevProps);
+    // console.log("New data received from parent components", prevProps);
+    this.viewGL.onReceivedUpdatedData(prevProps);
   }
 
   componentWillUnmount() {
@@ -77,6 +80,7 @@ export default class Scene extends React.Component {
         <div className="canvasContainer">
           <canvas ref={this.canvasRef} />
         </div>
+        <BuildingFrame />
         <BottomBar />
       </div>
     );

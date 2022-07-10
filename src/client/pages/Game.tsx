@@ -5,6 +5,7 @@ import { useGameContext } from "../hooks/useGameContext";
 import { useBuildingsContract } from "../hooks/buildings";
 import { number, uint256 } from "starknet";
 import { toBN } from "starknet/dist/utils/number";
+import { BottomBar } from "../components/GameUI/BottomBar";
 
 export default function Game() {
   const { account } = useStarknet();
