@@ -35,7 +35,7 @@ export default class Scene extends React.Component {
 
   componentDidUpdate(prevProps: any, prevState: any) {
     // Context data
-    // console.log("New data received from parent components", prevProps);
+    console.log("New data received from parent components", prevProps);
     this.viewGL.onReceivedUpdatedData(prevProps);
   }
 

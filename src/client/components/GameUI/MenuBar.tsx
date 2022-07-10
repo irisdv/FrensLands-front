@@ -5,15 +5,22 @@ import { number, uint256 } from "starknet";
 import { toBN } from "starknet/dist/utils/number";
 import { useGameContext } from "../../hooks/useGameContext";
 import { useResourcesContract } from "../../hooks/resources";
+import { ConnectWallet } from "../ConnectWallet";
 
 export function MenuBar() {
-  const {frensCoins, wood, rock, meat, metal, coal, cereal, energy, populationBusy, populationFree, blockGame, currentBlock} = useGameContext();
+  const {setAddress,frensCoins, wood, rock, meat, metal, coal, cereal, energy, populationBusy, populationFree, blockGame, currentBlock} = useGameContext();
   //   const [watch, setWatch] = useState(true);
     const { contract: resources } = useResourcesContract();
 
     const { data: block } = useStarknetBlock()
 
-    console.log('data', block)
+    const {account} = useStarknet()
+
+    useEffect(() => {
+      if (account) setAddress(account)
+    }, [account])
+
+    // console.log('data', block)
     console.log('currentBlock', currentBlock)
     console.log("blockGame", blockGame)
 
@@ -139,6 +146,9 @@ export function MenuBar() {
             </div>
             <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
               {/* Expected wait time  */}
+            </div>
+            <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
+             <ConnectWallet />
             </div>
             
           </div>

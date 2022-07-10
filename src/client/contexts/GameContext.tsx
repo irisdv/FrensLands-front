@@ -53,6 +53,7 @@ export interface IGameState {
   showFrame?: boolean;
   frameData?: IFrame;
   updateBuildingFrame: (show: boolean, data: {}) => void;
+  farmResource: (id: any, data: {}) => void;
 }
 
 export const GameState: IGameState = {
@@ -81,6 +82,7 @@ export const GameState: IGameState = {
   showFrame: false,
   frameData: undefined,
   updateBuildingFrame: (show, data) => {},
+  farmResource: (id, data) => {},
 };
 
 const StateContext = React.createContext(GameState);
@@ -116,11 +118,6 @@ interface SetError {
   type: "set_error";
   error: Error;
 }
-
-// interface SetFrameData {
-//   type: "set_frameData";
-//   frameData?: any[];
-// }
 
 interface SetShowFrame {
   type: "set_showFrame";
@@ -362,29 +359,16 @@ export const AppStateProvider: React.FC<
     }
   }, []);
 
-  // const showBuildingFrame = (id: any): React.ReactNode => {
-  //   console.log("show component, id", id);
-  //   console.log("PROPS PROPS");
-  //   return (
-  //     <>
-  //       {/* <React.ReactNode> */}
-  //       <BuildingFrame {...id} />
-  //       {/* </React.ReactNode> */}
-  //     </>
-  //   );
-  // };
-
   const refreshPopulation = React.useCallback(async (resources : any) => {
     let _newPopulation : any;
     try {
       _newPopulation = await resources.call("get_population", [
         uint256.bnToUint256(1)
-      ]);
-      console.log('_newPopulation', _newPopulation)
+      ]);      
       dispatch({
         type: "set_population",
-        populationBusy: toBN(_newPopulation[1]).toNumber(),
-        populationFree: toBN(_newPopulation[0]).toNumber()
+        populationBusy: toBN(_newPopulation[0][1]).toNumber(),
+        populationFree: toBN(_newPopulation[0][0]).toNumber()
       });
       } catch (e) {
         console.warn("Error when retrieving get_population in M02_Resources");
@@ -397,14 +381,13 @@ export const AppStateProvider: React.FC<
         try {
           _erc1155Balance = await erc1155.call("balanceOfBatch", [
             [
-              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
-              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a", 
-              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a", 
-              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a", 
-              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
-              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
-              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
-              "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a"
+              "0x04A8173E2F008282AC9793fb929974cc7CEd6ceB76c79a0A9E0D163E60d08b6F",
+              "0x04A8173E2F008282AC9793fb929974cc7CEd6ceB76c79a0A9E0D163E60d08b6F", 
+              "0x04A8173E2F008282AC9793fb929974cc7CEd6ceB76c79a0A9E0D163E60d08b6F", 
+              "0x04A8173E2F008282AC9793fb929974cc7CEd6ceB76c79a0A9E0D163E60d08b6F", 
+              "0x04A8173E2F008282AC9793fb929974cc7CEd6ceB76c79a0A9E0D163E60d08b6F",
+              "0x04A8173E2F008282AC9793fb929974cc7CEd6ceB76c79a0A9E0D163E60d08b6F",
+              "0x04A8173E2F008282AC9793fb929974cc7CEd6ceB76c79a0A9E0D163E60d08b6F"
             ],
             [uint256.bnToUint256(0), uint256.bnToUint256(1), uint256.bnToUint256(2), uint256.bnToUint256(3), uint256.bnToUint256(5), uint256.bnToUint256(6), uint256.bnToUint256(8)]
           ]);
@@ -506,14 +489,52 @@ export const AppStateProvider: React.FC<
       }
     }, []);
 
-  const updateBuildingFrame = React.useCallback(
-    (show: boolean, data: {}) => {
+  const updateBuildingFrame = React.useCallback((show: boolean, data: {}) => {
       console.log('in context', data)
       dispatch({
         type: "set_showFrame",
         showFrame: show,
         frameData: data,
       });
+      // dispatch({
+      //   type: "set_frameData",
+      //   frameData: data,
+      // });
+    },
+    []
+  );
+
+  const farmResource = React.useCallback(async (building_unique_id: any, data: {}) => {
+      const { contract: resources } = useResourcesContract();
+      console.log('in context farming resources with id ', building_unique_id)
+      // let _farm_tx;
+      // if (resources && state.address) {
+      //   try {
+      //     // tokenId (uint), building_unique_id, 
+      //     _farm_tx = await resources.invoke("farm", [
+      //       uint256.bnToUint256(0),
+      //       building_unique_id,
+      //       "0x05e10dc2d99756ff7e339912a8723ecb9c596e8ecd4f3c3a9d03eb06096b153f",
+      //       "0x072c5b060c922f01383d432624fa389bf8b087013b9702b669c484857d23eea1",
+      //       "0x0574fe8bbe799ce7583ef1aefe4c6cf1135dc21c092471982e56b038355f8249",
+      //       "0x04e8653b61e068c01e95f4df9e7504b6c71f2937e2bf00ec6734f4b2d33c13e0"
+      //     ]);
+      //     console.log('_farm_tx', _farm_tx)
+      //     // dispatch({
+      //     //   type: "set_lastBlock",
+      //     //   blockGame: toBN(_lastestBlock).toString()
+      //     // });
+      //   } catch (e) {
+      //     console.warn("Error when retrieving get_latest_block in M02_Resources");
+      //     console.warn(e);
+      //   }
+      // }
+      // Send tx from there
+      // dispatch({
+      //   type: "set_showFrame",
+      //   showFrame: show,
+      //   frameData: data,
+      // });
       // dispatch({
       //   type: "set_frameData",
       //   frameData: data,
@@ -549,6 +570,7 @@ export const AppStateProvider: React.FC<
         setAddress,
         updateTokenId,
         updateBuildingFrame,
+        farmResource,
       }}
     >
       {props.children}
@@ -557,56 +579,3 @@ export const AppStateProvider: React.FC<
 };
 
 export default StateContext;
-
-//   useEffect(() => {
-//     // console.log("prop in context", props.address);
-//     // console.log("starknet", starknet);
-//     // console.log("building", building);
-//     // console.log(
-//     //   "!fetching(userBalance, ownedTokens)",
-//     //   fetching(userBalance, ownedTokens)
-//     // );
-//     if (
-//       starknet &&
-//       //   props.address &&
-//       building
-//       // replace with maps tokens contracts
-//       //   !fetching(userBalance, ownedTokens)
-//     ) {
-//       //   console.log("starknet.account", props.address);
-//       //   setTimeout(async () => {
-//       //     // Check token_id of user
-//       //     let _totalBuilding;
-//       //     try {
-//       //       _totalBuilding = await building.call("get_building_count", [
-//       //         uint256.bnToUint256(1),
-//       //       ]);
-//       //       // count = await defaultProvider.callContract({
-//       //       //   contractAddress: building.address,
-//       //       //   entrypoint: "get_building_count",
-//       //       //   calldata: [uint256.uint256ToBN({ high: 0, low: 1 })],
-//       //       // });
-//       //       var elem = toBN(_totalBuilding[0]);
-//       //       var newCounter = elem.toNumber();
-//       //       console.log("Value Buildings to dispatch", newCounter);
-//       //       dispatch({
-//       //         type: "set_buildingCount",
-//       //         buildingCount: newCounter,
-//       //       });
-//       //       // setTotalSupply(BigNumber.from(_totalSupply.result[0]));
-//       //     } catch (e) {
-//       //       console.warn("Error when retrieving total_supply");
-//       //       console.warn(e);
-//       //     }
-//       //   }, 0);
-//     }
-//   }, [
-//     timer,
-//     // props.address,
-//     //   // starknet,
-//     //   // starknet.account,
-//     //   // userBalance,
-//     //   // setUserBalance,
-//     //   // ownedTokens,
-//     //   // setOwnedTokens,
-//   ]);

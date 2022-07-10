@@ -1,14 +1,23 @@
-import { useStarknet, useStarknetCall } from "@starknet-react/core";
+import { useStarknet, useStarknetCall, useStarknetInvoke, useStarknetTransactionManager } from "@starknet-react/core";
 import React, { useMemo, useState, useRef, useEffect } from "react";
 import { useBuildingsContract } from "../../hooks/buildings";
-import { number, uint256 } from "starknet";
+import { number, transaction, uint256 } from "starknet";
 import { toBN } from "starknet/dist/utils/number";
 import { useGameContext } from "../../hooks/useGameContext";
+import { useResourcesContract } from "../../hooks/resources";
 
 export function BuildingFrame(props: any) {
-  const { showFrame, frameData } = useGameContext();
+  const { showFrame, frameData, farmResource } = useGameContext();
+  const { transactions } = useStarknetTransactionManager()
+  const { contract: resources } = useResourcesContract();
+  const [ farming, setFarming ] = useState(false)
+
+
   console.log("HERE HERE HERE", showFrame);
   console.log("frameData", frameData);
+
+  console.log('transaction status', transactions)
+  // transaction.metadata pour accéder aux data
 
   const [show, setShow] = useState(false)
 
@@ -20,6 +29,52 @@ export function BuildingFrame(props: any) {
     }
 
   }, [show, showFrame, frameData])
+
+  const {
+    data: dataStartFarming,
+    loading: loadingStartFarming,
+    invoke: startFarmingInvoke,
+  } = useStarknetInvoke({
+    contract: resources,
+    method: "farm",
+  });
+
+  // DEBUG : enlever les arguments 
+  const farmingResource = (id : any) => {
+    console.log('farming a resource of type id', 1)
+    console.log("invoking farming", Date.now());
+    // Args : tokenId, building_unique_id
+    startFarmingInvoke({
+      args: [
+          uint256.bnToUint256(1),
+          id,
+          "0x05e10dc2d99756ff7e339912a8723ecb9c596e8ecd4f3c3a9d03eb06096b153f",
+          "0x072c5b060c922f01383d432624fa389bf8b087013b9702b669c484857d23eea1",
+          "0x0574fe8bbe799ce7583ef1aefe4c6cf1135dc21c092471982e56b038355f8249",
+          "0x04e8653b61e068c01e95f4df9e7504b6c71f2937e2bf00ec6734f4b2d33c13e0"
+      ],
+      metadata: {
+        method: "get_map",
+        message: "Mint Frens Lands map",
+      },
+    });
+    setFarming(true);
+  };
+
+  // const farmingResource = (id : any) => {
+  //   console.log('farming a resource of id', 1)
+  //   farmResource(id, {});
+
+  // }
+
+  // _farm_tx = await resources.invoke("farm", [
+  //   uint256.bnToUint256(0),
+  //   building_unique_id,
+  //   "0x05e10dc2d99756ff7e339912a8723ecb9c596e8ecd4f3c3a9d03eb06096b153f",
+  //   "0x072c5b060c922f01383d432624fa389bf8b087013b9702b669c484857d23eea1",
+  //   "0x0574fe8bbe799ce7583ef1aefe4c6cf1135dc21c092471982e56b038355f8249",
+  //   "0x04e8653b61e068c01e95f4df9e7504b6c71f2937e2bf00ec6734f4b2d33c13e0"
+  // ]);
 
 
   if (!showFrame) {
@@ -168,6 +223,7 @@ export function BuildingFrame(props: any) {
             <div style={{ width: "206px", paddingTop: "10px" }}>
               <a>
                 <div className="btnUpgrade"></div>
+                <div className="btnUpgrade" onClick={() => farmingResource(2)}>Farm resource</div>
               </a>
             </div>
             <div

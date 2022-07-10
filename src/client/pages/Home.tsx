@@ -18,7 +18,7 @@ import { GetBuildings } from "../components/Buildings/GetBuildings";
 import { MenuBar } from "../components/GameUI/MenuBar";
 
 import { useMapsContract } from "../hooks/maps";
-import { uint256 } from "starknet";
+import { transaction, uint256 } from "starknet";
 import { useGameContext } from "../hooks/useGameContext";
 import { useWorldsContract } from "../hooks/worlds";
 import { ConnectWallet } from "../components/ConnectWallet";
@@ -30,6 +30,7 @@ export default function Home() {
   const { account, connect, connectors, disconnect } = useStarknet();
   const injected = useMemo(() => new InjectedConnector(), []);
   const [minting, setMinting] = useState(false);
+  const [settingUp, setSettingUp] = useState(false)
   const { transactions } = useStarknetTransactionManager()
 
   const [watch, setWatch] = useState(true);
@@ -56,6 +57,16 @@ export default function Home() {
       console.log('2')
     }
   }, [account, tokenId])
+
+  useEffect(() => {
+    console.log('Setting up game')
+    if (account && !tokenId) {
+      updateTokenId(account);
+      console.log('2')
+    }
+  }, [transaction])
+
+  // UseEffect transactions 
 
   const { data: fetchBalanceNFTResult } = useStarknetCall({
     contract: maps,
@@ -121,14 +132,15 @@ export default function Home() {
         args: [
           uint256.bnToUint256(1),
           "0x05975fef9b94e841a78e9826a95415874a476b04b8836eb8149a5cafdaef4fe3",
-          "0x008dc9007070e128f4036edc623d5b6d0f264b7e736089618ea255919320a094",
-          "0x0747833bccf3a112fe3b6ace0fe636fe92361734565539778ecdaefad7c48b4b"
+          "0x04e8653b61e068c01e95f4df9e7504b6c71f2937e2bf00ec6734f4b2d33c13e0",
+          "0x06b1c1299bc6c4ecf71246f6580c0e36bee5ac53f3fa016706ef5c093183dde3"
         ],
         metadata: {
           method: "start_game",
           message: "Starting a game of Frens Lands",
         },
       });
+      setSettingUp(true)
     // }
   }
 
@@ -138,14 +150,26 @@ export default function Home() {
 
   return (
     <>
-      <div className="backgroundImg relative">
+      <div className="backgroundImg relative pixelated">
 
-          <img className="absolute m-auto" src="resources/front/UI_MainScreenPlanet.png" 
+          <img className="absolute m-auto pixelated" src="resources/front/UI_MainScreenPlanet.png" 
           style={{width : "640px", height: "640px", marginTop: '40px', marginLeft: "320px"}} />
 
           <div className="text-white">gm {account}</div>
 
       <p className="text-white">My balance NFT: {BalanceNFTValue && BalanceNFTValue.NFTbalance}</p>
+      <div>
+        {/* {
+          transactions.map(transaction => {
+            <div>
+            <p key={transaction.transactionHash}>
+              hash : {transaction.transactionHash} 
+              // return <Notif key={transaction.transactionHash} transaction={transaction} />
+            </p>
+          </div>
+          })
+         } */}
+      </div>
 
       <ConnectWallet/>
 
