@@ -169,25 +169,26 @@ export default class ViewGL
   decompose = (elem: any) =>
   {
     var tempDecomp : any[] = [];
+
     this.debugPrint(1, "elemToDecomp = ", elem);
-    //elem.toString();
-    console.log("elem.lenght", elem.length);
-    /*if (elem.length < 16)
+    this.debugPrint(1, "elem.lenght", elem.length);
+
+    if (elem.length < 16)
     {
-      console.log("IN IN IN IN IN IN IN IN IN IN IN < 16");
-      tempDecomp[0] = elem[0];            //[pos:x]
+      this.debugPrint(1, "Adapted Decomp");
+      tempDecomp[0] = elem[0];                      //[pos:x]
       tempDecomp[1] = elem[1] + elem[2];            //[pos:y]
       tempDecomp[2] = elem[3];                      //[mat type]
       tempDecomp[3] = elem[4] + elem[5];            //[ress or bat type]
       tempDecomp[4] = elem[6] + elem[7] + elem[8];  //[UNIQUE ID]
-      tempDecomp[5] = elem[9] + elem[10];          //[health]
+      tempDecomp[5] = elem[9] + elem[10];           //[health]
       tempDecomp[6] = elem[11] + elem[12];          //[quantity ress or pop]
       tempDecomp[7] = elem[13];                     //[current level]
       tempDecomp[8] = elem[14];                     //[activity index or number of days active]
     }
     else
-    {*/
-      console.log("LOLOLOLOLOLOLOLOLOL");
+    {
+      this.debugPrint(1, "Classic Decomp");
       tempDecomp[0] = elem[0] + elem[1];            //[pos:x]
       tempDecomp[1] = elem[2] + elem[3];            //[pos:y]
       tempDecomp[2] = elem[4];                      //[mat type]
@@ -197,7 +198,7 @@ export default class ViewGL
       tempDecomp[6] = elem[12] + elem[13];          //[quantity ress or pop]
       tempDecomp[7] = elem[14];                     //[current level]
       tempDecomp[8] = elem[15];                     //[activity index or number of days active]
-    //}
+    }
     this.debugPrint(2, "tempDecomp", tempDecomp);
 
     return (tempDecomp);
@@ -344,11 +345,13 @@ export default class ViewGL
               && this.frontBlockArray[indexI][indexJ][3] != "0" && this.frontBlockArray[indexI][indexJ][3] != "00")
         {
           var pos = new THREE.Vector2;
-          pos.y = this.frontBlockArray[indexI][indexJ][0];
-          pos.x = this.frontBlockArray[indexI][indexJ][1];
+          pos.x = parseInt(this.frontBlockArray[indexI][indexJ][0]);
+          pos.y = parseInt(this.frontBlockArray[indexI][indexJ][1]);
 
           this.createObjectFomChain(pos, 1, this.frontBlockArray[indexI][indexJ][4],
-            this.frontBlockArray[indexI][indexJ][3], 1, this.normalText);
+            parseInt(this.frontBlockArray[indexI][indexJ][3]), 1, this.normalText);
+
+          this.debugPrint(1, "GENTYPE", this.frontBlockArray[indexI][indexJ][3]);
 
         }
         indexJ++;
