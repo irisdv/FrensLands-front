@@ -75,6 +75,7 @@ export default class ViewGL
 
   private debugMode = 1;
   private typeTest = 1;
+  private stopData = 0;
 
   // *********************** DEBUG/TEST *********************** //
 
@@ -306,7 +307,6 @@ export default class ViewGL
     var indexI = 1;
     var indexJ = 1;
     var i = 0;
-    var indexElem = 0;
 
     while (indexI < 17)
     {
@@ -319,8 +319,6 @@ export default class ViewGL
 
         if (this.firstLoad == 1)
         {
-          indexElem++;
-          console.log("indexElem", indexElem);
           this.frontBlockArray[indexI][indexJ] = this.decompose(this.compArray[i]);
           this.frontBlockArray[indexI][indexJ][4] = i;
         }
@@ -394,11 +392,11 @@ export default class ViewGL
       {
         if (varToPrint != null)
         {
-          // console.log(string, varToPrint);
+          console.log(string, varToPrint);
         }
         else
         {
-          // console.log(string);
+          console.log(string);
         }
       }
     }
@@ -408,11 +406,11 @@ export default class ViewGL
       {
         if (varToPrint != null)
         {
-          // console.log(string, varToPrint);
+          console.log(string, varToPrint);
         }
         else
         {
-          // console.log(string);
+          console.log(string);
         }
       }
     }
@@ -1168,13 +1166,13 @@ export default class ViewGL
       matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
       matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
     }
-    this.debugPrint(1, "G_CREATEOBJ_FUNC");
+    this.debugPrint(1, "G_REPLACEOBJ_FUNC");
 
     var newObjectMesh = new THREE.Mesh(newObject, matObj);
     newObjectMesh.name = name.toString();
-    newObjectMesh.position.x = pos.x; + 0.5;
+    newObjectMesh.position.x = pos.x;// + 0.5;
     newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
-    newObjectMesh.position.z = pos.y; + 0.5;
+    newObjectMesh.position.z = pos.y;// + 0.5;
     this.scene.add(newObjectMesh);
     this.frontBlockArray[pos.y][pos.x][3] = type;
     this.frontBlockArray[pos.y][pos.x][0] = pos.x; + 0.5;
@@ -1283,18 +1281,23 @@ export default class ViewGL
     this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
   };
 
-  onReceivedUpdatedData = (data: any) => {
+  onReceivedUpdatedData = (data: any) =>
+  {
     // Store once all the data receive so we can access callback functions
-    this.chainEvent = 1;
 
-    if (Object.keys(this.rawData).length == 0)
+    if (this.stopData == 1)
     {
-      this.rawData = data;
-    }
-    if (Object.keys(data.mapArray).length > 1)
-    {
-      this.compArray = data.mapArray;
-      this.chainDataAdded = 1;
+      this.chainEvent = 1;
+
+      if (Object.keys(this.rawData).length == 0)
+      {
+        this.rawData = data;
+      }
+      if (Object.keys(data.mapArray).length > 1)
+      {
+        this.compArray = data.mapArray;
+        this.chainDataAdded = 1;
+      }
     }
   }
 
@@ -1316,6 +1319,7 @@ export default class ViewGL
 
       this.readyToLoop = 1;
       this.initDone = 1;
+      this.stopData = 1;
     }
 
     if (this.readyToLoop == 1)
