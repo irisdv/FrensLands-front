@@ -2,6 +2,7 @@
     "buildings" : [
         {
             "name": "Cabin",
+            "category": "",
             "cost_update": {
                 "resources": [
                     {
@@ -16,11 +17,1268 @@
                 "gold": 0,
                 "energy": 0
             },
-            "daily_update": [],
-            "daily_harvest": [],
-            "description": ""
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Tree",
+            "category": "",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Rock",
+            "category": "",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "House",
+            "category": "Housing",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Appartment",
+            "category": "Housing",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Appartment",
+            "category": "Hotel",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Boulangerie",
+            "category": "Shops",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Grocery shop",
+            "category": "Shops",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Restaurant",
+            "category": "Shops",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Mall",
+            "category": "Shops",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Bar",
+            "category": "Entertainment",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Library",
+            "category": "Entertainment",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Swimming Pool",
+            "category": "Entertainment",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Cinema",
+            "category": "Entertainment",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Market",
+            "category": "Shops",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Cereal Farm",
+            "category": "Agriculture",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Vegetable Farm",
+            "category": "Agriculture",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Cow Farm",
+            "category": "Agriculture",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Cow Farm",
+            "category": "Agriculture",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Tree Farm",
+            "category": "Agriculture",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Mine",
+            "category": "Mining",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Coal Plant",
+            "category": "Energy",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Police Station",
+            "category": "Security",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Hospital",
+            "category": "Health",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Lab",
+            "category": "Reasearch",
+            "cost_update": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id": 2,
+                        "quantity": 3
+                    }
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         }
-        
     ]
         
     

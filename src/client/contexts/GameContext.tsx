@@ -27,7 +27,7 @@ export interface IFrame {
   id?: string;
   type?: number;
   posX?: any;
-  poxY?: any;
+  posY?: any;
 }
 
 export interface IGameState {

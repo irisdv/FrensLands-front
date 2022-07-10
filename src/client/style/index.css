@@ -54,6 +54,42 @@ body {
 }
 
 /* -------------------- MENU BAR -------------------- */
+
+
+/* @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to { 
+      transform: rotate(360deg);
+    }
+  } */
+  
+  /* img.frensLandsWorld {
+      animation-name:            rotate; 
+      animation-duration:        120s; 
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+      image-rendering: pixelated;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: crisp-edges;
+  } */
+  @keyframes float {
+	0% {
+		transform: translatey(0px);
+	}
+	50% {
+		transform: translatey(-20px);
+	}
+	100% {
+		transform: translatey(0px);
+	}
+}
+  .frensLandsLogo {
+	transform: translatey(0px);
+	animation: float 6s ease-in-out infinite;
+}
+
 #menuBar {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
@@ -141,6 +177,83 @@ body {
     height:calc(64px * 1);
     width:calc(64px * 1);
     background-position:calc(14 * 1 * 64px) calc(22 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+
+/* 10 : gold */
+.small10 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(22 * 1 * 64px) calc(22 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+
+.small1 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(21 * 1 * 64px) calc(21 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+.small2 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(22 * 1 * 64px) calc(21 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+.small3 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(16 * 1 * 64px) calc(21 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+
+.small5 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(15 * 1 * 64px) calc(21 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+.small6 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(19 * 1 * 64px) calc(21 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+.small8 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(18 * 1 * 64px) calc(21 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+.smallPopBusy {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(17 * 1 * 64px) calc(23 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+/* Energy */
+.small11{
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(14 * 1 * 64px) calc(21 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
 }
 

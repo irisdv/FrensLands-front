@@ -6,6 +6,7 @@ import { toBN } from "starknet/dist/utils/number";
 import { useGameContext } from "../../hooks/useGameContext";
 import { useResourcesContract } from "../../hooks/resources";
 import DB from '../../db.json';
+import { InstancedMesh } from "three";
 
 
 export function BuildingFrame(props: any) {
@@ -13,15 +14,13 @@ export function BuildingFrame(props: any) {
   const { transactions } = useStarknetTransactionManager()
   const { contract: resources } = useResourcesContract();
   const [ farming, setFarming ] = useState(false)
-
-  console.log("HERE HERE HERE", showFrame);
-  console.log("frameData", frameData);
-
-  console.log('transaction status', transactions)
-  // transaction.metadata pour accéder aux data
-
+  const [ costUpdate, setCostUpdate ] = useState<any>(null)
+  const [ dailyCosts, setDailyCosts ] = useState<any>(null)
+  const [ dailyHarvest, setDailyHarvests ] = useState<any>(null)
   const [show, setShow] = useState(false)
 
+  console.log("frameData", frameData);
+  // console.log('transaction status', transactions)
 
   useEffect(() => {
     if (showFrame) {
@@ -56,28 +55,48 @@ export function BuildingFrame(props: any) {
           "0x04a628b88797fd3d99609c0d362c9cda04480c79930b867cdcf55454a95c4b8f"
       ],
       metadata: {
-        method: "get_map",
-        message: "Mint Frens Lands map",
+        method: "farm",
+        message: "Farm resources spawned on map",
       },
     });
     setFarming(true);
   };
 
-  // const farmingResource = (id : any) => {
-  //   console.log('farming a resource of id', 1)
-  //   farmResource(id, {});
+  useEffect(() => {
+    if (frameData && frameData.id) {
+      var newCost : any[] = [];
+      DB.buildings[frameData.id as any].cost_update.resources.map((item : any) => {
+        newCost.push([item.id, item.quantity])
+      })
+      setCostUpdate(newCost)
+    }
+  }, [frameData])
 
-  // }
+  useEffect(() => {
+    if (frameData && frameData.id) {
+      var newDailyHarvest : any[] = [];
+      
+      DB.buildings[frameData.id as any].daily_harvest.resources.map((item : any) => {
+        newDailyHarvest.push([item.id, item.quantity])
+      })
+      console.log('newDailyHarvest', newDailyHarvest)
+      console.log('newDailyHarvest', newDailyHarvest[0][0])
+      setDailyHarvests(newDailyHarvest)
+    }
+  }, [frameData])
 
-  // _farm_tx = await resources.invoke("farm", [
-  //   uint256.bnToUint256(0),
-  //   building_unique_id,
-  //   "0x05e10dc2d99756ff7e339912a8723ecb9c596e8ecd4f3c3a9d03eb06096b153f",
-  //   "0x072c5b060c922f01383d432624fa389bf8b087013b9702b669c484857d23eea1",
-  //   "0x0574fe8bbe799ce7583ef1aefe4c6cf1135dc21c092471982e56b038355f8249",
-  //   "0x04e8653b61e068c01e95f4df9e7504b6c71f2937e2bf00ec6734f4b2d33c13e0"
-  // ]);
-
+  useEffect(() => {
+    if (frameData && frameData.id) {
+      var newDailyCost : any[] = [];
+      
+      DB.buildings[frameData.id as any].daily_cost.resources.map((item : any) => {
+        newDailyCost.push([item.id, item.quantity])
+      })
+      console.log('newCos', newDailyCost)
+      console.log('newCos', newDailyCost[0][0])
+      setDailyCosts(newDailyCost)
+    }
+  }, [frameData])
 
   if (!showFrame) {
     return <></>;
@@ -85,102 +104,55 @@ export function BuildingFrame(props: any) {
 
   return (
     <>
-      {/* <div */}
-        {/* {isComponentVisible &&  */}
-      <div id="bFrame" className="absolute buildingFrame"
-        style={{right: "-113px", bottom: "0", height: "640px", width: "640px"}}>
+      <div id="bFrame" className="absolute buildingFrame" style={{right: "-113px", bottom: "0", height: "640px", width: "640px"}}>
         <div className="grid grid-cols-2 inline-block" style={{ height: "20px" }}>
           <div className="font8BITWonder uppercase text-center" style={{ height: "20px" }} >
-            {/* {frameData && frameData.name ? frameData.name : ""} */}
-            {frameData && frameData.id ? DB.buildings[0].name : 0}
-            {/* // ["building"]['id'][`${frameData.id}`].name */}
+            {frameData && frameData.id ? DB.buildings[frameData.id as any].name : 0}
           </div>
-          <div
-            className="relative flex jutify-center items-center inline-block"
-            style={{ paddingLeft: "8px" }}
-          >
-            {/* TODO: dynamic choice of className for icons + dynamic data */}
-            <div className="flex flex-row justify-center inline-block relative">
-              <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "20px" }}>
-                <span id="GoldFrame">320</span>
-              </div>
-              <div className="smallGold mb-3" style={{ position: "absolute", top: "-34px", left: "23px" }}></div>
-            </div>
-            <div className="flex flex-row justify-center inline-block relative">
-              <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "68px" }}>
-                320
-              </div>
-              <div className="smallGold mb-3" style={{ position: "absolute", top: "-34px", left: "70px" }}></div>
-            </div>
-            <div className="flex flex-row justify-center inline-block relative">
-              <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "117px" }}>
-                320
-              </div>
-              <div className="smallGold mb-3" style={{ position: "absolute", top: "-34px", left: "119px" }}></div>
-            </div>
+          <div className="relative flex jutify-center items-center inline-block" style={{ paddingLeft: "8px" }}>
+                {frameData && frameData.id && costUpdate && costUpdate[2] && 
+                  <div className="flex flex-row justify-center inline-block relative">
+                    <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "127px" }}>{costUpdate[2][1]}</div>
+                    <div className={"mb-3 small"+`${costUpdate[2][0]}`} style={{ position: "absolute", top: "-34px", left: "119px" }}></div>
+                  </div>
+                }
+                {frameData && frameData.id && costUpdate && costUpdate[1] &&
+                  <div className="flex flex-row justify-center inline-block relative">
+                    <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "78px" }}>{costUpdate[1][1]}</div>
+                    <div className={"mb-3 small"+`${costUpdate[1][0]}`} style={{ position: "absolute", top: "-34px", left: "70px" }}></div>
+                  </div>
+                }
+                {frameData && frameData.id && costUpdate && costUpdate[0] &&
+                  <div className="flex flex-row justify-center inline-block relative">
+                      <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "30px" }}>{costUpdate[0][1]}</div>
+                      <div className={"mb-3 small"+`${costUpdate[0][0]}`} style={{ position: "absolute", top: "-34px", left: "23px" }}></div>
+                  </div>
+                }
           </div>
         </div>
-        {/* Add dynamic data */}
-        <div className="relative flex jutify-center items-center inline-block" style={{ height: "85px" }}
-        >
+        <div className="relative flex jutify-center items-center inline-block" style={{ height: "85px" }}>
           <div className="flex flex-row justify-center inline-block relative">
             <div  className="font04B text-center mx-auto relative"  style={{width: "68px"}}>
               <div className={"building"+`${frameData?.id}`} style={{left: "-26px", top: "-39px", position: "absolute"}}></div>
               </div>
             <div className="font04B text-center mx-auto" style={{fontSize: "12px", paddingTop: "34px", width: "85px"}}>
-              Security
+              {frameData && frameData.id ? DB.buildings[frameData.id as any].name : 0}
             </div>
-            <div
-              className="font04B mx-auto text-center"
-              style={{
-                fontSize: "12px",
-                paddingTop: "34px",
-                width: "67px",
-              }}
-            >
-              1{/* level */}
+            <div className="font04B mx-auto text-center" style={{   fontSize: "12px",   paddingTop: "34px",   width: "67px", }}>
+              1
             </div>
-            <div
-              className="font04B text-center mx-auto relative"
-              style={{
-                fontSize: "12px",
-                paddingTop: "34px",
-                width: "65px",
-              }}
-            >
-              2 x 2
+            <div className="font04B text-center mx-auto relative" style={{   fontSize: "12px",   paddingTop: "34px",   width: "65px", }}>
+              1 x 1
             </div>
-            <div
-              className="font04B text-center mx-auto relative"
-              style={{
-                fontSize: "12px",
-                paddingTop: "34px",
-                width: "64px",
-              }}
-            >
-              34,37
+            <div className="font04B text-center mx-auto relative" style={{fontSize: "12px", paddingTop: "34px", width: "64px",}}>
+              {frameData && frameData.posX && frameData.posY ? frameData.posX + " " + frameData.posY : ""}
             </div>
           </div>
         </div>
-        {/* Add dynamic data */}
-        <div
-          className="font04B"
-          style={{
-            height: "109px",
-            fontSize: "13px",
-            paddingLeft: "9px",
-            paddingTop: "6px",
-          }}
-        >
-          description
+        <div className="font04B" style={{   height: "109px",   fontSize: "13px",   paddingLeft: "9px",   paddingTop: "6px"}}>
+        {frameData && frameData.id ? DB.buildings[0].description : 0}
         </div>
-        {/* If too build :  btn Build left w/ required resources : red if not enough resources, green if ok
-              If already built : btn centered Upgrade
-          */}
-        <div
-          className="relative flex jutify-center items-center inline-block"
-          style={{ height: "45px", paddingTop: "8px" }}
-        >
+        <div className="relative flex jutify-center items-center inline-block" style={{ height: "45px", paddingTop: "8px" }}>
           <div className="flex flex-row justify-center inline-block">
             <div style={{ width: "206px", paddingTop: "10px" }}>
               {frameData && frameData.type == 0 ? 
@@ -191,137 +163,75 @@ export function BuildingFrame(props: any) {
               }
             </div>
             <div className="relative flex jutify-center items-center inline-block" style={{ width: "60px", height: "80px", paddingTop: "10px" }}>
-              <div className="flex flex-row justify-center inline-block relative">
-                <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "0px" }}>
-                  320
+
+              {frameData && frameData.id && costUpdate && costUpdate[2] && 
+                <div className="flex flex-row justify-center inline-block relative">
+                  <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "15px" }}>{dailyCosts[2][1]}</div>
+                  <div className={"mb-3 small"+`${dailyCosts[2][0]}`} style={{ position: "absolute", top: "-39px", left: "3px" }}></div>
                 </div>
-                <div
-                  className="smallGold mb-3"
-                  style={{ position: "absolute", top: "-39px", left: "3px" }}
-                ></div>
-              </div>
-              <div className="flex flex-row justify-center inline-block relative">
-                <div
-                  className="fontHPxl-sm"
-                  style={{ position: "absolute", top: "-15px", left: "50px" }}
-                >
-                  320
+              }
+              {frameData && frameData.id && costUpdate && costUpdate[1] &&
+                <div className="flex flex-row justify-center inline-block relative">
+                  <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "60px" }}>{costUpdate[1][1]}</div>
+                  <div className={"mb-3 small"+`${costUpdate[1][0]}`} style={{ position: "absolute", top: "-39px", left: "52px" }}></div>
                 </div>
-                <div
-                  className="smallGold mb-3"
-                  style={{ position: "absolute", top: "-39px", left: "52px" }}
-                ></div>
-              </div>
-              <div className="flex flex-row justify-center inline-block relative">
-                <div
-                  className="fontHPxl-sm"
-                  style={{ position: "absolute", top: "-15px", left: "95px" }}
-                >
-                  320
+              }
+              {frameData && frameData.id && costUpdate && costUpdate[0] &&
+                <div className="flex flex-row justify-center inline-block relative">
+                    <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "105px" }}>{costUpdate[0][1]}</div>
+                    <div className={"mb-3 small"+`${costUpdate[0][0]}`} style={{ position: "absolute", top: "-39px", left: "97px" }}></div>
                 </div>
-                <div
-                  className="smallGold mb-3"
-                  style={{ position: "absolute", top: "-39px", left: "97px" }}
-                ></div>
-              </div>
+              }
             </div>
           </div>
         </div>
-        <div
-          className="grid grid-cols-2"
-          style={{ height: "30px", marginLeft: "205px" }}
-        >
-          <div
-            className="relative flex jutify-center items-center inline-block"
-            style={{ width: "60px", paddingTop: "10px" }}
-          >
-            <div className="flex flex-row justify-center inline-block relative">
-              <div
-                className="fontHPxl-sm"
-                style={{ position: "absolute", top: "-15px", left: "0px" }}
-              >
-                320
+        <div className="grid grid-cols-2" style={{ height: "30px", marginLeft: "205px" }}>
+          <div className="relative flex jutify-center items-center inline-block" style={{ width: "60px", paddingTop: "10px" }}>
+
+          {frameData && frameData.id && dailyCosts && dailyCosts[2] && 
+              <div className="flex flex-row justify-center inline-block relative">
+                <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "15px" }}>{dailyCosts[2][1]}</div>
+                <div className={"mb-3 small"+`${dailyCosts[2][0]}`} style={{ position: "absolute", top: "-39px", left: "3px" }}></div>
               </div>
-              <div
-                className="smallGold mb-3"
-                style={{ position: "absolute", top: "-39px", left: "3px" }}
-              ></div>
-            </div>
-            <div className="flex flex-row justify-center inline-block relative">
-              <div
-                className="fontHPxl-sm"
-                style={{ position: "absolute", top: "-15px", left: "50px" }}
-              >
-                320
+            }
+            {frameData && frameData.id && dailyCosts && dailyCosts[1] &&
+              <div className="flex flex-row justify-center inline-block relative">
+                <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "60px" }}>{dailyCosts[1][1]}</div>
+                <div className={"mb-3 small"+`${dailyCosts[1][0]}`} style={{ position: "absolute", top: "-39px", left: "52px" }}></div>
               </div>
-              <div
-                className="smallGold mb-3"
-                style={{ position: "absolute", top: "-39px", left: "52px" }}
-              ></div>
-            </div>
-            <div className="flex flex-row justify-center inline-block relative">
-              <div
-                className="fontHPxl-sm"
-                style={{ position: "absolute", top: "-15px", left: "95px" }}
-              >
-                320
+            }
+            {frameData && frameData.id && dailyCosts && dailyCosts[0] &&
+              <div className="flex flex-row justify-center inline-block relative">
+                  <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "105px" }}>{dailyCosts[0][1]}</div>
+                  <div className={"mb-3 small"+`${dailyCosts[0][0]}`} style={{ position: "absolute", top: "-39px", left: "97px" }}></div>
               </div>
-              <div
-                className="smallGold mb-3"
-                style={{ position: "absolute", top: "-39px", left: "97px" }}
-              ></div>
-            </div>
+            }
           </div>
         </div>
-        <div
-          className="grid grid-cols-2"
-          style={{ height: "30px", marginLeft: "205px" }}
-        >
-          <div
-            className="relative flex jutify-center items-center inline-block"
-            style={{ width: "60px", paddingTop: "10px" }}
-          >
-            <div className="flex flex-row justify-center inline-block relative">
-              <div
-                className="fontHPxl-sm"
-                style={{ position: "absolute", top: "-15px", left: "0px" }}
-              >
-                320
+        <div className="grid grid-cols-2" style={{ height: "30px", marginLeft: "205px" }}>
+          <div className="relative flex jutify-center items-center inline-block" style={{ width: "60px", paddingTop: "10px" }}>
+
+            {frameData && frameData.id && dailyHarvest && dailyHarvest[2] && 
+              <div className="flex flex-row justify-center inline-block relative">
+                <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "15px" }}>{dailyHarvest[2][1]}</div>
+                <div className={"mb-3 small"+`${dailyHarvest[2][0]}`} style={{ position: "absolute", top: "-39px", left: "3px" }}></div>
               </div>
-              <div
-                className="smallGold mb-3"
-                style={{ position: "absolute", top: "-39px", left: "3px" }}
-              ></div>
-            </div>
-            <div className="flex flex-row justify-center inline-block relative">
-              <div
-                className="fontHPxl-sm"
-                style={{ position: "absolute", top: "-15px", left: "50px" }}
-              >
-                320
+            }
+            {frameData && frameData.id && dailyHarvest && dailyHarvest[1] &&
+              <div className="flex flex-row justify-center inline-block relative">
+                <div className="fontHPxl-sm" style={{ position: "absolute", top: "-14px", left: "60px" }}>{dailyHarvest[1][1]}</div>
+                <div className={"mb-3 small"+`${dailyHarvest[1][0]}`} style={{ position: "absolute", top: "-39px", left: "52px" }}></div>
               </div>
-              <div
-                className="smallGold mb-3"
-                style={{ position: "absolute", top: "-39px", left: "52px" }}
-              ></div>
-            </div>
-            <div className="flex flex-row justify-center inline-block relative">
-              <div
-                className="fontHPxl-sm"
-                style={{ position: "absolute", top: "-15px", left: "95px" }}
-              >
-                320
+            }
+            {frameData && frameData.id && dailyHarvest && dailyHarvest[0] &&
+              <div className="flex flex-row justify-center inline-block relative">
+                  <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "105px" }}>{dailyHarvest[0][1]}</div>
+                  <div className={"mb-3 small"+`${dailyHarvest[0][0]}`} style={{ position: "absolute", top: "-39px", left: "97px" }}></div>
               </div>
-              <div
-                className="smallGold mb-3"
-                style={{ position: "absolute", top: "-39px", left: "97px" }}
-              ></div>
-            </div>
+            }
           </div>
         </div>
       </div>
-{/* } */}
-      {/* </div> */}
     </>
   );
 }

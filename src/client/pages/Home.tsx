@@ -7,15 +7,14 @@ import {
   InjectedConnector,
 } from "@starknet-react/core";
 import { ConnectWalletMint } from "../components/ConnectWalletMint";
-import { TestGenMap } from "../components/testGenMap";
 import { TransactionList } from "../components/TransactionList";
 import { toBN } from "starknet/dist/utils/number";
 import { Link, useNavigate } from "react-router-dom";
+import { gsap } from 'gsap';
 
-import { GetBuildingCount } from "../components/Buildings/GetBuildingCount";
-import { BuildBuildings } from "../components/Buildings/BuildBuildings";
-import { GetBuildings } from "../components/Buildings/GetBuildings";
-import { MenuBar } from "../components/GameUI/MenuBar";
+// import { GetBuildingCount } from "../components/Buildings/GetBuildingCount";
+// import { BuildBuildings } from "../components/Buildings/BuildBuildings";
+// import { GetBuildings } from "../components/Buildings/GetBuildings";
 import { ConnectWallet } from "../components/ConnectWallet";
 
 import { transaction, uint256 } from "starknet";
@@ -55,7 +54,6 @@ export default function Home() {
   useEffect(() => {
     if (account) {
       setAddress(account as string);
-      // updateTokenId(account);
     }
   }, [account])
 
@@ -64,6 +62,16 @@ export default function Home() {
       updateTokenId(account);
     }
   }, [account, tokenId])
+
+  // Rotation world
+  useEffect(() => {
+    gsap.timeline().to('.frensLandsWorld', {
+      rotation: 1440,
+      duration: 880,
+      repeat: -1,
+      ease: "none"
+    })
+  })
 
   // useEffect(() => {
     
@@ -172,8 +180,11 @@ export default function Home() {
     <>
       <div className="backgroundImg relative pixelated">
 
-      <img className="absolute pixelated" src="resources/front/UI_MainScreenPlanet.png" 
-          style={{width : "640px", height: "640px", marginTop: '40px', marginLeft: "320px"}} />
+      <img className="absolute pixelated frensLandsLogo" src="resources/front/UI_GameTitle.png" 
+          style={{width : "640px", height: "640px", marginTop: '-165px', marginLeft: "320px", zIndex: "1"}} />
+
+      <img className="absolute pixelated frensLandsWorld" src="resources/front/UI_MainScreenPlanet.png" 
+          style={{width : "640px", height: "640px", marginTop: '180px', marginLeft: "320px"}} />
 
           {/* <p className="text-white">My balance NFT: {BalanceNFTValue && BalanceNFTValue.NFTbalance}</p> */}
           <div>
@@ -188,117 +199,32 @@ export default function Home() {
               })
             } */}
           </div>
-          {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&
-            <img className="absolute" src="resources/maps/FrensLand_NFTs_V2.png" style={{height: "256px", width: "256px", marginLeft: "512px", marginTop: "128px"}} />
+          {account && BalanceNFTValue && (BalanceNFTValue.NFTbalance == 0 || BalanceNFTValue.NFTbalance == 1) &&
+            <img className="absolute" src="resources/maps/FrensLand_NFTs_V2.png" style={{height: "256px", width: "256px", marginLeft: "512px", marginTop: "290px"}} />
           }
-
-         <div style={{height: "128px", width: "128px", marginTop: "256px", marginLeft: "576px"}} className="absolute"> 
               {account && 
                 BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&
-                <div>
-                  <button className="pixelated btnMint" onClick={() => mintMap()} style={{marginLeft: "-36px", marginTop: "120px"}}></button>
+                <div style={{height: "128px", width: "128px", marginTop: "414px", marginLeft: "576px"}} className="absolute"> 
+                  <div>
+                    <button className="pixelated btnMint" onClick={() => mintMap()} style={{marginLeft: "-36px", marginTop: "120px"}}></button>
+                  </div>
                 </div>
               }
               {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 &&
                   <>
+                    <div style={{height: "128px", width: "128px", marginTop: "510px", marginLeft: "576px"}} className="absolute"> 
                     {/* Check que le game est started */}
-                    <button className="pixelated btnPlay" onClick={() => startGame()}></button>
-
+                      <button className="pixelated btnPlay" onClick={() => startGame()}></button>
+                    </div>
                     {/* <button className="pixelated btnPlay" onClick={() => navigate("/game")}></button> */}
                   </>
               }
               {!account &&
-                <ConnectWallet/>
+                <div style={{height: "128px", width: "128px", marginTop: "414px", marginLeft: "576px"}} className="absolute"> 
+                  <ConnectWallet/>
+                </div>
               }
-          </div>
-
-
-      {/* {account && (
-        <div>
-          <button
-            onClick={() => {
-              navigate("/game");
-            }}
-          >
-            Play game
-          </button>
-        </div>
-      )} */}
-      {/* <div> */}
-        {/* <h2>Liste of Maps</h2> */}
-        {/* <div className="p-5 grid md:grid-cols-2">
-          <div className="p-5">
-            <div className="max-w-lg rounded overflow-hidden shadow-lg">
-              <img
-                className="w-full"
-                src="/resources/front/test.png"
-                alt="Frens Lands #1"
-              />
-              <div className="px-6 py-4">
-                <div className="font-bold text-xl mb-2">Frens Lands #1</div>
-                <p className="text-gray-700 text-base">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                  Voluptatibus quia, nulla! Maiores et perferendis eaque,
-                  exercitationem praesentium nihil.
-                </p>
-              </div>
-              <div className="text-center">
-                <div>
-                  {!account &&
-                    connectors.map((connector) =>
-                      connector.available() ? (
-                        <div
-                          key={connector.id()}
-                          onClick={() => connect(connector)}
-                          className="btnConnect"
-                        ></div>
-                      ) : null
-                    )}
-                  {account && (
-                    <button className="" onClick={() => mintMap()}>
-                      Mint a map
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="p-5">
-            <div className="max-w-lg rounded overflow-hidden shadow-lg">
-              <img
-                className="w-full"
-                src="/resources/front/test.png"
-                alt="Frens Lands #1"
-              />
-              <div className="px-6 py-4">
-                <div className="font-bold text-xl mb-2">Frens Lands #1</div>
-                <p className="text-gray-700 text-base">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                  Voluptatibus quia, nulla! Maiores et perferendis eaque,
-                  exercitationem praesentium nihil.
-                </p>
-              </div>
-              <div className="text-center">
-                <div>
-                  {!account &&
-                    connectors.map((connector) =>
-                      connector.available() ? (
-                        <div
-                          key={connector.id()}
-                          onClick={() => connect(connector)}
-                          className="btnConnect"
-                        ></div>
-                      ) : null
-                    )}
-                  {account && "connected"}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> */}
       </div>
-      {/* </div> */}
     </>
   );
 }
