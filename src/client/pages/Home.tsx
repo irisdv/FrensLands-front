@@ -36,7 +36,7 @@ export default function Home() {
   const { account, connect, connectors, disconnect } = useStarknet();
   const injected = useMemo(() => new InjectedConnector(), []);
   const [minting, setMinting] = useState(false);
-  const [settingUp, setSettingUp] = useState(false)
+  const [settingUp, setSettingUp] = useState("")
   const { transactions } = useStarknetTransactionManager()
 
   const [watch, setWatch] = useState(true);
@@ -47,16 +47,17 @@ export default function Home() {
   const { contract: frenscoins } = useFrensCoinsContract();
   const { contract: minter } = useMinterContract();
 
-  const { setAddress, updateTokenId, address, tokenId } = useGameContext();
+  const { setAddress, updateTokenId, address, tokenId, frensCoins } = useGameContext();
 
   // console.log('transactions', transactions)
+  // console.log('address front', address)
 
   useEffect(() => {
-    if (account && !address) {
-      setAddress(account);
-      updateTokenId(account);
+    if (account) {
+      setAddress(account as string);
+      // updateTokenId(account);
     }
-  }, [account, address])
+  }, [account])
 
   useEffect(() => {
     if (account && !tokenId) {
@@ -64,12 +65,9 @@ export default function Home() {
     }
   }, [account, tokenId])
 
-  useEffect(() => {
-    console.log('Setting up game')
-    if (account && !tokenId) {
-      updateTokenId(account);
-    }
-  }, [transaction])
+  // useEffect(() => {
+    
+  // }, [transaction])
 
   // UseEffect transactions 
 
@@ -113,16 +111,6 @@ export default function Home() {
     method: "start_game",
   });
 
-  const {
-    data: dataGetCoins,
-    loading: loadingGetCoins,
-    invoke: getCoinsInvoke,
-  } = useStarknetInvoke({
-    contract: resources,
-    method: "_receive_resources_erc20",
-  });
-
-  // DEBUG : enlever les arguments 
   const mintMap = () => {
     console.log("invoking mintingMap", Date.now());
     getMapInvoke({
@@ -140,8 +128,8 @@ export default function Home() {
   };
 
   const startGame = () => {
-    console.log('startingGame')
-    // if (tokenId) {
+    console.log('startingGam invoke')
+    if (tokenId) {
       startGameInvoke({
         args: [
           uint256.bnToUint256(1),
@@ -154,42 +142,22 @@ export default function Home() {
           message: "Starting a game of Frens Lands",
         },
       });
-      setSettingUp(true)
-    // }
-  }
-  const getCoins = () => {
-    console.log('getCoins')
-    // if (tokenId) {
-      startGameInvoke({
-        args: [
-          uint256.bnToUint256(1),
-          "0x05975fef9b94e841a78e9826a95415874a476b04b8836eb8149a5cafdaef4fe3",
-          "0x04e8653b61e068c01e95f4df9e7504b6c71f2937e2bf00ec6734f4b2d33c13e0",
-          "0x06b1c1299bc6c4ecf71246f6580c0e36bee5ac53f3fa016706ef5c093183dde3"
-        ],
-        metadata: {
-          method: "start_game",
-          message: "Starting a game of Frens Lands",
-        },
-      });
-      setSettingUp(true)
-    // }
+      if (dataStartGame) setSettingUp(dataStartGame)
+    } else {
+      console.log('Missing tokenId')
+    }
   }
 
-  // console.log("account", account);
-  // console.log("dataStartGame", dataGetMap);
-  // console.log("startGameInvoke", loadingGetMap);
+  console.log('balance NFT', BalanceNFTValue && BalanceNFTValue.NFTbalance)
 
   return (
     <>
       <div className="backgroundImg relative pixelated">
 
-      <img className="absolute m-auto pixelated" src="resources/front/UI_MainScreenPlanet.png" 
+      <img className="absolute pixelated" src="resources/front/UI_MainScreenPlanet.png" 
           style={{width : "640px", height: "640px", marginTop: '40px', marginLeft: "320px"}} />
 
-          <div className="text-white">gm {account}</div>
-
-          <p className="text-white">My balance NFT: {BalanceNFTValue && BalanceNFTValue.NFTbalance}</p>
+          {/* <p className="text-white">My balance NFT: {BalanceNFTValue && BalanceNFTValue.NFTbalance}</p> */}
           <div>
             {/* {
               transactions.map(transaction => {
@@ -202,23 +170,26 @@ export default function Home() {
               })
             } */}
           </div>
-         <div style={{height: "128px", width: "128px", marginTop: "256px", marginLeft: "576px"}} className="absolute"> 
-              {account ? 
-                BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 ?
-                 <button className="pixelated btnMint" onClick={() => mintMap()}></button>
+          {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&
+            <img className="absolute" src="resources/maps/FrensLand_NFTs_V2.png" style={{height: "256px", width: "256px", marginLeft: "512px", marginTop: "128px"}} />
+          }
 
-                 :
+         <div style={{height: "128px", width: "128px", marginTop: "256px", marginLeft: "576px"}} className="absolute"> 
+              {account && 
+                BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&
+                <div>
+                  <button className="pixelated btnMint" onClick={() => mintMap()} style={{marginLeft: "-36px", marginTop: "120px"}}></button>
+                </div>
+              }
+              {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 &&
                   <>
-                    <p className="text-white">Initialize game</p>
+                    {/* Check que le game est started */}
                     <button className="pixelated btnPlay" onClick={() => startGame()}></button>
 
-                    <p className="text-white">Get your FrensCoins</p>
-                    <button className="pixelated btnPlay" onClick={() => getCoins()}>Get your Frens Coins</button>
-
-                    <p className="text-white">Now let's play !</p>
-                    <button className="pixelated btnPlay" onClick={() => navigate("/game")}></button>
+                    {/* <button className="pixelated btnPlay" onClick={() => navigate("/game")}></button> */}
                   </>
-              :  
+              }
+              {!account &&
                 <ConnectWallet/>
               }
           </div>
