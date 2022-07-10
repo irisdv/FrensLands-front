@@ -374,21 +374,19 @@ export const AppStateProvider: React.FC<
       console.log('account context', account)
       try {
         _token_id = await maps.call("tokenOfOwnerByIndex", [
-            state.address, uint256.bnToUint256(1)
+            state.address, uint256.bnToUint256(0)
         ]);
-      console.log('tokenOfOwnerByIndex result', _token_id)
-      // var elem = toBN(_erc1155Balance)
-      // var newBalance = elem.toNumber()
-      // dispatch({
-      //   type: "set_tokenId",
-      //   tokenId: toBN(_token_id).toString(),
-      // });
+      console.log('tokenOfOwnerByIndex result', uint256.uint256ToBN(_token_id[0]).toNumber())
+      dispatch({
+        type: "set_tokenId",
+        tokenId: uint256.uint256ToBN(_token_id[0]).toString(),
+      });
       } catch (e) {
         console.warn("Error when retrieving tokenOwner by Index ");
         console.warn(e);
       }
     }
-  }, []);
+  }, [state.address]);
 
   const refreshPopulation = React.useCallback(async (resources : any) => {
     let _newPopulation : any;
@@ -405,20 +403,21 @@ export const AppStateProvider: React.FC<
         console.warn("Error when retrieving get_population in M02_Resources");
         console.warn(e);
       }
-  }, []);
+  }, [state.address]);
 
   const refreshResources = React.useCallback(async (erc1155 : any) => {
     let _erc1155Balance : any;
+    if (state.address) {
         try {
           _erc1155Balance = await erc1155.call("balanceOfBatch", [
             [
-              "0x04A8173E2F008282AC9793fb929974cc7CEd6ceB76c79a0A9E0D163E60d08b6F",
-              "0x04A8173E2F008282AC9793fb929974cc7CEd6ceB76c79a0A9E0D163E60d08b6F", 
-              "0x04A8173E2F008282AC9793fb929974cc7CEd6ceB76c79a0A9E0D163E60d08b6F", 
-              "0x04A8173E2F008282AC9793fb929974cc7CEd6ceB76c79a0A9E0D163E60d08b6F", 
-              "0x04A8173E2F008282AC9793fb929974cc7CEd6ceB76c79a0A9E0D163E60d08b6F",
-              "0x04A8173E2F008282AC9793fb929974cc7CEd6ceB76c79a0A9E0D163E60d08b6F",
-              "0x04A8173E2F008282AC9793fb929974cc7CEd6ceB76c79a0A9E0D163E60d08b6F"
+              state.address,
+              state.address, 
+              state.address, 
+              state.address, 
+              state.address,
+              state.address,
+              state.address
             ],
             [uint256.bnToUint256(0), uint256.bnToUint256(1), uint256.bnToUint256(2), uint256.bnToUint256(3), uint256.bnToUint256(5), uint256.bnToUint256(6), uint256.bnToUint256(8)]
           ]);
@@ -436,7 +435,8 @@ export const AppStateProvider: React.FC<
           console.warn("Error when retrieving resources ");
           console.warn(e);
         }
-  }, []);
+      }
+  }, [state.address]);
 
   const refreshMapArray = React.useCallback(async (worlds : any) => {
     let _mapArray : any[] = [];
@@ -464,11 +464,12 @@ export const AppStateProvider: React.FC<
 
   const refreshBalance = React.useCallback(async (coins : any) => {
     let _frensCoinsBalance : any;
+    // if (state.address) {
         try {
           _frensCoinsBalance = await coins.call("balanceOf", [
-            "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
+            state.address,
           ]);
-          console.log('_frensCoinsBalance', _frensCoinsBalance)
+          console.log('_frensCoinsBalance', uint256.uint256ToBN(_frensCoinsBalance[0][1]).toNumber())
           var elem = toBN(_frensCoinsBalance)
           var newBalance = elem.toNumber()
           dispatch({
@@ -479,7 +480,8 @@ export const AppStateProvider: React.FC<
           console.warn("Error when retrieving get_energy_level in M02_Resources");
           console.warn(e);
         }
-      }, []);
+      // }
+      }, [state.address]);
 
     const refreshEnergyLevel = React.useCallback(async (resources : any) => {
         // DEBUG tokenId to replace
