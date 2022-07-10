@@ -8,11 +8,13 @@ import { useResourcesContract } from "../../hooks/resources";
 import { ConnectWallet } from "../ConnectWallet";
 
 export function MenuBar() {
-  const {setAddress,frensCoins, wood, rock, meat, metal, coal, cereal, energy, populationBusy, populationFree, blockGame, currentBlock} = useGameContext();
+  const {setAddress, frensCoins, wood, rock, meat, metal, coal, cereal, energy, populationBusy, populationFree, blockGame, currentBlock} = useGameContext();
   //   const [watch, setWatch] = useState(true);
     const { contract: resources } = useResourcesContract();
 
     const { data: block } = useStarknetBlock()
+
+    console.log('wood', wood)
 
     const {account} = useStarknet()
 
@@ -64,21 +66,14 @@ export function MenuBar() {
       <div className="absolute">
         <div className="flex flex-row justify-center inline-block">
           <div className="btnHome pixelated" style={{ left: "5px" }}></div>
-          <div
-            id="menuBar"
-            className="relative flex jutify-center items-center inline-block pixelated"
-            style={{ fontSize: "16px" }}
-          >
-            <div
-              className="flex jutify-center pl-2 relative"
-              style={{ marginTop: "-13px", marginLeft: "50px" }}
-            >
+          <div id="menuBar" className="relative flex jutify-center items-center inline-block pixelated" style={{ fontSize: "16px" }}>
+            <div className="flex jutify-center pl-2 relative" style={{ marginTop: "-13px", marginLeft: "50px" }}>
               <div id="menuGold" className="pixelated"></div>
               <div
                 className="flex items-center fontHPxl pb-1 menuItems pixelated"
                 style={{ marginTop: "-2px" }}
               >
-                {energy ? energy : 0}
+                {frensCoins ? frensCoins : 0}
               </div>
             </div>
             <div

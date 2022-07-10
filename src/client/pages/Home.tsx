@@ -163,9 +163,9 @@ export default function Home() {
       startGameInvoke({
         args: [
           uint256.bnToUint256(1),
-          "0x05975fef9b94e841a78e9826a95415874a476b04b8836eb8149a5cafdaef4fe3",
-          "0x04e8653b61e068c01e95f4df9e7504b6c71f2937e2bf00ec6734f4b2d33c13e0",
-          "0x06b1c1299bc6c4ecf71246f6580c0e36bee5ac53f3fa016706ef5c093183dde3"
+          maps?.address,
+          frenscoins?.address,
+          resources?.address
         ],
         metadata: {
           method: "start_game",
@@ -176,20 +176,16 @@ export default function Home() {
     // }
   }
 
-  // console.log("account", account);
-  // console.log("dataStartGame", dataGetMap);
-  // console.log("startGameInvoke", loadingGetMap);
+  console.log('balance NFT', BalanceNFTValue && BalanceNFTValue.NFTbalance)
 
   return (
     <>
       <div className="backgroundImg relative pixelated">
 
-      <img className="absolute m-auto pixelated" src="resources/front/UI_MainScreenPlanet.png" 
+      <img className="absolute pixelated" src="resources/front/UI_MainScreenPlanet.png" 
           style={{width : "640px", height: "640px", marginTop: '40px', marginLeft: "320px"}} />
 
-          <div className="text-white">gm {account}</div>
-
-          <p className="text-white">My balance NFT: {BalanceNFTValue && BalanceNFTValue.NFTbalance}</p>
+          {/* <p className="text-white">My balance NFT: {BalanceNFTValue && BalanceNFTValue.NFTbalance}</p> */}
           <div>
             {/* {
               transactions.map(transaction => {
@@ -202,12 +198,18 @@ export default function Home() {
               })
             } */}
           </div>
-         <div style={{height: "128px", width: "128px", marginTop: "256px", marginLeft: "576px"}} className="absolute"> 
-              {account ? 
-                BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 ?
-                 <button className="pixelated btnMint" onClick={() => mintMap()}></button>
+          {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&
+            <img className="absolute" src="resources/maps/FrensLand_NFTs_V2.png" style={{height: "256px", width: "256px", marginLeft: "512px", marginTop: "128px"}} />
+          }
 
-                 :
+         <div style={{height: "128px", width: "128px", marginTop: "256px", marginLeft: "576px"}} className="absolute"> 
+              {account && 
+                BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&
+                <div>
+                  <button className="pixelated btnMint" onClick={() => mintMap()} style={{marginLeft: "-36px", marginTop: "120px"}}></button>
+                </div>
+              }
+              {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 &&
                   <>
                     <p className="text-white">Initialize game</p>
                     <button className="pixelated btnPlay" onClick={() => startGame()}></button>
@@ -218,7 +220,8 @@ export default function Home() {
                     <p className="text-white">Now let's play !</p>
                     <button className="pixelated btnPlay" onClick={() => navigate("/game")}></button>
                   </>
-              :  
+              }
+              {!account &&
                 <ConnectWallet/>
               }
           </div>

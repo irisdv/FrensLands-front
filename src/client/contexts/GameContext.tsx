@@ -422,18 +422,15 @@ export const AppStateProvider: React.FC<
             ],
             [uint256.bnToUint256(0), uint256.bnToUint256(1), uint256.bnToUint256(2), uint256.bnToUint256(3), uint256.bnToUint256(5), uint256.bnToUint256(6), uint256.bnToUint256(8)]
           ]);
-          console.log('_erc1155Balance', _erc1155Balance)
-          var elem = toBN(_erc1155Balance)
-          var newBalance = elem.toNumber()
-          console.log('newBalance', newBalance)
+          console.log('_erc1155Balance', uint256.uint256ToBN(_erc1155Balance[0][1]).toNumber())
           dispatch({
             type: "set_erc1155Res",
-            wood: toBN(_erc1155Balance[1]).toNumber(),
-            rock: toBN(_erc1155Balance[2]).toNumber(),
-            meat: toBN(_erc1155Balance[3]).toNumber(),
-            cereal: toBN(_erc1155Balance[5]).toNumber(),
-            metal: toBN(_erc1155Balance[6]).toNumber(),
-            coal: toBN(_erc1155Balance[8]).toNumber(),
+            wood: uint256.uint256ToBN(_erc1155Balance[0][1]).toNumber(),
+            rock: uint256.uint256ToBN(_erc1155Balance[0][2]).toNumber(),
+            meat: uint256.uint256ToBN(_erc1155Balance[0][3]).toNumber(),
+            cereal: uint256.uint256ToBN(_erc1155Balance[0][4]).toNumber(),
+            metal: uint256.uint256ToBN(_erc1155Balance[0][5]).toNumber(),
+            coal: uint256.uint256ToBN(_erc1155Balance[0][6]).toNumber(),
           });
         } catch (e) {
           console.warn("Error when retrieving resources ");
@@ -452,7 +449,6 @@ export const AppStateProvider: React.FC<
         while (i < 640) {
           var elem = toBN(_map[i])
           _mapArray.push(elem.toString())
-          if (elem.toString().length != 16) console.log(elem.toString())
           i++;
         }
       })
@@ -474,7 +470,7 @@ export const AppStateProvider: React.FC<
           ]);
           var elem = toBN(_frensCoinsBalance)
           var newBalance = elem.toNumber()
-          console.log('newBalance', newBalance)
+          console.log('_frensCoinsBalance', _frensCoinsBalance)
           dispatch({
             type: "set_frensCoins",
             frensCoins: newBalance as number

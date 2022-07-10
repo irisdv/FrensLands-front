@@ -346,11 +346,11 @@ export default class ViewGL
       {
         if (varToPrint != null)
         {
-          console.log(string, varToPrint);
+          // console.log(string, varToPrint);
         }
         else
         {
-          console.log(string);
+          // console.log(string);
         }
       }
     }
@@ -360,11 +360,11 @@ export default class ViewGL
       {
         if (varToPrint != null)
         {
-          console.log(string, varToPrint);
+          // console.log(string, varToPrint);
         }
         else
         {
-          console.log(string);
+          // console.log(string);
         }
       }
     }

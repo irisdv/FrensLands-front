@@ -91,7 +91,8 @@ export function BuildingFrame(props: any) {
         <div className="grid grid-cols-2 inline-block" style={{ height: "20px" }}>
           <div className="font8BITWonder uppercase text-center" style={{ height: "20px" }} >
             {/* {frameData && frameData.name ? frameData.name : ""} */}
-            {frameData && frameData.id ? "ID building: "+frameData.id : ""}
+            {frameData && frameData.id ? DB.buildings[0].name : 0}
+            {/* // ["building"]['id'][`${frameData.id}`].name */}
           </div>
           <div
             className="relative flex jutify-center items-center inline-block"
