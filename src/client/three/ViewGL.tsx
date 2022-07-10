@@ -305,6 +305,7 @@ export default class ViewGL
     var indexI = 1;
     var indexJ = 1;
     var i = 0;
+    var indexElem = 0;
 
     while (indexI < 17)
     {
@@ -317,6 +318,8 @@ export default class ViewGL
 
         if (this.firstLoad == 1)
         {
+          indexElem++;
+          console.log("indexElem", indexElem);
           this.frontBlockArray[indexI][indexJ] = this.decompose(this.compArray[i]);
         }
         indexJ++;
@@ -643,7 +646,8 @@ export default class ViewGL
         this.UbuildingIDs = this.UbuildingIDs + 1;
 
         this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
-          this.UbuildingIDs, this.frontBlockArray[pos.y][pos.x][3], 1, this.outlinedText,
+          this.UbuildingIDs,
+          this.frontBlockArray[pos.y][pos.x][3], 1, this.outlinedText,
           this.frontBlockArray[pos.y][pos.x][4]);
 
         this.selectedObj = pos;
@@ -669,7 +673,8 @@ export default class ViewGL
         this.UbuildingIDs = this.UbuildingIDs + 1;
 
         this.replaceObject(pos, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][7],
-          this.UbuildingIDs, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][3], 1,
+          this.UbuildingIDs,
+          this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][3], 1,
           this.normalText, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][4]);
 
         this.selectedObj = new THREE.Vector2(0, 0);
