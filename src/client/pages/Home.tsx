@@ -21,6 +21,7 @@ import { useMapsContract } from "../hooks/maps";
 import { transaction, uint256 } from "starknet";
 import { useGameContext } from "../hooks/useGameContext";
 import { useWorldsContract } from "../hooks/worlds";
+import { useResourcesContract } from "../hooks/resources";
 import { ConnectWallet } from "../components/ConnectWallet";
 
 export default function Home() {
@@ -36,6 +37,7 @@ export default function Home() {
   const [watch, setWatch] = useState(true);
   const { contract: worlds } = useWorldsContract();
   const { contract: maps } = useMapsContract();
+  const { contract: resources } = useResourcesContract();
 
   const { setAddress, updateTokenId, address, tokenId } = useGameContext();
 
@@ -108,6 +110,15 @@ export default function Home() {
     method: "start_game",
   });
 
+  const {
+    data: dataGetCoins,
+    loading: loadingGetCoins,
+    invoke: getCoinsInvoke,
+  } = useStarknetInvoke({
+    contract: resources,
+    method: "_receive_resources_erc20",
+  });
+
   // DEBUG : enlever les arguments 
   const mintMap = () => {
     console.log("invoking mintingMap", Date.now());
@@ -127,6 +138,24 @@ export default function Home() {
 
   const startGame = () => {
     console.log('startingGame')
+    // if (tokenId) {
+      startGameInvoke({
+        args: [
+          uint256.bnToUint256(1),
+          "0x05975fef9b94e841a78e9826a95415874a476b04b8836eb8149a5cafdaef4fe3",
+          "0x04e8653b61e068c01e95f4df9e7504b6c71f2937e2bf00ec6734f4b2d33c13e0",
+          "0x06b1c1299bc6c4ecf71246f6580c0e36bee5ac53f3fa016706ef5c093183dde3"
+        ],
+        metadata: {
+          method: "start_game",
+          message: "Starting a game of Frens Lands",
+        },
+      });
+      setSettingUp(true)
+    // }
+  }
+  const getCoins = () => {
+    console.log('getCoins')
     // if (tokenId) {
       startGameInvoke({
         args: [
@@ -172,6 +201,8 @@ export default function Home() {
       </div>
 
       <ConnectWallet/>
+
+      <button onClick={() => getCoins()}>Get your Frens Coins</button>
 
       {BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&
       <button className="pixelated btnMint" onClick={() => mintMap()}></button>
