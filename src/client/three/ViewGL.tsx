@@ -349,7 +349,7 @@ export default class ViewGL
           pos.x = this.frontBlockArray[indexI][indexJ][0];// + 0.5;
           pos.y = this.frontBlockArray[indexI][indexJ][1];// + 0.5;
 
-          if (pos.x > 40 || pos.y < 1 || pos.x < 1 || pos.y > 16)
+          if (pos.x > 39 || pos.y < 1 || pos.x < 1 || pos.y > 15)
           {
             this.debugPrint(1, "POS ERROR INDEX ", this.frontBlockArray[indexI][indexJ][4]);
             this.debugPrint(1, "POSX", pos.x);
@@ -864,7 +864,7 @@ export default class ViewGL
 
     this.tempBuildMesh = new THREE.Mesh(newObject, matObj);
     this.tempBuildMesh.name = name.toString();
-    this.tempBuildMesh.position.x = this.currBlockPos.x;
+    this.tempBuildMesh.position.x = this.currBlockPos.x + 0.5;
     this.tempBuildMesh.position.y = 0.2 + (this.mouse.y * 0.02); // Make sure the objects are higher at the bottom
     this.tempBuildMesh.position.z = this.currBlockPos.y;
     this.scene.add(this.tempBuildMesh);
@@ -878,7 +878,7 @@ export default class ViewGL
     {
       var   spaceValid = 0;
 
-      this.tempBuildMesh.position.x = this.currBlockPos.x;// + 0.5; // + 0.5 = CENTER OF BLOCK
+      this.tempBuildMesh.position.x = this.currBlockPos.x ;//+ 0.5; // + 0.5 = CENTER OF BLOCK
       this.tempBuildMesh.position.z = this.currBlockPos.y;// + 0.5;
       var blockRightPos = new THREE.Vector2;
       blockRightPos.x = this.currBlockPos.x;
@@ -984,12 +984,12 @@ export default class ViewGL
 
     var newObjectMesh = new THREE.Mesh(newObject, matObj);
     newObjectMesh.name = name.toString();
-    newObjectMesh.position.x = pos.x;// + 0.5;
+    newObjectMesh.position.x = pos.x + 0.5;// + 0.5;
     newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
     newObjectMesh.position.z = pos.y;// + 0.5;
     this.scene.add(newObjectMesh);
     this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][3] = type;
-    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][0] = pos.x;// - 0.5;
+    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][0] = pos.x + 0.5;// - 0.5;
     this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][1] = pos.y;// - 0.5;
     this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][4] = name;
     this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][7] = size;
@@ -1045,12 +1045,12 @@ export default class ViewGL
 
     var newObjectMesh = new THREE.Mesh(newObject, matObj);
     newObjectMesh.name = name.toString();
-    newObjectMesh.position.x = pos.x;// + 0.5;
+    newObjectMesh.position.x = pos.x + 0.5;// + 0.5;
     newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
     newObjectMesh.position.z = pos.y;// + 0.5;
     this.scene.add(newObjectMesh);
     this.frontBlockArray[pos.y][pos.x][3] = type;
-    this.frontBlockArray[pos.y][pos.x][0] = pos.x;// - 0.5;
+    this.frontBlockArray[pos.y][pos.x][0] = pos.x + 0.5;// - 0.5;
     this.frontBlockArray[pos.y][pos.x][1] = pos.y;// - 0.5;
     this.frontBlockArray[pos.y][pos.x][4] = name;
     this.frontBlockArray[pos.y][pos.x][7] = size;
@@ -1106,7 +1106,7 @@ export default class ViewGL
 
     var newObjectMesh = new THREE.Mesh(newObject, matObj);
     newObjectMesh.name = name.toString();
-    newObjectMesh.position.x = pos.x;// + 0.5;
+    newObjectMesh.position.x = pos.x + 0.5;// + 0.5;
     newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
     newObjectMesh.position.z = pos.y;// + 0.5;
     this.scene.add(newObjectMesh);
@@ -1170,13 +1170,13 @@ export default class ViewGL
 
     var newObjectMesh = new THREE.Mesh(newObject, matObj);
     newObjectMesh.name = name.toString();
-    newObjectMesh.position.x = pos.x;// + 0.5;
+    newObjectMesh.position.x = pos.x + 0.5;// + 0.5;
     newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
     newObjectMesh.position.z = pos.y;// + 0.5;
     this.scene.add(newObjectMesh);
     this.frontBlockArray[pos.y][pos.x][3] = type;
-    this.frontBlockArray[pos.y][pos.x][0] = pos.x; + 0.5;
-    this.frontBlockArray[pos.y][pos.x][1] = pos.y; - 0.5;
+    this.frontBlockArray[pos.y][pos.x][0] = pos.x + 0.5;
+    this.frontBlockArray[pos.y][pos.x][1] = pos.y;// - 0.5;
     this.frontBlockArray[pos.y][pos.x][4] = name;
     this.frontBlockArray[pos.y][pos.x][7] = size;
   }
