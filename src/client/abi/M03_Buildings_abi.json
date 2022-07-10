@@ -464,5 +464,24 @@
         "name": "_destroy_building",
         "outputs": [],
         "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "tokenId",
+                "type": "Uint256"
+            },
+            {
+                "name": "building_unique_id",
+                "type": "felt"
+            },
+            {
+                "name": "level",
+                "type": "felt"
+            }
+        ],
+        "name": "_update_level",
+        "outputs": [],
+        "type": "function"
     }
 ]

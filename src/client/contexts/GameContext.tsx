@@ -25,6 +25,9 @@ import { GetBlockResponse } from 'starknet'
 
 export interface IFrame {
   id?: string;
+  type?: number;
+  posX?: any;
+  poxY?: any;
 }
 
 export interface IGameState {
@@ -225,6 +228,34 @@ function reducer(state: IGameState, action: Action): IGameState {
       return state;
     }
   }
+}
+
+const arrayIds = {
+  0: 0,
+  1: 1,
+  179: 2,
+  15: 3,
+  3: 4,
+  10: 5,
+  5: 6,
+  8: 7,
+  7: 8,
+  6: 9,
+  59: 10,
+  11: 11,
+  9: 12,
+  12: 13,
+  13: 14,
+  60: 15,
+  52: 16,
+  58: 17,
+  61: 18,
+  4: 19,
+  20: 20,
+  14:21,
+  49: 22,
+  57: 23,
+  100: 24
 }
 
 export const AppStateProvider: React.FC<
@@ -491,6 +522,7 @@ export const AppStateProvider: React.FC<
 
   const updateBuildingFrame = React.useCallback((show: boolean, data: {}) => {
       console.log('in context', data)
+      // TODO : update l'id qu'on reçoit
       dispatch({
         type: "set_showFrame",
         showFrame: show,

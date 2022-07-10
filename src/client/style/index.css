@@ -250,6 +250,33 @@ body {
 
 /* -------------------- HOMEPAGE -------------------- */
 
+
+.btnBuild {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(18 * 1 * 64px) calc(19 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+.btnBuild:hover {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(16 * 1 * 64px) calc(19 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+.btnBuild:active {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(14 * 1 * 64px) calc(19 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+
+
 .btnUpgrade {
     display:inline-block;
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");

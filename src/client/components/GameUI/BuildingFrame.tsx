@@ -5,6 +5,8 @@ import { number, transaction, uint256 } from "starknet";
 import { toBN } from "starknet/dist/utils/number";
 import { useGameContext } from "../../hooks/useGameContext";
 import { useResourcesContract } from "../../hooks/resources";
+import DB from '../../db.json';
+
 
 export function BuildingFrame(props: any) {
   const { showFrame, frameData, farmResource } = useGameContext();
@@ -84,19 +86,10 @@ export function BuildingFrame(props: any) {
   return (
     <>
 
-      <div
-        id="bFrame"
-        className="absolute buildingFrame"
-        style={{right: "-113px", bottom: "0", height: "640px", width: "640px"}}
-      >
-        <div
-          className="grid grid-cols-2 inline-block"
-          style={{ height: "20px" }}
-        >
-          <div
-            className="font8BITWonder uppercase text-center"
-            style={{ height: "20px" }}
-          >
+      <div id="bFrame" className="absolute buildingFrame"
+        style={{right: "-113px", bottom: "0", height: "640px", width: "640px"}}>
+        <div className="grid grid-cols-2 inline-block" style={{ height: "20px" }}>
+          <div className="font8BITWonder uppercase text-center" style={{ height: "20px" }} >
             {/* {frameData && frameData.name ? frameData.name : ""} */}
             {frameData && frameData.id ? "ID building: "+frameData.id : ""}
           </div>
@@ -219,22 +212,17 @@ export function BuildingFrame(props: any) {
           style={{ height: "45px", paddingTop: "8px" }}
         >
           <div className="flex flex-row justify-center inline-block">
-            {/* Case button  */}
             <div style={{ width: "206px", paddingTop: "10px" }}>
-              <a>
-                <div className="btnUpgrade"></div>
-                <div className="btnUpgrade" onClick={() => farmingResource(2)}>Farm resource</div>
-              </a>
+              {frameData && frameData.type == 0 ? 
+                <div className="btnBuild" onClick={() => farmingResource(2)}></div>
+               
+              : 
+                <div className="btnUpgrade"></div> 
+              }
             </div>
-            <div
-              className="relative flex jutify-center items-center inline-block"
-              style={{ width: "60px", height: "80px", paddingTop: "10px" }}
-            >
+            <div className="relative flex jutify-center items-center inline-block" style={{ width: "60px", height: "80px", paddingTop: "10px" }}>
               <div className="flex flex-row justify-center inline-block relative">
-                <div
-                  className="fontHPxl-sm"
-                  style={{ position: "absolute", top: "-15px", left: "0px" }}
-                >
+                <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "0px" }}>
                   320
                 </div>
                 <div

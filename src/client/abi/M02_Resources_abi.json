@@ -273,6 +273,10 @@
             {
                 "name": "tokenId",
                 "type": "Uint256"
+            },
+            {
+                "name": "gold_erc20_addr",
+                "type": "felt"
             }
         ],
         "name": "_receive_resources_erc20",
