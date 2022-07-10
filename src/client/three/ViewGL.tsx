@@ -170,7 +170,7 @@ export default class ViewGL
   {
     var tempDecomp : any[] = [];
     this.debugPrint(1, "elemToDecomp = ", elem);
-    elem.toString();
+    //elem.toString();
 
     tempDecomp[0] = elem[0] + elem[1];            //[pos:x]
     tempDecomp[1] = elem[2] + elem[3];            //[pos:y]
@@ -324,10 +324,10 @@ export default class ViewGL
               && this.frontBlockArray[indexI][indexJ][3] != 0)
         {
           var pos = new THREE.Vector2;
-          pos.x = this.frontBlockArray[indexI][indexJ][0];
-          pos.y = this.frontBlockArray[indexI][indexJ][1];
+          pos.y = this.frontBlockArray[indexI][indexJ][0];
+          pos.x = this.frontBlockArray[indexI][indexJ][1];
 
-          this.createObject(pos, 1, this.frontBlockArray[indexI][indexJ][4],
+          this.createObjectFomChain(pos, 1, this.frontBlockArray[indexI][indexJ][4],
             this.frontBlockArray[indexI][indexJ][3], 1, this.normalText);
 
         }
@@ -934,6 +934,67 @@ export default class ViewGL
     this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][7] = size;
   }
 
+  // CREATE GEOMETRY AND MESH ON TERRAIN FROM CHAIN DATA
+  createObjectFomChain = (pos : THREE.Vector2, size : number, name : number,
+    type : number, progress : number, nameText : String) =>
+  {
+
+    let newObject = new THREE.PlaneGeometry;
+    /*if (size == 1)
+    {
+      newObject = new THREE.PlaneGeometry(1, 1, 1, 1);
+    }
+    else if (size == 2)
+    {
+      newObject = new THREE.PlaneGeometry(2, 1, 1, 1);
+    }
+    else if (size == 4)
+    {*/
+      newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1);
+    //}
+    newObject.name = name + "_geom";
+    newObject.rotateX(-Math.PI * 0.5);
+
+    const textObj = new THREE.TextureLoader().load(
+      //"resources/textures/"+ nameText +".png"
+      "resources/textures/"+ nameText +"_nogrid.png"
+    );
+
+    let matObj = new THREE.MeshStandardMaterial({
+      map: textObj,
+      transparent: true,
+      depthWrite: false,
+      depthTest: true,
+      // shading: 2
+    });
+
+    var textureType : any = new THREE.Vector2;
+    textureType = this.findTextByID(this.rightBuildingType[type]);
+
+    if (matObj.map)
+    {
+      matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625); // TEXTURE TILLING ADAPTED TO BUILDING TILES
+      //matObj.map.offset.set((4 * (1 / 16)), (4 * (1 / 16))); //TEMPORARY
+      matObj.map.offset.set(textureType.x, textureType.y);
+      matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+      matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+      matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+    }
+    this.debugPrint(1, "G_CREATEOBJ_FUNC_FROM_CHAIN");
+
+    var newObjectMesh = new THREE.Mesh(newObject, matObj);
+    newObjectMesh.name = name.toString();
+    newObjectMesh.position.x = pos.x;// + 0.5;
+    newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
+    newObjectMesh.position.z = pos.y;// + 0.5;
+    this.scene.add(newObjectMesh);
+    /*this.frontBlockArray[pos.y][pos.x][3] = type;
+    this.frontBlockArray[pos.y][pos.x][0] = pos.x;// - 0.5;
+    this.frontBlockArray[pos.y][pos.x][1] = pos.y;// - 0.5;
+    this.frontBlockArray[pos.y][pos.x][4] = name;
+    this.frontBlockArray[pos.y][pos.x][7] = size;*/
+  }
+
   // REPLACE GEOMETRY AND MESH ON TERRAIN
   replaceObject = (pos : THREE.Vector2, size : number, name : number,
     type : number, progress : number, nameText : String, nameToDelete : number) =>
@@ -1106,8 +1167,11 @@ export default class ViewGL
     {
       this.rawData = data;
     }
-    this.compArray = this.rawData.mapArray;
-    this.chainDataAdded = 1;
+    if (Object.keys(data.mapArray).length > 1)
+    {
+      this.compArray = data.mapArray;
+      this.chainDataAdded = 1;
+    }
   }
 
   // ******************* RENDER LOOP ******************* //
