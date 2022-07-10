@@ -76,7 +76,7 @@ body {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
     width:calc(64px * 1);
-    background-position:calc(20 * 1 * 64px) calc(22 * 1 * 64px);
+    background-position:calc(21 * 1 * 64px) calc(22 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
 }
 #menuRock {
@@ -84,7 +84,7 @@ body {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
     width:calc(64px * 1);
-    background-position:calc(21 * 1 * 64px) calc(22 * 1 * 64px);
+    background-position:calc(22 * 1 * 64px) calc(22 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
 }
 #menuMetal {

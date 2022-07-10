@@ -7,6 +7,6 @@ export function useFrensCoinsContract() {
   return useContract({
     abi: FrensCoinsAbi as Abi,
     address:
-      "0x04a628b88797fd3d99609c0d362c9cda04480c79930b867cdcf55454a95c4b8f",
+      "0x06b52341d2bc001a0dccb3a013f392bbb967674a9f088c0af65cb49128b815b1",
   });
 }

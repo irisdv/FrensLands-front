@@ -1,7 +1,6 @@
 {
-    "buildings" :[
+    "buildings" : [
         {
-            "id": 1,
             "name": "Cabin",
             "cost_update": {
                 "resources": [
@@ -20,66 +19,9 @@
             "daily_update": [],
             "daily_harvest": [],
             "description": ""
-        },
-        {
-            "id": 2,
-            "name": "Tree",
-            "cost_update": {
-                "resources": [
-                    {
-                        "id": 1,
-                        "quantity": 12
-                    }
-                ],
-                "gold": 0,
-                "energy": 0
-            },
-            "daily_update": [],
-            "daily_harvest": [],
-            "description": ""
-        },
-        {
-            "id": 3,
-            "name": "Stone",
-            "cost_update": {
-                "resources": [
-                    {
-                        "id": 1,
-                        "quantity": 12
-                    }
-                ],
-                "gold": 0,
-                "energy": 0
-            },
-            "daily_update": [],
-            "daily_harvest": [],
-            "description": ""
         }
         
     ]
+        
+    
 }
-
-    // const Rock = 2
-    // const Tree = 3
-    // const House = 4
-    // const Appartment = 5
-    // const Hotel = 6
-    // const Boulangerie = 7
-    // const GroceryShop = 8
-    // const Restaurant = 9
-    // const Mall = 10
-    // const Bar = 11
-    // const Library = 12
-    // const SwimmingPool = 13
-    // const Cinema = 14
-    // const Market = 15
-    // const CerealFarm = 16
-    // const VegetableFarm = 17
-    // const CowFarm = 18
-    // const TreeFarm = 19
-    // const Mine = 20
-    // const CoalPlant = 21
-    // const PoliceStation = 22
-    // const Hospital = 23
-    // const Lab = 24
-    // const count = 24
