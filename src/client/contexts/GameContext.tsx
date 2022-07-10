@@ -370,11 +370,11 @@ export const AppStateProvider: React.FC<
 
   const updateTokenId = React.useCallback(async (account: any) => {
     let _token_id;
-    if (maps && account) {
+    if (maps && account && state.address) {
       console.log('account context', account)
       try {
         _token_id = await maps.call("tokenOfOwnerByIndex", [
-            account as string, uint256.bnToUint256(1)
+            state.address, uint256.bnToUint256(1)
         ]);
       console.log('tokenOfOwnerByIndex result', _token_id)
       // var elem = toBN(_erc1155Balance)
@@ -468,9 +468,9 @@ export const AppStateProvider: React.FC<
           _frensCoinsBalance = await coins.call("balanceOf", [
             "0x5ca2e445295db7170103e222d1bde7e04dc550e47f54d753526d6d4a11ee03a",
           ]);
+          console.log('_frensCoinsBalance', _frensCoinsBalance)
           var elem = toBN(_frensCoinsBalance)
           var newBalance = elem.toNumber()
-          console.log('_frensCoinsBalance', _frensCoinsBalance)
           dispatch({
             type: "set_frensCoins",
             frensCoins: newBalance as number

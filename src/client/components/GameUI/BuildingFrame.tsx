@@ -14,7 +14,6 @@ export function BuildingFrame(props: any) {
   const { contract: resources } = useResourcesContract();
   const [ farming, setFarming ] = useState(false)
 
-
   console.log("HERE HERE HERE", showFrame);
   console.log("frameData", frameData);
 
@@ -22,6 +21,7 @@ export function BuildingFrame(props: any) {
   // transaction.metadata pour accéder aux data
 
   const [show, setShow] = useState(false)
+
 
   useEffect(() => {
     if (showFrame) {
@@ -85,7 +85,8 @@ export function BuildingFrame(props: any) {
 
   return (
     <>
-
+      {/* <div */}
+        {/* {isComponentVisible &&  */}
       <div id="bFrame" className="absolute buildingFrame"
         style={{right: "-113px", bottom: "0", height: "640px", width: "640px"}}>
         <div className="grid grid-cols-2 inline-block" style={{ height: "20px" }}>
@@ -351,6 +352,8 @@ export function BuildingFrame(props: any) {
           </div>
         </div>
       </div>
+{/* } */}
+      {/* </div> */}
     </>
   );
 }

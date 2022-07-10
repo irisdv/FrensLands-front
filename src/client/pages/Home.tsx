@@ -122,7 +122,6 @@ export default function Home() {
     method: "_receive_resources_erc20",
   });
 
-  // DEBUG : enlever les arguments 
   const mintMap = () => {
     console.log("invoking mintingMap", Date.now());
     getMapInvoke({

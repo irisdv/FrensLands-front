@@ -275,6 +275,10 @@
                 "type": "Uint256"
             },
             {
+                "name": "account",
+                "type": "felt"
+            },
+            {
                 "name": "gold_erc20_addr",
                 "type": "felt"
             }
