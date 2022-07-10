@@ -169,6 +169,7 @@ export default class ViewGL
   decompose = (elem: any) =>
   {
     var tempDecomp : any[] = [];
+    this.debugPrint(1, "elemToDecomp = ", elem);
     elem.toString();
 
     tempDecomp[0] = elem[0] + elem[1];            //[pos:x]
@@ -283,19 +284,11 @@ export default class ViewGL
   generateRessources = () =>
   {
 
-    // INIT ARRAY OF DATA [RECEIVED FROM BC]
-    var i = 0;
-    this.compArray = [];
-    while (i < 640)
-    {
-      //this.compArray[i] = "1234567891234567"; //TEST FULL BLOCKS
-      this.compArray[i] = "1234500891234567"; //TEST EMPTY BLOCKS
-      i++;
-    }
+    // DECOMPOSE ARRAY OF DATA [RECEIVED FROM BC]
 
     var indexI = 1;
     var indexJ = 1;
-    i = 0;
+    var i = 0;
 
     while (indexI < 17)
     {
@@ -319,6 +312,30 @@ export default class ViewGL
 
     this.firstLoad = 0;
 
+    i = 0;
+    indexI = 1;
+    indexJ = 1;
+
+    while (indexI < 17)
+    {
+      while (indexJ < 41)
+      {
+        if (this.frontBlockArray[indexI][indexJ] != null && this.frontBlockArray[indexI][indexJ][3] != null
+              && this.frontBlockArray[indexI][indexJ][3] != 0)
+        {
+          var pos = new THREE.Vector2;
+          pos.x = this.frontBlockArray[indexI][indexJ][0];
+          pos.y = this.frontBlockArray[indexI][indexJ][1];
+
+          this.createObject(pos, 1, this.frontBlockArray[indexI][indexJ][4],
+            this.frontBlockArray[indexI][indexJ][3], 1, this.normalText);
+
+        }
+        indexJ++;
+      }
+      indexJ = 1;
+      indexI++;
+    }
   }
 
   debugPrint = (type: number, string: String, varToPrint?: any) =>
@@ -1098,7 +1115,6 @@ export default class ViewGL
 
   update = (t?: any) =>
   {
-    this.debugPrint(1, "this.chainDataAdded", this.chainDataAdded);
     if (this.chainDataAdded == 1 && this.initDone == 0)
     {
       this.debugPrint(1, "INIT");
@@ -1116,7 +1132,6 @@ export default class ViewGL
 
     if (this.readyToLoop == 1)
     {
-      this.debugPrint(1, "LOOP");
       var time = Date.now();
 
       if (time - this.tempTime > 100)
@@ -1159,9 +1174,10 @@ export default class ViewGL
       }
       // this.stats.update();
       this.renderer.render(this.scene, this.camera);
-      requestAnimationFrame(this.update.bind(this));
+
 
       this.timeClick = 0;
     }
+    requestAnimationFrame(this.update.bind(this));
   };
 }
