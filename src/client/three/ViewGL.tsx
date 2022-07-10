@@ -681,7 +681,7 @@ export default class ViewGL
         this.debugPrint(1, "this.frontBlockArray[pos.y][pos.x][4]", this.frontBlockArray[pos.y][pos.x][4]);
 
         this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
-          this.UbuildingIDs,
+          this.frontBlockArray[pos.y][pos.x][4],
           this.frontBlockArray[pos.y][pos.x][3], 1, this.outlinedText,
           this.frontBlockArray[pos.y][pos.x][4]);
 
@@ -713,7 +713,7 @@ export default class ViewGL
         this.UbuildingIDs = this.UbuildingIDs + 1;
 
         this.replaceObject(pos, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][7],
-          this.UbuildingIDs,
+          this.frontBlockArray[pos.y][pos.x][4],
           this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][3], 1,
           this.normalText, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][4]);
 
@@ -1285,7 +1285,7 @@ export default class ViewGL
   {
     // Store once all the data receive so we can access callback functions
 
-    if (this.stopData == 1)
+    if (this.stopData == 0)
     {
       this.chainEvent = 1;
 
