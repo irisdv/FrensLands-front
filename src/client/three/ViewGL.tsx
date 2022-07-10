@@ -171,17 +171,33 @@ export default class ViewGL
     var tempDecomp : any[] = [];
     this.debugPrint(1, "elemToDecomp = ", elem);
     //elem.toString();
-
-    tempDecomp[0] = elem[0] + elem[1];            //[pos:x]
-    tempDecomp[1] = elem[2] + elem[3];            //[pos:y]
-    tempDecomp[2] = elem[4];                      //[mat type]
-    tempDecomp[3] = elem[5] + elem[6];            //[ress or bat type]
-    tempDecomp[4] = elem[7] + elem[8] + elem[9];  //[UNIQUE ID]
-    tempDecomp[5] = elem[10] + elem[11];          //[health]
-    tempDecomp[6] = elem[12] + elem[13];          //[quantity ress or pop]
-    tempDecomp[7] = elem[14];                     //[current level]
-    tempDecomp[8] = elem[15];                     //[activity index or number of days active]
-
+    console.log("elem.lenght", elem.length);
+    /*if (elem.length < 16)
+    {
+      console.log("IN IN IN IN IN IN IN IN IN IN IN < 16");
+      tempDecomp[0] = elem[0];            //[pos:x]
+      tempDecomp[1] = elem[1] + elem[2];            //[pos:y]
+      tempDecomp[2] = elem[3];                      //[mat type]
+      tempDecomp[3] = elem[4] + elem[5];            //[ress or bat type]
+      tempDecomp[4] = elem[6] + elem[7] + elem[8];  //[UNIQUE ID]
+      tempDecomp[5] = elem[9] + elem[10];          //[health]
+      tempDecomp[6] = elem[11] + elem[12];          //[quantity ress or pop]
+      tempDecomp[7] = elem[13];                     //[current level]
+      tempDecomp[8] = elem[14];                     //[activity index or number of days active]
+    }
+    else
+    {*/
+      console.log("LOLOLOLOLOLOLOLOLOL");
+      tempDecomp[0] = elem[0] + elem[1];            //[pos:x]
+      tempDecomp[1] = elem[2] + elem[3];            //[pos:y]
+      tempDecomp[2] = elem[4];                      //[mat type]
+      tempDecomp[3] = elem[5] + elem[6];            //[ress or bat type]
+      tempDecomp[4] = elem[7] + elem[8] + elem[9];  //[UNIQUE ID]
+      tempDecomp[5] = elem[10] + elem[11];          //[health]
+      tempDecomp[6] = elem[12] + elem[13];          //[quantity ress or pop]
+      tempDecomp[7] = elem[14];                     //[current level]
+      tempDecomp[8] = elem[15];                     //[activity index or number of days active]
+    //}
     this.debugPrint(2, "tempDecomp", tempDecomp);
 
     return (tempDecomp);
@@ -309,6 +325,7 @@ export default class ViewGL
       indexJ = 1;
       indexI++;
     }
+    console.log("this.frontBlockArray", this.frontBlockArray);
 
     this.firstLoad = 0;
 
@@ -321,7 +338,7 @@ export default class ViewGL
       while (indexJ < 41)
       {
         if (this.frontBlockArray[indexI][indexJ] != null && this.frontBlockArray[indexI][indexJ][3] != null
-              && this.frontBlockArray[indexI][indexJ][3] != 0)
+              && this.frontBlockArray[indexI][indexJ][3] != "0" && this.frontBlockArray[indexI][indexJ][3] != "00")
         {
           var pos = new THREE.Vector2;
           pos.y = this.frontBlockArray[indexI][indexJ][0];
@@ -635,7 +652,6 @@ export default class ViewGL
 
     if (this.objectSelected == 1)
     {
-      this.debugPrint(1, "CONDITION", this.objectSelected);
       if (this.currBlockPos && this.currBlockPos.x != null && this.currBlockPos.y != null &&
           this.selectedObj != null && this.selectedObj.x != 0 && this.selectedObj.y != 0 &&
           this.selectedObj.x != this.currBlockPos.x || this.selectedObj.y != this.currBlockPos.y &&
