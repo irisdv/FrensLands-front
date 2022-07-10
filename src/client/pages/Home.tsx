@@ -16,13 +16,18 @@ import { GetBuildingCount } from "../components/Buildings/GetBuildingCount";
 import { BuildBuildings } from "../components/Buildings/BuildBuildings";
 import { GetBuildings } from "../components/Buildings/GetBuildings";
 import { MenuBar } from "../components/GameUI/MenuBar";
+import { ConnectWallet } from "../components/ConnectWallet";
+
+import { transaction, uint256 } from "starknet";
 
 import { useMapsContract } from "../hooks/maps";
-import { transaction, uint256 } from "starknet";
-import { useGameContext } from "../hooks/useGameContext";
 import { useWorldsContract } from "../hooks/worlds";
 import { useResourcesContract } from "../hooks/resources";
-import { ConnectWallet } from "../components/ConnectWallet";
+import { useERC1155Contract } from "../hooks/erc1155";
+import { useFrensCoinsContract } from "../hooks/frenscoins";
+import { useMinterContract } from "../hooks/minter";
+
+import { useGameContext } from "../hooks/useGameContext";
 
 export default function Home() {
   // const { account } = useStarknet();
@@ -38,6 +43,9 @@ export default function Home() {
   const { contract: worlds } = useWorldsContract();
   const { contract: maps } = useMapsContract();
   const { contract: resources } = useResourcesContract();
+  const { contract: erc1155 } = useERC1155Contract();
+  const { contract: frenscoins } = useFrensCoinsContract();
+  const { contract: minter } = useMinterContract();
 
   const { setAddress, updateTokenId, address, tokenId } = useGameContext();
 
@@ -119,8 +127,8 @@ export default function Home() {
     console.log("invoking mintingMap", Date.now());
     getMapInvoke({
       args: [
-        "0x01cab2703e4813d008149a72a7fc238bb790c76546ee79199d5767bd7ffa9b9c",
-        "0x05975fef9b94e841a78e9826a95415874a476b04b8836eb8149a5cafdaef4fe3"
+        minter?.address,
+        maps?.address
       ],
       metadata: {
         method: "get_map",
@@ -137,9 +145,9 @@ export default function Home() {
       startGameInvoke({
         args: [
           uint256.bnToUint256(1),
-          "0x05975fef9b94e841a78e9826a95415874a476b04b8836eb8149a5cafdaef4fe3",
-          "0x04e8653b61e068c01e95f4df9e7504b6c71f2937e2bf00ec6734f4b2d33c13e0",
-          "0x06b1c1299bc6c4ecf71246f6580c0e36bee5ac53f3fa016706ef5c093183dde3"
+          maps?.address,
+          frenscoins?.address,
+         resources?.address
         ],
         metadata: {
           method: "start_game",

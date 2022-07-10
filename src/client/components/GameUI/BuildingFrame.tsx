@@ -5,6 +5,8 @@ import { number, transaction, uint256 } from "starknet";
 import { toBN } from "starknet/dist/utils/number";
 import { useGameContext } from "../../hooks/useGameContext";
 import { useResourcesContract } from "../../hooks/resources";
+import DB from '../../db.json';
+
 
 export function BuildingFrame(props: any) {
   const { showFrame, frameData, farmResource } = useGameContext();
@@ -48,10 +50,10 @@ export function BuildingFrame(props: any) {
       args: [
           uint256.bnToUint256(1),
           id,
-          "0x05e10dc2d99756ff7e339912a8723ecb9c596e8ecd4f3c3a9d03eb06096b153f",
-          "0x072c5b060c922f01383d432624fa389bf8b087013b9702b669c484857d23eea1",
-          "0x0574fe8bbe799ce7583ef1aefe4c6cf1135dc21c092471982e56b038355f8249",
-          "0x04e8653b61e068c01e95f4df9e7504b6c71f2937e2bf00ec6734f4b2d33c13e0"
+          "0x02b8f3e7a283dcf5703ab165d0b3785e4e903742102743735da4c64e8ac0dfc6",
+          "0x070bc995b48d153a40ad566cab6d3be143e7be7074dd93c0059fd540e3ca2596",
+          "0x04bad6d5f54e70c1edd8127fa3a7e3633a0c6b2a8753f0c7ead7503df111d77f",
+          "0x04a628b88797fd3d99609c0d362c9cda04480c79930b867cdcf55454a95c4b8f"
       ],
       metadata: {
         method: "get_map",
@@ -84,19 +86,10 @@ export function BuildingFrame(props: any) {
   return (
     <>
 
-      <div
-        id="bFrame"
-        className="absolute buildingFrame"
-        style={{right: "-113px", bottom: "0", height: "640px", width: "640px"}}
-      >
-        <div
-          className="grid grid-cols-2 inline-block"
-          style={{ height: "20px" }}
-        >
-          <div
-            className="font8BITWonder uppercase text-center"
-            style={{ height: "20px" }}
-          >
+      <div id="bFrame" className="absolute buildingFrame"
+        style={{right: "-113px", bottom: "0", height: "640px", width: "640px"}}>
+        <div className="grid grid-cols-2 inline-block" style={{ height: "20px" }}>
+          <div className="font8BITWonder uppercase text-center" style={{ height: "20px" }} >
             {/* {frameData && frameData.name ? frameData.name : ""} */}
             {frameData && frameData.id ? "ID building: "+frameData.id : ""}
           </div>
@@ -219,22 +212,17 @@ export function BuildingFrame(props: any) {
           style={{ height: "45px", paddingTop: "8px" }}
         >
           <div className="flex flex-row justify-center inline-block">
-            {/* Case button  */}
             <div style={{ width: "206px", paddingTop: "10px" }}>
-              <a>
-                <div className="btnUpgrade"></div>
-                <div className="btnUpgrade" onClick={() => farmingResource(2)}>Farm resource</div>
-              </a>
+              {frameData && frameData.type == 0 ? 
+                <div className="btnBuild" onClick={() => farmingResource(2)}></div>
+               
+              : 
+                <div className="btnUpgrade"></div> 
+              }
             </div>
-            <div
-              className="relative flex jutify-center items-center inline-block"
-              style={{ width: "60px", height: "80px", paddingTop: "10px" }}
-            >
+            <div className="relative flex jutify-center items-center inline-block" style={{ width: "60px", height: "80px", paddingTop: "10px" }}>
               <div className="flex flex-row justify-center inline-block relative">
-                <div
-                  className="fontHPxl-sm"
-                  style={{ position: "absolute", top: "-15px", left: "0px" }}
-                >
+                <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "0px" }}>
                   320
                 </div>
                 <div
