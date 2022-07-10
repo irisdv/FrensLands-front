@@ -322,6 +322,7 @@ export default class ViewGL
           indexElem++;
           console.log("indexElem", indexElem);
           this.frontBlockArray[indexI][indexJ] = this.decompose(this.compArray[i]);
+          this.frontBlockArray[indexI][indexJ][4] = i;
         }
         indexJ++;
         i++;
@@ -363,8 +364,10 @@ export default class ViewGL
             this.debugPrint(1, "POSY", pos.y);
           }
 
-          this.createObjectFomChain(pos, 1, this.frontBlockArray[indexI][indexJ][4],
-            this.frontBlockArray[indexI][indexJ][3], 1, this.normalText);
+          //this.createObjectFomChain(pos, 1, this.frontBlockArray[indexI][indexJ][4],
+            //this.frontBlockArray[indexI][indexJ][3], 1, this.normalText);
+          this.createObjectFomChain(pos, 1, this.UbuildingIDs,
+              this.frontBlockArray[indexI][indexJ][3], 1, this.normalText);
 
           this.UbuildingIDs++;
           this.debugPrint(1, "GENTYPE", this.frontBlockArray[indexI][indexJ][3]);
@@ -1108,13 +1111,13 @@ export default class ViewGL
 
     var newObjectMesh = new THREE.Mesh(newObject, matObj);
     newObjectMesh.name = name.toString();
-    newObjectMesh.position.x = pos.x + 0.5;
+    newObjectMesh.position.x = pos.x; + 0.5;
     newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
-    newObjectMesh.position.z = pos.y + 0.5;
+    newObjectMesh.position.z = pos.y; + 0.5;
     this.scene.add(newObjectMesh);
     this.frontBlockArray[pos.y][pos.x][3] = type;
-    this.frontBlockArray[pos.y][pos.x][0] = pos.x + 0.5;
-    this.frontBlockArray[pos.y][pos.x][1] = pos.y - 0.5;
+    this.frontBlockArray[pos.y][pos.x][0] = pos.x; + 0.5;
+    this.frontBlockArray[pos.y][pos.x][1] = pos.y; - 0.5;
     this.frontBlockArray[pos.y][pos.x][4] = name;
     this.frontBlockArray[pos.y][pos.x][7] = size;
   }
