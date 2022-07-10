@@ -68,10 +68,12 @@ export default class ViewGL
   private chainEvent: number = 0;
   private chainDataAdded: number = 0;
 
+  private readyToLoop: number = 0;
+  private initDone: number = 0;
+
   // *********************** DEBUG/TEST *********************** //
 
   private debugMode = 1;
-
   private typeTest = 1;
 
   // *********************** DEBUG/TEST *********************** //
@@ -156,19 +158,9 @@ export default class ViewGL
 
     // ******************* GET WORLD READY *******************//
 
-    if (this.chainDataAdded == 1)
-    {
-    this.getTypeFromCompArr();
-    this.generateRessources();
-
-    // CREATE TERRAIN
-    this.terrainCreate();
-    this.terrainBorderCreate();
-    this.terrainBackgroundCreate();
-
     // CALL ANIMATION LOOP
     this.update();
-    }
+
   }
 
   // ****************** FUNCTIONS OUT OF CONSTRUCTOR ********************** //
@@ -1106,50 +1098,70 @@ export default class ViewGL
 
   update = (t?: any) =>
   {
-    var time = Date.now();
-
-    if (time - this.tempTime > 100)
+    this.debugPrint(1, "this.chainDataAdded", this.chainDataAdded);
+    if (this.chainDataAdded == 1 && this.initDone == 0)
     {
-      this.timeClick = 1;
-      this.tempTime = Date.now();
+      this.debugPrint(1, "INIT");
+      this.getTypeFromCompArr();
+      this.generateRessources();
+
+      // CREATE TERRAIN
+      this.terrainCreate();
+      this.terrainBorderCreate();
+      this.terrainBackgroundCreate();
+
+      this.readyToLoop = 1;
+      this.initDone = 1;
     }
 
-    if (this.keyMap['Space'] == true && this.timeClick == 1 && this.placementActive == 0)
+    if (this.readyToLoop == 1)
     {
-      this.placementActive = 1;
-      this.createObject_FindSpace(1, 9898, this.typeTest, 1, this.redText);
-      this.typeTest++;
-    }
+      this.debugPrint(1, "LOOP");
+      var time = Date.now();
 
-    if (this.keyMap['KeyD'] == true && this.timeClick == 1) // NOT WORKING !
-    {
-      if (this.debugMode < 2)
+      if (time - this.tempTime > 100)
       {
-        this.debugMode = this.debugMode + 1;
-        this.debugPrint(1, "DEBUG MODE CHANGED TO ", this.debugMode);
+        this.timeClick = 1;
+        this.tempTime = Date.now();
       }
-      else
+
+      if (this.keyMap['Space'] == true && this.timeClick == 1 && this.placementActive == 0)
       {
-        this.debugPrint(1, "DEBUG MODE CHANGED TO 0");
-        this.debugMode = 0;
+        this.placementActive = 1;
+        this.createObject_FindSpace(1, 9898, this.typeTest, 1, this.redText);
+        this.typeTest++;
       }
+
+      if (this.keyMap['KeyD'] == true && this.timeClick == 1) // NOT WORKING !
+      {
+        if (this.debugMode < 2)
+        {
+          this.debugMode = this.debugMode + 1;
+          this.debugPrint(1, "DEBUG MODE CHANGED TO ", this.debugMode);
+        }
+        else
+        {
+          this.debugPrint(1, "DEBUG MODE CHANGED TO 0");
+          this.debugMode = 0;
+        }
+      }
+
+      this.mouseControls();
+
+      this.rayCast();
+
+      this.updateTempBuildMesh();
+
+      if (this.placementActive == 0)// && time - this.tempTime2 > 10)
+      {
+        this.selectObject();
+        //this.tempTime2 = Date.now();
+      }
+      // this.stats.update();
+      this.renderer.render(this.scene, this.camera);
+      requestAnimationFrame(this.update.bind(this));
+
+      this.timeClick = 0;
     }
-
-    this.mouseControls();
-
-    this.rayCast();
-
-    this.updateTempBuildMesh();
-
-    if (this.placementActive == 0)// && time - this.tempTime2 > 10)
-    {
-      this.selectObject();
-      //this.tempTime2 = Date.now();
-    }
-    // this.stats.update();
-    this.renderer.render(this.scene, this.camera);
-    requestAnimationFrame(this.update.bind(this));
-
-    this.timeClick = 0;
   };
 }
