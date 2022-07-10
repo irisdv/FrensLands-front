@@ -52,6 +52,7 @@ export default class ViewGL
   private compArray: any[];
   private frontBlockArray: any[];
   private validatedBlockArray: any[];
+  private rightBuildingType: any[];
 
   private firstLoad: number;
 
@@ -118,12 +119,10 @@ export default class ViewGL
     this.camera.position.z = this.camZ;
     this.camera.rotateX(-Math.PI * 0.5);
 
-
-
     // ******************* INIT ARRAYS ************************//
 
-
-    // INIT TEXT REF ARRAYS
+    // INIT ARRAYS
+    this.rightBuildingType = [];
     this.textArrRef = [];
 
     var x = 0;
@@ -221,6 +220,62 @@ export default class ViewGL
     return (tempDecomp);
   }
 
+  getTypeFromCompArr = () =>
+  {
+
+    this.rightBuildingType[0] = 0;
+    this.rightBuildingType[1] = 1;
+    this.rightBuildingType[2] = 1;
+    this.rightBuildingType[3] = 1;
+    this.rightBuildingType[4] = 1;
+    this.rightBuildingType[5] = 1;
+    this.rightBuildingType[6] = 1;
+    this.rightBuildingType[7] = 1;
+    this.rightBuildingType[8] = 1;
+    this.rightBuildingType[9] = 1;
+    this.rightBuildingType[10] = 1;
+    this.rightBuildingType[11] = 1;
+    this.rightBuildingType[12] = 1;
+    this.rightBuildingType[13] = 1;
+    this.rightBuildingType[14] = 1;
+    this.rightBuildingType[15] = 1;
+    this.rightBuildingType[16] = 1;
+    this.rightBuildingType[17] = 1;
+    this.rightBuildingType[18] = 1;
+    this.rightBuildingType[19] = 1;
+    this.rightBuildingType[20] = 1;
+    this.rightBuildingType[21] = 1;
+    this.rightBuildingType[21] = 1;
+    this.rightBuildingType[23] = 1;
+
+    /*
+    Cabin = 1
+    Rock = 2
+    Tree = 3
+    House = 4
+    Appartment = 5
+    Hotel = 6
+    Boulangerie = 7
+    GroceryShop = 8
+    Restaurant = 9
+    Mall = 10
+    Bar = 11
+    Library = 12
+    SwimmingPool = 13
+    Cinema = 14
+    Market = 15
+    CerealFarm = 16
+    VegetableFarm = 17
+    CowFarm = 18
+    TreeFarm = 19
+    Mine = 20
+    CoalPlant = 21
+    PoliceStation = 22
+    Hospital = 23
+    Lab = 24
+    */
+  }
+
   debugPrint = (type: number, string: String, varToPrint?: any) =>
   {
     if (this.debugMode == 2)
@@ -252,7 +307,6 @@ export default class ViewGL
       }
     }
   }
-
 
   // CREATE THE TERRAIN
   terrainCreate = () =>
@@ -639,13 +693,14 @@ export default class ViewGL
     }
     else if (size == 4)
     {*/
-      newObject = new THREE.PlaneGeometry(3, 3, 1, 1);
+      newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1);
     //}
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
     const textObj = new THREE.TextureLoader().load(
-      "resources/textures/"+ nameText +".png"
+      //"resources/textures/"+ nameText +".png"
+      "resources/textures/"+ nameText +"_nogrid.png"
     );
 
     let matObj = new THREE.MeshStandardMaterial({
@@ -662,7 +717,6 @@ export default class ViewGL
     if (matObj.map)
     {
       matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625); // TEXTURE TILLING ADAPTED TO BUILDING TILES
-      //matObj.map.offset.set(0.00, 0.00); // POSITION OF BUILDING ON TEXTURE
       //matObj.map.offset.set((0 * (1 / 16)), (6 * (1 / 16))); // X/Y
       matObj.map.offset.set(textureType.x, textureType.y);
       matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
@@ -768,13 +822,14 @@ export default class ViewGL
     }
     else if (size == 4)
     {*/
-      newObject = new THREE.PlaneGeometry(3, 3, 1, 1);
+      newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1);
     //}
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
     const textObj = new THREE.TextureLoader().load(
-      "resources/textures/"+ nameText +".png"
+      //"resources/textures/"+ nameText +".png"
+      "resources/textures/"+ nameText +"_nogrid.png"
     );
 
     let matObj = new THREE.MeshStandardMaterial({
@@ -831,13 +886,14 @@ export default class ViewGL
     }
     else if (size == 4)
     {*/
-      newObject = new THREE.PlaneGeometry(3, 3, 1, 1);
+      newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1);
     //}
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
     const textObj = new THREE.TextureLoader().load(
-      "resources/textures/"+ nameText +".png"
+      //"resources/textures/"+ nameText +".png"
+      "resources/textures/"+ nameText +"_nogrid.png"
     );
 
     let matObj = new THREE.MeshStandardMaterial({
