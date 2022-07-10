@@ -349,6 +349,19 @@ export default class ViewGL
           pos.x = this.frontBlockArray[indexI][indexJ][0] + 0.5;
           pos.y = this.frontBlockArray[indexI][indexJ][1] + 0.5;
 
+          if (pos.x > 40 || pos.y < 1 || pos.x < 1 || pos.y > 16)
+          {
+            this.debugPrint(1, "POS ERROR INDEX ", this.frontBlockArray[indexI][indexJ][4]);
+            this.debugPrint(1, "POSX", pos.x);
+            this.debugPrint(1, "POSY", pos.y);
+          }
+          if (this.frontBlockArray[indexI][indexJ][4] == 0)
+          {
+            this.debugPrint(1, "ID ERROR = ", this.frontBlockArray[indexI][indexJ][4]);
+            this.debugPrint(1, "POSX", pos.x);
+            this.debugPrint(1, "POSY", pos.y);
+          }
+
           this.createObjectFomChain(pos, 1, this.frontBlockArray[indexI][indexJ][4],
             this.frontBlockArray[indexI][indexJ][3], 1, this.normalText);
 
