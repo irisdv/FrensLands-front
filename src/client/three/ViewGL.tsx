@@ -1324,9 +1324,6 @@ export default class ViewGL
     type : number, progress : number, nameText : String, nameToDelete : number) =>
   {
 
-    //call delete function
-    this.deleteObject(nameToDelete);
-
     let newObject = new THREE.PlaneGeometry;
     /*if (size == 1)
     {
@@ -1425,7 +1422,11 @@ export default class ViewGL
     newObjectMesh.position.x = pos.x + 0.5;// + 0.5;
     newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
     newObjectMesh.position.z = pos.y;// + 0.5;
+
+    //call delete function
+    this.deleteObject(nameToDelete);
     this.scene.add(newObjectMesh);
+    
     this.frontBlockArray[pos.y][pos.x][3] = type;
     this.frontBlockArray[pos.y][pos.x][0] = pos.x + 0.5;
     this.frontBlockArray[pos.y][pos.x][1] = pos.y;// - 0.5;
