@@ -1615,12 +1615,11 @@ export default class ViewGL
         this.chainDataAdded = 1;
       }
 
-      // this.debugPrint(1, "buildingSelected", data.buildingSelected);
-
-      if (data.frameData && data.frameData.id > 0)
+      if (data.frameData && data.frameData.selected == 1 && data.frameData.id > 0)
       {
+          this.debugPrint(1, "buildingSelected", data.frameData.id);
           this.buildingToCreate = data.frameData.id;
-          if (data.frameData.selected && this.placementActive == 0)
+          if (this.placementActive == 0)
           {
             this.placementActive = 1;
             this.createObject_FindSpace(1, 9898, this.buildingToCreate, 1, this.redText);
