@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import Scene from "../three/Scene";
 import { useStarknet, useStarknetCall } from "@starknet-react/core";
 import { useGameContext } from "../hooks/useGameContext";
+import { useSelectContext } from "../hooks/useSelectContext";
 import { useBuildingsContract } from "../hooks/buildings";
 import { number, uint256 } from "starknet";
 import { toBN } from "starknet/dist/utils/number";
@@ -41,7 +42,7 @@ export default function Game() {
       {render ? (
         <>
           <div className="relative">
-            <Scene {...useGameContext()} />
+            <Scene {...useGameContext()} {...useSelectContext()} />
           </div>
         </>
       ) : (

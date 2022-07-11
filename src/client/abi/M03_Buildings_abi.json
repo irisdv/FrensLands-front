@@ -251,6 +251,22 @@
             {
                 "name": "allocated_population",
                 "type": "felt"
+            },
+            {
+                "name": "m01_addr",
+                "type": "felt"
+            },
+            {
+                "name": "m02_addr",
+                "type": "felt"
+            },
+            {
+                "name": "erc1155_addr",
+                "type": "felt"
+            },
+            {
+                "name": "frenscoins_addr",
+                "type": "felt"
             }
         ],
         "name": "upgrade",
@@ -342,6 +358,25 @@
             }
         ],
         "name": "initialize_resources",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "tokenId",
+                "type": "Uint256"
+            },
+            {
+                "name": "building_type_id_len",
+                "type": "felt"
+            },
+            {
+                "name": "building_type_id",
+                "type": "felt*"
+            }
+        ],
+        "name": "initialize_resources_new",
         "outputs": [],
         "type": "function"
     },

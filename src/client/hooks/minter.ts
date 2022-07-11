@@ -7,6 +7,6 @@ export function useMinterContract() {
   return useContract({
     abi: MinterAbi as Abi,
     address:
-      "0x01cab2703e4813d008149a72a7fc238bb790c76546ee79199d5767bd7ffa9b9c", // 8th
+      "0x07d848450b0ccf910cb847805d2f9cf1f2f88b3699519d004cd31a38b59aef82", // 8th
   });
 }

@@ -228,6 +228,18 @@
             {
                 "name": "tokenId",
                 "type": "Uint256"
+            },
+            {
+                "name": "address_m3",
+                "type": "felt"
+            },
+            {
+                "name": "erc1155_address",
+                "type": "felt"
+            },
+            {
+                "name": "erc20_addr",
+                "type": "felt"
             }
         ],
         "name": "claim_resources",
@@ -548,6 +560,10 @@
             },
             {
                 "name": "building_unique_id",
+                "type": "felt"
+            },
+            {
+                "name": "pos_start",
                 "type": "felt"
             },
             {

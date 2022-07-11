@@ -21,6 +21,7 @@ import { useMapsContract } from "../hooks/maps";
 import { useERC1155Contract } from "../hooks/erc1155";
 import { useStarknet } from "@starknet-react/core";
 import { GetBlockResponse } from 'starknet'
+import { List } from 'immutable'
 
 
 export interface IFrame {
@@ -30,6 +31,13 @@ export interface IFrame {
   posX?: any;
   posY?: any;
   selected?: any;
+}
+
+export interface Ibuild {
+  id?: number;
+  pos_start?: number;
+  pop?: number;
+  status?: number;
 }
 
 export interface IPopUp {
@@ -64,17 +72,16 @@ export interface IGameState {
   updateBuildings: (t: number) => void;
   setAddress: (addr: string) => void;
   updateTokenId: (id: string) => void;
-  showFrame?: boolean;
-  frameData?: IFrame;
-  updateBuildingFrame: (show: boolean, data: {}) => void;
+  // showFrame?: boolean;
+  // frameData?: IFrame;
+  // updateBuildingFrame: (show: boolean, data: {}) => void;
   farmResource: (id: any, data: {}) => void;
   fetchMapType: (id: string) => void;
   // Select building to
   // buildEvent: (type_id: number) => void;
   // buildingSelected: number;
-  // showPopUp
-  // popUpData
-  // mapType
+  build: (id: number, pos: number, pop: number, type: number) => void;
+  buildData?: [];
 }
 
 export const GameState: IGameState = {
@@ -101,13 +108,15 @@ export const GameState: IGameState = {
   updateBuildings: () => {},
   setAddress: () => {},
   updateTokenId: () => {},
-  showFrame: false,
-  frameData: undefined,
-  updateBuildingFrame: (show, data) => {},
+  // showFrame: false,
+  // frameData: undefined,
+  // updateBuildingFrame: (show, data) => {},
   farmResource: (id, data) => {},
   fetchMapType: (id) => {},
   // buildEvent: (type_id) => {},
   // buildingSelected: 0
+  build: (id, pos, pop) => {},
+  buildData: [],
 };
 
 const StateContext = React.createContext(GameState);
@@ -185,10 +194,10 @@ interface SetMapType {
   type: "set_mapType";
   mapType?: string;
 }
-// interface SetBuildingSelected {
-//   type: "set_buildingSelected";
-//   buildingSelected?: number;
-// }
+interface SetBuildData {
+  type: "set_buildData";
+  buildData?: [];
+}
 
 type Action =
   | SetAccount
@@ -204,7 +213,7 @@ type Action =
   | SetPopulation
   | SetLastUpdatedAt
   | SetMapType
-  // | SetBuildingSelected
+  | SetBuildData
   | SetError;
 
 function reducer(state: IGameState, action: Action): IGameState {
@@ -221,15 +230,16 @@ function reducer(state: IGameState, action: Action): IGameState {
     case "set_mapArray": {
       return { ...state, mapArray: action.mapArray };
     }
-    // case "set_frameData": {
-    //   return { ...state, frameData: action.frameData };
-    // }
-    case "set_showFrame": {
-      return { ...state, 
-        showFrame: action.showFrame, 
-        frameData: action.frameData,
-      };
+    case "set_buildData": {
+      // @ts-ignore
+      return { ...state, buildData: state.buildData.push(action.buildData)};
     }
+    // case "set_showFrame": {
+    //   return { ...state, 
+    //     showFrame: action.showFrame, 
+    //     frameData: action.frameData,
+    //   };
+    // }
     case "set_energy": {
       return { ...state, energy: action.energy };
     }
@@ -261,6 +271,9 @@ function reducer(state: IGameState, action: Action): IGameState {
     case "set_mapType": {
       return {...state, mapType: state.mapType}
     }
+    // case "set_build": {
+    //   return {... state, txHistory: state.txHistory}
+    // }
     // case "set_buildingSelected": {
     //   return {...state, buildingSelected: state.buildingSelected}
     // }
@@ -318,6 +331,8 @@ export const AppStateProvider: React.FC<
   const [error, setError] = useState<string | undefined>(undefined)
 
   const [state, dispatch] = useReducer(reducer, GameState);
+  const value = React.useMemo(() => [state, dispatch], [state])
+  // [state, dispatch] = useReducer(reducer, GameState);
 
 
   const fetchBlock = useCallback(() => {
@@ -577,21 +592,6 @@ export const AppStateProvider: React.FC<
       });
     }, []);
 
-  const updateBuildingFrame = React.useCallback((show: boolean, data: {}) => {
-      // TODO : update l'id qu'on reçoit
-      dispatch({
-        type: "set_showFrame",
-        showFrame: show,
-        frameData: data
-      });
-      // dispatch({
-      //   type: "set_frameData",
-      //   frameData: data,
-      // });
-    },
-    []
-  );
-
   // const buildEvent = React.useCallback((type : number) => {
   //   console.log('dispatching building selected ', type)
   //   // dispatch({
@@ -606,6 +606,37 @@ export const AppStateProvider: React.FC<
   //     });
   //   }
   // }, []);
+
+  const build = React.useCallback(async (id: number, pos_start : number, population : number) => {
+    let _build_tx;
+    if (building && state.address && state.tokenId) {
+      try {
+        _build_tx = await building.invoke("update", [
+          uint256.bnToUint256(state.tokenId),
+          id,
+          1,
+          pos_start,
+          population,
+          worlds?.address,
+          resources?.address,
+          erc1155?.address,
+          coins?.address
+        ]);
+        dispatch({
+          type: "set_buildData",
+          // @ts-ignore
+          buildData: [id, pos_start, population, 1]
+          // id: id,
+          // pos_start: pos_start
+          // id: [ "id": id, "pos_start": pos_start, "population": population, "status": 1]
+        });
+      } catch (e) {
+        console.warn("Error when retrieving get_latest_block in M02_Resources");
+        console.warn(e);
+      }
+    }
+
+  },[]);
 
   const farmResource = React.useCallback(async (building_unique_id: any, data: {}) => {
       const { contract: resources } = useResourcesContract();
@@ -668,14 +699,15 @@ export const AppStateProvider: React.FC<
         populationBusy: state.populationBusy,
         populationFree: state.populationFree,
         coal: state.coal,
-        frameData: state.frameData,
-        showFrame: state.showFrame,
+        // frameData: state.frameData,
+        // showFrame: state.showFrame,
         updateBuildings,
         setAddress,
         updateTokenId,
-        updateBuildingFrame,
         farmResource,
         fetchMapType,
+        build,
+        buildData: state.buildData
         // buildEvent,
         // buildingSelected: state.buildingSelected,
       }}

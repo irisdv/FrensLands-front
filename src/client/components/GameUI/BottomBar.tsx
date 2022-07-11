@@ -4,25 +4,60 @@ import { useBuildingsContract } from "../../hooks/buildings";
 import { number, uint256 } from "starknet";
 import { toBN } from "starknet/dist/utils/number";
 import { useGameContext } from "../../hooks/useGameContext";
+import { useSelectContext } from "../../hooks/useSelectContext";
 
 // import { BuildingFrame } from "./BuildingFrame";
 
 export function BottomBar() {
-  const { address, showFrame, updateBuildingFrame } = useGameContext();
+  // const { address, showFrame, updateBuildingFrame } = useGameContext();
+  const { address } = useGameContext();
+  const { showFrame, updateBuildingFrame, frameData } = useSelectContext();
   const [displayNature, setDisplayNature] = useState(false)
   const [displayEntertainment, setDisplayEntertainment] = useState(false)
   const [displayHousing, setDisplayHousing] = useState(false)
   const [displaySecurity, setDisplaySecurity] = useState(false)
   const [displayShop, setDisplayShop] = useState(false)
   const [displayFrame, setDisplayFrame] = useState(false)
+  const [oldFrame, setOldFrame] = useState<any>()
   
   // 0 : build a new building
   // 1: update a building 
+
+
+  const frameValue = useMemo(() => {
+    console.log("frameData Memo", frameData);
+    if (frameData) {
+      setOldFrame(frameData.id)
+      return { frameValue: frameData };
+    }
+  }, [frameData]);
+  console.log('FRAME VALUE', frameValue)
+
   const setDisplayingFrame = (type: number, id : any) => {
     console.log('displayFrame', displayFrame)
-    setDisplayFrame(!displayFrame);
-    updateBuildingFrame(!displayFrame, {"id": id, "type": type, "posX": 0, "posY": 0, "selected": 0});
+    console.log('IDIDIDID', id)
+    console.log('FRAME DATA', frameData?.id)
+
+    // on clique sur le même bouton
+    if (frameValue && id == oldFrame) {
+      if (displayFrame == true) updateBuildingFrame(false, {"id": id, "type": type, "posX": 0, "posY": 0, "selected": 0});
+      if (displayFrame == false) updateBuildingFrame(true, {"id": id, "type": type, "posX": 0, "posY": 0, "selected": 1});
+      setDisplayFrame(!displayFrame);
+    } else if (id == 0) {
+      setDisplayFrame(false)
+      updateBuildingFrame(false, {"id": id, "type": type, "posX": 0, "posY": 0, "selected": 0});
+    } else {
+      if (displayFrame == true) {
+        console.log('C TRUE')
+        updateBuildingFrame(true, {"id": id, "type": type, "posX": 0, "posY": 0, "selected": 1});
+        setDisplayFrame(true);
+      } else {
+        updateBuildingFrame(true, {"id": id, "type": type, "posX": 0, "posY": 0, "selected": 1});
+        setDisplayFrame(true);
+      }
+    }
   };
+
   return (
     <>
       {/* Menu Nature */}
@@ -134,6 +169,8 @@ export function BottomBar() {
               setDisplayEntertainment(false)
               setDisplayHousing(false)
               setDisplayShop(false)
+              // updateBuildingFrame(false, {"id": oldFrame.id as number, "selected": 0})
+              setDisplayingFrame(0, 0)
             }}>
             <div className="menuNature pixelated"></div>
           </div>
@@ -143,6 +180,8 @@ export function BottomBar() {
             setDisplayEntertainment(false)
             setDisplayHousing(false)
             setDisplayShop(false)
+            setDisplayFrame(false)
+            setDisplayingFrame(0, 0)
           }}>
             <div className="menuSecurity pixelated"></div>
           </div>
@@ -152,6 +191,7 @@ export function BottomBar() {
             setDisplayNature(false)
             setDisplayHousing(false)
             setDisplayShop(false)
+            setDisplayFrame(false)
           }}>
             <div className="menuEntertainment pixelated"></div>
           </div>
@@ -161,6 +201,7 @@ export function BottomBar() {
             setDisplayNature(false)
             setDisplayEntertainment(false)
             setDisplayShop(false)
+            setDisplayFrame(false)
             }}>
             <div className="menuHouse pixelated"></div>
           </div>
@@ -170,6 +211,7 @@ export function BottomBar() {
             setDisplayNature(false)
             setDisplayEntertainment(false)
             setDisplayHousing(false)
+            setDisplayFrame(false)
           }}>
             <div className="menuShop pixelated"></div>
           </div>

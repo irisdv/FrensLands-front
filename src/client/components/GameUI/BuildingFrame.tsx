@@ -7,12 +7,16 @@ import { useGameContext } from "../../hooks/useGameContext";
 import { useResourcesContract } from "../../hooks/resources";
 import DB from '../../db.json';
 import { InstancedMesh } from "three";
+import { useSelectContext } from "../../hooks/useSelectContext";
 
 
 export function BuildingFrame(props: any) {
-  const { showFrame, frameData, farmResource, updateBuildingFrame } = useGameContext();
+  const { tokenId, address, setAddress, updateTokenId } = useGameContext();
+  const { account } = useStarknet();
+  const { showFrame, frameData, updateBuildingFrame } = useSelectContext();
   const { transactions } = useStarknetTransactionManager()
   const { contract: resources } = useResourcesContract();
+
   const [ farming, setFarming ] = useState(false)
   const [ costUpdate, setCostUpdate ] = useState<any>(null)
   const [ dailyCosts, setDailyCosts ] = useState<any>(null)
@@ -35,8 +39,20 @@ export function BuildingFrame(props: any) {
 
   const sendEvent = (id : number) => {
     // setBuildingSelec(true);
-    updateBuildingFrame(true, {"id": frameData?.id, "type": frameData?.type, "posX": frameData?.posX, "selected": 1});
+    // updateBuildingFrame(false, {"id": frameData?.id, "type": frameData?.type, "posX": frameData?.posX, "selected": 1});
   };
+
+  useEffect(() => {
+    if (account) {
+      setAddress(account as string);
+    }
+  }, [account])
+
+  useEffect(() => {
+    if (account && !tokenId) {
+      updateTokenId(account);
+    }
+  }, [account, tokenId])
 
   const {
     data: dataStartFarming,
@@ -49,25 +65,31 @@ export function BuildingFrame(props: any) {
 
   // DEBUG : enlever les arguments 
   const farmingResource = (id : any) => {
-    console.log('farming a resource of type id', 1)
-    console.log("invoking farming", Date.now());
-    // Args : tokenId, building_unique_id
-    startFarmingInvoke({
-      args: [
-          uint256.bnToUint256(1),
-          id,
-          "0x0430d5c9c6d7e58919697aa3e8b1ba30a98d37ddf65fadf5810ea918a2c11ae5",
-          "0x07a4f265c03e318013e530ccd612a7ee582a147ae75f2edb9a62e740a28dcd76",
-          "0x03fc92790ecde8f6d87336466d661198c7e99176e0cdbd833211050633122d23",
-          "0x06b52341d2bc001a0dccb3a013f392bbb967674a9f088c0af65cb49128b815b1"
-      ],
-      metadata: {
-        method: "farm",
-        message: "Farm resources spawned on map",
-      },
-    });
+    console.log('farming a resource of type id', id)
+    console.log("invoking farming", tokenId);
+    if (tokenId) {
+      startFarmingInvoke({
+        args: [
+            uint256.bnToUint256(tokenId),
+            id,
+            "0x045ecb5f7d99d67214def0c6c77b20070b3fac664ddc16ca9850cd417c393a38",
+            "0x03af997c327ca80bf00e0fc69e765a2d6f52c3d6dd0d02f36f97015065fa908d",
+            "0x0526abb8b9f4d90e97a29266a3d9c5ed52f44a8a70847ef7ce9fe90f65ca51ea",
+            "0x04a6a806aab47f343499dfc39d11680afbb4eec725044bd84cf548ac5c1e0297"
+        ],
+        metadata: {
+          method: "harvest",
+          message: "Harvest resources spawned on map",
+        },
+      });
+    }
     setFarming(true);
   };
+
+  useEffect(() => {
+    var data = transactions.filter((transactions) => (transactions?.transactionHash) === dataStartFarming);
+    console.log('data starting game', data);
+  }, [farming, transactions, dataStartFarming])
 
   useEffect(() => {
     if (frameData && frameData.id) {
@@ -106,6 +128,9 @@ export function BuildingFrame(props: any) {
   }, [frameData])
 
   if (!showFrame) {
+    return <></>;
+  }
+  if (frameData?.id == 0) {
     return <></>;
   }
 
@@ -163,9 +188,11 @@ export function BuildingFrame(props: any) {
           <div className="flex flex-row justify-center inline-block">
             <div style={{ width: "206px", paddingTop: "10px" }}>
               {frameData && frameData.id  ? 
-                // BUTTON BUILD
-                <div className="btnBuild" onClick={() => sendEvent(frameData.id as number)}></div>
-               
+                frameData && (frameData.id == 2 || frameData.id == 3 || frameData.id == 20 ) ? 
+                    <div className="btnBuild" onClick={() => farmingResource(frameData.id as number)}>Harvest resource</div>
+                  : 
+                  // BUTTON BUILD
+                  <div className="btnBuild" onClick={() => sendEvent(frameData.id as number)}></div>
               :  
               // BUTTON UPGRADE 
                 <div className="btnUpgrade"></div> 

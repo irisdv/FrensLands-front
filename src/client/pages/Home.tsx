@@ -17,6 +17,7 @@ import { gsap } from 'gsap';
 // import { GetBuildings } from "../components/Buildings/GetBuildings";
 import { ConnectWallet } from "../components/ConnectWallet";
 
+import {Notifications} from '../components/Notifications'
 import { transaction, uint256 } from "starknet";
 
 import { useMapsContract } from "../hooks/maps";
@@ -33,10 +34,11 @@ export default function Home() {
   // const { available, connect, disconnect } = useConnectors();
   let navigate = useNavigate();
   const { account, connect, connectors, disconnect } = useStarknet();
-  const injected = useMemo(() => new InjectedConnector(), []);
-  const [minting, setMinting] = useState(false);
-  const [settingUp, setSettingUp] = useState("")
   const { transactions } = useStarknetTransactionManager()
+  const injected = useMemo(() => new InjectedConnector(), []);
+
+  const [minting, setMinting] = useState(false);
+  const [settingUp, setSettingUp] = useState(false)
 
   const [watch, setWatch] = useState(true);
   const { contract: worlds } = useWorldsContract();
@@ -72,10 +74,6 @@ export default function Home() {
       ease: "none"
     })
   })
-
-  // useEffect(() => {
-    
-  // }, [transaction])
 
   // UseEffect transactions 
 
@@ -118,7 +116,7 @@ export default function Home() {
 
       return { gameStatus: balance };
     }
-  }, [fetchGameStatus, account, tokenId]);
+  }, [fetchGameStatus, tokenId ]);
 
   const { data: fetchtokenType } = useStarknetCall({
     contract: maps,
@@ -172,16 +170,26 @@ export default function Home() {
         message: "Mint Frens Lands map",
       },
     });
-    const transactionStatus = useStarknetTransactionManager();
     setMinting(true);
   };
 
+  useEffect(() => {
+    var data = transactions.filter((transactions) => (transactions?.transactionHash) === dataGetMap);
+    console.log('data minting', data);
+  }, [minting, transactions])
+
+  useEffect(() => {
+    var data = transactions.filter((transactions) => (transactions?.transactionHash) === dataStartGame);
+    console.log('data starting game', data);
+  }, [settingUp, transactions, dataStartGame])
+
+
   const startGame = () => {
-    console.log('startingGam invoke')
+    console.log('startingGame invoke')
     if (tokenId) {
       startGameInvoke({
         args: [
-          uint256.bnToUint256(1),
+          uint256.bnToUint256(tokenId),
           maps?.address,
           frenscoins?.address,
          resources?.address
@@ -191,7 +199,7 @@ export default function Home() {
           message: "Starting a game of Frens Lands",
         },
       });
-      if (dataStartGame) setSettingUp(dataStartGame)
+      if (dataStartGame) setSettingUp(true)
     } else {
       console.log('Missing tokenId')
     }
@@ -204,21 +212,17 @@ export default function Home() {
       <div className="backgroundImg relative pixelated">
 
         <div className="popUpNotifs">
-          {transactions && transactions.length > 0 ? 
+          {/* {transactions && transactions.length > 0 ? 
             <div>
               {
                 transactions.map((transaction : any) => {
-                  return (
-                    <div key={transaction.transactionHash}>
-                        <p>{transaction}</p>
-                    </div>
-                  )
+                  return <Notifications key={transaction.transactionHash}transaction={transaction}/>
                 })
               }
             </div>
             : 
             <div>pas de tx</div>
-          }
+          } */}
         </div>
 
       <img className="absolute pixelated frensLandsLogo" src="resources/front/UI_GameTitle.png" 
@@ -228,20 +232,14 @@ export default function Home() {
           style={{width : "640px", height: "640px", marginTop: '180px', marginLeft: "320px"}} />
 
           {/* <p className="text-white">My balance NFT: {BalanceNFTValue && BalanceNFTValue.NFTbalance}</p> */}
-          <div>
-            {/* {
-              transactions.map(transaction => {
-                <div>
-                <p key={transaction.transactionHash}>
-                  hash : {transaction.transactionHash} 
-                  // return <Notif key={transaction.transactionHash} transaction={transaction} />
-                </p>
-              </div>
-              })
-            } */}
-          </div>
           {account && BalanceNFTValue && (BalanceNFTValue.NFTbalance == 0 || BalanceNFTValue.NFTbalance == 1) &&
+          <>
             <img className="absolute" src="resources/maps/FrensLand_NFTs_V2.png" style={{height: "256px", width: "256px", marginLeft: "512px", marginTop: "290px"}} />
+            {/* <img className="absolute" src="resources/maps/FrensLand_NFTs_V3.png" style={{height: "256px", width: "256px", marginLeft: "512px", marginTop: "290px"}} />
+            <img className="absolute" src="resources/maps/FrensLand_NFTs_V4.png" style={{height: "256px", width: "256px", marginLeft: "512px", marginTop: "290px"}} />
+            <img className="absolute" src="resources/maps/FrensLand_NFTs_V5.png" style={{height: "256px", width: "256px", marginLeft: "512px", marginTop: "290px"}} />
+            <img className="absolute" src="resources/maps/FrensLand_NFTs_V6.png" style={{height: "256px", width: "256px", marginLeft: "512px", marginTop: "290px"}} /> */}
+          </>
           }
               {account && 
                 BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&
