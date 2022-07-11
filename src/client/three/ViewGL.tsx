@@ -1083,7 +1083,7 @@ export default class ViewGL
     this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][7] = size;
   }
 
-  buildingTransaction = (pos: THREE.Vector2, type: number, name: number)
+  buildingTransaction = (pos: THREE.Vector2, type: number, name: number) =>
   {
 
     // CREATE THE TRANSACTION
