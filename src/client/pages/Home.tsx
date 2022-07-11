@@ -203,22 +203,23 @@ export default function Home() {
     <>
       <div className="backgroundImg relative pixelated">
 
-        {/* <div className="popUpNotifs">
+        <div className="popUpNotifs">
           {transactions && transactions.length > 0 ? 
             <div>
               {
                 transactions.map((transaction : any) => {
-                  return <div key={transaction.transactionHash} transaction={transaction}>
-                    
-                  </div>
+                  return (
+                    <div key={transaction.transactionHash}>
+                        <p>{transaction}</p>
+                    </div>
+                  )
                 })
               }
             </div>
             : 
             <div>pas de tx</div>
           }
-          </div>
-        </div> */}
+        </div>
 
       <img className="absolute pixelated frensLandsLogo" src="resources/front/UI_GameTitle.png" 
           style={{width : "640px", height: "640px", marginTop: '-165px', marginLeft: "320px", zIndex: "1"}} />
