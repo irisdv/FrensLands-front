@@ -24,15 +24,16 @@ import { GetBlockResponse } from 'starknet'
 
 
 export interface IFrame {
-  id?: string;
+  id?: number;
   unique_id?: string;
   type?: number;
   posX?: any;
   posY?: any;
+  selected?: any;
 }
 
 export interface IPopUp {
-  id?: string; // id of bat_type
+  id?: number; // id of bat_type
   unique_id?: string;
   type?: number;
   posX?: any;
@@ -44,7 +45,7 @@ export interface IGameState {
   lastUpdated: string;
   currentBlock: number;
   blockGame?: string;
-  loading: boolean; 
+  loading: boolean;
   address?: string | undefined;
   tokenId?: string;
   mapType?: string;
@@ -67,7 +68,10 @@ export interface IGameState {
   frameData?: IFrame;
   updateBuildingFrame: (show: boolean, data: {}) => void;
   farmResource: (id: any, data: {}) => void;
-  fetchMapType: (id: string) => void; 
+  fetchMapType: (id: string) => void;
+  // Select building to
+  // buildEvent: (type_id: number) => void;
+  // buildingSelected: number;
   // showPopUp
   // popUpData
   // mapType
@@ -77,7 +81,7 @@ export const GameState: IGameState = {
   lastUpdated: "",
   currentBlock: 0,
   blockGame: "",
-  loading: false, 
+  loading: false,
   address: undefined,
   tokenId: "",
   mapType: "",
@@ -101,7 +105,9 @@ export const GameState: IGameState = {
   frameData: undefined,
   updateBuildingFrame: (show, data) => {},
   farmResource: (id, data) => {},
-  fetchMapType: (id) => {} 
+  fetchMapType: (id) => {},
+  // buildEvent: (type_id) => {},
+  // buildingSelected: 0
 };
 
 const StateContext = React.createContext(GameState);
@@ -142,6 +148,7 @@ interface SetShowFrame {
   type: "set_showFrame";
   showFrame?: boolean;
   frameData?: IFrame;
+  buildingSelected?: number;
 }
 
 interface SetEnergy {
@@ -178,6 +185,10 @@ interface SetMapType {
   type: "set_mapType";
   mapType?: string;
 }
+// interface SetBuildingSelected {
+//   type: "set_buildingSelected";
+//   buildingSelected?: number;
+// }
 
 type Action =
   | SetAccount
@@ -193,6 +204,7 @@ type Action =
   | SetPopulation
   | SetLastUpdatedAt
   | SetMapType
+  // | SetBuildingSelected
   | SetError;
 
 function reducer(state: IGameState, action: Action): IGameState {
@@ -213,7 +225,10 @@ function reducer(state: IGameState, action: Action): IGameState {
     //   return { ...state, frameData: action.frameData };
     // }
     case "set_showFrame": {
-      return { ...state, showFrame: action.showFrame, frameData: action.frameData };
+      return { ...state, 
+        showFrame: action.showFrame, 
+        frameData: action.frameData,
+      };
     }
     case "set_energy": {
       return { ...state, energy: action.energy };
@@ -222,13 +237,13 @@ function reducer(state: IGameState, action: Action): IGameState {
       return { ...state, frensCoins: action.frensCoins };
     }
     case "set_population": {
-      return { ...state, 
-        populationBusy: action.populationBusy, 
-        populationFree: action.populationFree 
+      return { ...state,
+        populationBusy: action.populationBusy,
+        populationFree: action.populationFree
       };
     }
     case "set_erc1155Res": {
-      return { ...state, 
+      return { ...state,
           wood: action.wood,
           rock: action.rock,
           meat: action.meat,
@@ -246,6 +261,9 @@ function reducer(state: IGameState, action: Action): IGameState {
     case "set_mapType": {
       return {...state, mapType: state.mapType}
     }
+    // case "set_buildingSelected": {
+    //   return {...state, buildingSelected: state.buildingSelected}
+    // }
     case "set_error": {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -423,7 +441,7 @@ export const AppStateProvider: React.FC<
       try {
         _newPopulation = await resources.call("get_population", [
           uint256.bnToUint256(state.tokenId)
-        ]);      
+        ]);
         // console.log("_newPopulation", _newPopulation)
         dispatch({
           type: "set_population",
@@ -444,9 +462,9 @@ export const AppStateProvider: React.FC<
           _erc1155Balance = await erc1155.call("balanceOfBatch", [
             [
               state.address,
-              state.address, 
-              state.address, 
-              state.address, 
+              state.address,
+              state.address,
+              state.address,
               state.address,
               state.address,
               state.address
@@ -560,12 +578,11 @@ export const AppStateProvider: React.FC<
     }, []);
 
   const updateBuildingFrame = React.useCallback((show: boolean, data: {}) => {
-      console.log('in context', data)
       // TODO : update l'id qu'on reçoit
       dispatch({
         type: "set_showFrame",
         showFrame: show,
-        frameData: data,
+        frameData: data
       });
       // dispatch({
       //   type: "set_frameData",
@@ -575,13 +592,28 @@ export const AppStateProvider: React.FC<
     []
   );
 
+  // const buildEvent = React.useCallback((type : number) => {
+  //   console.log('dispatching building selected ', type)
+  //   // dispatch({
+  //   //   type: "set_buildingSelected",
+  //   //   buildingSelected: type as number
+  //   // });
+  //   if (state.buildingSelected != type) {
+  //     console.log('dispatching building selected ', type)
+  //     dispatch({
+  //       type: "set_buildingSelected",
+  //       buildingSelected: type as number
+  //     });
+  //   }
+  // }, []);
+
   const farmResource = React.useCallback(async (building_unique_id: any, data: {}) => {
       const { contract: resources } = useResourcesContract();
       console.log('in context farming resources with id ', building_unique_id)
       // let _farm_tx;
       // if (resources && state.address) {
       //   try {
-      //     // tokenId (uint), building_unique_id, 
+      //     // tokenId (uint), building_unique_id,
       //     _farm_tx = await resources.invoke("farm", [
       //       uint256.bnToUint256(0),
       //       building_unique_id,
@@ -643,7 +675,9 @@ export const AppStateProvider: React.FC<
         updateTokenId,
         updateBuildingFrame,
         farmResource,
-        fetchMapType
+        fetchMapType,
+        // buildEvent,
+        // buildingSelected: state.buildingSelected,
       }}
     >
       {props.children}
