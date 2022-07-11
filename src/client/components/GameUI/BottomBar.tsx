@@ -21,7 +21,7 @@ export function BottomBar() {
   const setDisplayingFrame = (type: number, id : any) => {
     console.log('displayFrame', displayFrame)
     setDisplayFrame(!displayFrame);
-    updateBuildingFrame(!displayFrame, {"id": id, "type": type});
+    updateBuildingFrame(!displayFrame, {"id": id, "type": type, "posX": 0, "posY": 0, "selected": 0});
   };
   return (
     <>

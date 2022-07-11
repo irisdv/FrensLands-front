@@ -1616,7 +1616,7 @@ export default class ViewGL
       }
 
       this.debugPrint(1, "buildingSelected", data.buildingSelected);
-/*
+
       if (data.frameData.id > 0)
       {
           this.buildingToCreate = data.frameData.id;
@@ -1625,7 +1625,7 @@ export default class ViewGL
             this.placementActive = 1;
             this.createObject_FindSpace(1, 9898, this.buildingToCreate, 1, this.redText);
           }
-      }*/
+      }
     }
 
   }
