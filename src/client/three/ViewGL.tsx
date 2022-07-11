@@ -675,7 +675,6 @@ export default class ViewGL
 
         this.debugPrint(1, "OBJECT SELECTED");
         this.objectSelected = 1;
-        this.UbuildingIDs = this.UbuildingIDs + 1;
 
         this.debugPrint(1, "this.UbuildingIDs", this.UbuildingIDs);
         this.debugPrint(1, "this.frontBlockArray[pos.y][pos.x][4]", this.frontBlockArray[pos.y][pos.x][4]);
@@ -710,7 +709,6 @@ export default class ViewGL
         this.debugPrint(1, "OBJECT UNSELECTED");
         this.objectSelected = 0;
 
-        this.UbuildingIDs = this.UbuildingIDs + 1;
 
         this.replaceObject(pos, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][7],
           this.frontBlockArray[pos.y][pos.x][4],
@@ -878,7 +876,7 @@ export default class ViewGL
     {
       var   spaceValid = 0;
 
-      this.tempBuildMesh.position.x = this.currBlockPos.x ;//+ 0.5; // + 0.5 = CENTER OF BLOCK
+      this.tempBuildMesh.position.x = this.currBlockPos.x + 0.5; // + 0.5 = CENTER OF BLOCK
       this.tempBuildMesh.position.z = this.currBlockPos.y;// + 0.5;
       var blockRightPos = new THREE.Vector2;
       blockRightPos.x = this.currBlockPos.x;
@@ -1049,11 +1047,11 @@ export default class ViewGL
     newObjectMesh.position.y = 0.2 + (pos.y * 0.02); // Make sure the objects are higher at the bottom
     newObjectMesh.position.z = pos.y;// + 0.5;
     this.scene.add(newObjectMesh);
-    this.frontBlockArray[pos.y][pos.x][3] = type;
-    this.frontBlockArray[pos.y][pos.x][0] = pos.x + 0.5;// - 0.5;
-    this.frontBlockArray[pos.y][pos.x][1] = pos.y;// - 0.5;
-    this.frontBlockArray[pos.y][pos.x][4] = name;
-    this.frontBlockArray[pos.y][pos.x][7] = size;
+    this.frontBlockArray[pos.y][pos.x - 0.5][3] = type;
+    this.frontBlockArray[pos.y][pos.x - 0.5][0] = pos.x + 0.5;// - 0.5;
+    this.frontBlockArray[pos.y][pos.x - 0.5][1] = pos.y;// - 0.5;
+    this.frontBlockArray[pos.y][pos.x - 0.5][4] = name;
+    this.frontBlockArray[pos.y][pos.x - 0.5][7] = size;
   }
 
   // CREATE GEOMETRY AND MESH ON TERRAIN FROM CHAIN DATA
