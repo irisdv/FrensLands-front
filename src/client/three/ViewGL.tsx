@@ -83,12 +83,9 @@ export default class ViewGL
 
   // *********************** DEBUG/TEST *********************** //
 
-  private debugMode = 1;
+  private debugMode = 0;
   private typeTest = 1;
   private stopData = 0;
-
-  private curPos = new THREE.Vector2;
-  private targetPos = new THREE.Vector2;
 
   // *********************** DEBUG/TEST *********************** //
 
@@ -1513,14 +1510,17 @@ export default class ViewGL
 
   frensGoing = () =>
   {
-    this.frenIDArr.forEach((id:any) =>
+    var i = 0;
+
+    while (i < this.frenIDArr.length)
     {
+      var id = this.frenIDArr[i];
       var tempValX = 0;
       var tempValY = 0;
 
       if (id != null && id[0] != 0)
       {
-        if (id[1].x == id[2].x)
+        if (parseInt(id[1].x.toFixed(1)) == id[2].x)
         {
           tempValX = 1;
         }
@@ -1537,7 +1537,7 @@ export default class ViewGL
               //id[1].x) / ((id[2].x - id[1].x) / 1000));
         }
 
-        if (id[1].y == id[2].y)
+        if (parseInt(id[1].y.toFixed(1)) == id[2].y)
         {
           tempValY = 1;
         }
@@ -1556,7 +1556,11 @@ export default class ViewGL
 
         if (tempValX == 1 && tempValY == 1)
         {
-          //this.frenIDArr[id[0]][1] = id[1];
+          this.debugPrint(1, "LET S GO AGAIN");
+          this.frenIDArr[id[0]][1].x = id[1].x;
+          this.frenIDArr[id[0]][1].y = id[1].y;
+          this.frenIDArr[id[0]][2].x = parseInt((Math.random() * (39 - 1) + 1).toFixed(0));
+          this.frenIDArr[id[0]][2].y = parseInt((Math.random() * (15 - 1) + 1).toFixed(0));
           //id[2].x = parseInt((Math.random() * (39 - 1) + 1).toFixed(0));
           //id[2].y = parseInt((Math.random() * (15 - 1) + 1).toFixed(0));
         }
@@ -1565,13 +1569,15 @@ export default class ViewGL
         {
           var temp = id[0].toString();
           this.debugPrint(1, "ID", id[0]);
+          this.debugPrint(1, "ID", id[1].x);
           //@ts-ignore
           this.scene.getObjectByName(temp).position.x = id[1].x;
           //@ts-ignore
           this.scene.getObjectByName(temp).position.z = id[1].y;
         }
       }
-    });
+      i++;
+    }
   }
 
   // ******************* PUBLIC EVENTS ******************* //
@@ -1732,16 +1738,20 @@ export default class ViewGL
         this.tempTime = Date.now();
       }
 
-      if (this.keyMap['Space'] == true && this.timeClick == 1) // DEBUG TEST KEY
+      //if (this.keyMap['Space'] == true && this.timeClick == 1) // DEBUG TEST KEY
+      while (this.typeTest < 7)
       {
-        this.curPos.x = parseInt((Math.random() * (39 - 1) + 1).toFixed(0));
-        this.curPos.y = parseInt((Math.random() * (15 - 1) + 1).toFixed(0));
-        this.targetPos.x = parseInt((Math.random() * (39 - 1) + 1).toFixed(0));
-        this.targetPos.y = parseInt((Math.random() * (15 - 1) + 1).toFixed(0));
+        var curPos = new THREE.Vector2;
+        var targetPos = new THREE.Vector2;
+
+        curPos.x = parseInt((Math.random() * (39 - 1) + 1).toFixed(0));
+        curPos.y = parseInt((Math.random() * (15 - 1) + 1).toFixed(0));
+        targetPos.x = parseInt((Math.random() * (39 - 1) + 1).toFixed(0));
+        targetPos.y = parseInt((Math.random() * (15 - 1) + 1).toFixed(0));
 
         this.typeTest++;
 
-        this.frensCreate(this.typeTest, this.curPos, this.targetPos);
+        this.frensCreate(this.typeTest, curPos, targetPos);
         this.debugPrint(1, "FRENS FRENS FRENS");
         //his.placementActive = 1;
         //this.createObject_FindSpace(1, 9898, this.typeTest, 1, this.redText);
