@@ -25,9 +25,19 @@ import { GetBlockResponse } from 'starknet'
 
 export interface IFrame {
   id?: string;
+  unique_id?: string;
   type?: number;
   posX?: any;
   posY?: any;
+}
+
+export interface IPopUp {
+  id?: string; // id of bat_type
+  unique_id?: string;
+  type?: number;
+  posX?: any;
+  posY?: any;
+  pop?: number;
 }
 
 export interface IGameState {
@@ -37,6 +47,7 @@ export interface IGameState {
   loading: boolean; 
   address?: string | undefined;
   tokenId?: string;
+  mapType?: string;
   buildingCount?: number;
   mapArray?: any[];
   energy?: number;
@@ -52,11 +63,14 @@ export interface IGameState {
   updateBuildings: (t: number) => void;
   setAddress: (addr: string) => void;
   updateTokenId: (id: string) => void;
-  // updateResources: () => void;
   showFrame?: boolean;
   frameData?: IFrame;
   updateBuildingFrame: (show: boolean, data: {}) => void;
   farmResource: (id: any, data: {}) => void;
+  fetchMapType: (id: string) => void; 
+  // showPopUp
+  // popUpData
+  // mapType
 }
 
 export const GameState: IGameState = {
@@ -65,7 +79,8 @@ export const GameState: IGameState = {
   blockGame: "",
   loading: false, 
   address: undefined,
-  tokenId: "test",
+  tokenId: "",
+  mapType: "",
   buildingCount: undefined,
   mapArray: [],
   energy: 0,
@@ -86,6 +101,7 @@ export const GameState: IGameState = {
   frameData: undefined,
   updateBuildingFrame: (show, data) => {},
   farmResource: (id, data) => {},
+  fetchMapType: (id) => {} 
 };
 
 const StateContext = React.createContext(GameState);
@@ -158,6 +174,11 @@ interface SetPopulation {
   populationFree?: number
 }
 
+interface SetMapType {
+  type: "set_mapType";
+  mapType?: string;
+}
+
 type Action =
   | SetAccount
   | SetTokenId
@@ -171,6 +192,7 @@ type Action =
   | SetLastBlock
   | SetPopulation
   | SetLastUpdatedAt
+  | SetMapType
   | SetError;
 
 function reducer(state: IGameState, action: Action): IGameState {
@@ -220,6 +242,9 @@ function reducer(state: IGameState, action: Action): IGameState {
     }
     case "set_last_updated_at": {
       return {...state, loading: false, lastUpdated: action.blockHash, currentBlock: state.currentBlock}
+    }
+    case "set_mapType": {
+      return {...state, mapType: state.mapType}
     }
     case "set_error": {
       throw new Error(`Unhandled action type: ${action.type}`);
@@ -332,7 +357,7 @@ export const AppStateProvider: React.FC<
   // Refresh on args changed
   useEffect(() => {
     refreshPopulation(resources)
-  }, [state.tokenId, starknet, state.address])
+  }, [starknet, state.address, state.tokenId])
 
   useEffect(() => {
     refreshResources(erc1155)
@@ -354,6 +379,10 @@ export const AppStateProvider: React.FC<
     refreshBlockGame(resources)
   }, [state.tokenId, starknet, state.address])
 
+  useEffect(() => {
+    updateTokenId(state.address)
+  }, [starknet, state.address])
+
   const updateBuildings = React.useCallback((t: number) => {
     dispatch({
       type: "set_buildingCount",
@@ -371,16 +400,16 @@ export const AppStateProvider: React.FC<
   const updateTokenId = React.useCallback(async (account: any) => {
     let _token_id;
     if (maps && account && state.address) {
-      console.log('account context', account)
       try {
         _token_id = await maps.call("tokenOfOwnerByIndex", [
             state.address, uint256.bnToUint256(0)
         ]);
-      console.log('tokenOfOwnerByIndex result', uint256.uint256ToBN(_token_id[0]).toNumber())
+      console.log('tokenOfOwnerByIndex result', uint256.uint256ToBN(_token_id[0]).toString())
       dispatch({
         type: "set_tokenId",
         tokenId: uint256.uint256ToBN(_token_id[0]).toString(),
       });
+      refreshPopulation(resources)
       } catch (e) {
         console.warn("Error when retrieving tokenOwner by Index ");
         console.warn(e);
@@ -390,20 +419,23 @@ export const AppStateProvider: React.FC<
 
   const refreshPopulation = React.useCallback(async (resources : any) => {
     let _newPopulation : any;
-    try {
-      _newPopulation = await resources.call("get_population", [
-        uint256.bnToUint256(1)
-      ]);      
-      dispatch({
-        type: "set_population",
-        populationBusy: toBN(_newPopulation[0][1]).toNumber(),
-        populationFree: toBN(_newPopulation[0][0]).toNumber()
-      });
-      } catch (e) {
-        console.warn("Error when retrieving get_population in M02_Resources");
-        console.warn(e);
-      }
-  }, [state.address]);
+    if (resources && state.address && state.tokenId) {
+      try {
+        _newPopulation = await resources.call("get_population", [
+          uint256.bnToUint256(state.tokenId)
+        ]);      
+        // console.log("_newPopulation", _newPopulation)
+        dispatch({
+          type: "set_population",
+          populationBusy: toBN(_newPopulation[0][1]).toNumber(),
+          populationFree: toBN(_newPopulation[0][0]).toNumber()
+        });
+        } catch (e) {
+          console.warn("Error when retrieving get_population in M02_Resources");
+          console.warn(e);
+        }
+    }
+  }, [state.address, state.tokenId]);
 
   const refreshResources = React.useCallback(async (erc1155 : any) => {
     let _erc1155Balance : any;
@@ -421,7 +453,7 @@ export const AppStateProvider: React.FC<
             ],
             [uint256.bnToUint256(0), uint256.bnToUint256(1), uint256.bnToUint256(2), uint256.bnToUint256(3), uint256.bnToUint256(5), uint256.bnToUint256(6), uint256.bnToUint256(8)]
           ]);
-          console.log('_erc1155Balance', uint256.uint256ToBN(_erc1155Balance[0][1]).toNumber())
+          // console.log('_erc1155Balance', uint256.uint256ToBN(_erc1155Balance[0][1]).toNumber())
           dispatch({
             type: "set_erc1155Res",
             wood: uint256.uint256ToBN(_erc1155Balance[0][1]).toNumber(),
@@ -469,7 +501,7 @@ export const AppStateProvider: React.FC<
           _frensCoinsBalance = await coins.call("balanceOf", [
             state.address,
           ]);
-          console.log('_frensCoinsBalance', uint256.uint256ToBN(_frensCoinsBalance[0]).toNumber())
+          // console.log('_frensCoinsBalance', uint256.uint256ToBN(_frensCoinsBalance[0]).toNumber())
           dispatch({
             type: "set_frensCoins",
             frensCoins: uint256.uint256ToBN(_frensCoinsBalance[0]).toNumber()
@@ -484,37 +516,47 @@ export const AppStateProvider: React.FC<
     const refreshEnergyLevel = React.useCallback(async (resources : any) => {
         // DEBUG tokenId to replace
         let _energyLevel : any;
-        try {
-          _energyLevel = await resources.call("get_energy_level", [
-            uint256.bnToUint256(1),
-          ]);
-          var elem = toBN(_energyLevel)
-          var newEnergy = elem.toNumber()
-          dispatch({
-            type: "set_energy",
-            energy: newEnergy as number
-          });
-        } catch (e) {
-          console.warn("Error when retrieving get_energy_level in M02_Resources");
-          console.warn(e);
+        if (state.address && state.tokenId) {
+          try {
+            _energyLevel = await resources.call("get_energy_level", [
+              uint256.bnToUint256(state.tokenId),
+            ]);
+            // console.log('_energyLevel', _energyLevel)
+            dispatch({
+              type: "set_energy",
+              energy: uint256.uint256ToBN(_energyLevel[0]).toNumber()
+            });
+          } catch (e) {
+            console.warn("Error when retrieving get_energy_level in M02_Resources");
+            console.warn(e);
+          }
         }
     }, [state.address]);
 
     const refreshBlockGame = React.useCallback(async (resources : any) => {
       let _lastestBlock : any;
-      try {
-        _lastestBlock = await resources.call("get_latest_block", [
-          uint256.bnToUint256(0)
-        ]);
-        console.log('_lastestBlock', _lastestBlock)
-        dispatch({
-          type: "set_lastBlock",
-          blockGame: toBN(_lastestBlock).toString()
-        });
-      } catch (e) {
-        console.warn("Error when retrieving get_latest_block in M02_Resources");
-        console.warn(e);
+      if (state.address && state.tokenId) {
+        try {
+          _lastestBlock = await resources.call("get_latest_block", [
+            uint256.bnToUint256(state.tokenId)
+          ]);
+          // console.log('_lastestBlock', toBN(_lastestBlock[0]).toString())
+          dispatch({
+            type: "set_lastBlock",
+            blockGame: toBN(_lastestBlock[0]).toString()
+          });
+        } catch (e) {
+          console.warn("Error when retrieving get_latest_block in M02_Resources");
+          console.warn(e);
+        }
       }
+    }, [state.address, state.tokenId]);
+
+    const fetchMapType = React.useCallback((type : any) => {
+      dispatch({
+        type: "set_mapType",
+        mapType: type as string
+      });
     }, []);
 
   const updateBuildingFrame = React.useCallback((show: boolean, data: {}) => {
@@ -581,6 +623,7 @@ export const AppStateProvider: React.FC<
         loading: state.loading,
         address: state.address,
         tokenId: state.tokenId,
+        mapType: state.mapType,
         buildingCount: state.buildingCount,
         mapArray: state.mapArray,
         energy: state.energy,
@@ -600,6 +643,7 @@ export const AppStateProvider: React.FC<
         updateTokenId,
         updateBuildingFrame,
         farmResource,
+        fetchMapType
       }}
     >
       {props.children}

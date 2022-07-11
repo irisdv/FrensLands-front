@@ -85,7 +85,7 @@ body {
 		transform: translatey(0px);
 	}
 }
-  .frensLandsLogo {
+.frensLandsLogo {
 	transform: translatey(0px);
 	animation: float 6s ease-in-out infinite;
 }
@@ -686,6 +686,7 @@ Lab = 24 */
     width:calc(64px * 2);
     background-position:calc(11 * 2 * 64px) calc(6 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }
 .building5 {
     display:inline-block;
@@ -694,6 +695,7 @@ Lab = 24 */
     width:calc(64px * 2);
     background-position:calc(4 * 2 * 64px) calc(6 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }
 .building6 {
     display:inline-block;
@@ -702,6 +704,7 @@ Lab = 24 */
     width:calc(64px * 2);
     background-position:calc(9 * 2 * 64px) calc(6 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }
 .building7 {
     display:inline-block;
@@ -710,6 +713,7 @@ Lab = 24 */
     width:calc(64px * 2);
     background-position:calc(6 * 2 * 64px) calc(6 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }
 .building8 {
     display:inline-block;
@@ -718,6 +722,7 @@ Lab = 24 */
     width:calc(64px * 2);
     background-position:calc(7 * 2 * 64px) calc(6 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }
 .building9 {
     display:inline-block;
@@ -726,6 +731,7 @@ Lab = 24 */
     width:calc(64px * 2);
     background-position:calc(8 * 2 * 64px) calc(6 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }
 .building10 {
     display:inline-block;
@@ -734,6 +740,7 @@ Lab = 24 */
     width:calc(64px * 2);
     background-position:calc(3 * 2 * 64px) calc(4 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }
 .building11 {
     display:inline-block;
@@ -742,6 +749,7 @@ Lab = 24 */
     width:calc(64px * 2);
     background-position:calc(3 * 2 * 64px) calc(3 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }
 .building12 {
     display:inline-block;
@@ -750,6 +758,7 @@ Lab = 24 */
     width:calc(64px * 2);
     background-position:calc(5 * 2 * 64px) calc(3 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }
 .building13 {
     display:inline-block;
@@ -758,6 +767,7 @@ Lab = 24 */
     width:calc(64px * 2);
     background-position:calc(2 * 2 * 64px) calc(3 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }
 .building14 {
     display:inline-block;
@@ -766,6 +776,7 @@ Lab = 24 */
     width:calc(64px * 2);
     background-position:calc(1 * 2 * 64px) calc(3 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }
 .building15 {
     display:inline-block;
@@ -774,6 +785,7 @@ Lab = 24 */
     width:calc(64px * 2);
     background-position:calc(2 * 2 * 64px) calc(1 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }
 .building16 {
     display:inline-block;
@@ -782,6 +794,7 @@ Lab = 24 */
     width:calc(64px * 2);
     background-position:calc(4 * 2 * 64px) calc(1 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }
 .building17 {
     display:inline-block;
@@ -790,6 +803,7 @@ Lab = 24 */
     width:calc(64px * 2);
     background-position:calc(4 * 2 * 64px) calc(1 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }
 .building18 {
     display:inline-block;
@@ -798,12 +812,8 @@ Lab = 24 */
     width:calc(64px * 2);
     background-position:calc(1 * 2 * 64px) calc(1 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }
-
-
-
-
-
 
 .building19 {
     display:inline-block;
@@ -812,6 +822,7 @@ Lab = 24 */
     width:calc(64px * 2);
     background-position:calc(47 * 2 * 64px) calc(15 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }
 .building20 {
     display:inline-block;
@@ -820,6 +831,7 @@ Lab = 24 */
     width:calc(64px * 1);
     background-position:calc(43 * 1 * 32px) calc(15 * 1 * 32px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }
 .building21 {
     display:inline-block;
@@ -828,6 +840,7 @@ Lab = 24 */
     width:calc(64px * 1);
     background-position:calc(39 * 1 * 32px) calc(15 * 1 * 32px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }
 .building22 {
     display:inline-block;
@@ -836,6 +849,7 @@ Lab = 24 */
     width:calc(64px * 1);
     background-position:calc(35 * 1 * 32px) calc(15 * 1 * 32px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }
 .building23 {
     display:inline-block;
@@ -844,4 +858,5 @@ Lab = 24 */
     width:calc(64px * 1);
     background-position:calc(27 * 1 * 32px) calc(15 * 1 * 32px);
     background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
 }

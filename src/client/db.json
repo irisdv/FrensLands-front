@@ -3,15 +3,16 @@
         {
             "name": "Cabin",
             "category": "",
+            "level": "1",
             "cost_update": {
                 "resources": [
                     {
                         "id": 1,
-                        "quantity": 2
+                        "quantity": 3
                     },
                     {
                         "id": 2,
-                        "quantity": 3
+                        "quantity": 2
                     }
                 ],
                 "gold": 0,
@@ -159,11 +160,11 @@
             "cost_update": {
                 "resources": [
                     {
-                        "id": 1,
+                        "id": 10,
                         "quantity": 2
                     },
                     {
-                        "id": 2,
+                        "id": 1,
                         "quantity": 3
                     },
                     {
@@ -171,7 +172,7 @@
                         "quantity": 3
                     }
                 ],
-                "gold": 0,
+                "gold": 10,
                 "energy": 0
             },
             "daily_cost": {
@@ -188,7 +189,9 @@
                         "id": 5,
                         "quantity": 1
                     }
-                ]
+                ],
+                "gold": 10,
+                "energy": 0
             },
             "daily_harvest": {
                 "resources": [
@@ -206,6 +209,8 @@
                     }
                 ]
             },
+            "pop_min": 1,
+            "pop_max": 5,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {

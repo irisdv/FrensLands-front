@@ -46,7 +46,7 @@ export default function Home() {
   const { contract: frenscoins } = useFrensCoinsContract();
   const { contract: minter } = useMinterContract();
 
-  const { setAddress, updateTokenId, address, tokenId, frensCoins } = useGameContext();
+  const { setAddress, updateTokenId, address, tokenId, frensCoins, fetchMapType } = useGameContext();
 
   // console.log('transactions', transactions)
   // console.log('address front', address)
@@ -108,17 +108,40 @@ export default function Home() {
     options: { watch },
   });
 
+  // Fetch gameStatus
   const GameStatusValue = useMemo(() => {
     console.log("GameStatusResult", fetchGameStatus);
     if (fetchGameStatus && fetchGameStatus.length > 0) {
       var elem = uint256.uint256ToBN(fetchGameStatus[0]);
-      console.log("status game", elem);
+      console.log("status game", fetchGameStatus);
       var balance = elem.toNumber();
 
       return { gameStatus: balance };
     }
-  }, [fetchGameStatus, tokenId]);
+  }, [fetchGameStatus, account, tokenId]);
 
+  const { data: fetchtokenType } = useStarknetCall({
+    contract: maps,
+    method: "tokenURI",
+    args: [tokenId],
+    options: { watch },
+  });
+
+  // Fetch tokenType
+  const tokenTypeValue = useMemo(() => {
+    console.log("fetchtokenType", fetchtokenType);
+    if (fetchtokenType && fetchtokenType.length > 0) {
+      var elem = uint256.uint256ToBN(fetchtokenType[0]);
+      console.log("Token URI", fetchtokenType);
+      var balance = elem.toString();
+
+      fetchMapType(balance)
+
+      return { tokenType: balance };
+    }
+  }, [fetchtokenType, account, tokenId]);
+
+  // Invoke functions
   const {
     data: dataGetMap,
     loading: loadingGetMap,
@@ -179,6 +202,23 @@ export default function Home() {
   return (
     <>
       <div className="backgroundImg relative pixelated">
+
+        {/* <div className="popUpNotifs">
+          {transactions && transactions.length > 0 ? 
+            <div>
+              {
+                transactions.map((transaction : any) => {
+                  return <div key={transaction.transactionHash} transaction={transaction}>
+                    
+                  </div>
+                })
+              }
+            </div>
+            : 
+            <div>pas de tx</div>
+          }
+          </div>
+        </div> */}
 
       <img className="absolute pixelated frensLandsLogo" src="resources/front/UI_GameTitle.png" 
           style={{width : "640px", height: "640px", marginTop: '-165px', marginLeft: "320px", zIndex: "1"}} />
