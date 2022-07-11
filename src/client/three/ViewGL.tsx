@@ -45,6 +45,8 @@ export default class ViewGL
   private objectSelected: number = 0;
   private objectPopupOpen: number = 0;
 
+  private worldType:number = 0;
+
   private greenText = "Matchbox_Tiles_Objects_GreenVersion";
   private redText = "Matchbox_Tiles_Objects_RedVersion";
   private normalText = "Matchbox_Tiles_Objects";
@@ -430,7 +432,7 @@ export default class ViewGL
       terrainPlane.name = "terrainGeometry";
       terrainPlane.rotateX(-Math.PI * 0.5);
       const texture = new THREE.TextureLoader().load(
-        "resources/textures/World1_GrassBackground.png"
+        "resources/textures/World_Background_"+this.worldType.toString()+".png"
       );
 
       let mat = new THREE.MeshStandardMaterial({
@@ -463,7 +465,7 @@ export default class ViewGL
       terrainBorderPlane.name = "terrainBorderGeometry";
       terrainBorderPlane.rotateX(-Math.PI * 0.5);
       const texture = new THREE.TextureLoader().load(
-        "resources/textures/World1_GrassBoundaries.png"
+        "resources/textures/World_Boundaries_"+this.worldType.toString()+".png"
       );
 
       let mat = new THREE.MeshStandardMaterial({
@@ -837,7 +839,7 @@ export default class ViewGL
 
     const textObj = new THREE.TextureLoader().load(
       //"resources/textures/"+ nameText +".png"
-      "resources/textures/"+ nameText +"_nogrid.png"
+      "resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"
     );
 
     let matObj = new THREE.MeshStandardMaterial({
@@ -966,7 +968,7 @@ export default class ViewGL
 
     const textObj = new THREE.TextureLoader().load(
       //"resources/textures/"+ nameText +".png"
-      "resources/textures/"+ nameText +"_nogrid.png"
+      "resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"
     );
 
     let matObj = new THREE.MeshStandardMaterial({
@@ -1066,7 +1068,7 @@ export default class ViewGL
 
     const textObj = new THREE.TextureLoader().load(
       //"resources/textures/"+ nameText +".png"
-      "resources/textures/"+ nameText +"_nogrid.png"
+      "resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"
     );
 
     let matObj = new THREE.MeshStandardMaterial({
@@ -1166,7 +1168,7 @@ export default class ViewGL
 
     const textObj = new THREE.TextureLoader().load(
       //"resources/textures/"+ nameText +".png"
-      "resources/textures/"+ nameText +"_nogrid.png"
+      "resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"
     );
 
     let matObj = new THREE.MeshStandardMaterial({
@@ -1268,7 +1270,7 @@ export default class ViewGL
 
     const textObj = new THREE.TextureLoader().load(
       //"resources/textures/"+ nameText +".png"
-      "resources/textures/"+ nameText +"_nogrid.png"
+      "resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"
     );
 
     let matObj = new THREE.MeshStandardMaterial({
