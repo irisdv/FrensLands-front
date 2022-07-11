@@ -25,13 +25,13 @@ export function BottomBar() {
 
 
   const frameValue = useMemo(() => {
-    console.log("frameData Memo", frameData);
+    // console.log("frameData Memo", frameData);
     if (frameData) {
       setOldFrame(frameData.id)
       return { frameValue: frameData };
     }
   }, [frameData]);
-  console.log('FRAME VALUE', frameValue)
+  // console.log('FRAME VALUE', frameValue)
 
   const setDisplayingFrame = (type: number, id : any) => {
     console.log('displayFrame', displayFrame)

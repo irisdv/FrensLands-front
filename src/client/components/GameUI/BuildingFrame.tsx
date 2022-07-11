@@ -18,6 +18,8 @@ export function BuildingFrame(props: any) {
   const { contract: resources } = useResourcesContract();
 
   const [ farming, setFarming ] = useState(false)
+  const [ claiming, setClaiming ] = useState(false)
+  const [ message, setMessage ] = useState("")
   const [ costUpdate, setCostUpdate ] = useState<any>(null)
   const [ dailyCosts, setDailyCosts ] = useState<any>(null)
   const [ dailyHarvest, setDailyHarvests ] = useState<any>(null)
@@ -78,18 +80,13 @@ export function BuildingFrame(props: any) {
             "0x04a6a806aab47f343499dfc39d11680afbb4eec725044bd84cf548ac5c1e0297"
         ],
         metadata: {
-          method: "harvest",
+          method: "farm",
           message: "Harvest resources spawned on map",
         },
       });
     }
     setFarming(true);
   };
-
-  useEffect(() => {
-    var data = transactions.filter((transactions) => (transactions?.transactionHash) === dataStartFarming);
-    console.log('data starting game', data);
-  }, [farming, transactions, dataStartFarming])
 
   useEffect(() => {
     if (frameData && frameData.id) {

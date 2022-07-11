@@ -6,7 +6,6 @@ import {
   useStarknetTransactionManager,
   InjectedConnector,
 } from "@starknet-react/core";
-import { ConnectWalletMint } from "../components/ConnectWalletMint";
 import { TransactionList } from "../components/TransactionList";
 import { toBN } from "starknet/dist/utils/number";
 import { Link, useNavigate } from "react-router-dom";

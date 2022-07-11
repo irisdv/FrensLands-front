@@ -1,4 +1,4 @@
-import { useStarknet, useStarknetCall, useStarknetBlock } from "@starknet-react/core";
+import { useStarknet, useStarknetCall, useStarknetBlock, useStarknetTransactionManager, useStarknetInvoke } from "@starknet-react/core";
 import React, { useMemo, useState, useRef, useEffect } from "react";
 // import { useBuildingsContract } from "../../hooks/buildings";
 import { number, uint256 } from "starknet";
@@ -8,8 +8,12 @@ import { useResourcesContract } from "../../hooks/resources";
 import { ConnectWallet } from "../ConnectWallet";
 
 export function MenuBar() {
-  const {setAddress, frensCoins, wood, rock, meat, metal, coal, cereal, energy, populationBusy, populationFree, blockGame, currentBlock} = useGameContext();
+  const {tokenId, updateTokenId, setAddress, frensCoins, wood, rock, meat, metal, coal, cereal, energy, populationBusy, populationFree, blockGame, currentBlock} = useGameContext();
     // const { contract: resources } = useResourcesContract();
+    const [ claiming, setClaiming ] = useState(false)
+    const [ message, setMessage ] = useState("")
+    const { transactions } = useStarknetTransactionManager()
+    const { contract: resources } = useResourcesContract();
 
     const { data: block } = useStarknetBlock()
 
@@ -19,42 +23,60 @@ export function MenuBar() {
       if (account) setAddress(account)
     }, [account])
 
-    // console.log('data', block)
-    // console.log('currentBlock', currentBlock)
-    // console.log("blockGame", blockGame)
+    useEffect(() => {
+      if (account && !tokenId) {
+        updateTokenId(account);
+      }
+    }, [account, tokenId])
 
-
-  //   const { data: counterBuildingsResult } = useStarknetCall({
-  //     contract: building,
-  //     method: "get_building_count",
-  //     args: [uint256.bnToUint256(1)],
-  //     options: { watch },
-  //   });
-
-  //   const counterBuildingsValue = useMemo(() => {
-  //     console.log("counterBuildingsResult", counterBuildingsResult);
-  //     if (counterBuildingsResult && counterBuildingsResult.length > 0) {
-  //       var elem = toBN(counterBuildingsResult[0]);
-  //       var newCounter = elem.toNumber();
-
-  //       console.log("new counter", newCounter);
-
-  //       return { counter: newCounter };
-  //     }
-  //   }, [counterBuildingsResult]);
-
-  // Choper les ressources pour chaque Resources ID
-  // Donc ID allant de 1 à 5
-
-  // useEffect(() => {
-  //   if (block ) {
-
-  //   }
-  // }, [block])
-
-  const claimResources = () => {
-    console.log('claimingResources');
-  }
+    const {
+      data: dataStartClaiming,
+      loading: loadingStartClaiming,
+      invoke: startClaimingInvoke,
+    } = useStarknetInvoke({
+      contract: resources,
+      method: "claim_resources",
+    });
+  
+    // DEBUG : enlever les arguments 
+    const claimResources = () => {
+      console.log("invoking claiming", tokenId);
+      if (tokenId) {
+        startClaimingInvoke({
+          args: [
+              uint256.bnToUint256(tokenId),
+              "0x0526abb8b9f4d90e97a29266a3d9c5ed52f44a8a70847ef7ce9fe90f65ca51ea",
+              "0x03af997c327ca80bf00e0fc69e765a2d6f52c3d6dd0d02f36f97015065fa908d",
+              "0x04a6a806aab47f343499dfc39d11680afbb4eec725044bd84cf548ac5c1e0297"
+          ],
+          metadata: {
+            method: "claim resources",
+            message: "Claiming your resources.",
+          },
+        });
+      }
+      setClaiming(true);
+    };
+  
+    // useEffect(() => {
+    //   var data = transactions.filter((transactions) => (transactions?.transactionHash) === dataStartClaiming);
+    //   console.log('data starting game', data);
+  
+    // }, [claiming, transactions, dataStartClaiming])
+  
+    useEffect(() => {
+      var data = transactions.filter((transactions) => (transactions?.transactionHash) === dataStartClaiming);
+      console.log('data claiming', data);
+      if (data && data[0] && data[0].status && (data[0].status == 'REJECTED')) {
+        setMessage('Your transaction failed. ')
+      } else if (data && data[0] && (data[0].status == 'ACCEPTED_ON_L1' || data[0].status == 'ACCEPTED_ON_L2')) {
+        console.log('tx pour set approval est bien passée on peut passer au bridge')
+        setMessage('Your resources just arrived !')
+        setClaiming(false);
+      } else if (data && data[0] && (data[0].status == 'RECEIVED')) {
+        setMessage('Your resources are on their way ! It may take some time to harvest everything...')
+      }
+    }, [claiming, transactions, dataStartClaiming])
 
   //   Gestion du block Number
 
@@ -134,7 +156,12 @@ export function MenuBar() {
             </div>
             
           </div>
-          <div className="btnRight pixelated"></div>
+          { claiming ? 
+          <div className="popUpNotifs pixelated">
+            {message}
+          </div>
+          : ""
+          }
         </div>
       </div>
     </>
