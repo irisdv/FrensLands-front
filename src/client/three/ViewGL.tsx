@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
+import * as fs from "fs"
 const { promises: Fs} = require('fs');
 //import Fs from "fs";
 
@@ -852,16 +853,17 @@ export default class ViewGL
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
-    if (this.exists("resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png") == true)
+    let  textObj;
+    if (this.exists("resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"))
     {
-      const textObj = new THREE.TextureLoader().load(
+      textObj = new THREE.TextureLoader().load(
         //"resources/textures/"+ nameText +".png"
         "resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"
       );
     }
     else
     {
-      const textObj = new THREE.TextureLoader().load(
+      textObj = new THREE.TextureLoader().load(
         //"resources/textures/"+ nameText +".png"
         "resources/textures/"+ nameText +"_nogrid_0.png"
       );

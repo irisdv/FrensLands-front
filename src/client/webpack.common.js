@@ -29,5 +29,8 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './src/client/index.html'
         }),
-    ]
+    ],
+    node: { fs: 'empty' },
+    devtool: options.devtool,
+    target: 'web', // Make web variables accessible to webpack, e.g. window
 }
