@@ -49,10 +49,10 @@ export function BuildingFrame(props: any) {
       args: [
           uint256.bnToUint256(1),
           id,
-          "0x02b8f3e7a283dcf5703ab165d0b3785e4e903742102743735da4c64e8ac0dfc6",
-          "0x070bc995b48d153a40ad566cab6d3be143e7be7074dd93c0059fd540e3ca2596",
-          "0x04bad6d5f54e70c1edd8127fa3a7e3633a0c6b2a8753f0c7ead7503df111d77f",
-          "0x04a628b88797fd3d99609c0d362c9cda04480c79930b867cdcf55454a95c4b8f"
+          "0x0430d5c9c6d7e58919697aa3e8b1ba30a98d37ddf65fadf5810ea918a2c11ae5",
+          "0x07a4f265c03e318013e530ccd612a7ee582a147ae75f2edb9a62e740a28dcd76",
+          "0x03fc92790ecde8f6d87336466d661198c7e99176e0cdbd833211050633122d23",
+          "0x06b52341d2bc001a0dccb3a013f392bbb967674a9f088c0af65cb49128b815b1"
       ],
       metadata: {
         method: "farm",
@@ -156,9 +156,11 @@ export function BuildingFrame(props: any) {
           <div className="flex flex-row justify-center inline-block">
             <div style={{ width: "206px", paddingTop: "10px" }}>
               {frameData && frameData.type == 0 ? 
+                // BUTTON BUILD
                 <div className="btnBuild" onClick={() => farmingResource(2)}></div>
                
-              : 
+              :  
+              // BUTTON UPGRADE 
                 <div className="btnUpgrade"></div> 
               }
             </div>
