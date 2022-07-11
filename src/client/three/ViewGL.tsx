@@ -1130,35 +1130,35 @@ export default class ViewGL
 
     var textureType : any = new THREE.Vector2;
 
-    if (this.frontBlockArray[pos.y][pos.x][9] > 0)
+    if (this.frontBlockArray[pos.y][pos.x - 0.5][9] > 0)
     {
-      if (this.frontBlockArray[pos.y][pos.x][3] == 2)
+      if (this.frontBlockArray[pos.y][pos.x - 0.5][3] == 2)
       {
-        if (this.frontBlockArray[pos.y][pos.x][9] == 1)
+        if (this.frontBlockArray[pos.y][pos.x - 0.5][9] == 1)
         {
           textureType = this.findTextByID(177);
           this.debugPrint(1, "IN RANDOM CONDITION");
         }
-        else if (this.frontBlockArray[pos.y][pos.x][9] == 2)
+        else if (this.frontBlockArray[pos.y][pos.x - 0.5][9] == 2)
         {
           textureType = this.findTextByID(180);
         }
-        else if (this.frontBlockArray[pos.y][pos.x][9] == 3)
+        else if (this.frontBlockArray[pos.y][pos.x - 0.5][9] == 3)
         {
           textureType = this.findTextByID(179);
         }
       }//Rock = 161,163,165,177,178,179,180,181,182   Tree = 15,14,30,31
       else
       {
-        if (this.frontBlockArray[pos.y][pos.x][9] == 1)
+        if (this.frontBlockArray[pos.y][pos.x - 0.5][9] == 1)
         {
           textureType = this.findTextByID(15);
         }
-        else if (this.frontBlockArray[pos.y][pos.x][9] == 2)
+        else if (this.frontBlockArray[pos.y][pos.x - 0.5][9] == 2)
         {
           textureType = this.findTextByID(16);
         }
-        else if (this.frontBlockArray[pos.y][pos.x][9] == 3)
+        else if (this.frontBlockArray[pos.y][pos.x - 0.5][9] == 3)
         {
           textureType = this.findTextByID(30);
         }
