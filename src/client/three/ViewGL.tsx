@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
-import fs from "fs";
+const { promises: Fs} = require('fs');
 
 export default class ViewGL
 {
@@ -819,7 +819,7 @@ export default class ViewGL
   {
     try
     {
-      await Fs.access(path);
+      Fs.access(path);
       return (true);
     }
     catch
