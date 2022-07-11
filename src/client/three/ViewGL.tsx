@@ -917,8 +917,8 @@ export default class ViewGL
         this.tempBuildMeshUpdate = 0;
 
         this.debugPrint(2, "H_ClickLeft");
-        this.createObjectPlayer(pos, this.tempBuildMeshSize, this.UbuildingIDs + 1, this.tempBuildMeshType,
-          this.tempBuildMeshProgress, this.normalText);
+        this.createObjectPlayer(pos, this.tempBuildMeshSize, this.frontBlockArray[pos.y][pos.x - 0.5][4],
+           this.tempBuildMeshType,this.tempBuildMeshProgress, this.normalText);
         this.deleteObject(this.tempBuildMeshName);
         this.placementActive = 0;
       }
