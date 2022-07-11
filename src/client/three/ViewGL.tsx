@@ -1083,6 +1083,13 @@ export default class ViewGL
     this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][7] = size;
   }
 
+  buildingTransaction = (pos: THREE.Vector2, type: number, name: number)
+  {
+
+    // CREATE THE TRANSACTION
+
+  }
+
   // PLAYER CREATES GEOMETRY AND MESH ON TERRAIN ON CLICK
   createObjectPlayer = (pos : THREE.Vector2, size : number, name : number,
     type : number, progress : number, nameText : String) =>
@@ -1192,6 +1199,14 @@ export default class ViewGL
     this.frontBlockArray[pos.y][pos.x - 0.5][1] = pos.y;// - 0.5;
     this.frontBlockArray[pos.y][pos.x - 0.5][4] = name;
     this.frontBlockArray[pos.y][pos.x - 0.5][7] = size;
+
+    var posTrans = new THREE.Vector2;
+    posTrans.x = pos.x - 0.5;
+    posTrans.y = pos.y;
+
+    //DO THE BUILDING CREATION TRANSACTION
+    this.buildingTransaction(pos, this.frontBlockArray[pos.y][pos.x - 0.5][3],
+      this.frontBlockArray[pos.y][pos.x - 0.5][4]);
   }
 
   // CREATE GEOMETRY AND MESH ON TERRAIN FROM CHAIN DATA
