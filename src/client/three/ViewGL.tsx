@@ -48,7 +48,7 @@ export default class ViewGL
   private objectSelected: number = 0;
   private objectPopupOpen: number = 0;
 
-  private worldType:number = 0;
+  private worldType:number = 1;
 
   private greenText = "Matchbox_Tiles_Objects_GreenVersion";
   private redText = "Matchbox_Tiles_Objects_RedVersion";
@@ -993,10 +993,21 @@ export default class ViewGL
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
-    const textObj = new THREE.TextureLoader().load(
-      //"resources/textures/"+ nameText +".png"
-      "resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"
-    );
+    let  textObj;
+    if (this.exists("resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"))
+    {
+      textObj = new THREE.TextureLoader().load(
+        //"resources/textures/"+ nameText +".png"
+        "resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"
+      );
+    }
+    else
+    {
+      textObj = new THREE.TextureLoader().load(
+        //"resources/textures/"+ nameText +".png"
+        "resources/textures/"+ nameText +"_nogrid_0.png"
+      );
+    }
 
     let matObj = new THREE.MeshStandardMaterial({
       map: textObj,
@@ -1093,10 +1104,21 @@ export default class ViewGL
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
-    const textObj = new THREE.TextureLoader().load(
-      //"resources/textures/"+ nameText +".png"
-      "resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"
-    );
+    let  textObj;
+    if (this.exists("resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"))
+    {
+      textObj = new THREE.TextureLoader().load(
+        //"resources/textures/"+ nameText +".png"
+        "resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"
+      );
+    }
+    else
+    {
+      textObj = new THREE.TextureLoader().load(
+        //"resources/textures/"+ nameText +".png"
+        "resources/textures/"+ nameText +"_nogrid_0.png"
+      );
+    }
 
     let matObj = new THREE.MeshStandardMaterial({
       map: textObj,
@@ -1193,10 +1215,21 @@ export default class ViewGL
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
-    const textObj = new THREE.TextureLoader().load(
-      //"resources/textures/"+ nameText +".png"
-      "resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"
-    );
+    let  textObj;
+    if (this.exists("resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"))
+    {
+      textObj = new THREE.TextureLoader().load(
+        //"resources/textures/"+ nameText +".png"
+        "resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"
+      );
+    }
+    else
+    {
+      textObj = new THREE.TextureLoader().load(
+        //"resources/textures/"+ nameText +".png"
+        "resources/textures/"+ nameText +"_nogrid_0.png"
+      );
+    }
 
     let matObj = new THREE.MeshStandardMaterial({
       map: textObj,
@@ -1295,10 +1328,21 @@ export default class ViewGL
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
-    const textObj = new THREE.TextureLoader().load(
-      //"resources/textures/"+ nameText +".png"
-      "resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"
-    );
+    let  textObj;
+    if (this.exists("resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"))
+    {
+      textObj = new THREE.TextureLoader().load(
+        //"resources/textures/"+ nameText +".png"
+        "resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"
+      );
+    }
+    else
+    {
+      textObj = new THREE.TextureLoader().load(
+        //"resources/textures/"+ nameText +".png"
+        "resources/textures/"+ nameText +"_nogrid_0.png"
+      );
+    }
 
     let matObj = new THREE.MeshStandardMaterial({
       map: textObj,
