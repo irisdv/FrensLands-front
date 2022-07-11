@@ -21,7 +21,7 @@ export function BuildingFrame(props: any) {
 
   const [buildingSelec, setBuildingSelec] = useState(false)
 
-  console.log("frameData", frameData);
+  // console.log("frameData", frameData);
   // console.log('transaction status', transactions)
 
   useEffect(() => {

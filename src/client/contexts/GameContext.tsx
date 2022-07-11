@@ -225,8 +225,8 @@ function reducer(state: IGameState, action: Action): IGameState {
     //   return { ...state, frameData: action.frameData };
     // }
     case "set_showFrame": {
-      return { ...state,
-        showFrame: action.showFrame,
+      return { ...state, 
+        showFrame: action.showFrame, 
         frameData: action.frameData,
       };
     }

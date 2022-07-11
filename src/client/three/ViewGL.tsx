@@ -1615,9 +1615,9 @@ export default class ViewGL
         this.chainDataAdded = 1;
       }
 
-      this.debugPrint(1, "buildingSelected", data.buildingSelected);
+      // this.debugPrint(1, "buildingSelected", data.buildingSelected);
 
-      if (data.frameData.id > 0)
+      if (data.frameData && data.frameData.id > 0)
       {
           this.buildingToCreate = data.frameData.id;
           if (data.frameData.selected && this.placementActive == 0)
