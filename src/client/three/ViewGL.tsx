@@ -68,7 +68,7 @@ export default class ViewGL
   private buildingToCreate = 0;
 
   private frensBuilding = new THREE.Vector2;
-  private frenIDArr: any = [];
+  private frenIDArr: any[] = [];
 
   private timeClick = 1;
   private tempTime = Date.now();
@@ -86,6 +86,9 @@ export default class ViewGL
   private debugMode = 1;
   private typeTest = 1;
   private stopData = 0;
+
+  private curPos = new THREE.Vector2;
+  private targetPos = new THREE.Vector2;
 
   // *********************** DEBUG/TEST *********************** //
 
@@ -1448,7 +1451,9 @@ export default class ViewGL
     this.debugPrint(1, "This object has been deleted : ", name);
   }
 
-  frensGoing = (frenID: number, currFrenPos: THREE.Vector2, targetPos: THREE.Vector2) =>
+
+  // CREATE FRENS
+  frensCreate = (frenID: number, currFrenPos: THREE.Vector2, targetPos: THREE.Vector2) =>
   {
     if (this.frenIDArr[frenID] == null)
     {
@@ -1458,16 +1463,16 @@ export default class ViewGL
       newObject.rotateX(-Math.PI * 0.5);
 
       let  textObj;
-      if (this.exists("resources/textures/Matchbox_Tiles_Objects_0_nogrid_"+this.worldType.toString()+".png"))
+      if (this.exists("resources/textures/Matchbox_Tiles_Objects_nogrid_"+this.worldType.toString()+".png"))
       {
         textObj = new THREE.TextureLoader().load(
-          "resources/textures/Matchbox_Tiles_Objects_0_nogrid_"+this.worldType.toString()+".png"
+          "resources/textures/Matchbox_Tiles_Objects_nogrid_"+this.worldType.toString()+".png"
         );
       }
       else
       {
         textObj = new THREE.TextureLoader().load(
-          "resources/textures/Matchbox_Tiles_Objects_0_nogrid_0.png"
+          "resources/textures/Matchbox_Tiles_Objects_nogrid_0.png"
         );
       }
 
@@ -1499,9 +1504,74 @@ export default class ViewGL
 
       this.scene.add(newObjectMesh);
 
-
+      this.frenIDArr[frenID] = [];
+      this.frenIDArr[frenID][0] = frenID;
+      this.frenIDArr[frenID][1] = currFrenPos;
+      this.frenIDArr[frenID][2] = targetPos;
     }
+  }
 
+  frensGoing = () =>
+  {
+    this.frenIDArr.forEach((id:any) =>
+    {
+      var tempValX = 0;
+      var tempValY = 0;
+
+      if (id != null && id[0] != 0)
+      {
+        if (id[1].x == id[2].x)
+        {
+          tempValX = 1;
+        }
+        else if (id[1].x > id[2].x)
+        {
+          id[1].x -= 0.01;
+          //id[1].x = id[1].x - ((id[1].x -
+              //id[2].x) / ((id[1].x - id[2].x) / 1000));
+        }
+        else
+        {
+          id[1].x += 0.01;
+          //id[1].x = id[1].x + ((id[2].x -
+              //id[1].x) / ((id[2].x - id[1].x) / 1000));
+        }
+
+        if (id[1].y == id[2].y)
+        {
+          tempValY = 1;
+        }
+        else if (id[1].y > id[2].y)
+        {
+          id[1].y -= 0.01;
+          //id[1].y = id[1].y - ((id[1].y -
+              //id[2].y) / ((id[1].y - id[2].y) / 1000));
+        }
+        else
+        {
+          id[1].y += 0.01;
+          //id[1].y = id[1].y - ((id[2].y -
+              //id[1].y) / ((id[2].y - id[1].y) / 1000));
+        }
+
+        if (tempValX == 1 && tempValY == 1)
+        {
+          //this.frenIDArr[id[0]][1] = id[1];
+          //id[2].x = parseInt((Math.random() * (39 - 1) + 1).toFixed(0));
+          //id[2].y = parseInt((Math.random() * (15 - 1) + 1).toFixed(0));
+        }
+
+        if (this.scene.getObjectByName(id[0].toString()) != null)
+        {
+          var temp = id[0].toString();
+          this.debugPrint(1, "ID", id[0]);
+          //@ts-ignore
+          this.scene.getObjectByName(temp).position.x = id[1].x;
+          //@ts-ignore
+          this.scene.getObjectByName(temp).position.z = id[1].y;
+        }
+      }
+    });
   }
 
   // ******************* PUBLIC EVENTS ******************* //
@@ -1623,6 +1693,8 @@ export default class ViewGL
           {
             this.placementActive = 1;
             this.createObject_FindSpace(1, 9898, this.buildingToCreate, 1, this.redText);
+
+            //SEND CLOSE POPUP TO CONTEXT
           }
       }
     }
@@ -1654,18 +1726,29 @@ export default class ViewGL
     {
       var time = Date.now();
 
-      if (time - this.tempTime > 100)
+      if (time - this.tempTime > 500)
       {
         this.timeClick = 1;
         this.tempTime = Date.now();
       }
 
-      /*if (this.keyMap['Space'] == true && this.timeClick == 1 && this.placementActive == 0)
+      if (this.keyMap['Space'] == true && this.timeClick == 1) // DEBUG TEST KEY
       {
-        this.placementActive = 1;
-        this.createObject_FindSpace(1, 9898, this.typeTest, 1, this.redText);
+        this.curPos.x = parseInt((Math.random() * (39 - 1) + 1).toFixed(0));
+        this.curPos.y = parseInt((Math.random() * (15 - 1) + 1).toFixed(0));
+        this.targetPos.x = parseInt((Math.random() * (39 - 1) + 1).toFixed(0));
+        this.targetPos.y = parseInt((Math.random() * (15 - 1) + 1).toFixed(0));
+
         this.typeTest++;
-      }*/
+
+        this.frensCreate(this.typeTest, this.curPos, this.targetPos);
+        this.debugPrint(1, "FRENS FRENS FRENS");
+        //his.placementActive = 1;
+        //this.createObject_FindSpace(1, 9898, this.typeTest, 1, this.redText);
+        //this.typeTest++;
+      }
+
+      this.frensGoing();
 
       if (this.keyMap['KeyD'] == true && this.timeClick == 1) // NOT WORKING !
       {
@@ -1692,7 +1775,7 @@ export default class ViewGL
         this.selectObject();
         //this.tempTime2 = Date.now();
       }
-      // this.stats.update();
+      //this.stats.update();
       this.renderer.render(this.scene, this.camera);
 
 
