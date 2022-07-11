@@ -10,7 +10,7 @@ import { InstancedMesh } from "three";
 
 
 export function BuildingFrame(props: any) {
-  const { showFrame, frameData, farmResource } = useGameContext();
+  const { showFrame, frameData, farmResource, buildEvent } = useGameContext();
   const { transactions } = useStarknetTransactionManager()
   const { contract: resources } = useResourcesContract();
   const [ farming, setFarming ] = useState(false)
@@ -155,9 +155,9 @@ export function BuildingFrame(props: any) {
         <div className="relative flex jutify-center items-center inline-block" style={{ height: "45px", paddingTop: "8px" }}>
           <div className="flex flex-row justify-center inline-block">
             <div style={{ width: "206px", paddingTop: "10px" }}>
-              {frameData && frameData.type == 0 ? 
+              {frameData && frameData.id ? 
                 // BUTTON BUILD
-                <div className="btnBuild" onClick={() => farmingResource(2)}></div>
+                <div className="btnBuild" onClick={() => buildEvent(frameData.id as number)}></div>
                
               :  
               // BUTTON UPGRADE 
