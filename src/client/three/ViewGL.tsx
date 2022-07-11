@@ -41,6 +41,7 @@ export default class ViewGL
   private currRayPos = new THREE.Vector3;
   private currBlockPos = new THREE.Vector2;
   private selectedObj = new THREE.Vector2;
+  private selectedObjData: any = [];
   private objectSelected: number = 0;
   private objectPopupOpen: number = 0;
 
@@ -668,47 +669,39 @@ export default class ViewGL
         pos.x = this.currBlockPos.x;
         pos.y = this.currBlockPos.y;
 
-        this.debugPrint(1, "BEF this.frontBlockArray[pos.y][pos.x][0]", this.frontBlockArray[pos.y][pos.x][0]);
-        this.debugPrint(1, "BEF this.frontBlockArray[pos.y][pos.x][1]", this.frontBlockArray[pos.y][pos.x][1]);
-        this.debugPrint(1, "BEF this.frontBlockArray[pos.y][pos.x][3]", this.frontBlockArray[pos.y][pos.x][3]);
-        this.debugPrint(1, "BEF this.frontBlockArray[pos.y][pos.x][4]", this.frontBlockArray[pos.y][pos.x][4]);
-
-        this.debugPrint(1, "OBJECT SELECTED");
         this.objectSelected = 1;
-
-        this.debugPrint(1, "this.UbuildingIDs", this.UbuildingIDs);
-        this.debugPrint(1, "this.frontBlockArray[pos.y][pos.x][4]", this.frontBlockArray[pos.y][pos.x][4]);
 
         this.replaceObject(pos, this.frontBlockArray[pos.y][pos.x][7],
           this.frontBlockArray[pos.y][pos.x][4],
           this.frontBlockArray[pos.y][pos.x][3], 1, this.outlinedText,
           this.frontBlockArray[pos.y][pos.x][4]);
 
-        this.debugPrint(1, "BEF this.frontBlockArray[pos.y][pos.x][3]", this.frontBlockArray[pos.y][pos.x][0]);
-        this.debugPrint(1, "BEF this.frontBlockArray[pos.y][pos.x][3]", this.frontBlockArray[pos.y][pos.x][1]);
-        this.debugPrint(1, "BEF this.frontBlockArray[pos.y][pos.x][3]", this.frontBlockArray[pos.y][pos.x][3]);
-        this.debugPrint(1, "BEF this.frontBlockArray[pos.y][pos.x][4]", this.frontBlockArray[pos.y][pos.x][4]);
-
         this.selectedObj = pos;
+        this.selectedObjData[0] = this.frontBlockArray[pos.y][pos.x][0];//PosX
+        this.selectedObjData[1] = this.frontBlockArray[pos.y][pos.x][1];//PosY
+        this.selectedObjData[3] = this.frontBlockArray[pos.y][pos.x][3];//build/Ress Type
+        this.selectedObjData[4] = this.frontBlockArray[pos.y][pos.x][4];//id/name
+
+        this.debugPrint(1, "OBJECT SELECTED", this.selectedObjData[4]);
       }
     }
 
     if (this.objectSelected == 1)
     {
-      if (this.currBlockPos && this.currBlockPos.x != null && this.currBlockPos.y != null &&
-          this.selectedObj != null && this.selectedObj.x != 0 && this.selectedObj.y != 0 &&
-          this.selectedObj.x != this.currBlockPos.x || this.selectedObj.y != this.currBlockPos.y &&
-          this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x] != null &&
-          this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != 0)
+      if (//this.currBlockPos &&     // TOO MANY SAFETY PRCAUTIONS MAKE IT SLOWER
+          //this.selectedObj != null && this.selectedObj.x != 0 && this.selectedObj.y != 0 &&
+          this.selectedObj.x != this.currBlockPos.x || this.selectedObj.y != this.currBlockPos.y //&&
+          //this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x] != null &&
+          //this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != 0
+          )
       {
 
         var pos : THREE.Vector2 = new THREE.Vector2;
         pos.x = this.selectedObj.x;
         pos.y = this.selectedObj.y;
 
-        this.debugPrint(1, "OBJECT UNSELECTED");
+        this.debugPrint(1, "OBJECT UNSELECTED", this.selectedObjData[4]);
         this.objectSelected = 0;
-
 
         this.replaceObject(pos, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][7],
           this.frontBlockArray[pos.y][pos.x][4],
@@ -716,6 +709,13 @@ export default class ViewGL
           this.normalText, this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][4]);
 
         this.selectedObj = new THREE.Vector2(0, 0);
+
+        this.selectedObjData[0] = 0;//PosX
+        this.selectedObjData[1] = 0;//PosY
+        this.selectedObjData[3] = 0;//build/Ress Type
+        this.selectedObjData[4] = 0;//id/name
+
+        this.debugPrint(1, "UNSELECTED OBJECT IS", this.selectedObjData[4]);
       }
     }
 
@@ -726,6 +726,11 @@ export default class ViewGL
       // To open popup
       this.rawData.updateBuildingFrame(true, {"id": 1});
       this.objectPopupOpen = 1;
+
+      //this.selectedObjData[0] ;//PosX
+      //this.selectedObjData[1] ;//PosY
+      //this.selectedObjData[3] ;//build/Ress Type
+      //this.selectedObjData[4] ;//id/name
 
       // To close popup
       // this.rawData.updateBuildingFrame(false, {});
