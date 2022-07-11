@@ -187,6 +187,7 @@ export default class ViewGL
       tempDecomp[6] = parseInt(elem[11] + elem[12]);          //[quantity ress or pop]
       tempDecomp[7] = parseInt(elem[13]);                     //[current level]
       tempDecomp[8] = parseInt(elem[14]);                     //[activity index or number of days active]
+      tempDecomp[9] = 0;                                      //[random ID]
     }
     else
     {
@@ -200,6 +201,7 @@ export default class ViewGL
       tempDecomp[6] = parseInt(elem[12] + elem[13]);          //[quantity ress or pop]
       tempDecomp[7] = parseInt(elem[14]);                     //[current level]
       tempDecomp[8] = parseInt(elem[15]);                     //[activity index or number of days active]
+      tempDecomp[9] = 0;                                      //[random ID]
     }
     this.debugPrint(2, "tempDecomp", tempDecomp);
 
@@ -350,7 +352,7 @@ export default class ViewGL
           pos.x = this.frontBlockArray[indexI][indexJ][0];// + 0.5;
           pos.y = this.frontBlockArray[indexI][indexJ][1];// + 0.5;
 
-          if (pos.x > 39 || pos.y < 1 || pos.x < 1 || pos.y > 15)
+          /*if (pos.x > 39 || pos.y < 1 || pos.x < 1 || pos.y > 15)
           {
             this.debugPrint(1, "POS ERROR INDEX ", this.frontBlockArray[indexI][indexJ][4]);
             this.debugPrint(1, "POSX", pos.x);
@@ -361,6 +363,10 @@ export default class ViewGL
             this.debugPrint(1, "ID ERROR = ", this.frontBlockArray[indexI][indexJ][4]);
             this.debugPrint(1, "POSX", pos.x);
             this.debugPrint(1, "POSY", pos.y);
+          }*/
+          if (this.frontBlockArray[indexI][indexJ][3] == 2 || this.frontBlockArray[indexI][indexJ][3] == 3)
+          {
+            this.frontBlockArray[indexI][indexJ][9] = (Math.random() * (3 - 1) + 1).toFixed(0);
           }
 
           //this.createObjectFomChain(pos, 1, this.frontBlockArray[indexI][indexJ][4],
@@ -972,7 +978,46 @@ export default class ViewGL
     });
 
     var textureType : any = new THREE.Vector2;
-    textureType = this.findTextByID(this.rightBuildingType[type]);
+
+    if (this.frontBlockArray[pos.y][pos.x][9] > 0)
+    {
+      if (this.frontBlockArray[pos.y][pos.x][3] == 2)
+      {
+        if (this.frontBlockArray[pos.y][pos.x][9] == 1)
+        {
+          textureType = this.findTextByID(177);
+          this.debugPrint(1, "IN RANDOM CONDITION");
+        }
+        else if (this.frontBlockArray[pos.y][pos.x][9] == 2)
+        {
+          textureType = this.findTextByID(180);
+        }
+        else if (this.frontBlockArray[pos.y][pos.x][9] == 3)
+        {
+          textureType = this.findTextByID(179);
+        }
+      }//Rock = 161,163,165,177,178,179,180,181,182   Tree = 15,14,30,31
+      else
+      {
+        if (this.frontBlockArray[pos.y][pos.x][9] == 1)
+        {
+          textureType = this.findTextByID(15);
+        }
+        else if (this.frontBlockArray[pos.y][pos.x][9] == 2)
+        {
+          textureType = this.findTextByID(16);
+        }
+        else if (this.frontBlockArray[pos.y][pos.x][9] == 3)
+        {
+          textureType = this.findTextByID(30);
+        }
+      }
+    }
+    else
+    {
+      textureType = this.findTextByID(this.rightBuildingType[type]);
+    }
+
 
     if (matObj.map)
     {
@@ -1033,7 +1078,46 @@ export default class ViewGL
     });
 
     var textureType : any = new THREE.Vector2;
-    textureType = this.findTextByID(this.rightBuildingType[type]);
+
+    if (this.frontBlockArray[pos.y][pos.x][9] > 0)
+    {
+      if (this.frontBlockArray[pos.y][pos.x][3] == 2)
+      {
+        if (this.frontBlockArray[pos.y][pos.x][9] == 1)
+        {
+          textureType = this.findTextByID(177);
+          this.debugPrint(1, "IN RANDOM CONDITION");
+        }
+        else if (this.frontBlockArray[pos.y][pos.x][9] == 2)
+        {
+          textureType = this.findTextByID(180);
+        }
+        else if (this.frontBlockArray[pos.y][pos.x][9] == 3)
+        {
+          textureType = this.findTextByID(179);
+        }
+      }//Rock = 161,163,165,177,178,179,180,181,182   Tree = 15,14,30,31
+      else
+      {
+        if (this.frontBlockArray[pos.y][pos.x][9] == 1)
+        {
+          textureType = this.findTextByID(15);
+        }
+        else if (this.frontBlockArray[pos.y][pos.x][9] == 2)
+        {
+          textureType = this.findTextByID(16);
+        }
+        else if (this.frontBlockArray[pos.y][pos.x][9] == 3)
+        {
+          textureType = this.findTextByID(30);
+        }
+      }
+    }
+    else
+    {
+      textureType = this.findTextByID(this.rightBuildingType[type]);
+    }
+
 
     if (matObj.map)
     {
@@ -1094,7 +1178,45 @@ export default class ViewGL
     });
 
     var textureType : any = new THREE.Vector2;
-    textureType = this.findTextByID(this.rightBuildingType[type]);
+
+    if (this.frontBlockArray[pos.y][pos.x][9] > 0)
+    {
+      if (this.frontBlockArray[pos.y][pos.x][3] == 2)
+      {
+        if (this.frontBlockArray[pos.y][pos.x][9] == 1)
+        {
+          textureType = this.findTextByID(177);
+          this.debugPrint(1, "IN RANDOM CONDITION");
+        }
+        else if (this.frontBlockArray[pos.y][pos.x][9] == 2)
+        {
+          textureType = this.findTextByID(180);
+        }
+        else if (this.frontBlockArray[pos.y][pos.x][9] == 3)
+        {
+          textureType = this.findTextByID(179);
+        }
+      }//Rock = 161,163,165,177,178,179,180,181,182   Tree = 15,14,30,31
+      else
+      {
+        if (this.frontBlockArray[pos.y][pos.x][9] == 1)
+        {
+          textureType = this.findTextByID(15);
+        }
+        else if (this.frontBlockArray[pos.y][pos.x][9] == 2)
+        {
+          textureType = this.findTextByID(16);
+        }
+        else if (this.frontBlockArray[pos.y][pos.x][9] == 3)
+        {
+          textureType = this.findTextByID(30);
+        }
+      }
+    }
+    else
+    {
+      textureType = this.findTextByID(this.rightBuildingType[type]);
+    }
 
     if (matObj.map)
     {
@@ -1158,7 +1280,46 @@ export default class ViewGL
     });
 
     var textureType : any = new THREE.Vector2;
-    textureType = this.findTextByID(this.rightBuildingType[type]);
+
+    if (this.frontBlockArray[pos.y][pos.x][9] > 0)
+    {
+      if (this.frontBlockArray[pos.y][pos.x][3] == 2)
+      {
+        if (this.frontBlockArray[pos.y][pos.x][9] == 1)
+        {
+          textureType = this.findTextByID(177);
+          this.debugPrint(1, "IN RANDOM CONDITION");
+        }
+        else if (this.frontBlockArray[pos.y][pos.x][9] == 2)
+        {
+          textureType = this.findTextByID(180);
+        }
+        else if (this.frontBlockArray[pos.y][pos.x][9] == 3)
+        {
+          textureType = this.findTextByID(179);
+        }
+      }//Rock = 161,163,165,177,178,179,180,181,182   Tree = 15,14,30,31
+      else
+      {
+        if (this.frontBlockArray[pos.y][pos.x][9] == 1)
+        {
+          textureType = this.findTextByID(15);
+        }
+        else if (this.frontBlockArray[pos.y][pos.x][9] == 2)
+        {
+          textureType = this.findTextByID(16);
+        }
+        else if (this.frontBlockArray[pos.y][pos.x][9] == 3)
+        {
+          textureType = this.findTextByID(30);
+        }
+      }
+    }
+    else
+    {
+      textureType = this.findTextByID(this.rightBuildingType[type]);
+    }
+
 
     if (matObj.map)
     {
