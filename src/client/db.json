@@ -1,6 +1,51 @@
 {
     "buildings" : [
         {
+            "name": "",
+            "category": "",
+            "level": "",
+            "cost_update": {
+                "resources": [
+   
+                ],
+                "gold": 0,
+                "energy": 0
+            },
+            "daily_cost": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "resources": [
+                    {
+                        "id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "id" : 3,
+                        "quantity": 3
+                    },
+                    {
+                        "id": 5,
+                        "quantity": 1
+                    }
+                ]
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
             "name": "Cabin",
             "category": "",
             "level": "1",
@@ -53,7 +98,7 @@
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
-            "name": "Tree",
+            "name": "Rock",
             "category": "",
             "cost_update": {
                 "resources": [
@@ -104,7 +149,7 @@
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
-            "name": "Rock",
+            "name": "Tree",
             "category": "",
             "cost_update": {
                 "resources": [
