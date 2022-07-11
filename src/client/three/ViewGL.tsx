@@ -851,12 +851,13 @@ export default class ViewGL
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
-    if (this.exists("resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"))
+    if (this.exists("resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png") == true)
     {
       const textObj = new THREE.TextureLoader().load(
         //"resources/textures/"+ nameText +".png"
         "resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"
       );
+    }
     else
     {
       const textObj = new THREE.TextureLoader().load(
