@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 const { promises: Fs} = require('fs');
+//import Fs from "fs";
 
 export default class ViewGL
 {
