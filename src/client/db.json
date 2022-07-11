@@ -6,7 +6,7 @@
             "level": "",
             "cost_update": {
                 "resources": [
-   
+
                 ],
                 "gold": 0,
                 "energy": 0
@@ -256,57 +256,6 @@
             },
             "pop_min": 1,
             "pop_max": 5,
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
-        },
-        {
-            "name": "Appartment",
-            "category": "Housing",
-            "cost_update": {
-                "resources": [
-                    {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
-                    }
-                ],
-                "gold": 0,
-                "energy": 0
-            },
-            "daily_cost": {
-                "resources": [
-                    {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
-                    }
-                ]
-            },
-            "daily_harvest": {
-                "resources": [
-                    {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
-                    }
-                ]
-            },
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
@@ -1330,6 +1279,6 @@
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         }
     ]
-        
-    
+
+
 }

@@ -64,7 +64,11 @@ export default class ViewGL
 
   private keyMap: any = [];
 
-  private UbuildingIDs: number = 0;
+  private UBlockIDs: number = 0;
+  private buildingToCreate = 0;
+
+  private frensBuilding = new THREE.Vector2;
+  private frenIDArr: any = [];
 
   private timeClick = 1;
   private tempTime = Date.now();
@@ -379,7 +383,7 @@ export default class ViewGL
           this.createObjectFomChain(pos, 1, this.frontBlockArray[indexI][indexJ][4],
               this.frontBlockArray[indexI][indexJ][3], 1, this.normalText);
 
-          this.UbuildingIDs++;
+          this.UBlockIDs++;
           this.debugPrint(1, "GENTYPE", this.frontBlockArray[indexI][indexJ][3]);
 
         }
@@ -735,13 +739,16 @@ export default class ViewGL
     {
       this.debugPrint(1, "OBJECT POPUP OPEN");
       // To open popup
-      this.rawData.updateBuildingFrame(true, {"id": 1});
       this.objectPopupOpen = 1;
 
       //this.selectedObjData[0] ;//PosX
       //this.selectedObjData[1] ;//PosY
       //this.selectedObjData[3] ;//build/Ress Type
       //this.selectedObjData[4] ;//id/name
+      this.rawData.updateBuildingFrame(true, {"id": this.selectedObjData[3],
+        "unique_id": this.selectedObjData[4], "posX": (this.selectedObjData[0] + 0.5),
+        "posY": this.selectedObjData[1]});
+
 
       // To close popup
       // this.rawData.updateBuildingFrame(false, {});
@@ -1426,7 +1433,7 @@ export default class ViewGL
     //call delete function
     this.deleteObject(nameToDelete);
     this.scene.add(newObjectMesh);
-    
+
     this.frontBlockArray[pos.y][pos.x][3] = type;
     this.frontBlockArray[pos.y][pos.x][0] = pos.x + 0.5;
     this.frontBlockArray[pos.y][pos.x][1] = pos.y;// - 0.5;
@@ -1439,6 +1446,62 @@ export default class ViewGL
   {
     this.scene.remove(this.scene.getObjectByName(name.toString()) as THREE.Group)
     this.debugPrint(1, "This object has been deleted : ", name);
+  }
+
+  frensGoing = (frenID: number, currFrenPos: THREE.Vector2, targetPos: THREE.Vector2) =>
+  {
+    if (this.frenIDArr[frenID] == null)
+    {
+      let newObject = new THREE.PlaneGeometry;
+      newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1);
+      newObject.name = frenID + "_geom";
+      newObject.rotateX(-Math.PI * 0.5);
+
+      let  textObj;
+      if (this.exists("resources/textures/Matchbox_Tiles_Objects_0_nogrid_"+this.worldType.toString()+".png"))
+      {
+        textObj = new THREE.TextureLoader().load(
+          "resources/textures/Matchbox_Tiles_Objects_0_nogrid_"+this.worldType.toString()+".png"
+        );
+      }
+      else
+      {
+        textObj = new THREE.TextureLoader().load(
+          "resources/textures/Matchbox_Tiles_Objects_0_nogrid_0.png"
+        );
+      }
+
+      let matObj = new THREE.MeshStandardMaterial({
+        map: textObj,
+        transparent: true,
+        depthWrite: false,
+        depthTest: true,
+      });
+
+      var textureType : any = new THREE.Vector2;
+      textureType = this.findTextByID(193);
+
+      if (matObj.map)
+      {
+        matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625); // TEXTURE TILLING ADAPTED TO BUILDING TILES
+        matObj.map.offset.set(textureType.x, textureType.y);
+        matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+        matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+        matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+      }
+      this.debugPrint(1, "NEW FREN CREATED");
+
+      var newObjectMesh = new THREE.Mesh(newObject, matObj);
+      newObjectMesh.name = frenID.toString();
+      newObjectMesh.position.x = currFrenPos.x;
+      newObjectMesh.position.y = 0.3 + (currFrenPos.y * 0.02); // Make sure the objects are higher at the bottom
+      newObjectMesh.position.z = currFrenPos.y;
+
+      this.scene.add(newObjectMesh);
+
+
+    }
+
   }
 
   // ******************* PUBLIC EVENTS ******************* //
@@ -1551,7 +1614,20 @@ export default class ViewGL
         this.compArray = data.mapArray;
         this.chainDataAdded = 1;
       }
+
+      this.debugPrint(1, "buildingSelected", data.buildingSelected);
+/*
+      if (data.frameData.id > 0)
+      {
+          this.buildingToCreate = data.frameData.id;
+          if (data.frameData.selected && this.placementActive == 0)
+          {
+            this.placementActive = 1;
+            this.createObject_FindSpace(1, 9898, this.buildingToCreate, 1, this.redText);
+          }
+      }*/
     }
+
   }
 
   // ******************* RENDER LOOP ******************* //
@@ -1572,7 +1648,7 @@ export default class ViewGL
 
       this.readyToLoop = 1;
       this.initDone = 1;
-      this.stopData = 1;
+      //this.stopData = 1;
     }
 
     if (this.readyToLoop == 1)
@@ -1585,12 +1661,12 @@ export default class ViewGL
         this.tempTime = Date.now();
       }
 
-      if (this.keyMap['Space'] == true && this.timeClick == 1 && this.placementActive == 0)
+      /*if (this.keyMap['Space'] == true && this.timeClick == 1 && this.placementActive == 0)
       {
         this.placementActive = 1;
         this.createObject_FindSpace(1, 9898, this.typeTest, 1, this.redText);
         this.typeTest++;
-      }
+      }*/
 
       if (this.keyMap['KeyD'] == true && this.timeClick == 1) // NOT WORKING !
       {
