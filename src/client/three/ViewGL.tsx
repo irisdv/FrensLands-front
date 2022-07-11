@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
+import fs from "fs";
 
 export default class ViewGL
 {
@@ -814,6 +815,19 @@ export default class ViewGL
     return (0);
   }
 
+  exists = (path: String) =>
+  {
+    try
+    {
+      await Fs.access(path);
+      return (true);
+    }
+    catch
+    {
+      return (false);
+    }
+  }
+
 
   // CREATE TEMPORARY BUILDING THAT FOLLOWS CURSOR AND CHANGES COLOR BASED ON POSSIBLE
   // SPACE OR NOT + GETS DELETE IF SPACE FOUND AND ACTIVATED OR CREATION CANCELED
@@ -837,10 +851,19 @@ export default class ViewGL
     newObject.name = name + "_geom";
     newObject.rotateX(-Math.PI * 0.5);
 
-    const textObj = new THREE.TextureLoader().load(
-      //"resources/textures/"+ nameText +".png"
-      "resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"
-    );
+    if (this.exists("resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"))
+    {
+      const textObj = new THREE.TextureLoader().load(
+        //"resources/textures/"+ nameText +".png"
+        "resources/textures/"+ nameText +"_nogrid_"+this.worldType.toString()+".png"
+      );
+    else
+    {
+      const textObj = new THREE.TextureLoader().load(
+        //"resources/textures/"+ nameText +".png"
+        "resources/textures/"+ nameText +"_nogrid_0.png"
+      );
+    }
 
     let matObj = new THREE.MeshStandardMaterial({
       map: textObj,
