@@ -282,7 +282,7 @@ export default function Home() {
               }
       </div>
       </div>
-      <button onClick={() => testContract()}>TEST test test test </button>
+      {/* <button onClick={() => testContract()}>TEST test test test </button> */}
       {/* <Notifications /> */}
       
     </>
