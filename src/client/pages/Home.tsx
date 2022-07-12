@@ -70,6 +70,12 @@ export default function Home() {
     })
   })
 
+  useEffect(() => {
+    if (canPlay == 1) {
+      navigate('/game')
+    }
+  }, [canPlay])
+
   // Fetch NFT balance of user
   const { data: fetchBalanceNFTResult } = useStarknetCall({
     contract: maps,
@@ -81,10 +87,7 @@ export default function Home() {
   const BalanceNFTValue = useMemo(() => {
     if (fetchBalanceNFTResult && fetchBalanceNFTResult.length > 0) {
       var elem = uint256.uint256ToBN(fetchBalanceNFTResult[0]);
-      console.log("elem", elem);
       var balance = elem.toNumber();
-
-      console.log("Balance NFT value test", balance);
 
       if (balance == 1 && account) updateTokenId(account)
 
@@ -103,10 +106,8 @@ export default function Home() {
     if (fetchGameStatus && fetchGameStatus.length > 0) {
 
       var status = toBN(fetchGameStatus[0]).toNumber();
-
-      console.log('game status', status)
       
-      if (status == 1) navigate('/game')
+      if (status == 1) setCanPlay(1)
 
       return { gameStatus: status };
     }
