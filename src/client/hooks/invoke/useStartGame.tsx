@@ -1,27 +1,24 @@
 import { useStarknet } from '@starknet-react/core'
+import React from 'react'
 import { useCallback } from 'react'
 import { AddTransactionResponse, uint256 } from 'starknet'
 import { useNotifTransactionManager } from '../../providers/transactions'
-import { useGameContext } from '../useGameContext'
 import { useWorldsContract } from '../worlds'
 
 export default function useStartGame() {
   const { account } = useStarknet()
   const { contract } = useWorldsContract()
-  const { tokenId, updateTokenId } = useGameContext();
 
   const { addTransaction } = useNotifTransactionManager()
 
-  console.log('tokenId', tokenId)
-
-  return useCallback(async () => {
+  return useCallback(async (tokenId : number) => {
     if (!contract || !account) {
       throw new Error('Missing Dependencies')
     }
 
     if (tokenId == null || tokenId == 0) {
-        // throw new Error('Wrong tokenId')
-        updateTokenId(account)
+        console.log('tokenId in if', tokenId)
+        throw new Error('Wrong tokenId')
       }
 
     return contract

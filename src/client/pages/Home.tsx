@@ -2,8 +2,8 @@ import React, { useMemo, useEffect, useState } from "react";
 import {
   useStarknet,
   useStarknetCall,
-  useStarknetInvoke,
-  useStarknetTransactionManager,
+  // useStarknetInvoke,
+  // useStarknetTransactionManager,
   InjectedConnector,
 } from "@starknet-react/core";
 import { TransactionList } from "../components/TransactionList";
@@ -17,20 +17,20 @@ import { gsap } from 'gsap';
 import { ConnectWallet } from "../components/ConnectWallet";
 
 import Notifications from '../components/Notifications'
-import { transaction, uint256 } from "starknet";
+import { uint256 } from "starknet";
 
 import { useMapsContract } from "../hooks/maps";
 import { useWorldsContract } from "../hooks/worlds";
-import { useResourcesContract } from "../hooks/resources";
-import { useERC1155Contract } from "../hooks/erc1155";
-import { useFrensCoinsContract } from "../hooks/frenscoins";
-import { useMinterContract } from "../hooks/minter";
-import { useTestContract } from "../hooks/test";
+// import { useResourcesContract } from "../hooks/resources";
+// import { useERC1155Contract } from "../hooks/erc1155";
+// import { useFrensCoinsContract } from "../hooks/frenscoins";
+// import { useMinterContract } from "../hooks/minter";
+// import { useTestContract } from "../hooks/test";
 
 import { useGameContext } from "../hooks/useGameContext";
 
-import { AddTransactionResponse } from 'starknet'
-import { useNotifTransactionManager } from "../providers/transactions";
+// import { AddTransactionResponse } from 'starknet'
+// import { useNotifTransactionManager } from "../providers/transactions";
 import useActiveNotifications from '../hooks/useNotifications'
 
 import useTest from "../hooks/invoke/useTest";
@@ -180,7 +180,7 @@ export default function Home() {
   const startGame = () => {
     console.log('startingGame invoke')
     if (tokenId) {
-      let tx_hash = initializeGame()
+      let tx_hash = initializeGame(tokenId)
       console.log('tx hash', tx_hash)
       setSettingUp(tx_hash);
     } else {
