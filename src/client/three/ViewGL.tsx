@@ -85,6 +85,7 @@ export default class ViewGL
 
   private debugMode = 0;
   private typeTest = 1;
+  private frenTest = 0;
   private stopData = 0;
 
   // *********************** DEBUG/TEST *********************** //
@@ -1732,14 +1733,20 @@ export default class ViewGL
     {
       var time = Date.now();
 
-      if (time - this.tempTime > 500)
+      if (time - this.tempTime > 50)
       {
         this.timeClick = 1;
         this.tempTime = Date.now();
       }
 
-      //if (this.keyMap['Space'] == true && this.timeClick == 1) // DEBUG TEST KEY
-      while (this.typeTest < 7)
+      if (this.keyMap['Space'] == true && this.timeClick == 1 && this.placementActive == 0) // DEBUG TEST KEY
+      {
+      this.placementActive = 1;
+      this.createObject_FindSpace(1, 9898, this.typeTest, 1, this.redText);
+      this.typeTest++;
+      }
+
+      while (this.frenTest < 7)
       {
         var curPos = new THREE.Vector2;
         var targetPos = new THREE.Vector2;
@@ -1749,9 +1756,9 @@ export default class ViewGL
         targetPos.x = parseInt((Math.random() * (39 - 1) + 1).toFixed(0));
         targetPos.y = parseInt((Math.random() * (15 - 1) + 1).toFixed(0));
 
-        this.typeTest++;
+        this.frenTest++;
 
-        this.frensCreate(this.typeTest, curPos, targetPos);
+        this.frensCreate(this.frenTest, curPos, targetPos);
         this.debugPrint(1, "FRENS FRENS FRENS");
         //his.placementActive = 1;
         //this.createObject_FindSpace(1, 9898, this.typeTest, 1, this.redText);

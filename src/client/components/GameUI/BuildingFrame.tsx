@@ -186,7 +186,7 @@ export function BuildingFrame(props: any) {
             <div style={{ width: "206px", paddingTop: "10px" }}>
               {frameData && frameData.id  ? 
                 frameData && (frameData.id == 2 || frameData.id == 3 || frameData.id == 20 ) ? 
-                    <div className="btnBuild" onClick={() => farmingResource(frameData.id as number)}>Harvest resource</div>
+                    <div className="btnBuild" onClick={() => farmingResource(frameData.id as number)}></div>
                   : 
                   // BUTTON BUILD
                   <div className="btnBuild" onClick={() => sendEvent(frameData.id as number)}></div>
