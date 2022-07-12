@@ -234,7 +234,7 @@ export default function Home() {
 
   return (
     <>
-      <div style={{backgroundColor: "#151d28"}}>
+      <div style={{backgroundColor: "#151d28", width: "1280px", height:"720px"}}>
         
         <div className="backgroundImg relative pixelated">
 
@@ -246,7 +246,7 @@ export default function Home() {
         {/* <button onClick={() => testContract()}>TEST test test test </button> */}
 
           <img className="absolute pixelated frensLandsLogo" src="resources/front/UI_GameTitle.png" 
-              style={{width : "640px", height: "640px", marginTop: '-165px', marginLeft: "320px", zIndex: "1"}} />
+              style={{width : "640px", height: "640px", marginTop: '-165px', marginLeft: "320px", zIndex: "1", position: "absolute"}} />
 
           <img className="absolute pixelated frensLandsWorld" src="resources/front/UI_MainScreenPlanet.png" 
               style={{width : "640px", height: "640px", marginTop: '180px', marginLeft: "320px"}} />
