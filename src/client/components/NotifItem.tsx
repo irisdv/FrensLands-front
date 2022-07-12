@@ -10,13 +10,13 @@ export function NotifItem(props: any) {
 
   console.log('activeNotifications', activeNotifications)
 
-  console.log('props', props)
+  console.log('props', props.content.description.method)
   const content = props.content;
 
   let textNotif = "";
-  if (content.description.methods == "get_map") {
+  if (content.description.method == "get_map") {
     textNotif = "Minting a map..."
-  } else if (content.description.methods == "start_game") {
+  } else if (content.description.method  == "start_game") {
     textNotif = "Initializing game..."
   } else {
     textNotif = "Testing..."

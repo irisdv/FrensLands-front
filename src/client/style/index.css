@@ -101,6 +101,9 @@ body {
 	transform: translatey(0px);
 	animation: float 6s ease-in-out infinite;
 }
+.frensLandsWorld {
+    position: absolute;
+}
 
 #menuBar {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
@@ -366,8 +369,6 @@ body {
 
 .backgroundImg {
     background-image: url("resources/front/UI_MainScreen.png");
-    width: 100vw;
-    height: 100vh;
     background-repeat: no-repeat;
     background-color: #151d28;
 }

@@ -1,19 +1,9 @@
-import React, { useMemo, useEffect, useState } from "react";
-import {
-  useStarknet,
-  useStarknetCall,
-  // useStarknetInvoke,
-  // useStarknetTransactionManager,
-  InjectedConnector,
-} from "@starknet-react/core";
+import React, { useMemo, useEffect, useState, useRef } from "react";
+import { useStarknet, useStarknetCall, InjectedConnector} from "@starknet-react/core";
 import { TransactionList } from "../components/TransactionList";
 import { toBN } from "starknet/dist/utils/number";
 import { Link, useNavigate } from "react-router-dom";
 import { gsap } from 'gsap';
-
-// import { GetBuildingCount } from "../components/Buildings/GetBuildingCount";
-// import { BuildBuildings } from "../components/Buildings/BuildBuildings";
-// import { GetBuildings } from "../components/Buildings/GetBuildings";
 import { ConnectWallet } from "../components/ConnectWallet";
 
 import Notifications from '../components/Notifications'
@@ -21,22 +11,12 @@ import { uint256 } from "starknet";
 
 import { useMapsContract } from "../hooks/maps";
 import { useWorldsContract } from "../hooks/worlds";
-// import { useResourcesContract } from "../hooks/resources";
-// import { useERC1155Contract } from "../hooks/erc1155";
-// import { useFrensCoinsContract } from "../hooks/frenscoins";
-// import { useMinterContract } from "../hooks/minter";
-// import { useTestContract } from "../hooks/test";
-
 import { useGameContext } from "../hooks/useGameContext";
-
-// import { AddTransactionResponse } from 'starknet'
-// import { useNotifTransactionManager } from "../providers/transactions";
 import useActiveNotifications from '../hooks/useNotifications'
-
-import useTest from "../hooks/invoke/useTest";
-
 import useMintMap from "../hooks/invoke/useMintMap";
 import useStartGame from "../hooks/invoke/useStartGame"
+
+import useTest from "../hooks/invoke/useTest";
 
 export default function Home() {
   // const { account } = useStarknet();
@@ -46,7 +26,7 @@ export default function Home() {
   const [testing, setTesting] = useState<any>(null)
   // END DEBUG 
 
-  let navigate = useNavigate();
+  const navigate = useNavigate()
   const { account, connect, connectors, disconnect } = useStarknet();
   const injected = useMemo(() => new InjectedConnector(), []);
 
@@ -120,6 +100,7 @@ export default function Home() {
     options: { watch },
   });
   const GameStatusValue = useMemo(() => {
+    console.log('fetchGameStatus', fetchGameStatus)
     if (fetchGameStatus && fetchGameStatus.length > 0) {
       var elem = uint256.uint256ToBN(fetchGameStatus[0]);
       console.log("status game", fetchGameStatus);
@@ -164,6 +145,7 @@ export default function Home() {
       if (dataMinting && dataMinting[0] && dataMinting[0].content) {
         if (dataMinting[0].content.status == 'REJECTED') {
           setMessage("Your transaction has failed... Try again.")
+          setMinting(null)
         } else if (dataMinting[0].content.status == 'ACCEPTED_ON_L1' || dataMinting[0].content.status == 'ACCEPTED_ON_L2') {
           setMessage("Your transaction was accepted. Now you need to initialize the game!")
           setMinting(true)
@@ -195,10 +177,11 @@ export default function Home() {
       if (data && data[0] && data[0].content) {
         if (data[0].content.status == 'REJECTED') {
           setMessage("Your transaction has failed... Try again.")
+          setSettingUp(null)
         } else if (data[0].content.status == 'ACCEPTED_ON_L1' || data[0].content.status == 'ACCEPTED_ON_L2') {
           setMessage("Your transaction was accepted. Now you can play!")
-          setTesting(true)
-          navigate("/game")
+          setSettingUp(true)
+          navigate('/game')
         } else {
           setMessage("Your transaction is ongoing.")
         }
@@ -225,7 +208,9 @@ export default function Home() {
           setMessage("Your transaction has failed... Try again.")
         } else if (data[0].content.status == 'ACCEPTED_ON_L1' || data[0].content.status == 'ACCEPTED_ON_L2') {
           setMessage("Your transaction was accepted. Now you can play!")
-          setTesting(false)
+          console.log('in data')
+          setTesting(true)
+          navigate('/game')
         }
       }
     }
@@ -234,9 +219,9 @@ export default function Home() {
 
   return (
     <>
-      <div style={{backgroundColor: "#151d28", width: "1280px", height:"720px"}}>
+      <div style={{backgroundColor: "#151d28", width: "100vw", height:"100vh"}}>
         
-        <div className="backgroundImg relative pixelated">
+        <div className="backgroundImg relative pixelated" style={{width: "1280px", height:"720px"}}>
 
         {activeNotifications && activeNotifications.length > 0 &&
           <div className="popUpNotifs fontHPxl-sm pixelated" style={{padding: "23px"}}>
@@ -282,7 +267,7 @@ export default function Home() {
               }
       </div>
       </div>
-      {/* <button onClick={() => testContract()}>TEST test test test </button> */}
+      <button onClick={() => testContract()}>TEST test test test </button>
       {/* <Notifications /> */}
       
     </>
