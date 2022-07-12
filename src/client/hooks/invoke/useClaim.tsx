@@ -29,8 +29,8 @@ export default function useClaim() {
           transactionHash: tx.transaction_hash,
           address: account,
           metadata: {
-            method: "harvest_resources",
-            message: "Harvest resource",
+            method: "claim_resources",
+            message: "Claim daily resource",
           }
         })
 

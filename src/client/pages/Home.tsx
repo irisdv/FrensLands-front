@@ -96,19 +96,21 @@ export default function Home() {
   const { data: fetchGameStatus } = useStarknetCall({
     contract: worlds,
     method: "get_game_status",
-    args: [tokenId],
+    args: [uint256.bnToUint256(tokenId as number)],
     options: { watch },
   });
   const GameStatusValue = useMemo(() => {
-    console.log('fetchGameStatus', fetchGameStatus)
     if (fetchGameStatus && fetchGameStatus.length > 0) {
-      var elem = uint256.uint256ToBN(fetchGameStatus[0]);
-      console.log("status game", fetchGameStatus);
-      var balance = elem.toNumber();
 
-      return { gameStatus: balance };
+      var status = toBN(fetchGameStatus[0]).toNumber();
+
+      console.log('game status', status)
+      
+      if (status == 1) navigate('/game')
+
+      return { gameStatus: status };
     }
-  }, [fetchGameStatus, tokenId ]);
+  }, [fetchGameStatus, tokenId]);
 
   // Fetch tokenType
   const { data: fetchtokenType } = useStarknetCall({
@@ -253,7 +255,7 @@ export default function Home() {
                   </div>
                 </div>
               }
-              {account && BalanceNFTValue && (BalanceNFTValue.NFTbalance == 1 || minting == true) &&
+              {account && BalanceNFTValue && (BalanceNFTValue.NFTbalance == 1 || minting == true) && GameStatusValue && GameStatusValue.gameStatus == 0 &&
                   <>
                     <div style={{height: "128px", width: "128px", marginTop: "510px", marginLeft: "576px"}} className="absolute"> 
                       <button className="pixelated btnPlay" onClick={() => startGame()}></button>
@@ -267,9 +269,7 @@ export default function Home() {
               }
       </div>
       </div>
-      <button onClick={() => testContract()}>TEST test test test </button>
-      {/* <Notifications /> */}
-      
+      {/* <button onClick={() => testContract()}>TEST test test test </button> */}
     </>
   );
 }
