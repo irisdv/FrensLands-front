@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import ViewGL from "./ViewGL";
-import { GameState } from "../contexts/GameContext";
+import { GameState } from "../providers/GameContext";
 import { gsap, SteppedEase } from "gsap";
 import { MenuBar } from "../components/GameUI/MenuBar";
 import { BottomBar } from "../components/GameUI/BottomBar";

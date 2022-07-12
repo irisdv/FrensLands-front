@@ -8,8 +8,9 @@ import {
   StarknetProvider,
 } from "@starknet-react/core";
 import { BrowserRouter } from "react-router-dom";
-import { AppStateProvider } from "./contexts/GameContext";
-import { SelectStateProvider } from "./contexts/SelectContext";
+import { AppStateProvider } from "./providers/GameContext";
+import { SelectStateProvider } from "./providers/SelectContext";
+import { NotifTransactionManagerProvider } from './providers/transactions'
 
 const container = document.getElementById("root");
 const root = createRoot(container!); // createRoot(container!) if you use TypeScript
@@ -19,13 +20,15 @@ root.render(
   <>
 {/* <StarknetProvider connectors={connectors}> */}
     <StarknetProvider connectors={[new InjectedConnector()]}>
-      <BrowserRouter>
-        <AppStateProvider>
-          <SelectStateProvider>
-            <App />
-          </SelectStateProvider>
-        </AppStateProvider>
-      </BrowserRouter>
+      <NotifTransactionManagerProvider>
+        <BrowserRouter>
+          <AppStateProvider>
+            <SelectStateProvider>
+              <App />
+            </SelectStateProvider>
+          </AppStateProvider>
+        </BrowserRouter>
+      </NotifTransactionManagerProvider>
     </StarknetProvider>
   </>
 ); 

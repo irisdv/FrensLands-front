@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import SelectContext from "../contexts/SelectContext";
+import SelectContext from "../providers/SelectContext";
 
 export const useSelectContext = () => {
   const context = useContext(SelectContext);

@@ -53,6 +53,18 @@ body {
 
 }
 
+.popUpNotifs {
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(19 * 1 * 64px) calc(2 * 1* 64px);
+    background-size:calc(1408px* 1) calc(768px * 1);
+    position: absolute;
+    top: 20px;
+    left: 0px;
+
+}
+
 /* -------------------- MENU BAR -------------------- */
 
 

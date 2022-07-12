@@ -7,6 +7,6 @@ export function useMapsContract() {
   return useContract({
     abi: MapsAbi as Abi,
     address:
-      "0x07512235050405a278c61bb814355b506710f8bfcf7cb6b71753a5f525758ae6", // 8th
+      "0x07274d3a8431cd2f1a6183aa24b1274b9e7a13951d76e5ab90a91e8370f74300", // 8th
   });
 }

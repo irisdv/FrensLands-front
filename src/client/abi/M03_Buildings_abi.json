@@ -171,7 +171,23 @@
     {
         "inputs": [
             {
-                "name": "address_of_controller",
+                "name": "m01_addr",
+                "type": "felt"
+            },
+            {
+                "name": "m02_addr",
+                "type": "felt"
+            },
+            {
+                "name": "erc1155_addr",
+                "type": "felt"
+            },
+            {
+                "name": "maps_addr",
+                "type": "felt"
+            },
+            {
+                "name": "gold_addr",
                 "type": "felt"
             }
         ],
@@ -285,44 +301,6 @@
             }
         ],
         "name": "destroy",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "token_id",
-                "type": "Uint256"
-            },
-            {
-                "name": "building_id",
-                "type": "felt"
-            },
-            {
-                "name": "level",
-                "type": "felt"
-            }
-        ],
-        "name": "repair",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "token_id",
-                "type": "Uint256"
-            },
-            {
-                "name": "building_id",
-                "type": "felt"
-            },
-            {
-                "name": "level",
-                "type": "felt"
-            }
-        ],
-        "name": "move",
         "outputs": [],
         "type": "function"
     },

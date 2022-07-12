@@ -60,7 +60,27 @@
     {
         "inputs": [
             {
-                "name": "address_of_controller",
+                "name": "address_m3",
+                "type": "felt"
+            },
+            {
+                "name": "address_m2",
+                "type": "felt"
+            },
+            {
+                "name": "erc1155_address",
+                "type": "felt"
+            },
+            {
+                "name": "gold_erc20_address",
+                "type": "felt"
+            },
+            {
+                "name": "minter_addr",
+                "type": "felt"
+            },
+            {
+                "name": "maps_addr",
                 "type": "felt"
             }
         ],
@@ -92,16 +112,7 @@
         "type": "function"
     },
     {
-        "inputs": [
-            {
-                "name": "minter_addr",
-                "type": "felt"
-            },
-            {
-                "name": "maps_erc721_addr",
-                "type": "felt"
-            }
-        ],
+        "inputs": [],
         "name": "get_map",
         "outputs": [],
         "type": "function"
@@ -111,18 +122,6 @@
             {
                 "name": "tokenId",
                 "type": "Uint256"
-            },
-            {
-                "name": "maps_erc721_addr",
-                "type": "felt"
-            },
-            {
-                "name": "gold_erc20_addr",
-                "type": "felt"
-            },
-            {
-                "name": "m02_addr",
-                "type": "felt"
             }
         ],
         "name": "start_game",

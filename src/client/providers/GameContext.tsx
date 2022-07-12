@@ -55,7 +55,7 @@ export interface IGameState {
   blockGame?: string;
   loading: boolean;
   address?: string | undefined;
-  tokenId?: string;
+  tokenId?: number;
   mapType?: string;
   buildingCount?: number;
   mapArray?: any[];
@@ -90,7 +90,7 @@ export const GameState: IGameState = {
   blockGame: "",
   loading: false,
   address: undefined,
-  tokenId: "",
+  tokenId: 0,
   mapType: "",
   buildingCount: undefined,
   mapArray: [],
@@ -135,7 +135,7 @@ interface SetAccount {
 
 interface SetTokenId {
   type: "set_tokenId";
-  tokenId?: string;
+  tokenId?: number;
 }
 
 interface SetBuildingCount {
@@ -440,7 +440,7 @@ export const AppStateProvider: React.FC<
       console.log('tokenOfOwnerByIndex result', uint256.uint256ToBN(_token_id[0]).toString())
       dispatch({
         type: "set_tokenId",
-        tokenId: uint256.uint256ToBN(_token_id[0]).toString(),
+        tokenId: uint256.uint256ToBN(_token_id[0]).toNumber(),
       });
       refreshPopulation(resources)
       } catch (e) {

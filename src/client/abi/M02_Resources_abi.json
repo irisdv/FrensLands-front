@@ -123,7 +123,34 @@
     {
         "inputs": [
             {
-                "name": "address_of_controller",
+                "name": "admin_addr",
+                "type": "felt"
+            }
+        ],
+        "name": "constructor",
+        "outputs": [],
+        "type": "constructor"
+    },
+    {
+        "inputs": [
+            {
+                "name": "address_m3",
+                "type": "felt"
+            },
+            {
+                "name": "address_m1",
+                "type": "felt"
+            },
+            {
+                "name": "erc1155_address",
+                "type": "felt"
+            },
+            {
+                "name": "gold_erc20_address",
+                "type": "felt"
+            },
+            {
+                "name": "maps_addr",
                 "type": "felt"
             }
         ],
@@ -228,18 +255,6 @@
             {
                 "name": "tokenId",
                 "type": "Uint256"
-            },
-            {
-                "name": "address_m3",
-                "type": "felt"
-            },
-            {
-                "name": "erc1155_address",
-                "type": "felt"
-            },
-            {
-                "name": "erc20_addr",
-                "type": "felt"
             }
         ],
         "name": "claim_resources",
@@ -288,10 +303,6 @@
             },
             {
                 "name": "account",
-                "type": "felt"
-            },
-            {
-                "name": "gold_erc20_addr",
                 "type": "felt"
             }
         ],
@@ -536,50 +547,7 @@
                 "type": "Uint256"
             },
             {
-                "name": "caller",
-                "type": "felt"
-            },
-            {
-                "name": "amount",
-                "type": "Uint256"
-            },
-            {
-                "name": "erc20_addr",
-                "type": "felt"
-            }
-        ],
-        "name": "_get_tokens",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            },
-            {
-                "name": "building_unique_id",
-                "type": "felt"
-            },
-            {
                 "name": "pos_start",
-                "type": "felt"
-            },
-            {
-                "name": "m01_addr",
-                "type": "felt"
-            },
-            {
-                "name": "erc1155_addr",
-                "type": "felt"
-            },
-            {
-                "name": "m03_addr",
-                "type": "felt"
-            },
-            {
-                "name": "erc20_addr",
                 "type": "felt"
             }
         ],
