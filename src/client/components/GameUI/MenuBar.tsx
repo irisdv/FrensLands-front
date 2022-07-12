@@ -4,20 +4,26 @@ import React, { useMemo, useState, useRef, useEffect } from "react";
 import { number, uint256 } from "starknet";
 import { toBN } from "starknet/dist/utils/number";
 import { useGameContext } from "../../hooks/useGameContext";
-import { useResourcesContract } from "../../hooks/resources";
+import { useResourcesContract } from "../../hooks/contracts/resources";
 import { ConnectWallet } from "../ConnectWallet";
+import useClaim from "../../hooks/invoke/useClaim";
+import useActiveNotifications from "../../hooks/useNotifications";
+import Notifications from "../Notifications";
+
+import useResourcesContext from "../../hooks/useResourcesContext";
 
 export function MenuBar() {
-  const {tokenId, updateTokenId, setAddress, frensCoins, wood, rock, meat, metal, coal, cereal, energy, populationBusy, populationFree, blockGame, currentBlock} = useGameContext();
-    // const { contract: resources } = useResourcesContract();
-    const [ claiming, setClaiming ] = useState(false)
-    const [ message, setMessage ] = useState("")
-    const { transactions } = useStarknetTransactionManager()
-    const { contract: resources } = useResourcesContract();
+  const {account} = useStarknet()
+  const { data: block } = useStarknetBlock()
 
-    const { data: block } = useStarknetBlock()
+  const {tokenId, updateTokenId, setAddress, blockGame, currentBlock} = useGameContext();
+  const {energy, frensCoins, wood, rock, coal, metal, populationBusy, populationFree, meat, cereal} = useResourcesContext();
+  const { contract: resources } = useResourcesContract();
+  const claimingInvoke = useClaim()
+  const activeNotifications = useActiveNotifications()
 
-    const {account} = useStarknet()
+  const [ claiming, setClaiming ] = useState<any>(null)
+  const [ message, setMessage ] = useState("")
 
     useEffect(() => {
       if (account) setAddress(account)
@@ -28,55 +34,39 @@ export function MenuBar() {
         updateTokenId(account);
       }
     }, [account, tokenId])
-
-    const {
-      data: dataStartClaiming,
-      loading: loadingStartClaiming,
-      invoke: startClaimingInvoke,
-    } = useStarknetInvoke({
-      contract: resources,
-      method: "claim_resources",
-    });
   
-    // DEBUG : enlever les arguments 
+    // Invoke claim resources
     const claimResources = () => {
       console.log("invoking claiming", tokenId);
       if (tokenId) {
-        startClaimingInvoke({
-          args: [
-              uint256.bnToUint256(tokenId),
-              "0x0526abb8b9f4d90e97a29266a3d9c5ed52f44a8a70847ef7ce9fe90f65ca51ea",
-              "0x03af997c327ca80bf00e0fc69e765a2d6f52c3d6dd0d02f36f97015065fa908d",
-              "0x04a6a806aab47f343499dfc39d11680afbb4eec725044bd84cf548ac5c1e0297"
-          ],
-          metadata: {
-            method: "claim resources",
-            message: "Claiming your resources.",
-          },
-        });
+        let tx_hash = claimingInvoke(tokenId)
+        console.log('tx hash claiming resources', tx_hash)
+        setClaiming(tx_hash);
+      } else {
+        console.log('Missing tokenId')
       }
       setClaiming(true);
     };
-  
-    // useEffect(() => {
-    //   var data = transactions.filter((transactions) => (transactions?.transactionHash) === dataStartClaiming);
-    //   console.log('data starting game', data);
-  
-    // }, [claiming, transactions, dataStartClaiming])
-  
+
     useEffect(() => {
-      var data = transactions.filter((transactions) => (transactions?.transactionHash) === dataStartClaiming);
-      console.log('data claiming', data);
-      if (data && data[0] && data[0].status && (data[0].status == 'REJECTED')) {
-        setMessage('Your transaction failed. ')
-      } else if (data && data[0] && (data[0].status == 'ACCEPTED_ON_L1' || data[0].status == 'ACCEPTED_ON_L2')) {
-        console.log('tx pour set approval est bien passée on peut passer au bridge')
-        setMessage('Your resources just arrived !')
-        setClaiming(false);
-      } else if (data && data[0] && (data[0].status == 'RECEIVED')) {
-        setMessage('Your resources are on their way ! It may take some time to harvest everything...')
+      if (claiming) {
+        var dataMinting = activeNotifications.filter((transactions) => (transactions?.content.transactionHash as string) === claiming as string)
+        console.log('claimingData', dataMinting )
+        if (dataMinting && dataMinting[0] && dataMinting[0].content) {
+          if (dataMinting[0].content.status == 'REJECTED') {
+            setMessage("Your transaction has failed... Try again.")
+            setClaiming(null)
+          } else if (dataMinting[0].content.status == 'ACCEPTED_ON_L1' || dataMinting[0].content.status == 'ACCEPTED_ON_L2') {
+            setMessage("Your transaction was accepted. Now you need to initialize the game!")
+            setClaiming(true)
+          } else {
+            setMessage("Your transaction is ongoing.")
+          }
+        }
       }
-    }, [claiming, transactions, dataStartClaiming])
+    }, [claiming, activeNotifications])
+
+
 
   //   Gestion du block Number
 
@@ -156,14 +146,18 @@ export function MenuBar() {
             </div>
             
           </div>
-          { claiming ? 
-          <div className="popUpNotifs pixelated">
-            {message}
-          </div>
-          : ""
-          }
         </div>
       </div>
+      {/* { claiming != null ?  */}
+        {/* <div className="popUpNotifsGame pixelated fontHPxl-sm"> */}
+        <div className="notifContainer">
+          <div className="notifPanel">
+            <Notifications />
+          </div>
+        </div>
+        {/* </div> */}
+      {/* : ""
+      } */}
     </>
   );
 }

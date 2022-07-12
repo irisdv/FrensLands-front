@@ -9,8 +9,8 @@ import { ConnectWallet } from "../components/ConnectWallet";
 import Notifications from '../components/Notifications'
 import { uint256 } from "starknet";
 
-import { useMapsContract } from "../hooks/maps";
-import { useWorldsContract } from "../hooks/worlds";
+import { useMapsContract } from "../hooks/contracts/maps";
+import { useWorldsContract } from "../hooks/contracts/worlds";
 import { useGameContext } from "../hooks/useGameContext";
 import useActiveNotifications from '../hooks/useNotifications'
 import useMintMap from "../hooks/invoke/useMintMap";
@@ -24,6 +24,7 @@ export default function Home() {
 
   // START DEBUG
   const [testing, setTesting] = useState<any>(null)
+  const generateTest = useTest()
   // END DEBUG 
 
   const navigate = useNavigate()
@@ -39,14 +40,12 @@ export default function Home() {
   const [watch, setWatch] = useState(true);
   // Invoke
   const generateMap = useMintMap()
+  const initializeGame = useStartGame()
 
   const [minting, setMinting] = useState<any>(null)
   const [settingUp, setSettingUp] = useState<any>(null)
   const [canPlay, setCanPlay] = useState(0)
   const [message, setMessage] = useState<any>(null)
-
-  // Test
-  const generateTest = useTest()
 
   useEffect(() => {
     if (account) {
@@ -117,7 +116,7 @@ export default function Home() {
   const { data: fetchtokenType } = useStarknetCall({
     contract: maps,
     method: "tokenURI",
-    args: [tokenId],
+    args: [uint256.bnToUint256(tokenId as number)],
     options: { watch },
   });
 
@@ -134,7 +133,6 @@ export default function Home() {
   }, [fetchtokenType, account, tokenId]);
 
   // Invoke Minting Maps 
-
   const mintMap = () => {
     let tx_hash = generateMap()
     console.log('tx hash generating map', tx_hash)
@@ -158,8 +156,6 @@ export default function Home() {
       }
     }
   }, [minting, activeNotifications])
-
-  const initializeGame = useStartGame()
 
   // Invoke Starting game 
   const startGame = () => {

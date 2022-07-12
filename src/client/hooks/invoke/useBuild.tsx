@@ -2,7 +2,7 @@ import { useStarknet } from '@starknet-react/core'
 import { useCallback } from 'react'
 import { AddTransactionResponse, uint256 } from 'starknet'
 import { useNotifTransactionManager } from '../../providers/transactions'
-import { useBuildingsContract } from '../buildings'
+import { useBuildingsContract } from '../contracts/buildings'
 
 export default function useBuild() {
   const { account } = useStarknet()
@@ -29,7 +29,7 @@ export default function useBuild() {
           transactionHash: tx.transaction_hash,
           address: account,
           metadata: {
-            method: "upgrade",
+            method: "build",
             message: "Build",
           }
         })

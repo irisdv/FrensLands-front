@@ -1,7 +1,7 @@
 import { useContract } from "@starknet-react/core";
 import { Abi } from "starknet";
 
-import FrensCoinsAbi from "../abi/tokens/Gold_ERC20_Mintable_Burnable_abi.json";
+import FrensCoinsAbi from "../../abi/tokens/Gold_ERC20_Mintable_Burnable_abi.json";
 
 export function useFrensCoinsContract() {
   return useContract({

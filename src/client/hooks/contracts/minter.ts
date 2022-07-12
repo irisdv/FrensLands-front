@@ -1,7 +1,7 @@
 import { useContract } from "@starknet-react/core";
 import { Abi } from "starknet";
 
-import MinterAbi from "../abi/tokens/Maps_ERC721_enumerable_mintable_burnable_abi.json";
+import MinterAbi from "../../abi/tokens/Maps_ERC721_enumerable_mintable_burnable_abi.json";
 
 export function useMinterContract() {
   return useContract({

@@ -2,7 +2,7 @@ import { useStarknet } from '@starknet-react/core'
 import { useCallback } from 'react'
 import { AddTransactionResponse } from 'starknet'
 import { useNotifTransactionManager } from '../../providers/transactions'
-import { useWorldsContract } from '../worlds'
+import { useWorldsContract } from '../contracts/worlds'
 
 export default function useMintMap() {
   const { account } = useStarknet()

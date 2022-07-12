@@ -1,13 +1,21 @@
 import { useStarknet, useStarknetCall, useStarknetInvoke, useStarknetTransactionManager } from "@starknet-react/core";
 import React, { useMemo, useState, useRef, useEffect } from "react";
-import { useBuildingsContract } from "../../hooks/buildings";
+// import { useBuildingsContract } from "../../hooks/buildings";
 import { number, transaction, uint256 } from "starknet";
 import { toBN } from "starknet/dist/utils/number";
 import { useGameContext } from "../../hooks/useGameContext";
-import { useResourcesContract } from "../../hooks/resources";
+import { useResourcesContract } from "../../hooks/contracts/resources";
 import DB from '../../db.json';
-import { InstancedMesh } from "three";
+// import { InstancedMesh } from "three";
 import { useSelectContext } from "../../hooks/useSelectContext";
+import useHarvestResource from "../../hooks/invoke/useHarvestResource";
+import useBuild from "../../hooks/invoke/useBuild";
+import useActiveNotifications from '../../hooks/useNotifications'
+
+
+// Test
+import { useWorldsContract } from '../../hooks/contracts/worlds'
+import useTest from "../../hooks/invoke/useTest";
 
 
 export function BuildingFrame(props: any) {
@@ -17,18 +25,25 @@ export function BuildingFrame(props: any) {
   const { transactions } = useStarknetTransactionManager()
   const { contract: resources } = useResourcesContract();
 
+  // Test
+  const { contract: worlds } = useWorldsContract();
+  const [watch, setWatch] = useState(true);
+
+  const activeNotifications = useActiveNotifications()
+  const harvestingInvoke = useHarvestResource()
+  const [ harvesting, setHarvesting ] = useState<any>(null)
+  const buildingInvoke = useBuild()
+  const [ building, setBuilding ] = useState<any>(null)
+
   const [ farming, setFarming ] = useState(false)
-  const [ claiming, setClaiming ] = useState(false)
   const [ message, setMessage ] = useState("")
+
   const [ costUpdate, setCostUpdate ] = useState<any>(null)
   const [ dailyCosts, setDailyCosts ] = useState<any>(null)
   const [ dailyHarvest, setDailyHarvests ] = useState<any>(null)
   const [show, setShow] = useState(false)
 
   const [buildingSelec, setBuildingSelec] = useState(false)
-
-  // console.log("frameData", frameData);
-  // console.log('transaction status', transactions)
 
   useEffect(() => {
     if (showFrame) {
@@ -40,9 +55,37 @@ export function BuildingFrame(props: any) {
   }, [show, showFrame, frameData])
 
   const sendEvent = (id : number) => {
+    if (tokenId) {
+      let tx_hash = buildingInvoke(tokenId, 7, 1, 1, 1)
+      console.log('tx hash building', tx_hash)
+      setBuilding(tx_hash);
+    }
+    // pgrade', [uint256.bnToUint256(tokenId as number), building_type_id, level, pos_start, allocated_pop])
     // setBuildingSelec(true);
     // updateBuildingFrame(false, {"id": frameData?.id, "type": frameData?.type, "posX": frameData?.posX, "selected": 1});
+
   };
+
+  // Test 
+  const { data: fetchMapBlock } = useStarknetCall({
+    contract: worlds,
+    method: "get_map_block",
+    args: [uint256.bnToUint256(tokenId as number), 43],
+    options: { watch },
+  });
+
+  const MapBlockValue = useMemo(() => {
+    if (fetchMapBlock && fetchMapBlock.length > 0) {
+      console.log('fetchMapBlock', fetchMapBlock[0])
+      var elem = toBN(fetchMapBlock[0]);
+      var val = elem.toNumber();
+
+      console.log('val', val)
+
+      return { block: val };
+    }
+  }, [fetchMapBlock]);
+  // end test
 
   useEffect(() => {
     if (account) {
@@ -56,37 +99,36 @@ export function BuildingFrame(props: any) {
     }
   }, [account, tokenId])
 
-  const {
-    data: dataStartFarming,
-    loading: loadingStartFarming,
-    invoke: startFarmingInvoke,
-  } = useStarknetInvoke({
-    contract: resources,
-    method: "farm",
-  });
-
-  // DEBUG : enlever les arguments 
-  const farmingResource = (id : any) => {
-    console.log('farming a resource of type id', id)
-    console.log("invoking farming", tokenId);
+  const harvestingResources = (id : number, pos_x: number, pos_y: number) => {
+    // let pos_start = 43;
+    let pos_start = id
+    console.log('pos_start', pos_start)
     if (tokenId) {
-      startFarmingInvoke({
-        args: [
-            uint256.bnToUint256(tokenId),
-            id,
-            "0x045ecb5f7d99d67214def0c6c77b20070b3fac664ddc16ca9850cd417c393a38",
-            "0x03af997c327ca80bf00e0fc69e765a2d6f52c3d6dd0d02f36f97015065fa908d",
-            "0x0526abb8b9f4d90e97a29266a3d9c5ed52f44a8a70847ef7ce9fe90f65ca51ea",
-            "0x04a6a806aab47f343499dfc39d11680afbb4eec725044bd84cf548ac5c1e0297"
-        ],
-        metadata: {
-          method: "farm",
-          message: "Harvest resources spawned on map",
-        },
-      });
+      let tx_hash = harvestingInvoke(tokenId, pos_start)
+      console.log('tx hash harvesting resource', tx_hash)
+      setHarvesting(tx_hash);
+    } else {
+      console.log('Missing tokenId')
     }
-    setFarming(true);
-  };
+  }
+
+  useEffect(() => {
+    if (harvesting) {
+      var dataMinting = activeNotifications.filter((transactions) => (transactions?.content.transactionHash as string) === harvesting as string)
+      console.log('harvestingData', dataMinting )
+      if (dataMinting && dataMinting[0] && dataMinting[0].content) {
+        if (dataMinting[0].content.status == 'REJECTED') {
+          setMessage("Your transaction has failed... Try again.")
+          setHarvesting(null)
+        } else if (dataMinting[0].content.status == 'ACCEPTED_ON_L1' || dataMinting[0].content.status == 'ACCEPTED_ON_L2') {
+          setMessage("Your transaction was accepted. Now you need to initialize the game!")
+          setHarvesting(true)
+        } else {
+          setMessage("Your transaction is ongoing.")
+        }
+      }
+    }
+  }, [harvesting, activeNotifications])
 
   useEffect(() => {
     if (frameData && frameData.id) {
@@ -123,6 +165,34 @@ export function BuildingFrame(props: any) {
       setDailyCosts(newDailyCost)
     }
   }, [frameData])
+
+  // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST  TEST TEST TEST TEST TEST TEST TEST TEST TEST 
+  const generateTest = useTest()
+  const [testing, setTesting] = useState<any>(null)
+  const testContract = async () => {
+    console.log("invoking test", account);
+    let tx_hash = await generateTest()
+    console.log('tx hash', tx_hash)
+    setTesting(tx_hash);
+  };
+
+  // useEffect(() => {
+  //   if (testing) {
+  //     var data = activeNotifications.filter((transactions) => (transactions?.content.transactionHash as string) === testing as string)
+  //     console.log('data test', data )
+  //     console.log('state', testing)
+  //     if (data && data[0] && data[0].content) {
+  //       if (data[0].content.status == 'REJECTED') {
+  //         setMessage("Your transaction has failed... Try again.")
+  //       } else if (data[0].content.status == 'ACCEPTED_ON_L1' || data[0].content.status == 'ACCEPTED_ON_L2') {
+  //         setMessage("Your transaction was accepted. Now you can play!")
+  //         console.log('in data')
+  //         setTesting(true)
+  //       }
+  //     }
+  //   }
+  // }, [testing, activeNotifications])
+  // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST  TEST TEST TEST TEST TEST TEST TEST TEST TEST 
 
   if (!showFrame) {
     return <></>;
@@ -186,10 +256,16 @@ export function BuildingFrame(props: any) {
             <div style={{ width: "206px", paddingTop: "10px" }}>
               {frameData && frameData.id  ? 
                 frameData && (frameData.id == 2 || frameData.id == 3 || frameData.id == 20 ) ? 
-                    <div className="btnBuild" onClick={() => farmingResource(frameData.id as number)}></div>
+                    <>
+                      <div className="btnBuild" onClick={() => harvestingResources(47, frameData.posX, frameData.posY)}></div>
+                      {/* <div className="btnBuild" onClick={() => harvestingResources(48, frameData.posX, frameData.posY)}></div> */}
+                      {/* <button onClick={() => testContract()}>TEST test test test </button> */}
+                    </>
                   : 
                   // BUTTON BUILD
-                  <div className="btnBuild" onClick={() => sendEvent(frameData.id as number)}></div>
+                  <div className="btnBuild" 
+                    onClick={() => sendEvent(frameData.id as number)}
+                  ></div>
               :  
               // BUTTON UPGRADE 
                 <div className="btnUpgrade"></div> 

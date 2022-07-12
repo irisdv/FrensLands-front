@@ -11,6 +11,8 @@ export default class Scene extends React.Component {
   private canvasRef: any;
   private viewGL: any;
 
+  private prevData : any;
+
   static contextGame = GameState;
 
   constructor(props: any) {
@@ -37,6 +39,14 @@ export default class Scene extends React.Component {
     // Context data
     console.log("New data received from parent components", prevProps);
     this.viewGL.onReceivedUpdatedData(prevProps);
+    
+
+    // this.prevData = prevProps
+    // Object.keys(prevProps).map(function(key, index) {
+    //   console.log('index', index)
+    //   console.log('key', key)
+    //   console.log('prevProps[key]',prevProps[key] )
+    // });
   }
 
   componentWillUnmount() {

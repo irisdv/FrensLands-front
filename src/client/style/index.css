@@ -62,7 +62,33 @@ body {
     position: absolute;
     top: 20px;
     left: 0px;
-
+}
+.popUpNotifsGame {
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(19 * 1 * 64px) calc(2 * 1* 64px);
+    background-size:calc(1408px* 1) calc(768px * 1);
+    /* position: absolute;
+    bottom: 0px; */
+    padding: 23px;
+    left: 0px;
+    bottom: 0px;
+    position: absolute;
+}
+/* .notifContainer {
+    position: absolute;
+    width: 128px;
+    height: 100vh;
+    display: grid;
+} */
+.notifPanel {
+    /* position: relative; */
+    /* width: 100%;
+    height: 100%; */
+    /* width: 128px;
+    height: 100vh;
+    display: inline-block; */
 }
 
 /* -------------------- MENU BAR -------------------- */
@@ -135,7 +161,7 @@ body {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
     width:calc(64px * 1);
-    background-position:calc(22 * 1 * 64px) calc(22 * 1 * 64px);
+    background-position:calc(20 * 1 * 64px) calc(22 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
 }
 #menuMetal {

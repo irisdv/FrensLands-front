@@ -2,7 +2,7 @@ import { useStarknet } from '@starknet-react/core'
 import { useCallback } from 'react'
 import { AddTransactionResponse, uint256 } from 'starknet'
 import { useNotifTransactionManager } from '../../providers/transactions'
-import { useResourcesContract } from '../resources'
+import { useResourcesContract } from '../contracts/resources'
 
 export default function useHarvestResource() {
   const { account } = useStarknet()
@@ -31,6 +31,7 @@ export default function useHarvestResource() {
           metadata: {
             method: "harvest_resources",
             message: "Harvest resource",
+            pos_start: pos_start
           }
         })
 

@@ -3,7 +3,7 @@ import React from 'react'
 import { useCallback } from 'react'
 import { AddTransactionResponse, uint256 } from 'starknet'
 import { useNotifTransactionManager } from '../../providers/transactions'
-import { useWorldsContract } from '../worlds'
+import { useWorldsContract } from '../contracts/worlds'
 
 export default function useStartGame() {
   const { account } = useStarknet()

@@ -23,6 +23,8 @@ export interface NotifContent {
   transactionHash: string
   status: Status
   description: string
+  building_type_id?: number
+  pos_start?: number
 }
 
 export type NotifItem = { key: string, show: boolean, content: NotifContent }

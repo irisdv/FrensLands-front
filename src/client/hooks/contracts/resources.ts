@@ -1,7 +1,7 @@
 import { useContract } from "@starknet-react/core";
 import { Abi } from "starknet";
 
-import ResourcesAbi from "../abi/M02_Resources_abi.json";
+import ResourcesAbi from "../../abi/M02_Resources_abi.json";
 
 export function useResourcesContract() {
   return useContract({

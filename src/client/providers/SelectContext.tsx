@@ -13,12 +13,12 @@ import React, {
   import { bnToUint256, uint256ToBN } from 'starknet/dist/utils/uint256'
   import { BuildingFrame } from "../components/GameUI/BuildingFrame";
   
-  import { useBuildingsContract } from "../hooks/buildings";
-  import { useWorldsContract } from "../hooks/worlds";
-  import { useResourcesContract } from "../hooks/resources";
-  import { useFrensCoinsContract } from "../hooks/frenscoins";
-  import { useMapsContract } from "../hooks/maps";
-  import { useERC1155Contract } from "../hooks/erc1155";
+  import { useBuildingsContract } from "../hooks/contracts/buildings";
+  import { useWorldsContract } from "../hooks/contracts/worlds";
+  import { useResourcesContract } from "../hooks/contracts/resources";
+  import { useFrensCoinsContract } from "../hooks/contracts/frenscoins";
+  import { useMapsContract } from "../hooks/contracts/maps";
+  import { useERC1155Contract } from "../hooks/contracts/erc1155";
   import { useStarknet } from "@starknet-react/core";
   import { GetBlockResponse } from 'starknet'
   

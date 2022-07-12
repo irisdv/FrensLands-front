@@ -13,7 +13,7 @@ export default function Notifications() {
   return (
     <>
     {activeNotifications.map((item) => (
-      <NotifItem  key={item.key} content={item.content} />
+      <NotifItem  key={item.key} content={item.content} notifKey={item.key} />
     ))}
 
     </>
