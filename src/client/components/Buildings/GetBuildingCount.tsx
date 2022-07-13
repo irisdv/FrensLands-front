@@ -1,6 +1,6 @@
 import { useStarknet, useStarknetCall } from "@starknet-react/core";
 import React, { useMemo, useState, useRef, useEffect } from "react";
-import { useBuildingsContract } from "../../hooks/buildings";
+import { useBuildingsContract } from "../../hooks/contracts/buildings";
 import { number, uint256 } from "starknet";
 import { toBN } from "starknet/dist/utils/number";
 
