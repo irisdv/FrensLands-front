@@ -19,9 +19,9 @@ export function BottomBar() {
   const [displayShop, setDisplayShop] = useState(false)
   const [displayFrame, setDisplayFrame] = useState(false)
   const [oldFrame, setOldFrame] = useState<any>()
-  
+
   // 0 : build a new building
-  // 1: update a building 
+  // 1: update a building
 
 
   const frameValue = useMemo(() => {
@@ -39,19 +39,38 @@ export function BottomBar() {
     console.log('FRAME DATA', frameData?.id)
 
     // on clique sur le même bouton
-    if (frameValue && id == oldFrame) {
-      if (displayFrame == true) updateBuildingFrame(false, {"id": id, "type": type, "posX": 0, "posY": 0, "selected": 0});
-      if (displayFrame == false) updateBuildingFrame(true, {"id": id, "type": type, "posX": 0, "posY": 0, "selected": 1});
+    if (frameValue && id == oldFrame)
+    {
+      console.log('CON0')
+      if (displayFrame == true)
+      {
+        console.log('CON1')
+        updateBuildingFrame(false, {"id": id, "type": type, "posX": 0, "posY": 0, "selected": 0});
+      }
+      if (displayFrame == false)
+      {
+        console.log('CON2')
+        updateBuildingFrame(true, {"id": id, "type": type, "posX": 0, "posY": 0, "selected": 1});
+      }
       setDisplayFrame(!displayFrame);
-    } else if (id == 0) {
+    }
+    else if (id == 0)
+    {
+      console.log('CON3')
       setDisplayFrame(false)
       updateBuildingFrame(false, {"id": id, "type": type, "posX": 0, "posY": 0, "selected": 0});
-    } else {
+    }
+    else
+    {
+      console.log('CON4')
       if (displayFrame == true) {
         console.log('C TRUE')
         updateBuildingFrame(true, {"id": id, "type": type, "posX": 0, "posY": 0, "selected": 1});
         setDisplayFrame(true);
-      } else {
+      }
+      else
+        {
+        console.log('CON5')
         updateBuildingFrame(true, {"id": id, "type": type, "posX": 0, "posY": 0, "selected": 1});
         setDisplayFrame(true);
       }
@@ -127,7 +146,7 @@ export function BottomBar() {
       {/* Menu House */}
       {/* - **house (different sizes)** 4
 - **apartments building (different sizes)** 5
-- **hotels** 6 */} 
+- **hotels** 6 */}
       <div className="absolute" style={{ bottom: "60px", right: "0px", display: `${displayHousing ? "block" : "none"}` }}>
         <div className="flex flex-row justify-center inline-block">
           <div className="btnCategory pixelated relative" onClick={() => setDisplayingFrame(0, 4)}>
@@ -164,7 +183,7 @@ export function BottomBar() {
       <div className="absolute" style={{ bottom: "0px", right: "0px" }}>
         <div className="flex flex-row justify-center inline-block">
           <div className="btnBottom pixelated"onClick={() => {
-              setDisplayNature(!displayNature) 
+              setDisplayNature(!displayNature)
               setDisplaySecurity(false)
               setDisplayEntertainment(false)
               setDisplayHousing(false)

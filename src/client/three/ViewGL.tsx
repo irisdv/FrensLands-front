@@ -664,9 +664,9 @@ export default class ViewGL
       }
       //this.debugPrint(2, "rayX", rayX);
       //this.debugPrint(2, "rayY", rayY);
-      console.log("rayX", rayX);
-      console.log("rayY", rayY);
-      console.log("blockChain-Elem = ", (((16 - (rayY - 1)) * 40) + (rayX) + 1));
+      this.debugPrint(1, "rayX", rayX);
+      this.debugPrint(1, "rayY", rayY);
+      this.debugPrint(1, "blockChain-Elem = ", (((16 - (rayY - 1)) * 40) + (rayX) + 1));
       //this.debugPrint(2, "currBlockPos", this.currBlockPos);
     }
   }
