@@ -17,20 +17,20 @@ export function NotifItem(props: any) {
   const removeThisNotif = useCallback(() => removeNotif(notifKey), [notifKey, removeNotif])
   const removeThisTransaction = useCallback(() => removeTransaction(content.description.transactionHash), [content.description.transactionHash, removeNotif])
 
-  useEffect(() => {
-    // if (removeAfterMs === null) return undefined
+  // useEffect(() => {
+  //   // if (removeAfterMs === null) return undefined
 
-    if (content.status && content.status == "ACCEPTED_ON_L2") {
-        // const timeout = setTimeout(() => {
-        //     removeThisNotif()
-        // }, 5000)
+  //   if (content.status && content.status == "ACCEPTED_ON_L2") {
+  //       // const timeout = setTimeout(() => {
+  //       //     removeThisNotif()
+  //       // }, 5000)
     
-        // return () => {
-        //   clearTimeout(timeout)
-        // }
-        return undefined;
-    }
-  }, [removeThisNotif, content.status])
+  //       // return () => {
+  //       //   clearTimeout(timeout)
+  //       // }
+  //       return undefined;
+  //   }
+  // }, [removeThisNotif, content.status])
 
   console.log('activeNotifications', activeNotifications)
   console.log('props', props)

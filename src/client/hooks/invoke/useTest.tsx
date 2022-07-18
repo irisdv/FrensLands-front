@@ -10,13 +10,13 @@ export default function useTest() {
 
   const { addTransaction } = useNotifTransactionManager()
 
-  return useCallback(async () => {
+  return useCallback(async (unique_id: any, type_id: any, posX: any, posY: any, level_start: any) => {
     if (!contract || !account) {
       throw new Error('Missing Dependencies')
     }
 
     return contract
-      .invoke('initializer', [1])
+      .invoke('harvest', [1])
       .then((tx: AddTransactionResponse) => {
         console.log('Transaction hash: ', tx.transaction_hash)
 
@@ -25,8 +25,12 @@ export default function useTest() {
           transactionHash: tx.transaction_hash,
           address: account,
           metadata: {
-            method: "initializer",
+            method: "harvest",
             message: "Mint Frens Lands map",
+            unique_id: unique_id,
+            type_id: type_id,
+            posX: posX,
+            posY: posY
           }
         })
 

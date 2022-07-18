@@ -19,15 +19,18 @@ import useTest from "../../hooks/invoke/useTest";
 
 
 export function BuildingFrame(props: any) {
-  const { tokenId, address, setAddress, updateTokenId } = useGameContext();
+  const { tokenId, address, setAddress, updateTokenId, mapArray } = useGameContext();
   const { account } = useStarknet();
   const { showFrame, frameData, updateBuildingFrame } = useSelectContext();
   const { transactions } = useStarknetTransactionManager()
   const { contract: resources } = useResourcesContract();
 
+  const { frontBlockArray } = props
+
   // Test
   const { contract: worlds } = useWorldsContract();
   const [watch, setWatch] = useState(true);
+  // end test
 
   const activeNotifications = useActiveNotifications()
   const harvestingInvoke = useHarvestResource()
@@ -55,36 +58,36 @@ export function BuildingFrame(props: any) {
   }, [show, showFrame, frameData])
 
   const sendEvent = (id : number) => {
-    if (tokenId) {
-      let tx_hash = buildingInvoke(tokenId, 7, 1, 1, 1)
-      console.log('tx hash building', tx_hash)
-      setBuilding(tx_hash);
-    }
+    // if (tokenId) {
+    //   let tx_hash = buildingInvoke(tokenId, 7, 1, 1, 1)
+    //   console.log('tx hash building', tx_hash)
+    //   setBuilding(tx_hash);
+    // }
     // pgrade', [uint256.bnToUint256(tokenId as number), building_type_id, level, pos_start, allocated_pop])
     // setBuildingSelec(true);
     // updateBuildingFrame(false, {"id": frameData?.id, "type": frameData?.type, "posX": frameData?.posX, "selected": 1});
 
   };
 
-  // Test 
-  const { data: fetchMapBlock } = useStarknetCall({
-    contract: worlds,
-    method: "get_map_block",
-    args: [uint256.bnToUint256(tokenId as number), 43],
-    options: { watch },
-  });
+  // Test
+  // const { data: fetchMapBlock } = useStarknetCall({
+  //   contract: worlds,
+  //   method: "get_map_block",
+  //   args: [uint256.bnToUint256(tokenId as number), 43],
+  //   options: { watch },
+  // });
 
-  const MapBlockValue = useMemo(() => {
-    if (fetchMapBlock && fetchMapBlock.length > 0) {
-      console.log('fetchMapBlock', fetchMapBlock[0])
-      var elem = toBN(fetchMapBlock[0]);
-      var val = elem.toNumber();
+  // const MapBlockValue = useMemo(() => {
+  //   if (fetchMapBlock && fetchMapBlock.length > 0) {
+  //     // console.log('fetchMapBlock', fetchMapBlock[0])
+  //     var elem = toBN(fetchMapBlock[0]);
+  //     var val = elem.toNumber();
 
-      console.log('val', val)
+  //     // console.log('val', val)
 
-      return { block: val };
-    }
-  }, [fetchMapBlock]);
+  //     return { block: val };
+  //   }
+  // }, [fetchMapBlock]);
   // end test
 
   useEffect(() => {
@@ -101,10 +104,17 @@ export function BuildingFrame(props: any) {
 
   const harvestingResources = (id : number, pos_x: number, pos_y: number) => {
     // let pos_start = 43;
-    let pos_start = id
+    // 48 = 802103003882221
+
+    let pos_start = (((16 - (pos_y - 1)) * 40) + (pos_x) + 1);
+    console.log('pos_x', pos_x)
+    console.log('pos_y', pos_y)
     console.log('pos_start', pos_start)
+
+    if (mapArray) console.log('mapArray frame', mapArray[pos_start])
+
     if (tokenId) {
-      let tx_hash = harvestingInvoke(tokenId, pos_start)
+      let tx_hash = harvestingInvoke(tokenId, pos_start, parseInt(frameData?.unique_id as string), id, pos_x)
       console.log('tx hash harvesting resource', tx_hash)
       setHarvesting(tx_hash);
     } else {
@@ -131,47 +141,58 @@ export function BuildingFrame(props: any) {
   }, [harvesting, activeNotifications])
 
   useEffect(() => {
-    if (frameData && frameData.id) {
+    if (frameData && frameData.id && frameData.level) {
       var newCost : any[] = [];
-      DB.buildings[frameData.id as any].cost_update.resources.map((item : any) => {
+      console.log('level', frameData.level)
+      // console.log('test', DB.buildings[frameData.id as any].cost_update.level[frameData.level])
+      // @ts-ignore
+      DB.buildings[frameData.id as any].cost_update.level[frameData.level - 1].resources.map((item : any) => {
+        console.log('item', item)
         newCost.push([item.id, item.quantity])
       })
+      console.log('cost update', newCost)
       setCostUpdate(newCost)
     }
   }, [frameData])
 
   useEffect(() => {
-    if (frameData && frameData.id) {
+    if (frameData && frameData.id && frameData.level) {
       var newDailyHarvest : any[] = [];
-      
-      DB.buildings[frameData.id as any].daily_harvest.resources.map((item : any) => {
+
+      // @ts-ignore
+      DB.buildings[frameData.id as any].daily_harvest.level[frameData.level - 1].resources.map((item : any) => {
         newDailyHarvest.push([item.id, item.quantity])
       })
+      // console.log('newDailyHarvest', newDailyHarvest)
       console.log('newDailyHarvest', newDailyHarvest)
-      console.log('newDailyHarvest', newDailyHarvest[0][0])
       setDailyHarvests(newDailyHarvest)
     }
   }, [frameData])
 
   useEffect(() => {
-    if (frameData && frameData.id) {
-      var newDailyCost : any[] = [];
-      
-      DB.buildings[frameData.id as any].daily_cost.resources.map((item : any) => {
+    if (frameData && frameData.id && frameData.level) {
+      var newDailyCost : any[] = [];  
+
+      // var level : number = frameData.level - 1
+      console.log('level received', frameData.level)
+      // console.log('data level', DB.buildings[frameData.id as any].cost_update.level[frameData.level])
+
+      // @ts-ignore
+      DB.buildings[frameData.id as any].daily_cost.level[frameData.level - 1].resources.map((item : any) => {
         newDailyCost.push([item.id, item.quantity])
       })
-      console.log('newCos', newDailyCost)
-      console.log('newCos', newDailyCost[0][0])
+      console.log('daily costs', newDailyCost)
+      // console.log('newCos', newDailyCost[0][0])
       setDailyCosts(newDailyCost)
     }
   }, [frameData])
 
-  // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST  TEST TEST TEST TEST TEST TEST TEST TEST TEST 
+  // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST  TEST TEST TEST TEST TEST TEST TEST TEST TEST
   const generateTest = useTest()
   const [testing, setTesting] = useState<any>(null)
-  const testContract = async () => {
+  const testContract = async (unique_id : any, id : number, posX : number, posY : number) => {
     console.log("invoking test", account);
-    let tx_hash = await generateTest()
+    let tx_hash = await generateTest(unique_id, id, posX, posY, frontBlockArray[posY][posX][7])
     console.log('tx hash', tx_hash)
     setTesting(tx_hash);
   };
@@ -192,7 +213,12 @@ export function BuildingFrame(props: any) {
   //     }
   //   }
   // }, [testing, activeNotifications])
-  // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST  TEST TEST TEST TEST TEST TEST TEST TEST TEST 
+  // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST  TEST TEST TEST TEST TEST TEST TEST TEST TEST
+
+  const showBuildingCursor = (id : any) => {
+    console.log('pass showFrame to false and show cursor for', frameData)
+    updateBuildingFrame(false, {"id": id, "level": frameData?.level, "posX": 0, "posY": 0, "selected": 1});
+  }
 
   if (!showFrame) {
     return <></>;
@@ -203,13 +229,13 @@ export function BuildingFrame(props: any) {
 
   return (
     <>
-      <div id="bFrame" className="absolute buildingFrame" style={{right: "-113px", bottom: "0", height: "640px", width: "640px"}}>
+      <div id="bFrame" className="absolute buildingFrame" style={{right: "-113px", bottom: "0", height: "640px", width: "640px", zIndex: "1"}}>
         <div className="grid grid-cols-2 inline-block" style={{ height: "20px" }}>
           <div className="font8BITWonder uppercase text-center" style={{ height: "20px" }} >
             {frameData && frameData.id ? DB.buildings[frameData.id as any].name : 0}
           </div>
           <div className="relative flex jutify-center items-center inline-block" style={{ paddingLeft: "8px" }}>
-                {frameData && frameData.id && costUpdate && costUpdate[2] && 
+                {frameData && frameData.id && costUpdate && costUpdate[2] &&
                   <div className="flex flex-row justify-center inline-block relative">
                     <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "127px" }}>{costUpdate[2][1]}</div>
                     <div className={"mb-3 small"+`${costUpdate[2][0]}`} style={{ position: "absolute", top: "-34px", left: "119px" }}></div>
@@ -249,34 +275,44 @@ export function BuildingFrame(props: any) {
           </div>
         </div>
         <div className="font04B" style={{   height: "109px",   fontSize: "13px",   paddingLeft: "9px",   paddingTop: "6px"}}>
-        {frameData && frameData.id ? DB.buildings[0].description : 0}
+          {frameData && frameData.id ? DB.buildings[frameData.id as any].description : ""}
         </div>
-        <div className="relative flex jutify-center items-center inline-block" style={{ height: "45px", paddingTop: "8px" }}>
+        <div className="relative flex jutify-center items-center inline-block" style={{ height: "45px", paddingTop: "8px", pointerEvents: "all" }}>
           <div className="flex flex-row justify-center inline-block">
             <div style={{ width: "206px", paddingTop: "10px" }}>
-              {frameData && frameData.id  ? 
-                frameData && (frameData.id == 2 || frameData.id == 3 || frameData.id == 20 ) ? 
+              {frameData && frameData.id  ?
+                frameData && (frameData.id == 2 || frameData.id == 3 || frameData.id == 20 ) ?
                     <>
-                      <div className="btnBuild" onClick={() => harvestingResources(47, frameData.posX, frameData.posY)}></div>
-                      {/* <div className="btnBuild" onClick={() => harvestingResources(48, frameData.posX, frameData.posY)}></div> */}
-                      {/* <button onClick={() => testContract()}>TEST test test test </button> */}
+                      <div className="btnHarvest" onClick={() => harvestingResources(frameData.id as number, frameData.posX, frameData.posY)}></div>
+                      {/* <div className="btnHarvest" onClick={() => testContract(frameData?.unique_id, frameData.id as number, frameData.posX, frameData.posY)}>Harvest Resource</div>                       */}
                     </>
-                  : 
-                  // BUTTON BUILD
-                  <div className="btnBuild" 
-                    onClick={() => sendEvent(frameData.id as number)}
-                  ></div>
-              :  
-              // BUTTON UPGRADE 
-                <div className="btnUpgrade"></div> 
+                  :
+                    (frameData && frameData.id == 1) ?
+                      // BUTTON UPGRADE FOR CABIN
+                      <div className="btnUpgrade"
+                        onClick={() => console.log('upgrade cabin')}
+                      ></div>
+                    :
+                    // BUTTON BUILD
+                    <div className="btnBuild"
+                      onClick={() => showBuildingCursor(frameData.id as number)}
+                    ></div>
+              :
+              // BUTTON UPGRADE
+                <div className="btnUpgrade"></div>
               }
             </div>
             <div className="relative flex jutify-center items-center inline-block" style={{ width: "60px", height: "80px", paddingTop: "10px" }}>
-
-              {frameData && frameData.id && costUpdate && costUpdate[2] && 
+              {frameData && frameData.id && costUpdate && costUpdate.length >= 4 && costUpdate[3] &&
                 <div className="flex flex-row justify-center inline-block relative">
-                  <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "15px" }}>{dailyCosts[2][1]}</div>
-                  <div className={"mb-3 small"+`${dailyCosts[2][0]}`} style={{ position: "absolute", top: "-39px", left: "3px" }}></div>
+                  <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "15px" }}>{costUpdate[3][1]}</div>
+                  <div className={"mb-3 small"+`${costUpdate[3][0]}`} style={{ position: "absolute", top: "-39px", left: "3px" }}></div>
+                </div>
+              }
+              {frameData && frameData.id && costUpdate && costUpdate.length >= 3 && costUpdate[2] &&
+                <div className="flex flex-row justify-center inline-block relative">
+                  <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "15px" }}>{costUpdate[2][1]}</div>
+                  <div className={"mb-3 small"+`${costUpdate[2][0]}`} style={{ position: "absolute", top: "-39px", left: "3px" }}></div>
                 </div>
               }
               {frameData && frameData.id && costUpdate && costUpdate[1] &&
@@ -297,7 +333,7 @@ export function BuildingFrame(props: any) {
         <div className="grid grid-cols-2" style={{ height: "30px", marginLeft: "205px" }}>
           <div className="relative flex jutify-center items-center inline-block" style={{ width: "60px", paddingTop: "10px" }}>
 
-          {frameData && frameData.id && dailyCosts && dailyCosts[2] && 
+          {frameData && frameData.id && dailyCosts && dailyCosts.length == 3 && dailyCosts[2] &&
               <div className="flex flex-row justify-center inline-block relative">
                 <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "15px" }}>{dailyCosts[2][1]}</div>
                 <div className={"mb-3 small"+`${dailyCosts[2][0]}`} style={{ position: "absolute", top: "-39px", left: "3px" }}></div>
@@ -320,7 +356,7 @@ export function BuildingFrame(props: any) {
         <div className="grid grid-cols-2" style={{ height: "30px", marginLeft: "205px" }}>
           <div className="relative flex jutify-center items-center inline-block" style={{ width: "60px", paddingTop: "10px" }}>
 
-            {frameData && frameData.id && dailyHarvest && dailyHarvest[2] && 
+            {frameData && frameData.id && dailyHarvest && dailyHarvest[2] &&
               <div className="flex flex-row justify-center inline-block relative">
                 <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "15px" }}>{dailyHarvest[2][1]}</div>
                 <div className={"mb-3 small"+`${dailyHarvest[2][0]}`} style={{ position: "absolute", top: "-39px", left: "3px" }}></div>

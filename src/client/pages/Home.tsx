@@ -71,7 +71,7 @@ export default function Home() {
 
   useEffect(() => {
     if (canPlay == 1) {
-      navigate('/game')
+      navigate('/play')
     }
   }, [canPlay])
 
@@ -180,7 +180,7 @@ export default function Home() {
         } else if (data[0].content.status == 'ACCEPTED_ON_L1' || data[0].content.status == 'ACCEPTED_ON_L2') {
           setMessage("Your transaction was accepted. Now you can play!")
           setSettingUp(true)
-          navigate('/game')
+          navigate('/play')
         } else {
           setMessage("Your transaction is ongoing.")
         }
@@ -190,30 +190,30 @@ export default function Home() {
 
 
   // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST  TEST TEST TEST TEST TEST TEST TEST TEST TEST 
-  const testContract = async () => {
-    console.log("invoking test", account);
-    let tx_hash = await generateTest()
-    console.log('tx hash', tx_hash)
-    setTesting(tx_hash);
-  };
+  // const testContract = async () => {
+  //   console.log("invoking test", account);
+  //   let tx_hash = await generateTest()
+  //   console.log('tx hash', tx_hash)
+  //   setTesting(tx_hash);
+  // };
 
-  useEffect(() => {
-    if (testing) {
-      var data = activeNotifications.filter((transactions) => (transactions?.content.transactionHash as string) === testing as string)
-      console.log('data test', data )
-      console.log('state', testing)
-      if (data && data[0] && data[0].content) {
-        if (data[0].content.status == 'REJECTED') {
-          setMessage("Your transaction has failed... Try again.")
-        } else if (data[0].content.status == 'ACCEPTED_ON_L1' || data[0].content.status == 'ACCEPTED_ON_L2') {
-          setMessage("Your transaction was accepted. Now you can play!")
-          console.log('in data')
-          setTesting(true)
-          navigate('/game')
-        }
-      }
-    }
-  }, [testing, activeNotifications])
+  // useEffect(() => {
+  //   if (testing) {
+  //     var data = activeNotifications.filter((transactions) => (transactions?.content.transactionHash as string) === testing as string)
+  //     console.log('data test', data )
+  //     console.log('state', testing)
+  //     if (data && data[0] && data[0].content) {
+  //       if (data[0].content.status == 'REJECTED') {
+  //         setMessage("Your transaction has failed... Try again.")
+  //       } else if (data[0].content.status == 'ACCEPTED_ON_L1' || data[0].content.status == 'ACCEPTED_ON_L2') {
+  //         setMessage("Your transaction was accepted. Now you can play!")
+  //         console.log('in data')
+  //         setTesting(true)
+  //         navigate('/game')
+  //       }
+  //     }
+  //   }
+  // }, [testing, activeNotifications])
   // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST  TEST TEST TEST TEST TEST TEST TEST TEST TEST 
 
   return (
@@ -255,10 +255,11 @@ export default function Home() {
               {account && BalanceNFTValue && (BalanceNFTValue.NFTbalance == 1 || minting == true) && GameStatusValue && GameStatusValue.gameStatus == 0 &&
                   <>
                     <div style={{height: "128px", width: "128px", marginTop: "510px", marginLeft: "576px"}} className="absolute"> 
-                      <button className="pixelated btnPlay" onClick={() => startGame()}></button>
+                      <button className="pixelated btnPlay" onClick={() => startGame()}>Start game</button>
                     </div>
                   </>
               }
+              {/* Add set approval for all  */}
               {!account &&
                 <div style={{height: "128px", width: "128px", marginTop: "414px", marginLeft: "576px"}} className="absolute"> 
                   <ConnectWallet/>

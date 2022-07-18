@@ -13,6 +13,8 @@
     "url": "git+https://github.com/irisdv/hackathon-front.git"
   },
   "dependencies": {
+    "@react-three/drei": "^9.17.1",
+    "@react-three/fiber": "^8.2.0",
     "@starknet-react/core": "^0.11.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -48,5 +50,5 @@
     "net": false,
     "stream": false,
     "tls": false
-    }
+  }
 }

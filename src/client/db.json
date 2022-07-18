@@ -1,4 +1,12 @@
 {
+    "metadata" : [
+        {   
+            "type" : 0
+        },
+        {   
+            "type" : 1
+        }
+    ],
     "buildings" : [
         {
             "name": "",
@@ -12,188 +20,283 @@
                 "energy": 0
             },
             "daily_cost": {
-                "resources": [
-                    {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
-                    }
-                ]
+                "resources": []
             },
             "daily_harvest": {
-                "resources": [
-                    {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
-                    }
-                ]
+                "resources": []
             },
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+            "pop_min": 0,
+            "new_pop": 0,
+            "description": ""
         },
         {
             "name": "Cabin",
-            "category": "",
-            "level": "1",
+            "category": "Housing",
+            "description": "A small cabin to house your first fren. Fixing it will bring 2 new frens into your community.",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 3
+                        "resources": [],
+                        "gold": 0,
+                        "energy": 0,
+                        "pop_min": 0,
+                        "new_pop": 1
                     },
                     {
-                        "id": 2,
-                        "quantity": 2
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 5
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 0,
+                        "pop_min": 0,
+                        "new_pop": 2
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
+                        "resources": [],
+                        "gold": 0,
+                        "energy": 0
                     },
                     {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [],
+                        "gold": 0,
+                        "energy": 0
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
+                        "resources": [],
+                        "gold": 0,
+                        "energy": 0
                     },
                     {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [],
+                        "gold": 0,
+                        "energy": 0
                     }
                 ]
-            },
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+            }
         },
         {
             "name": "Rock",
             "category": "",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 5
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 3
+                            }
+                        ],
+                        "gold": 3,
+                        "energy": 0,
+                        "pop_min": 1
                     },
                     {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 5
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 3
+                            }
+                        ],
+                        "gold": 3,
+                        "energy": 0,
+                        "pop_min": 1
+                    },
+                    {
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 5
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 3
+                            }
+                        ],
+                        "gold": 3,
+                        "energy": 0,
+                        "pop_min": 1
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
+                        "resources": [],
+                        "gold": 0,
+                        "energy": 0
                     },
                     {
-                        "id" : 3,
-                        "quantity": 3
+                        "resources": [],
+                        "gold": 0,
+                        "energy": 0
                     },
                     {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [],
+                        "gold": 3,
+                        "energy": 0
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
+                        "resources": [
+                            {
+                                "id": 2,
+                                "quantity": 20
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 0
                     },
                     {
-                        "id" : 3,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 2,
+                                "quantity": 20
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 0
                     },
                     {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 2,
+                                "quantity": 20
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 0
                     }
                 ]
             },
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+            "description": "Rocks can be harvested 3 times."
         },
         {
             "name": "Tree",
             "category": "",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
+                        "resources": [
+                            {
+                                "id": 5,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 1
+                            }
+                        ],
+                        "gold": 1,
+                        "energy": 0,
+                        "pop_min": 1,
+                        "new_pop": 0
                     },
                     {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 5,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 1
+                            }
+                        ],
+                        "gold": 1,
+                        "energy": 0,
+                        "pop_min": 1,
+                        "new_pop": 0
+                    },
+                    {
+                        "resources": [
+                            {
+                                "id": 5,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 1
+                            }
+                        ],
+                        "gold": 1,
+                        "energy": 0,
+                        "pop_min": 1,
+                        "new_pop": 0
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
+                        "resources": [],
+                        "gold": 1,
+                        "energy": 0
                     },
                     {
-                        "id" : 3,
-                        "quantity": 3
+                        "resources": [],
+                        "gold": 1,
+                        "energy": 0
                     },
                     {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [],
+                        "gold": 1,
+                        "energy": 0
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 20
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 0
                     },
                     {
-                        "id" : 3,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 20
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 0
                     },
                     {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 20
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 0
                     }
                 ]
             },
@@ -203,1079 +306,1554 @@
             "name": "House",
             "category": "Housing",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 10,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 1,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 5
+                            },
+                            {
+                                "id": 2,
+                                "quantity": 8
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 3
+                            }
+                        ],
+                        "gold": 3,
+                        "energy": 0,
+                        "new_pop": 5
                     }
-                ],
-                "gold": 10,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [],
+                        "gold": 0,
+                        "energy": 0
                     }
-                ],
-                "gold": 10,
-                "energy": 0
+                ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [],
+                        "gold": 0,
+                        "energy": 0
                     }
                 ]
             },
             "pop_min": 1,
-            "pop_max": 5,
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+            "new_pop": 5,
+            "description": "Houses bring new frens into your community."
         },
         {
             "name": "Appartment",
-            "category": "Hotel",
+            "category": "Housing",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 2,
+                                "quantity": 12
+                            },
+                            {
+                                "id": 2,
+                                "quantity": 18
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 7
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 8
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 5
+                            }
+                        ],
+                        "gold": 8,
+                        "energy": 5,
+                        "new_pop": 20
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [],
+                        "gold": 0,
+                        "energy": 0
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [],
+                        "gold": 0,
+                        "energy": 0
                     }
                 ]
             },
+            "pop_min": 0,
+            "new_pop": 20,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
-            "name": "Boulangerie",
-            "category": "Shops",
+            "name": "Hotel",
+            "category": "Housing",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 18
+                            },
+                            {
+                                "id": 2,
+                                "quantity": 15
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 9
+                            },
+                            {
+                                "id": 6,
+                                "quantity": 5
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 11
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 12
+                            }
+                        ],
+                        "gold": 11,
+                        "energy": 12,
+                        "pop_min": 5,
+                        "new_pop": 28
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 10
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 3
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 3
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 10,
+                                "quantity": 12
+                            }
+                        ],
+                        "gold": 12,
+                        "energy": 0
                     }
                 ]
             },
+            "pop_min": 5,
+            "new_pop": 28,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Bakery",
+            "category": "Shops",
+            "cost_update": {
+                "level" : [
+                    {
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 2,
+                                "quantity": 14
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 5
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 7
+                            }
+                        ],
+                        "gold": 7,
+                        "energy": 0,
+                        "new_pop": 0,
+                        "pop_min": 2
+                    }
+                ]
+            },
+            "daily_cost": {
+                "level" : [
+                    {
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 8,
+                                "quantity": 2
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 1
+                            }
+                        ],
+                        "gold": 1,
+                        "energy": 0
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "level" : [
+                    {
+                        "resources": [
+                            {
+                                "id": 10,
+                                "quantity": 5
+                            }
+                        ],
+                        "gold": 5,
+                        "energy": 0
+                    }
+                ]
+            },
+            "pop_min": 2,
+            "new_pop": 0,
+            "description": "Which fren doesn't like to eat a croissant or a pain au chocolat for breakfast ? Having a bakery led by a renowned French baker will attract new frens into your community."
         },
         {
             "name": "Grocery shop",
             "category": "Shops",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 0
+                            },
+                            {
+                                "id": 2,
+                                "quantity": 16
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 14
+                            },
+                            {
+                                "id": 6,
+                                "quantity": 11
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 15
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 10
+                            }
+                        ],
+                        "gold": 15,
+                        "energy": 10,
+                        "pop_min": 5,
+                        "new_pop": 0
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 10
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 2
+                            }
+                        ],
+                        "gold": 3,
+                        "energy": 2
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 10,
+                                "quantity": 18
+                            }
+                        ],
+                        "gold": 18,
+                        "energy": 0
                     }
                 ]
             },
+            "pop_min": 5,
+            "new_pop": 0,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
             "name": "Restaurant",
             "category": "Shops",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 11
+                            },
+                            {
+                                "id": 2,
+                                "quantity": 21
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 12
+                            },
+                            {
+                                "id": 6,
+                                "quantity": 10
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 13
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 9
+                            }
+                        ],
+                        "gold": 13,
+                        "energy": 9,
+                        "pop_min": 6,
+                        "new_pop": 0
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 15
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 2
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 1
+                            }
+                        ],
+                        "gold": 2,
+                        "energy": 1
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 10,
+                                "quantity": 15
+                            }
+                        ],
+                        "gold": 15,
+                        "energy": 0
                     }
                 ]
             },
+            "pop_min": 6,
+            "new_pop": 0,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
             "name": "Mall",
             "category": "Shops",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 15
+                            },
+                            {
+                                "id": 2,
+                                "quantity": 28
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 35
+                            },
+                            {
+                                "id": 6,
+                                "quantity": 42
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 32
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 17
+                            }
+                        ],
+                        "gold": 32,
+                        "energy": 17,
+                        "pop_min": 16,
+                        "new_pop": 0
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 25
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 7
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 5
+                            }
+                        ],
+                        "gold": 7,
+                        "energy": 5
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 10,
+                                "quantity": 55
+                            }
+                        ],
+                        "gold": 55,
+                        "energy": 0
                     }
                 ]
             },
+            "pop_min": 16,
+            "new_pop": 0,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
             "name": "Bar",
             "category": "Entertainment",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 23
+                            },
+                            {
+                                "id": 2,
+                                "quantity": 9
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 13
+                            },
+                            {
+                                "id": 6,
+                                "quantity": 4
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 7
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 6
+                            }
+                        ],
+                        "gold": 7,
+                        "energy": 6,
+                        "pop_min": 4,
+                        "new_pop": 0
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 10,
+                                "quantity": 1
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 1
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 8
+                            }
+                        ],
+                        "gold": 1,
+                        "energy": 1
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 10,
+                                "quantity": 9
+                            }
+                        ],
+                        "gold": 10,
+                        "energy": 0
                     }
                 ]
             },
+            "pop_min": 4,
+            "new_pop": 0,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
             "name": "Library",
             "category": "Entertainment",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 27
+                            },
+                            {
+                                "id": 2,
+                                "quantity": 13
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 17
+                            },
+                            {
+                                "id": 6,
+                                "quantity": 8
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 15
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 8
+                            }
+                        ],
+                        "gold": 15,
+                        "energy": 8,
+                        "pop_min": 5,
+                        "new_pop": 0
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 6
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 2
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 3
+                            }
+                        ],
+                        "gold": 2,
+                        "energy": 3
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 10,
+                                "quantity": 10
+                            }
+                        ],
+                        "gold": 10,
+                        "energy": 0
                     }
                 ]
             },
+            "pop_min": 5,
+            "new_pop": 0,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
             "name": "Swimming Pool",
             "category": "Entertainment",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 2,
+                                "quantity": 24
+                            }, 
+                            {
+                                "id": 3,
+                                "quantity": 16
+                            }, 
+                            {
+                                "id": 6,
+                                "quantity": 12
+                            }, 
+                            {
+                                "id": 10,
+                                "quantity": 18
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 7
+                            }
+                        ],
+                        "gold": 18,
+                        "energy": 7,
+                        "pop_min": 3,
+                        "new_pop": 0
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 4
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 3
+                            }
+                        ],
+                        "gold": 3,
+                        "energy": 3
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 10,
+                                "quantity": 18
+                            }
+                        ],
+                        "gold": 18,
+                        "energy": 0
                     }
                 ]
             },
+            "pop_min": 3,
+            "new_pop": 0,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
             "name": "Cinema",
             "category": "Entertainment",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 7
+                            },
+                            {
+                                "id": 2,
+                                "quantity": 26
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 28
+                            },
+                            {
+                                "id": 6,
+                                "quantity": 21
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 22
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 14
+                            }
+                        ],
+                        "gold": 22,
+                        "energy": 14,
+                        "pop_min": 4,
+                        "new_pop": 0
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 5
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 5
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 5
+                            }
+                        ],
+                        "gold": 5,
+                        "energy": 5
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 10,
+                                "quantity": 25
+                            }
+                        ],
+                        "gold": 25,
+                        "energy": 0
                     }
                 ]
             },
+            "pop_min": 4,
+            "new_pop": 0,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
             "name": "Market",
             "category": "Shops",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 43
+                            },
+                            {
+                                "id": 2,
+                                "quantity": 26
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 32
+                            },
+                            {
+                                "id": 6,
+                                "quantity": 12
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 32
+                            }
+                        ],
+                        "gold": 32,
+                        "energy": 0,
+                        "pop_min": 12,
+                        "new_pop": 0
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 6
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 3
+                            }
+                        ],
+                        "gold": 3,
+                        "energy": 3
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 10,
+                                "quantity": 10
+                            }
+                        ],
+                        "gold": 10,
+                        "energy": 0
                     }
                 ]
             },
+            "pop_min": 12,
+            "new_pop": 0,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
             "name": "Cereal Farm",
             "category": "Agriculture",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 12
+                            },
+                            {
+                                "id": 2,
+                                "quantity": 4
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 2
+                            }
+                        ],
+                        "gold": 2,
+                        "energy": 0,
+                        "pop_min": 5,
+                        "new_pop": 0
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 1
+                            }
+                        ],
+                        "gold": 1,
+                        "energy": 0
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 5,
+                                "quantity": 20
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 0
                     }
                 ]
             },
+            "pop_min": 5,
+            "new_pop": 0,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
             "name": "Vegetable Farm",
             "category": "Agriculture",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [],
+                        "gold": 0,
+                        "energy": 0,
+                        "pop_min": 0,
+                        "new_pop": 1
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 2,
+                                "quantity": 20
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 0
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 2,
+                                "quantity": 20
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 0
                     }
                 ]
             },
+            "pop_min": 0,
+            "new_pop": 0,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
             "name": "Cow Farm",
             "category": "Agriculture",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 12
+                            },
+                            {
+                                "id": 2,
+                                "quantity": 5
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 28
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 5
+                            }
+                        ],
+                        "gold": 5,
+                        "energy": 0,
+                        "pop_min": 5,
+                        "new_pop": 0
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 5,
+                                "quantity": 15
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 1
+                            }
+                        ],
+                        "gold": 1,
+                        "energy": 0
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 20
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 0
                     }
                 ]
             },
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
-        },
-        {
-            "name": "Cow Farm",
-            "category": "Agriculture",
-            "cost_update": {
-                "resources": [
-                    {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
-                    }
-                ],
-                "gold": 0,
-                "energy": 0
-            },
-            "daily_cost": {
-                "resources": [
-                    {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
-                    }
-                ]
-            },
-            "daily_harvest": {
-                "resources": [
-                    {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
-                    }
-                ]
-            },
+            "pop_min": 5,
+            "new_pop": 0,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
             "name": "Tree Farm",
             "category": "Agriculture",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 15
+                            },
+                            {
+                                "id": 2,
+                                "quantity": 5
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 14
+                            },
+                            {
+                                "id": 6,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 8
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 5
+                            }
+                        ],
+                        "gold": 8,
+                        "energy": 5,
+                        "pop_min": 9,
+                        "new_pop": 0
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 5
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 1
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 1
+                            }
+                        ],
+                        "gold": 1,
+                        "energy": 1
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 20
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 0
                     }
                 ]
             },
+            "pop_min": 9,
+            "new_pop": 0,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
             "name": "Mine",
             "category": "Mining",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
+                        "resources": [],
+                        "gold": 0,
+                        "energy": 0,
+                        "pop_min": 10,
+                        "new_pop": 0
                     },
                     {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [],
+                        "gold": 0,
+                        "energy": 0,
+                        "pop_min": 10,
+                        "new_pop": 0
+                    },
+                    {
+                        "resources": [],
+                        "gold": 0,
+                        "energy": 0,
+                        "pop_min": 10,
+                        "new_pop": 0
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 3
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 0
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
+                        "resources": [
+                            {
+                                "id": 2,
+                                "quantity": 12
+                            },
+                            {
+                                "id": 6,
+                                "quantity": 14
+                            },
+                            {
+                                "id": 8,
+                                "quantity": 25
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 0
                     },
                     {
-                        "id" : 3,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 2,
+                                "quantity": 12
+                            },
+                            {
+                                "id": 6,
+                                "quantity": 14
+                            },
+                            {
+                                "id": 8,
+                                "quantity": 25
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 0
                     },
                     {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 2,
+                                "quantity": 12
+                            },
+                            {
+                                "id": 6,
+                                "quantity": 14
+                            },
+                            {
+                                "id": 8,
+                                "quantity": 25
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 0
                     }
                 ]
             },
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+            "pop_min": 10,
+            "new_pop": 0,
+            "description": "Natural mine."
         },
         {
             "name": "Coal Plant",
             "category": "Energy",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
+                        "resources": [
+                            {
+                                "id": 2,
+                                "quantity": 35
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 15
+                            },
+                            {
+                                "id": 6,
+                                "quantity": 15
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 14
+                            }
+                        ],
+                        "gold": 14,
+                        "energy": 0,
+                        "pop_min": 12,
+                        "new_pop": 0
                     },
                     {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 4
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 3
+                            }
+                        ],
+                        "gold": 3,
+                        "energy": 0
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 4
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 3
+                            }
+                        ],
+                        "gold": 3,
+                        "energy": 0
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 11,
+                                "quantity": 20
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 11
                     }
                 ]
             },
+            "pop_min": 12,
+            "new_pop": 0,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
             "name": "Police Station",
             "category": "Security",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 15
+                            },
+                            {
+                                "id": 2,
+                                "quantity": 22
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 21
+                            },
+                            {
+                                "id": 6,
+                                "quantity": 14
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 21
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 5
+                            }
+                        ],
+                        "gold": 21,
+                        "energy": 5,
+                        "pop_min": 7,
+                        "new_pop": 0
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 10,
+                                "quantity": 2
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 1
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 5
+                            }
+                        ],
+                        "gold": 2,
+                        "energy": 1
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [],
+                        "gold": 0,
+                        "energy": 0
                     }
                 ]
             },
+            "pop_min": 7,
+            "new_pop": 0,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
             "name": "Hospital",
             "category": "Health",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 1,
+                                "quantity": 9
+                            }, 
+                            {
+                                "id": 2,
+                                "quantity": 43
+                            }, 
+                            {
+                                "id": 3,
+                                "quantity": 36
+                            },
+                            {
+                                "id": 6,
+                                "quantity": 33
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 32
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 19
+                            }
+                        ],
+                        "gold": 32,
+                        "energy": 19,
+                        "pop_min": 20,
+                        "new_pop": 0
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 13
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 4
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 2
+                            }
+                        ],
+                        "gold": 4,
+                        "energy": 2
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 10,
+                                "quantity": 25
+                            }
+                        ],
+                        "gold": 10,
+                        "energy": 0
                     }
                 ]
             },
+            "pop_min": 10,
+            "new_pop": 0,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
             "name": "Lab",
             "category": "Reasearch",
             "cost_update": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id": 2,
-                        "quantity": 3
+                        "resources": [
+                            {
+                                "id": 2,
+                                "quantity": 30
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 42
+                            },
+                            {
+                                "id": 6,
+                                "quantity": 56
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 54
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 25
+                            }
+                        ],
+                        "gold": 54,
+                        "energy": 25,
+                        "pop_min": 10,
+                        "new_pop": 0
                     }
-                ],
-                "gold": 0,
-                "energy": 0
+                ]
             },
             "daily_cost": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 8
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 2
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 1
+                            }
+                        ],
+                        "gold": 2,
+                        "energy": 1
                     }
                 ]
             },
             "daily_harvest": {
-                "resources": [
+                "level" : [
                     {
-                        "id": 1,
-                        "quantity": 2
-                    },
-                    {
-                        "id" : 3,
-                        "quantity": 3
-                    },
-                    {
-                        "id": 5,
-                        "quantity": 1
+                        "resources": [
+                            {
+                                "id": 10,
+                                "quantity": 14
+                            }
+                        ],
+                        "gold": 14,
+                        "energy": 0
                     }
                 ]
             },
+            "pop_min": 10,
+            "new_pop": 0,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         }
     ]

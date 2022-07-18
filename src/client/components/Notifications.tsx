@@ -8,7 +8,7 @@ import { NotifItem } from "./NotifItem";
 export default function Notifications() {
   const activeNotifications = useActiveNotifications()
 
-  console.log('activeNotifications', activeNotifications)
+  // console.log('activeNotifications', activeNotifications)
 
   return (
     <>

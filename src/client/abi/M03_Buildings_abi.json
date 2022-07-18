@@ -34,18 +34,23 @@
                 "type": "MultipleResources"
             },
             {
-                "name": "pop_max",
+                "name": "pop_min",
                 "offset": 12,
                 "type": "felt"
             },
             {
-                "name": "pop_min",
+                "name": "pop_max",
                 "offset": 13,
+                "type": "felt"
+            },
+            {
+                "name": "new_pop",
+                "offset": 14,
                 "type": "felt"
             }
         ],
         "name": "BuildingFixedData",
-        "size": 14,
+        "size": 15,
         "type": "struct"
     },
     {
@@ -269,19 +274,7 @@
                 "type": "felt"
             },
             {
-                "name": "m01_addr",
-                "type": "felt"
-            },
-            {
-                "name": "m02_addr",
-                "type": "felt"
-            },
-            {
-                "name": "erc1155_addr",
-                "type": "felt"
-            },
-            {
-                "name": "frenscoins_addr",
+                "name": "current_block",
                 "type": "felt"
             }
         ],
@@ -296,7 +289,53 @@
                 "type": "Uint256"
             },
             {
-                "name": "building_unique_id",
+                "name": "pos_start",
+                "type": "felt"
+            },
+            {
+                "name": "nb_days",
+                "type": "felt"
+            }
+        ],
+        "name": "recharge_building",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "tokenId",
+                "type": "Uint256"
+            },
+            {
+                "name": "pos_start_len",
+                "type": "felt"
+            },
+            {
+                "name": "pos_start",
+                "type": "felt*"
+            },
+            {
+                "name": "nb_days_len",
+                "type": "felt"
+            },
+            {
+                "name": "nb_days",
+                "type": "felt*"
+            }
+        ],
+        "name": "recharge_building_multiple",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "tokenId",
+                "type": "Uint256"
+            },
+            {
+                "name": "pos_start",
                 "type": "felt"
             }
         ],
@@ -311,50 +350,15 @@
                 "type": "Uint256"
             },
             {
-                "name": "building_type_id_len",
+                "name": "block_number",
                 "type": "felt"
             },
             {
-                "name": "building_type_id",
-                "type": "felt*"
-            },
-            {
-                "name": "level_len",
+                "name": "unique_id_count",
                 "type": "felt"
-            },
-            {
-                "name": "level",
-                "type": "felt*"
-            },
-            {
-                "name": "pos_len",
-                "type": "felt"
-            },
-            {
-                "name": "pos",
-                "type": "felt*"
             }
         ],
         "name": "initialize_resources",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            },
-            {
-                "name": "building_type_id_len",
-                "type": "felt"
-            },
-            {
-                "name": "building_type_id",
-                "type": "felt*"
-            }
-        ],
-        "name": "initialize_resources_new",
         "outputs": [],
         "type": "function"
     },
@@ -372,8 +376,33 @@
         "name": "view_fixed_data",
         "outputs": [
             {
-                "name": "data",
+                "name": "building_data",
                 "type": "BuildingFixedData"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "type",
+                "type": "felt"
+            },
+            {
+                "name": "level",
+                "type": "felt"
+            }
+        ],
+        "name": "view_fixed_data_claim",
+        "outputs": [
+            {
+                "name": "building_data_len",
+                "type": "felt"
+            },
+            {
+                "name": "building_data",
+                "type": "felt*"
             }
         ],
         "stateMutability": "view",
@@ -445,6 +474,27 @@
     {
         "inputs": [
             {
+                "name": "token_id",
+                "type": "Uint256"
+            }
+        ],
+        "name": "get_all_buildings_data",
+        "outputs": [
+            {
+                "name": "data_len",
+                "type": "felt"
+            },
+            {
+                "name": "data",
+                "type": "felt*"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "name": "building_type",
                 "type": "felt"
             },
@@ -489,11 +539,15 @@
                 "type": "felt"
             },
             {
-                "name": "level",
+                "name": "recharge",
+                "type": "felt"
+            },
+            {
+                "name": "last_claim",
                 "type": "felt"
             }
         ],
-        "name": "_update_level",
+        "name": "update_building_claimed_data",
         "outputs": [],
         "type": "function"
     }

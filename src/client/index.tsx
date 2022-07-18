@@ -9,7 +9,6 @@ import {
 } from "@starknet-react/core";
 import { BrowserRouter } from "react-router-dom";
 import { AppStateProvider } from "./providers/GameContext";
-import { SelectStateProvider } from "./providers/SelectContext";
 import { NotifTransactionManagerProvider } from './providers/transactions'
 
 const container = document.getElementById("root");
@@ -23,9 +22,7 @@ root.render(
       <NotifTransactionManagerProvider>
         <BrowserRouter>
           <AppStateProvider>
-            <SelectStateProvider>
               <App />
-            </SelectStateProvider>
           </AppStateProvider>
         </BrowserRouter>
       </NotifTransactionManagerProvider>

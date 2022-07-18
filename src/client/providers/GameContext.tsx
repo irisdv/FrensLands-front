@@ -27,7 +27,7 @@ import { List } from 'immutable'
 export interface IFrame {
   id?: number;
   unique_id?: string;
-  type?: number;
+  level?: number;
   posX?: any;
   posY?: any;
   selected?: any;
@@ -52,7 +52,7 @@ export interface IPopUp {
 export interface IGameState {
   lastUpdated: string;
   currentBlock: number;
-  blockGame?: string;
+  blockGame?: number;
   loading: boolean;
   address?: string | undefined;
   tokenId?: number;
@@ -87,7 +87,7 @@ export interface IGameState {
 export const GameState: IGameState = {
   lastUpdated: "",
   currentBlock: 0,
-  blockGame: "",
+  blockGame: 0,
   loading: false,
   address: undefined,
   tokenId: 0,
@@ -181,7 +181,7 @@ interface SetERC1155Resources {
 
 interface SetLastBlock {
   type: "set_lastBlock";
-  blockGame?: string;
+  blockGame?: number;
 }
 
 interface SetPopulation {
@@ -576,7 +576,7 @@ export const AppStateProvider: React.FC<
           // console.log('_lastestBlock', toBN(_lastestBlock[0]).toString())
           dispatch({
             type: "set_lastBlock",
-            blockGame: toBN(_lastestBlock[0]).toString()
+            blockGame: toBN(_lastestBlock[0]).toNumber()
           });
         } catch (e) {
           console.warn("Error when retrieving get_latest_block in M02_Resources");

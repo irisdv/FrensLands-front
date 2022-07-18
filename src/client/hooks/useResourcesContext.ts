@@ -10,5 +10,5 @@ export default function useResourcesContext() {
             energy, frensCoins, wood, rock, coal, metal, populationBusy, populationFree, meat, cereal
         }
     )
-  }, [energy, frensCoins])
+  }, [energy, frensCoins, wood, rock, coal, metal, populationBusy, populationFree, meat, cereal])
 }

@@ -20,7 +20,14 @@
     font-family: 'Hpxl_Condensed';
     font-style: normal;
     font-weight: 400;
-    src: url('resources/fonts/Hpxl_CondensedV4_5.ttf');
+    src: url('resources/fonts/Hpxl_CondensedV6.ttf');
+}
+
+@font-face {
+    font-family: 'Tom_PXL';
+    font-style: normal;
+    font-weight: 400;
+    src: url('resources/fonts/Tom_PXLCondensedFill.ttf');
 }
 
 .fontHPxl {
@@ -28,7 +35,7 @@
 }
 .fontHPxl-sm {
     font-family: 'Hpxl_Condensed', monospace;
-    font-size: 10px
+    font-size: 14px
 }
 
 .font04B {
@@ -38,6 +45,15 @@
 .font8BITWonder {
     font-family: '8-BIT_WONDER', monospace;
     font-size: 10px;
+}
+
+.fontTom_PXL {
+    font-family: 'Tom_PXL', monospace;
+    font-size: 22px;
+    text-shadow: 2px 3px 2px #000;
+    -webkit-text-fill-color: #FFFFFF;
+    -webkit-text-stroke: 2px;
+    -webkit-font-smoothing: antialiased;
 }
 
 .pixelated {
@@ -82,14 +98,14 @@ body {
     height: 100vh;
     display: grid;
 } */
-.notifPanel {
-    /* position: relative; */
-    /* width: 100%;
-    height: 100%; */
-    /* width: 128px;
+/* .notifPanel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    width: 128px;
     height: 100vh;
-    display: inline-block; */
-}
+    display: inline-block;
+} */
 
 /* -------------------- MENU BAR -------------------- */
 
@@ -227,7 +243,7 @@ body {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
     width:calc(64px * 1);
-    background-position:calc(22 * 1 * 64px) calc(22 * 1 * 64px);
+    background-position:calc(22 * 1 * 64px) calc(21 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
 }
 
@@ -244,7 +260,7 @@ body {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
     width:calc(64px * 1);
-    background-position:calc(22 * 1 * 64px) calc(21 * 1 * 64px);
+    background-position:calc(20 * 1 * 64px) calc(21 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
 }
 .small3 {
@@ -298,6 +314,16 @@ body {
     background-size:calc(1408px * 1) calc(768px * 1);
 }
 
+/* Pop  */
+.small12{
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(17 * 1 * 64px) calc(21 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+
 /* <div class="my-sprite" style="--n:2;--i:2;--j:2"></div> */
 .my-sprite {
     --n:1; /* scaling factor */
@@ -328,6 +354,7 @@ body {
     padding-right: 135px;
     padding-top: 155px;
     padding-bottom: 150px;
+    pointer-events: none;
 }
 
 .smallGold {
@@ -363,6 +390,38 @@ body {
     height:calc(64px * 1);
     width:calc(64px * 1);
     background-position:calc(21 * 1 * 64px) calc(2 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+.btnSound1 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(18 * 1 * 64px) calc(18 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+.btnSound1:hover {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(17 * 1 * 64px) calc(18 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+.btnSound0 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(16 * 1 * 64px) calc(18 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+.btnSound0:hover {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(15 * 1 * 64px) calc(18 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
 }
 
@@ -425,6 +484,31 @@ body {
     height:calc(64px * 1);
     width:calc(64px * 2);
     background-position:calc(14 * 1 * 64px) calc(19 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+
+.btnHarvest {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(17 * 1 * 64px) calc(13 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+.btnHarvest:hover {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(15 * 1 * 64px) calc(13 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+.btnHarvest:active {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(13 * 1 * 64px) calc(13 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
 }
 
@@ -555,7 +639,8 @@ body {
     width:calc(64px * 1);
     background-position:calc(21 * 1 * 64px) calc(5 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
-    margin-top: 3px;
+    margin-top: 5px;
+    margin-left: 2px;
 }
 
 .menuHouse {
@@ -565,7 +650,8 @@ body {
     width:calc(64px * 1);
     background-position:calc(22 * 1 * 64px) calc(5 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
-    margin-top: 3px;
+    margin-top: 4px;
+    margin-left: 2px;
 }
 
 .menuEntertainment {
@@ -594,6 +680,7 @@ body {
     background-position:calc(15 * 1 * 64px) calc(5 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
     margin-top: 3px;
+    margin-left: -2px;
 }
 
 
@@ -691,7 +778,27 @@ body {
     background-position:calc(13 * 1 * 64px) calc(14 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
 }
+.btnClaimDisabled {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(11 * 1 * 64px) calc(14 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+    margin-left: 20px
+}
 
+.popUpClaim {
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(19 * 1 * 64px) calc(2 * 1* 64px);
+    background-size:calc(1408px* 1) calc(768px * 1);
+    position: absolute;
+    top: 57px;
+    left: 18px;
+    padding: 23px;
+}
 
 
 
@@ -717,6 +824,73 @@ CoalPlant = 21
 PoliceStation = 22
 Hospital = 23
 Lab = 24 */
+
+
+/* 1 = Cabane clean (2 = cabane destroyed) - 1  - 13 - 6
+12 cabin destroyed : - 12 - 6
+3 = House => 4 - 11 - 6
+4 = Lumberjack (tree farm) - 19 -- 10 - 6
+5 = Hotel (31 = upgrade) -> 6 - 9 - 6
+6 = Restaurant -> 9 - 8 - 6
+7 = Grocery Store -> 8 --- 7 - 6
+8 = Bakery -> 7 -- 6 - 6
+9 = Library -> 12 -- 5 - 6
+10 = Appartment small (33 = upgrade) -> 5 - 4 - 6
+11 = Bar -> 11 - 3 - 6
+12 = Swimming Pool -> 13 - 2 - 6
+13 = Cinema (29 = upgrade) -> 14 -- 1 - 6
+
+14 = Gold Mine (15 = with door) - 20 -- 13 - 2 / 12 - 2
+16 = Coal Mine (17 = with door) - 20 -- 11 - 2 / 10 - 2
+18 = Phosphore Mine (19 = with door) - NO -- 9 - 2 / 8 - 2
+20 = Metal Mine (21 = with door)  - 20 --- 7 - 2 / 6 - 2
+22 = Coal Mine skin 2 (23 = with door) [ignorer pour le moment, on verra plus tard si on différencie plus les mines) 
+5 - 2 / 4 / 2 
+
+27 = Police station (34 = upgrade) 22 - 13 - 4
+28 = House big - NO 
+30 = Wheat farm -> 16 -- 10 - 4
+32 = Bio Lab  - 24 -- 8 - 4
+35 = Hospital - 23 -- 5 - 4
+36 = Vegetable Farm -17 -- 4 - 4
+37 = Mall -> 10 -- 3 - 4
+38 = Market -> 15 -- 2- 4
+39 = Cow Farm - 18 -- 1 - 4
+
+*/
+    /* const Rock = 2
+    const Tree = 3 */
+    /* const CoalPlant = 21 */
+
+.building1 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(13 * 2 * 64px) calc(6 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
+}
+/* Tree  */
+/* .building2 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(13 * 2 * 64px) calc(6 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
+}
+/* Rocks */
+/* .building3 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(13 * 2 * 64px) calc(6 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
+} */
 
 .building4 {
     display:inline-block;
@@ -786,7 +960,7 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(3 * 2 * 64px) calc(3 * 2 * 64px);
+    background-position:calc(3 * 2 * 64px) calc(6 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
     pointer-events: none;
 }
@@ -795,7 +969,7 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(5 * 2 * 64px) calc(3 * 2 * 64px);
+    background-position:calc(5 * 2 * 64px) calc(6 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
     pointer-events: none;
 }
@@ -804,7 +978,7 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(2 * 2 * 64px) calc(3 * 2 * 64px);
+    background-position:calc(2 * 2 * 64px) calc(6 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
     pointer-events: none;
 }
@@ -813,7 +987,7 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(1 * 2 * 64px) calc(3 * 2 * 64px);
+    background-position:calc(1 * 2 * 64px) calc(6 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
     pointer-events: none;
 }
@@ -822,7 +996,7 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(2 * 2 * 64px) calc(1 * 2 * 64px);
+    background-position:calc(2 * 2 * 64px) calc(4 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
     pointer-events: none;
 }
@@ -831,7 +1005,7 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(4 * 2 * 64px) calc(1 * 2 * 64px);
+    background-position:calc(10 * 2 * 64px) calc(4 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
     pointer-events: none;
 }
@@ -840,7 +1014,7 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(4 * 2 * 64px) calc(1 * 2 * 64px);
+    background-position:calc(4 * 2 * 64px) calc(4 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
     pointer-events: none;
 }
@@ -849,7 +1023,7 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(1 * 2 * 64px) calc(1 * 2 * 64px);
+    background-position:calc(1 * 2 * 64px) calc(4 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
     pointer-events: none;
 }
@@ -859,43 +1033,61 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(47 * 2 * 64px) calc(15 * 2 * 64px);
+    background-position:calc(10 * 2 * 64px) calc(6 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
     pointer-events: none;
 }
 .building20 {
     display:inline-block;
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
-    height:calc(64px * 1);
-    width:calc(64px * 1);
-    background-position:calc(43 * 1 * 32px) calc(15 * 1 * 32px);
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(6 * 2 * 64px) calc(2 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
     pointer-events: none;
 }
 .building21 {
     display:inline-block;
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
-    height:calc(64px * 1);
-    width:calc(64px * 1);
-    background-position:calc(39 * 1 * 32px) calc(15 * 1 * 32px);
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(6 * 2 * 64px) calc(2 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
     pointer-events: none;
 }
 .building22 {
     display:inline-block;
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
-    height:calc(64px * 1);
-    width:calc(64px * 1);
-    background-position:calc(35 * 1 * 32px) calc(15 * 1 * 32px);
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(13 * 2 * 64px) calc(4 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
     pointer-events: none;
 }
 .building23 {
     display:inline-block;
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
-    height:calc(64px * 1);
-    width:calc(64px * 1);
-    background-position:calc(27 * 1 * 32px) calc(15 * 1 * 32px);
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(5 * 2 * 64px) calc(4 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
+}
+.building24 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(8 * 2 * 64px) calc(4 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
+}
+.building9 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(8 * 2 * 64px) calc(6 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
     pointer-events: none;
 }

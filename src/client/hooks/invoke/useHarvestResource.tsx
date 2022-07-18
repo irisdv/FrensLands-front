@@ -10,7 +10,7 @@ export default function useHarvestResource() {
 
   const { addTransaction } = useNotifTransactionManager()
 
-  return useCallback(async (tokenId : number, pos_start: number) => {
+  return useCallback(async (tokenId : number, pos_start: number, unique_id : number, type_id: number, level : number) => {
     if (!contract || !account) {
       throw new Error('Missing Dependencies')
     }
@@ -20,7 +20,7 @@ export default function useHarvestResource() {
     }
 
     return contract
-      .invoke('farm', [uint256.bnToUint256(tokenId as number), pos_start])
+      .invoke('harvest', [uint256.bnToUint256(tokenId as number), pos_start])
       .then((tx: AddTransactionResponse) => {
         console.log('Transaction hash: ', tx.transaction_hash)
 
@@ -31,7 +31,10 @@ export default function useHarvestResource() {
           metadata: {
             method: "harvest_resources",
             message: "Harvest resource",
-            pos_start: pos_start
+            pos_start: pos_start,
+            unique_id: unique_id,
+            type_id: type_id,
+            level_start: level
           }
         })
 

@@ -34,18 +34,23 @@
                 "type": "MultipleResources"
             },
             {
-                "name": "pop_max",
+                "name": "pop_min",
                 "offset": 12,
                 "type": "felt"
             },
             {
-                "name": "pop_min",
+                "name": "pop_max",
                 "offset": 13,
+                "type": "felt"
+            },
+            {
+                "name": "new_pop",
+                "offset": 14,
                 "type": "felt"
             }
         ],
         "name": "BuildingFixedData",
-        "size": 14,
+        "size": 15,
         "type": "struct"
     },
     {
@@ -165,19 +170,11 @@
                 "type": "Uint256"
             },
             {
-                "name": "daily_harvest_len",
-                "type": "felt"
-            },
-            {
-                "name": "daily_harvest",
-                "type": "felt*"
-            },
-            {
-                "name": "operation",
+                "name": "current_block",
                 "type": "felt"
             }
         ],
-        "name": "fill_ressources_harvest",
+        "name": "claim",
         "outputs": [],
         "type": "function"
     },
@@ -188,125 +185,11 @@
                 "type": "Uint256"
             },
             {
-                "name": "daily_cost_len",
-                "type": "felt"
-            },
-            {
-                "name": "daily_cost",
-                "type": "felt*"
-            },
-            {
-                "name": "operation",
+                "name": "pos_start",
                 "type": "felt"
             }
         ],
-        "name": "fill_ressources_cost",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            },
-            {
-                "name": "daily_gold",
-                "type": "felt"
-            },
-            {
-                "name": "daily_energy",
-                "type": "felt"
-            },
-            {
-                "name": "operation",
-                "type": "felt"
-            }
-        ],
-        "name": "fill_gold_energy_harvest",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            },
-            {
-                "name": "daily_gold",
-                "type": "felt"
-            },
-            {
-                "name": "daily_energy",
-                "type": "felt"
-            },
-            {
-                "name": "operation",
-                "type": "felt"
-            }
-        ],
-        "name": "fill_gold_energy_cost",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            }
-        ],
-        "name": "claim_resources",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            },
-            {
-                "name": "allocate",
-                "type": "felt"
-            },
-            {
-                "name": "number",
-                "type": "felt"
-            }
-        ],
-        "name": "update_population",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            },
-            {
-                "name": "_block_nb",
-                "type": "felt"
-            }
-        ],
-        "name": "update_block_number",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            },
-            {
-                "name": "account",
-                "type": "felt"
-            }
-        ],
-        "name": "_receive_resources_erc20",
+        "name": "harvest",
         "outputs": [],
         "type": "function"
     },
@@ -387,65 +270,18 @@
             {
                 "name": "tokenId",
                 "type": "Uint256"
-            }
-        ],
-        "name": "fetch_daily_ressources_harvest",
-        "outputs": [
+            },
             {
-                "name": "daily_ressources_len",
+                "name": "allocate",
                 "type": "felt"
             },
             {
-                "name": "daily_ressources",
-                "type": "felt*"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            }
-        ],
-        "name": "fetch_daily_ressources_cost",
-        "outputs": [
-            {
-                "name": "daily_ressources_len",
-                "type": "felt"
-            },
-            {
-                "name": "daily_ressources",
-                "type": "felt*"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            },
-            {
-                "name": "daily_ressources_len",
-                "type": "felt"
-            },
-            {
-                "name": "daily_ressources",
-                "type": "felt*"
-            },
-            {
-                "name": "id",
+                "name": "number",
                 "type": "felt"
             }
         ],
-        "name": "fill_ressource_harvest_array",
+        "name": "update_population",
         "outputs": [],
-        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -455,89 +291,12 @@
                 "type": "Uint256"
             },
             {
-                "name": "daily_ressources_len",
-                "type": "felt"
-            },
-            {
-                "name": "daily_ressources",
-                "type": "felt*"
-            },
-            {
-                "name": "id",
+                "name": "_block_nb",
                 "type": "felt"
             }
         ],
-        "name": "fill_ressource_cost_array",
+        "name": "update_block_number",
         "outputs": [],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            }
-        ],
-        "name": "daily_gold_harvest",
-        "outputs": [
-            {
-                "name": "gold",
-                "type": "felt"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            }
-        ],
-        "name": "daily_gold_cost",
-        "outputs": [
-            {
-                "name": "gold",
-                "type": "felt"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            }
-        ],
-        "name": "daily_energy_harvest",
-        "outputs": [
-            {
-                "name": "energy",
-                "type": "felt"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            }
-        ],
-        "name": "daily_energy_cost",
-        "outputs": [
-            {
-                "name": "energy",
-                "type": "felt"
-            }
-        ],
-        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -547,11 +306,45 @@
                 "type": "Uint256"
             },
             {
-                "name": "pos_start",
+                "name": "account",
                 "type": "felt"
             }
         ],
-        "name": "farm",
+        "name": "_receive_resources_erc20",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "caller",
+                "type": "felt"
+            },
+            {
+                "name": "amount",
+                "type": "Uint256"
+            }
+        ],
+        "name": "_pay_frens_coins",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "tokenId",
+                "type": "Uint256"
+            },
+            {
+                "name": "operation",
+                "type": "felt"
+            },
+            {
+                "name": "val",
+                "type": "felt"
+            }
+        ],
+        "name": "_update_energy",
         "outputs": [],
         "type": "function"
     }

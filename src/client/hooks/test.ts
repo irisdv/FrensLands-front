@@ -7,6 +7,6 @@ export function useTestContract() {
   return useContract({
     abi: TestAbi as Abi,
     address:
-      "0x070a11b308ea853c4d60bdfdc95ca90fc7795a04f0d4a3b4677aae7fb2b0706a",
+      "0x042ac514ced520e889d4ed696ad3717d818837f0e1d0b7c33ccc794b7b697704",
   });
 }
