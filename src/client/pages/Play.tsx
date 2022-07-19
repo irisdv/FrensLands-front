@@ -178,7 +178,9 @@ export default function Play() {
           </BuildingStateProvider>
         </>
       ) : (
-        <p>Loading map</p>
+        <div style={{backgroundColor: "rgb(21, 29, 40)", width: "100vw", height: "100vh"}}>
+          <img src="resources/front/LoadingScreen.gif" className="mx-auto my-auto" />
+        </div>
       )}
     </>
   );

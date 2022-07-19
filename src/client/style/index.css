@@ -30,6 +30,13 @@
     src: url('resources/fonts/Tom_PXLCondensedFill.ttf');
 }
 
+@font-face {
+    font-family: 'Hpxl_JuicySmall';
+    font-style: normal;
+    font-weight: 400;
+    src: url('resources/fonts/Hpxl_JuicySmall_6.ttf');
+}
+
 .fontHPxl {
     font-family: 'Hpxl_Condensed', monospace;
 }
@@ -37,16 +44,13 @@
     font-family: 'Hpxl_Condensed', monospace;
     font-size: 14px
 }
-
 .font04B {
     font-family: '04B_03', monospace;
 }
-
 .font8BITWonder {
     font-family: '8-BIT_WONDER', monospace;
     font-size: 10px;
 }
-
 .fontTom_PXL {
     font-family: 'Tom_PXL', monospace;
     font-size: 22px;
@@ -54,6 +58,10 @@
     -webkit-text-fill-color: #FFFFFF;
     -webkit-text-stroke: 2px;
     -webkit-font-smoothing: antialiased;
+}
+.fontHpxl_JuicySmall {
+    font-family: 'Hpxl_JuicySmall', monospace;
+    font-size: 8px;
 }
 
 .pixelated {
@@ -212,7 +220,7 @@ body {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
     width:calc(64px * 1);
-    background-position:calc(17 * 1 * 64px) calc(23 * 1 * 64px);
+    background-position:calc(17 * 1 * 64px) calc(22 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
 }
 #menuMeat {
@@ -1079,7 +1087,7 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(6 * 2 * 64px) calc(2 * 2 * 64px);
+    background-position:calc(3 * 2 * 64px) calc(2 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
     pointer-events: none;
 }
