@@ -11,12 +11,15 @@ import { uint256 } from "starknet";
 
 import { useMapsContract } from "../hooks/contracts/maps";
 import { useWorldsContract } from "../hooks/contracts/worlds";
+import { useBuildingsContract } from "../hooks/contracts/buildings";
 import { useGameContext } from "../hooks/useGameContext";
 import useActiveNotifications from '../hooks/useNotifications'
 import useMintMap from "../hooks/invoke/useMintMap";
 import useStartGame from "../hooks/invoke/useStartGame"
 
 import useTest from "../hooks/invoke/useTest";
+import { useERC1155Contract } from "../hooks/contracts/erc1155";
+import useApprove from "../hooks/invoke/useApprove";
 
 export default function Home() {
   // const { account } = useStarknet();
@@ -37,15 +40,19 @@ export default function Home() {
   // Call
   const { contract: worlds } = useWorldsContract();
   const { contract: maps } = useMapsContract();
+  const { contract: buildings } = useBuildingsContract();
+  const { contract: erc1155 } = useERC1155Contract();
   const [watch, setWatch] = useState(true);
   // Invoke
   const generateMap = useMintMap()
   const initializeGame = useStartGame()
+  const approveMO3ERC1155 = useApprove()
 
   const [minting, setMinting] = useState<any>(null)
   const [settingUp, setSettingUp] = useState<any>(null)
   const [canPlay, setCanPlay] = useState(0)
   const [message, setMessage] = useState<any>(null)
+  const [approved, setApproved] = useState<any>(null)
 
   useEffect(() => {
     if (account) {
@@ -69,11 +76,11 @@ export default function Home() {
     })
   })
 
-  useEffect(() => {
-    if (canPlay == 1) {
-      navigate('/play')
-    }
-  }, [canPlay])
+  // useEffect(() => {
+  //   if (canPlay == 1 && approved) {
+  //     navigate('/play')
+  //   }
+  // }, [canPlay])
 
   // Fetch NFT balance of user
   const { data: fetchBalanceNFTResult } = useStarknetCall({
@@ -105,6 +112,8 @@ export default function Home() {
     if (fetchGameStatus && fetchGameStatus.length > 0) {
 
       var status = toBN(fetchGameStatus[0]).toNumber();
+
+      console.log('status game', status)
       
       if (status == 1) setCanPlay(1)
 
@@ -157,6 +166,36 @@ export default function Home() {
     }
   }, [minting, activeNotifications])
 
+  // Check if is approved 
+  const { data: fetchApprovalState } = useStarknetCall({
+    contract: erc1155,
+    method: "isApprovedForAll",
+    args: [account, buildings?.address],
+    options: { watch },
+  });
+
+  const approvalStatusValue = useMemo(() => {
+    if (fetchApprovalState && fetchApprovalState.length > 0) {
+      var elem = uint256.uint256ToBN(fetchApprovalState[0]);
+      // console.log("Approval state", uint256.uint256ToBN(fetchApprovalState[0]).toNumber());
+      var appr = toBN(fetchApprovalState[0]).toNumber();
+
+      console.log('appr', appr)
+
+      if (appr) setApproved(true)
+
+      return { appr };
+    }
+  }, [fetchApprovalState, account, tokenId, approved]);
+
+  // Si faux, btn invoke 
+
+  const approveM03 = () => {
+    let tx_hash = approveMO3ERC1155()
+    console.log('tx hash approval ERC1155', tx_hash)
+    setApproved(tx_hash);
+  }
+
   // Invoke Starting game 
   const startGame = () => {
     console.log('startingGame invoke')
@@ -180,7 +219,7 @@ export default function Home() {
         } else if (data[0].content.status == 'ACCEPTED_ON_L1' || data[0].content.status == 'ACCEPTED_ON_L2') {
           setMessage("Your transaction was accepted. Now you can play!")
           setSettingUp(true)
-          navigate('/play')
+          if (approved) navigate('/play')
         } else {
           setMessage("Your transaction is ongoing.")
         }
@@ -255,17 +294,31 @@ export default function Home() {
               {account && BalanceNFTValue && (BalanceNFTValue.NFTbalance == 1 || minting == true) && GameStatusValue && GameStatusValue.gameStatus == 0 &&
                   <>
                     <div style={{height: "128px", width: "128px", marginTop: "510px", marginLeft: "576px"}} className="absolute"> 
-                      <button className="pixelated btnPlay" onClick={() => startGame()}>Start game</button>
+                      <button className="pixelated btnPlay" onClick={() => startGame()}></button>
                     </div>
                   </>
               }
-              {/* Add set approval for all  */}
+              {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && GameStatusValue && GameStatusValue.gameStatus == 1 && !approved &&
+                  <>
+                    <div style={{height: "128px", width: "128px", marginTop: "545px", marginLeft: "576px"}} className="absolute"> 
+                      <button className="pixelated btnApproval" onClick={() => approveM03()}></button>
+                    </div>
+                  </>
+              }
               {!account &&
                 <div style={{height: "128px", width: "128px", marginTop: "414px", marginLeft: "576px"}} className="absolute"> 
                   <ConnectWallet/>
                 </div>
               }
-      </div>
+              {account && canPlay && approved &&
+              <>
+                <div style={{height: "128px", width: "128px", marginTop: "510px", marginLeft: "576px"}} className="absolute"> 
+                  <button className="pixelated btnPlay" onClick={() => navigate('/play')}></button>
+                </div>
+              </>
+              
+              }
+        </div>
       </div>
       {/* <button onClick={() => testContract()}>TEST test test test </button> */}
     </>

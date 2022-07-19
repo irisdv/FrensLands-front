@@ -11,9 +11,6 @@ export function NotifItem(props: any) {
   const notifKey = props.notifKey
   var index = activeNotifications.map(function(e) { return e.key; }).indexOf(notifKey);
 
-  console.log('index', index)
-  console.log('props', props)
-
   const removeThisNotif = useCallback(() => removeNotif(notifKey), [notifKey, removeNotif])
   const removeThisTransaction = useCallback(() => removeTransaction(content.description.transactionHash), [content.description.transactionHash, removeNotif])
 
@@ -32,19 +29,21 @@ export function NotifItem(props: any) {
   //   }
   // }, [removeThisNotif, content.status])
 
-  console.log('activeNotifications', activeNotifications)
-  console.log('props', props)
+  // console.log('activeNotifications', activeNotifications)
+  // console.log('props', props)
 
   let textNotif = "";
   if (content.description.method == "get_map") {
     textNotif = "Minting a map..."
   } else if (content.description.method  == "start_game") {
     textNotif = "Initializing game..."
-  } else if (content.description.method == "harvest_resources") {
+  } else if (content.description.method == "harvest") {
     textNotif = "Frens are harvesting..."
   } else if (content.description.method == "claim_resources") {
     textNotif = "Your resources are on it's way..."
-} else if (content.description.method == "build") {
+  } else if (content.description.method == "build") {
+    textNotif = "Frens are building hard... Almost ready..."
+  } else if (content.description.method == "approve") {
     textNotif = "Frens are building hard... Almost ready..."
   } else {
     textNotif = "Testing..."

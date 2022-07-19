@@ -87,7 +87,10 @@ body {
     background-size:calc(1408px* 1) calc(768px * 1);
     /* position: absolute;
     bottom: 0px; */
-    padding: 23px;
+    padding-left: 23px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
     left: 0px;
     bottom: 0px;
     position: absolute;
@@ -725,6 +728,31 @@ body {
     height:calc(64px * 2);
     width:calc(64px * 3);
     background-position:calc(13 * 1 * 64px) calc(16 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+
+.btnApproval {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(9 * 1 * 64px) calc(14 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+.btnApproval:hover {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(7 * 1 * 64px) calc(14 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+.btnApproval:active {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(5 * 1 * 64px) calc(14 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
 }
 
