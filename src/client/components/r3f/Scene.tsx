@@ -22,11 +22,12 @@ import { useTexture } from "@react-three/drei";
 import { NearestFilter, RepeatWrapping } from "three";
 import { StarknetProvider, useStarknet, useStarknetTransactionManager } from '@starknet-react/core';
 import { StarknetContext } from '@starknet-react/core/dist/providers/starknet';
+import StateContext from '../../providers/GameContext'
 
 
 
 export const Scene = (props : any) => {
-    const ContextBridge = useContextBridge(SelectContext, BuildingContext, TransactionManagerContext, StarknetContext)
+    const ContextBridge = useContextBridge(SelectContext, BuildingContext, TransactionManagerContext, StarknetContext, StateContext)
     const refCanvas = useRef<any>()
 
     const { mapArray, textArrRef, rightBuildingType, worldType, UBlockIDs } = props

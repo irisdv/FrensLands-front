@@ -80,6 +80,7 @@ export default function Play() {
       var indexI = 1;
       var indexJ = 1;
       var i = 0;
+      var buildingIDs = 0;
 
       while (indexI < 17)
       {
@@ -91,7 +92,8 @@ export default function Play() {
           // validatedBlockArray[indexI][indexJ] = decompose(mapArray[i]);
 
           frontArray[indexI][indexJ] = decompose(mapArray[i]);
-          frontArray[indexI][indexJ][4] = i;
+          // frontArray[indexI][indexJ][4] = i;
+          if (frontArray[indexI][indexJ][4] != 0) buildingIDs++;
 
           indexJ++;
           i++;
@@ -99,7 +101,7 @@ export default function Play() {
         indexJ = 1;
         indexI++;
         }
-        setUBlockIDs(i)
+        setUBlockIDs(buildingIDs)
         return { frontArray }
     }
   }, [mapArray])
@@ -150,6 +152,9 @@ export default function Play() {
 
     return (tempDecomp);
   }
+
+  // console.log('tokenId', tokenId)
+  // console.log('account', account)
 
   return (
     <>

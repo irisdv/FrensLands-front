@@ -37,7 +37,7 @@ export function NotifItem(props: any) {
     textNotif = "Minting a map..."
   } else if (content.description.method  == "start_game") {
     textNotif = "Initializing game..."
-  } else if (content.description.method == "harvest") {
+  } else if (content.description.method == "harvest_resources") {
     textNotif = "Frens are harvesting..."
   } else if (content.description.method == "claim_resources") {
     textNotif = "Your resources are on it's way..."

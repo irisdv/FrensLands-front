@@ -10,17 +10,22 @@ export default function useBuild() {
 
   const { addTransaction } = useNotifTransactionManager()
 
-  return useCallback(async (tokenId : number, building_type_id: number, level: number, pos_start: number, allocated_pop: number) => {
+  return useCallback(async (tokenId : number, building_type_id: number, level: number, pos_start: number, posX: number, posY: number, uniqueId: number) => {
     if (!contract || !account) {
       throw new Error('Missing Dependencies')
     }
 
-    if (!tokenId || tokenId == 0 || !pos_start || !building_type_id || !level || !allocated_pop) {
+    console.log('tokenId', tokenId)
+    console.log('building_type_id', building_type_id)
+    console.log('level', level)
+    console.log('pos_start', pos_start)
+
+    if (!tokenId || tokenId == 0 || !pos_start || !building_type_id || !level) {
         throw new Error('Missing Arguments')
     }
 
     return contract
-      .invoke('upgrade', [uint256.bnToUint256(tokenId as number), building_type_id, level, pos_start, allocated_pop])
+      .invoke('upgrade', [uint256.bnToUint256(tokenId as number), building_type_id, level, pos_start, 1])
       .then((tx: AddTransactionResponse) => {
         console.log('Transaction hash: ', tx.transaction_hash)
 
@@ -31,6 +36,10 @@ export default function useBuild() {
           metadata: {
             method: "build",
             message: "Build",
+            posX: posX,
+            posY: posY,
+            uniqueId: uniqueId,
+            type_id: building_type_id
           }
         })
 

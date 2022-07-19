@@ -17,6 +17,7 @@ import { StarknetProvider, useStarknet, useStarknetTransactionManager } from '@s
 
 import useTxGame from '../../hooks/useTxGame'
 import { useNotifTransactionManager } from '../../providers/transactions';
+import useBuild from '../../hooks/invoke/useBuild';
 
 export interface ISelectObject {
     unique_id?: any;
@@ -35,6 +36,7 @@ export const Map = (props : any)=> {
 
     // Context
     const { account } = useStarknet();
+    const { tokenId } = useGameContext();
     const { transactions, removeTransaction } = useNotifTransactionManager()
     const { frameData, updateBuildingFrame, sound } = useSelectContext();
     const { buildingList, addBuilding } = useBuildingContext()
@@ -203,8 +205,19 @@ export const Map = (props : any)=> {
 
             if (objectSelected == 1 && mouseLeftPressed == 1)
             {
+                console.log('posX', frontBlockArray[rayY][rayX][0])
+                console.log('posY', frontBlockArray[rayY][rayX][1])
+                console.log('comp', frontBlockArray[rayY][rayX])
+                console.log('level', frontBlockArray[rayY][rayX][7])
                 // OPEN POPUP BUILDING WITH INFORMATION - NOT SELECTED
-                updateBuildingFrame(true, {"id": selectedObj?.type_id, "level": frontBlockArray[rayY][rayX][7], "unique_id": selectedObj?.unique_id, "posX": frontBlockArray[rayY][rayX][0], "posY": frontBlockArray[rayY][rayX][1], "selected": 0});
+                updateBuildingFrame(true, {
+                    "id": selectedObj?.type_id, 
+                    "level": frontBlockArray[rayY][rayX][7], 
+                    "unique_id": selectedObj?.unique_id, 
+                    "posX": frontBlockArray[rayY][rayX][0], 
+                    "posY": frontBlockArray[rayY][rayX][1], 
+                    "selected": 0
+                });
             }
         }
 
@@ -311,14 +324,17 @@ export const Map = (props : any)=> {
         return (0);
     }
 
-    const generateTest = useTest()
-    const [testing, setTesting] = useState<any>(null)
+    const generateBuild = useBuild()
+    // const [building, setBuilding] = useState<any>(null)
 
     const buildTx = async (uniqueId : number, typeId : number, posX: number, posY: number) => {
-    //   console.log("invoking test", account);
-    //   let tx_hash = await generateTest(uniqueId, typeId, posX, posY)
-    //   console.log('tx hash', tx_hash)
-    //   setTesting(tx_hash);
+        if (account && tokenId) {
+            console.log("invoking test", account);
+            const pos_start : number = (posY - 1) * 40 + posX
+            let tx_hash = await generateBuild(tokenId, typeId, 1, pos_start, posX, posY, uniqueId)
+            console.log('tx hash', tx_hash)
+          //   setTesting(tx_hash);
+        }
     };
 
     useEffect(() => {
@@ -337,11 +353,16 @@ export const Map = (props : any)=> {
                         }
                 }
                 // TX for harvesting 
-                if (tx.status == 'ACCEPTED_ON_L2' && tx.metadata.method == 'harvest') {
+                if (tx.status == 'ACCEPTED_ON_L2' && tx.metadata.method == 'harvest_resources') {
                     if (frontBlockArray[tx.metadata.posY][tx.metadata.posX] 
                         && frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] == tx.metadata.level_start ) {
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] = tx.metadata.level_start + 1
                         }
+                    if (tx.metadata.level_start == 3) {
+                        frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0
+                        frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0
+                        frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] = 1
+                    }
                 }
             })
         }

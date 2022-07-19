@@ -10,7 +10,7 @@ export default function useHarvestResource() {
 
   const { addTransaction } = useNotifTransactionManager()
 
-  return useCallback(async (tokenId : number, pos_start: number, unique_id : number, type_id: number, level : number) => {
+  return useCallback(async (tokenId : number, pos_start: number, unique_id : number, type_id: number, level : number, posX: number, posY: number) => {
     if (!contract || !account) {
       throw new Error('Missing Dependencies')
     }
@@ -32,6 +32,8 @@ export default function useHarvestResource() {
             method: "harvest_resources",
             message: "Harvest resource",
             pos_start: pos_start,
+            posX: posX,
+            posY: posY,
             unique_id: unique_id,
             type_id: type_id,
             level_start: level

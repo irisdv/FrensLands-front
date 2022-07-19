@@ -102,19 +102,10 @@ export function BuildingFrame(props: any) {
     }
   }, [account, tokenId])
 
-  const harvestingResources = (id : number, pos_x: number, pos_y: number) => {
-    // let pos_start = 43;
-    // 48 = 802103003882221
-
-    let pos_start = (((16 - (pos_y - 1)) * 40) + (pos_x) + 1);
-    console.log('pos_x', pos_x)
-    console.log('pos_y', pos_y)
-    console.log('pos_start', pos_start)
-
-    if (mapArray) console.log('mapArray frame', mapArray[pos_start])
-
+  const harvestingResources = (type_id : number, pos_x: number, pos_y: number, level : number) => {
+    let pos_start = (pos_y - 1) * 40 + pos_x
     if (tokenId) {
-      let tx_hash = harvestingInvoke(tokenId, pos_start, parseInt(frameData?.unique_id as string), id, pos_x)
+      let tx_hash = harvestingInvoke(tokenId, pos_start, parseInt(frameData?.unique_id as string), type_id, level, pos_x, pos_y)
       console.log('tx hash harvesting resource', tx_hash)
       setHarvesting(tx_hash);
     } else {
@@ -283,8 +274,7 @@ export function BuildingFrame(props: any) {
               {frameData && frameData.id  ?
                 frameData && (frameData.id == 2 || frameData.id == 3 || frameData.id == 20 ) ?
                     <>
-                      <div className="btnHarvest" onClick={() => harvestingResources(frameData.id as number, frameData.posX, frameData.posY)}></div>
-                      {/* <div className="btnHarvest" onClick={() => testContract(frameData?.unique_id, frameData.id as number, frameData.posX, frameData.posY)}>Harvest Resource</div>                       */}
+                      <div className="btnHarvest" onClick={() => harvestingResources(frameData.id as number, frameData.posX, frameData.posY, frameData.level as number)}></div>
                     </>
                   :
                     (frameData && frameData.id == 1) ?
