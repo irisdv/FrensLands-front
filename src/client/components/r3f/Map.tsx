@@ -205,10 +205,10 @@ export const Map = (props : any)=> {
 
             if (objectSelected == 1 && mouseLeftPressed == 1)
             {
-                console.log('posX', frontBlockArray[rayY][rayX][0])
-                console.log('posY', frontBlockArray[rayY][rayX][1])
-                console.log('comp', frontBlockArray[rayY][rayX])
-                console.log('level', frontBlockArray[rayY][rayX][7])
+                // console.log('posX', frontBlockArray[rayY][rayX][0])
+                // console.log('posY', frontBlockArray[rayY][rayX][1])
+                // console.log('comp', frontBlockArray[rayY][rayX])
+                // console.log('level', frontBlockArray[rayY][rayX][7])
                 // OPEN POPUP BUILDING WITH INFORMATION - NOT SELECTED
                 updateBuildingFrame(true, {
                     "id": selectedObj?.type_id, 

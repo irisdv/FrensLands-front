@@ -47,16 +47,8 @@
         {
             "name": "Cabin",
             "category": "Housing",
-            "description": "A small cabin to house your first fren. Fixing it will bring 2 new frens into your community.",
             "cost_update": {
                 "level" : [
-                    {
-                        "resources": [],
-                        "gold": 0,
-                        "energy": 0,
-                        "pop_min": 0,
-                        "new_pop": 1
-                    },
                     {
                         "resources": [
                             {
@@ -68,6 +60,13 @@
                         "energy": 0,
                         "pop_min": 0,
                         "new_pop": 2
+                    },
+                    {
+                        "resources": [],
+                        "gold": 0,
+                        "energy": 0,
+                        "pop_min": 0,
+                        "new_pop": 1
                     }
                 ]
             },
@@ -98,7 +97,10 @@
                         "energy": 0
                     }
                 ]
-            }
+            },
+            "pop_min": 0,
+            "new_pop": 2,
+            "description": "A small cabin to house your first fren. Fixing it will bring 2 new frens into your community."
         },
         {
             "name": "Rock",
@@ -109,7 +111,11 @@
                         "resources": [
                             {
                                 "id": 3,
-                                "quantity": 5
+                                "quantity": 3
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 2
                             },
                             {
                                 "id": 10,
@@ -124,7 +130,11 @@
                         "resources": [
                             {
                                 "id": 3,
-                                "quantity": 5
+                                "quantity": 3
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 2
                             },
                             {
                                 "id": 10,
@@ -139,7 +149,11 @@
                         "resources": [
                             {
                                 "id": 3,
-                                "quantity": 5
+                                "quantity": 3
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 2
                             },
                             {
                                 "id": 10,
@@ -155,17 +169,56 @@
             "daily_cost": {
                 "level" : [
                     {
-                        "resources": [],
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 2
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 3
+                            }
+                        ],
                         "gold": 0,
                         "energy": 0
                     },
                     {
-                        "resources": [],
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 2
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 3
+                            }
+                        ],
                         "gold": 0,
                         "energy": 0
                     },
                     {
-                        "resources": [],
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 2
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 3
+                            }
+                        ],
                         "gold": 3,
                         "energy": 0
                     }
@@ -205,7 +258,9 @@
                     }
                 ]
             },
-            "description": "Rocks can be harvested 3 times."
+            "pop_min": 1,
+            "new_pop": 0,
+            "description": "Rocks can be harvested 3 times. You need to have one fren available to harvest a rock."
         },
         {
             "name": "Tree",
@@ -215,6 +270,10 @@
                     {
                         "resources": [
                             {
+                                "id": 3,
+                                "quantity": 2
+                            },
+                            {
                                 "id": 5,
                                 "quantity": 3
                             },
@@ -231,6 +290,10 @@
                     {
                         "resources": [
                             {
+                                "id": 3,
+                                "quantity": 2
+                            },
+                            {
                                 "id": 5,
                                 "quantity": 3
                             },
@@ -246,6 +309,10 @@
                     },
                     {
                         "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 2
+                            },
                             {
                                 "id": 5,
                                 "quantity": 3
@@ -265,17 +332,56 @@
             "daily_cost": {
                 "level" : [
                     {
-                        "resources": [],
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 2
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 1
+                            }
+                        ],
                         "gold": 1,
                         "energy": 0
                     },
                     {
-                        "resources": [],
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 2
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 1
+                            }
+                        ],
                         "gold": 1,
                         "energy": 0
                     },
                     {
-                        "resources": [],
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 2
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 1
+                            }
+                        ],
                         "gold": 1,
                         "energy": 0
                     }
@@ -315,7 +421,9 @@
                     }
                 ]
             },
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+            "pop_min": 1,
+            "new_pop": 0,
+            "description": "Trees can be harvested 3 times. You need to have one fren available to harvest a tree."
         },
         {
             "name": "House",
@@ -334,6 +442,10 @@
                             },
                             {
                                 "id": 3,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 5,
                                 "quantity": 3
                             },
                             {
@@ -386,7 +498,11 @@
                             },
                             {
                                 "id": 3,
-                                "quantity": 7
+                                "quantity": 5
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 8
                             },
                             {
                                 "id": 10,
@@ -423,7 +539,7 @@
             },
             "pop_min": 0,
             "new_pop": 20,
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+            "description": "Appartments bring new frens into your community."
         },
         {
             "name": "Hotel",
@@ -442,7 +558,11 @@
                             },
                             {
                                 "id": 3,
-                                "quantity": 9
+                                "quantity": 5
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 8
                             },
                             {
                                 "id": 6,
@@ -473,6 +593,10 @@
                                 "quantity": 10
                             },
                             {
+                                "id": 5,
+                                "quantity": 10
+                            },
+                            {
                                 "id": 11,
                                 "quantity": 3
                             }
@@ -498,7 +622,7 @@
             },
             "pop_min": 5,
             "new_pop": 28,
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+            "description": "Hotels attracts new frens into your community."
         },
         {
             "name": "Bakery",
@@ -517,7 +641,11 @@
                             },
                             {
                                 "id": 3,
-                                "quantity": 5
+                                "quantity": 2
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 3
                             },
                             {
                                 "id": 10,
@@ -537,6 +665,10 @@
                         "resources": [
                             {
                                 "id": 3,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 5,
                                 "quantity": 3
                             },
                             {
@@ -588,7 +720,11 @@
                             },
                             {
                                 "id": 3,
-                                "quantity": 14
+                                "quantity": 7
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 7
                             },
                             {
                                 "id": 6,
@@ -616,6 +752,10 @@
                         "resources": [
                             {
                                 "id": 3,
+                                "quantity": 10
+                            },
+                            {
+                                "id": 5,
                                 "quantity": 10
                             },
                             {
@@ -648,7 +788,7 @@
             },
             "pop_min": 5,
             "new_pop": 0,
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+            "description": "Everything you need is in the grocery shop."
         },
         {
             "name": "Restaurant",
@@ -667,7 +807,11 @@
                             },
                             {
                                 "id": 3,
-                                "quantity": 12
+                                "quantity": 6
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 9
                             },
                             {
                                 "id": 6,
@@ -695,6 +839,10 @@
                         "resources": [
                             {
                                 "id": 3,
+                                "quantity": 15
+                            },
+                            {
+                                "id": 5,
                                 "quantity": 15
                             },
                             {
@@ -749,6 +897,10 @@
                                 "quantity": 35
                             },
                             {
+                                "id": 5,
+                                "quantity": 77
+                            },
+                            {
                                 "id": 6,
                                 "quantity": 42
                             },
@@ -774,6 +926,10 @@
                         "resources": [
                             {
                                 "id": 3,
+                                "quantity": 25
+                            },
+                            {
+                                "id": 5,
                                 "quantity": 25
                             },
                             {
@@ -821,11 +977,15 @@
                             },
                             {
                                 "id": 2,
-                                "quantity": 9
+                                "quantity": 7
                             },
                             {
                                 "id": 3,
-                                "quantity": 13
+                                "quantity": 10
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 2
                             },
                             {
                                 "id": 6,
@@ -861,6 +1021,10 @@
                             },
                             {
                                 "id": 5,
+                                "quantity": 8
+                            },
+                            {
+                                "id": 3,
                                 "quantity": 8
                             }
                         ],
@@ -904,7 +1068,11 @@
                             },
                             {
                                 "id": 3,
-                                "quantity": 17
+                                "quantity": 12
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 12
                             },
                             {
                                 "id": 6,
@@ -932,6 +1100,10 @@
                         "resources": [
                             {
                                 "id": 3,
+                                "quantity": 6
+                            },
+                            {
+                                "id": 5,
                                 "quantity": 6
                             },
                             {
@@ -983,8 +1155,12 @@
                             }, 
                             {
                                 "id": 3,
-                                "quantity": 16
+                                "quantity": 8
                             }, 
+                            {
+                                "id": 5,
+                                "quantity": 10
+                            },
                             {
                                 "id": 6,
                                 "quantity": 12
@@ -1011,6 +1187,10 @@
                         "resources": [
                             {
                                 "id": 3,
+                                "quantity": 4
+                            },
+                            {
+                                "id": 5,
                                 "quantity": 4
                             },
                             {
@@ -1065,6 +1245,10 @@
                                 "quantity": 28
                             },
                             {
+                                "id": 5,
+                                "quantity": 30
+                            },
+                            {
                                 "id": 6,
                                 "quantity": 21
                             },
@@ -1090,6 +1274,10 @@
                         "resources": [
                             {
                                 "id": 3,
+                                "quantity": 5
+                            },
+                            {
+                                "id": 5,
                                 "quantity": 5
                             },
                             {
@@ -1144,6 +1332,10 @@
                                 "quantity": 32
                             },
                             {
+                                "id": 5,
+                                "quantity": 52
+                            },
+                            {
                                 "id": 6,
                                 "quantity": 12
                             },
@@ -1165,6 +1357,10 @@
                         "resources": [
                             {
                                 "id": 3,
+                                "quantity": 6
+                            },
+                            {
+                                "id": 5,
                                 "quantity": 6
                             },
                             {
@@ -1219,6 +1415,10 @@
                                 "quantity": 3
                             },
                             {
+                                "id": 5,
+                                "quantity": 3
+                            },
+                            {
                                 "id": 10,
                                 "quantity": 2
                             }
@@ -1237,6 +1437,10 @@
                             {
                                 "id": 3,
                                 "quantity": 3
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 6
                             },
                             {
                                 "id": 10,
@@ -1399,6 +1603,10 @@
                                 "quantity": 14
                             },
                             {
+                                "id": 5,
+                                "quantity": 22
+                            },
+                            {
                                 "id": 6,
                                 "quantity": 3
                             },
@@ -1424,6 +1632,10 @@
                         "resources": [
                             {
                                 "id": 3,
+                                "quantity": 5
+                            },
+                            {
+                                "id": 5,
                                 "quantity": 5
                             },
                             {
@@ -1492,6 +1704,38 @@
                         "resources": [
                             {
                                 "id": 3,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 3
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 0
+                    },
+                    {
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 3
+                            }
+                        ],
+                        "gold": 0,
+                        "energy": 0
+                    },
+                    {
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 3
+                            },
+                            {
+                                "id": 5,
                                 "quantity": 3
                             }
                         ],
@@ -1578,6 +1822,10 @@
                                 "quantity": 15
                             },
                             {
+                                "id": 5,
+                                "quantity": 30
+                            },
+                            {
                                 "id": 6,
                                 "quantity": 15
                             },
@@ -1595,6 +1843,10 @@
                         "resources": [
                             {
                                 "id": 3,
+                                "quantity": 4
+                            },
+                            {
+                                "id": 5,
                                 "quantity": 4
                             },
                             {
@@ -1663,6 +1915,10 @@
                                 "quantity": 21
                             },
                             {
+                                "id": 5,
+                                "quantity": 23
+                            },
+                            {
                                 "id": 6,
                                 "quantity": 14
                             },
@@ -1696,6 +1952,10 @@
                             },
                             {
                                 "id": 3,
+                                "quantity": 5
+                            },
+                            {
+                                "id": 5,
                                 "quantity": 5
                             }
                         ],
@@ -1737,6 +1997,10 @@
                                 "quantity": 36
                             },
                             {
+                                "id": 5,
+                                "quantity": 42
+                            },
+                            {
                                 "id": 6,
                                 "quantity": 33
                             },
@@ -1762,6 +2026,10 @@
                         "resources": [
                             {
                                 "id": 3,
+                                "quantity": 13
+                            },
+                            {
+                                "id": 5,
                                 "quantity": 13
                             },
                             {
@@ -1812,6 +2080,10 @@
                                 "quantity": 42
                             },
                             {
+                                "id": 5,
+                                "quantity": 36
+                            },
+                            {
                                 "id": 6,
                                 "quantity": 56
                             },
@@ -1837,6 +2109,10 @@
                         "resources": [
                             {
                                 "id": 3,
+                                "quantity": 8
+                            },
+                            {
+                                "id": 5,
                                 "quantity": 8
                             },
                             {

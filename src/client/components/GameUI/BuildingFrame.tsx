@@ -16,10 +16,12 @@ import useActiveNotifications from '../../hooks/useNotifications'
 // Test
 import { useWorldsContract } from '../../hooks/contracts/worlds'
 import useTest from "../../hooks/invoke/useTest";
+import useResourcesContext from "../../hooks/useResourcesContext";
 
 
 export function BuildingFrame(props: any) {
-  const { tokenId, address, setAddress, updateTokenId, mapArray } = useGameContext();
+  const { tokenId, address, setAddress, updateTokenId, mapArray, buildingData } = useGameContext();
+  const { frensCoins, energy, wood, rock, metal, coal, populationBusy, populationFree, meat, cereal} = useResourcesContext();
   const { account } = useStarknet();
   const { showFrame, frameData, updateBuildingFrame } = useSelectContext();
   const { transactions } = useStarknetTransactionManager()
@@ -35,18 +37,18 @@ export function BuildingFrame(props: any) {
   const activeNotifications = useActiveNotifications()
   const harvestingInvoke = useHarvestResource()
   const [ harvesting, setHarvesting ] = useState<any>(null)
+
   const buildingInvoke = useBuild()
   const [ building, setBuilding ] = useState<any>(null)
-
   const [ farming, setFarming ] = useState(false)
   const [ message, setMessage ] = useState("")
+  const [buildingSelec, setBuildingSelec] = useState(false)
 
   const [ costUpdate, setCostUpdate ] = useState<any>(null)
   const [ dailyCosts, setDailyCosts ] = useState<any>(null)
   const [ dailyHarvest, setDailyHarvests ] = useState<any>(null)
   const [show, setShow] = useState(false)
-
-  const [buildingSelec, setBuildingSelec] = useState(false)
+  const [inputFuel, setInputFuel] = useState(1)
 
   useEffect(() => {
     if (showFrame) {
@@ -54,20 +56,7 @@ export function BuildingFrame(props: any) {
     } else {
       setShow(false)
     }
-
   }, [show, showFrame, frameData])
-
-  const sendEvent = (id : number) => {
-    // if (tokenId) {
-    //   let tx_hash = buildingInvoke(tokenId, 7, 1, 1, 1)
-    //   console.log('tx hash building', tx_hash)
-    //   setBuilding(tx_hash);
-    // }
-    // pgrade', [uint256.bnToUint256(tokenId as number), building_type_id, level, pos_start, allocated_pop])
-    // setBuildingSelec(true);
-    // updateBuildingFrame(false, {"id": frameData?.id, "type": frameData?.type, "posX": frameData?.posX, "selected": 1});
-
-  };
 
   // Test
   // const { data: fetchMapBlock } = useStarknetCall({
@@ -134,14 +123,11 @@ export function BuildingFrame(props: any) {
   useEffect(() => {
     if (frameData && frameData.id && frameData.level) {
       var newCost : any[] = [];
-      console.log('level', frameData.level)
-      // console.log('test', DB.buildings[frameData.id as any].cost_update.level[frameData.level])
       // @ts-ignore
       DB.buildings[frameData.id as any].cost_update.level[frameData.level - 1].resources.map((item : any) => {
-        console.log('item', item)
         newCost.push([item.id, item.quantity])
       })
-      console.log('cost update', newCost)
+      console.log('newcost', newCost)
       setCostUpdate(newCost)
     }
   }, [frameData])
@@ -149,13 +135,10 @@ export function BuildingFrame(props: any) {
   useEffect(() => {
     if (frameData && frameData.id && frameData.level) {
       var newDailyHarvest : any[] = [];
-
       // @ts-ignore
       DB.buildings[frameData.id as any].daily_harvest.level[frameData.level - 1].resources.map((item : any) => {
         newDailyHarvest.push([item.id, item.quantity])
       })
-      // console.log('newDailyHarvest', newDailyHarvest)
-      console.log('newDailyHarvest', newDailyHarvest)
       setDailyHarvests(newDailyHarvest)
     }
   }, [frameData])
@@ -163,17 +146,11 @@ export function BuildingFrame(props: any) {
   useEffect(() => {
     if (frameData && frameData.id && frameData.level) {
       var newDailyCost : any[] = [];  
-
-      // var level : number = frameData.level - 1
-      console.log('level received', frameData.level)
-      // console.log('data level', DB.buildings[frameData.id as any].cost_update.level[frameData.level])
-
       // @ts-ignore
       DB.buildings[frameData.id as any].daily_cost.level[frameData.level - 1].resources.map((item : any) => {
         newDailyCost.push([item.id, item.quantity])
       })
-      console.log('daily costs', newDailyCost)
-      // console.log('newCos', newDailyCost[0][0])
+      // console.log('daily costs', newDailyCost)
       setDailyCosts(newDailyCost)
     }
   }, [frameData])
@@ -207,8 +184,55 @@ export function BuildingFrame(props: any) {
   // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST  TEST TEST TEST TEST TEST TEST TEST TEST TEST
 
   const showBuildingCursor = (id : any) => {
-    console.log('pass showFrame to false and show cursor for', frameData)
+    // console.log('pass showFrame to false and show cursor for', frameData)
     updateBuildingFrame(false, {"id": id, "level": frameData?.level, "posX": 0, "posY": 0, "selected": 1});
+  }
+
+  const updateInputFuel = () => {
+    if (inputFuel == 1) {
+      setInputFuel(10)
+    } else if (inputFuel == 10) {
+      setInputFuel(100)
+    } else if (inputFuel == 100) {
+      var max = 100000000
+      dailyCosts.forEach((element : any) => {
+        if (element[0] == 1 && wood != null) {
+          var res = parseInt((wood /element[1]).toFixed(0))
+          if (res < max) max = res
+        }
+        if (element[0] == 2 && rock != null) {
+          var res = parseInt((rock /element[1]).toFixed(0))
+          if (res < max) max = res
+        }
+        if (element[0] == 3 && meat != null) {
+          var res = parseInt((meat /element[1]).toFixed(0))
+          if (res < max) max = res
+        }
+        if (element[0] == 5 && cereal != null) {
+          var res = parseInt((10 /element[1]).toFixed(0))
+          if (res < max) max = res
+        }
+        if (element[0] == 6 && metal != null) {
+          var res = parseInt((metal /element[1]).toFixed(0))
+          if (res < max) max = res
+        }
+        if (element[0] == 8 && coal != null) {
+          var res = parseInt((coal /element[1]).toFixed(0))
+          if (res < max) max = res
+        }
+        if (element[0] == 10 && frensCoins != null) {
+          var res = parseInt((frensCoins /element[1]).toFixed(0))
+          if (res < max) max = res
+        }
+        if (element[0] == 11 && energy != null) {
+          var res = parseInt((energy /element[1]).toFixed(0))
+          if (res < max) max = res
+        }
+      });
+      setInputFuel(max)
+    } else {
+      setInputFuel(1)
+    }
   }
 
   if (!showFrame) {
@@ -220,29 +244,29 @@ export function BuildingFrame(props: any) {
 
   return (
     <>
-      <div id="bFrame" className="absolute buildingFrame" style={{right: "-113px", bottom: "0", height: "640px", width: "640px", zIndex: "1"}}>
+      <div id="bFrame" className={"absolute "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 4 && frameData.id != 5) && frameData.unique_id ? "buildingFrameRecharged" : "buildingFrame" }`}>
         <div className="grid grid-cols-2 inline-block" style={{ height: "20px" }}>
           <div className="font8BITWonder uppercase text-center" style={{ height: "20px" }} >
-            {frameData && frameData.id ? DB.buildings[frameData.id as any].name : 0}
+            {frameData && frameData.id ? DB.buildings[frameData.id as any].name : ""}
           </div>
           <div className="relative flex jutify-center items-center inline-block" style={{ paddingLeft: "8px" }}>
-                {frameData && frameData.id && costUpdate && costUpdate[2] &&
-                  <div className="flex flex-row justify-center inline-block relative">
-                    <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "127px" }}>{costUpdate[2][1]}</div>
-                    <div className={"mb-3 small"+`${costUpdate[2][0]}`} style={{ position: "absolute", top: "-34px", left: "119px" }}></div>
-                  </div>
+                {frameData && frameData.id && DB.buildings[frameData.id].pop_min && (!frameData.unique_id) &&
+                <div className="flex flex-row justify-center inline-block relative">
+                    <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "100px" }}>-{DB.buildings[frameData.id].pop_min}</div>
+                    <div className={"mb-3 small12"} style={{ position: "absolute", top: "-34px", left: "105px" }}></div>
+                </div>
                 }
-                {frameData && frameData.id && costUpdate && costUpdate[1] &&
-                  <div className="flex flex-row justify-center inline-block relative">
-                    <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "78px" }}>{costUpdate[1][1]}</div>
-                    <div className={"mb-3 small"+`${costUpdate[1][0]}`} style={{ position: "absolute", top: "-34px", left: "70px" }}></div>
-                  </div>
+                {frameData && frameData.id && DB.buildings[frameData.id].new_pop != null && (!frameData.unique_id) &&
+                <div className="flex flex-row justify-center inline-block relative">
+                    <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "46px" }}>+{DB.buildings[frameData.id].new_pop}</div>
+                    <div className={"mb-3 small12"} style={{ position: "absolute", top: "-34px", left: "45px" }}></div>
+                </div>
                 }
-                {frameData && frameData.id && costUpdate && costUpdate[0] &&
-                  <div className="flex flex-row justify-center inline-block relative">
-                      <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "30px" }}>{costUpdate[0][1]}</div>
-                      <div className={"mb-3 small"+`${costUpdate[0][0]}`} style={{ position: "absolute", top: "-34px", left: "23px" }}></div>
-                  </div>
+                {frameData && frameData.id && DB.buildings[frameData.id].pop_min != null && frameData.unique_id &&
+                <div className="flex flex-row justify-center inline-block relative">
+                    <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "46px" }}>{DB.buildings[frameData.id].pop_min}</div>
+                    <div className={"mb-3 small12"} style={{ position: "absolute", top: "-34px", left: "45px" }}></div>
+                </div>
                 }
           </div>
         </div>
@@ -271,47 +295,66 @@ export function BuildingFrame(props: any) {
         <div className="relative flex jutify-center items-center inline-block" style={{ height: "45px", paddingTop: "8px", pointerEvents: "all" }}>
           <div className="flex flex-row justify-center inline-block">
             <div style={{ width: "206px", paddingTop: "10px" }}>
-              {frameData && frameData.id  ?
-                frameData && (frameData.id == 2 || frameData.id == 3 || frameData.id == 20 ) ?
-                    <>
-                      <div className="btnHarvest" onClick={() => harvestingResources(frameData.id as number, frameData.posX, frameData.posY, frameData.level as number)}></div>
-                    </>
-                  :
-                    (frameData && frameData.id == 1) ?
-                      // BUTTON UPGRADE FOR CABIN
-                      <div className="btnUpgrade"
-                        onClick={() => console.log('upgrade cabin')}
-                      ></div>
-                    :
-                    // BUTTON BUILD
+              {frameData && (frameData.id == 2 || frameData.id == 3 || frameData.id == 20 ) &&
+                <>
+                  <div className="btnHarvest" onClick={() => harvestingResources(frameData.id as number, frameData.posX, frameData.posY, frameData.level as number)}></div>
+                </>
+              }
+              {frameData && frameData.id == 1 && frameData.level == 1 &&
+                  <div className="btnUpgrade"
+                  onClick={() => console.log('upgrade cabin')}
+                ></div>
+              }
+              {frameData && frameData.id == 1 && frameData.level == 2 &&
+                <>
+                  <div className="btnUpgradeRed"></div>
+                </>
+              }
+              {frameData && frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && !frameData.unique_id &&
+                <>
                     <div className="btnBuild"
                       onClick={() => showBuildingCursor(frameData.id as number)}
                     ></div>
-              :
-              // BUTTON UPGRADE
-                <div className="btnUpgrade"></div>
+                </>
+              } 
+              {frameData && frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.unique_id &&
+                <>
+                    <div className="btnUpgradeRed"></div>
+                </>
               }
             </div>
-            <div className="relative flex jutify-center items-center inline-block" style={{ width: "60px", height: "80px", paddingTop: "10px" }}>
-              {frameData && frameData.id && costUpdate && costUpdate.length >= 4 && costUpdate[3] &&
+            <div className="relative flex jutify-center items-center inline-block" style={{ width: "60px", height: "80px", paddingTop: "10px" }} >
+              {frameData && frameData.id && (!frameData.unique_id || frameData.id == 2 || frameData.id == 3 || frameData.id == 20) && costUpdate && costUpdate.length >= 6 && costUpdate[5] &&
                 <div className="flex flex-row justify-center inline-block relative">
-                  <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "15px" }}>{costUpdate[3][1]}</div>
-                  <div className={"mb-3 small"+`${costUpdate[3][0]}`} style={{ position: "absolute", top: "-39px", left: "3px" }}></div>
+                  <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "-77px" }}>{costUpdate[5][1]}</div>
+                  <div className={"mb-3 small"+`${costUpdate[5][0]}`} style={{ position: "absolute", top: "-39px", left: "-82px" }}></div>
                 </div>
               }
-              {frameData && frameData.id && costUpdate && costUpdate.length >= 3 && costUpdate[2] &&
+              {frameData && frameData.id && (!frameData.unique_id || frameData.id == 2 || frameData.id == 3 || frameData.id == 20) && costUpdate && costUpdate.length >= 5 && costUpdate[4] &&
                 <div className="flex flex-row justify-center inline-block relative">
-                  <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "15px" }}>{costUpdate[2][1]}</div>
-                  <div className={"mb-3 small"+`${costUpdate[2][0]}`} style={{ position: "absolute", top: "-39px", left: "3px" }}></div>
+                  <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "-37px" }}>{costUpdate[4][1]}</div>
+                  <div className={"mb-3 small"+`${costUpdate[4][0]}`} style={{ position: "absolute", top: "-39px", left: "-43px" }}></div>
                 </div>
               }
-              {frameData && frameData.id && costUpdate && costUpdate[1] &&
+              {frameData && frameData.id && (!frameData.unique_id || frameData.id == 2 || frameData.id == 3 || frameData.id == 20) && costUpdate && costUpdate.length >= 4 && costUpdate[3] &&
                 <div className="flex flex-row justify-center inline-block relative">
-                  <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "60px" }}>{costUpdate[1][1]}</div>
-                  <div className={"mb-3 small"+`${costUpdate[1][0]}`} style={{ position: "absolute", top: "-39px", left: "52px" }}></div>
+                  <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "-1px" }}>{costUpdate[3][1]}</div>
+                  <div className={"mb-3 small"+`${costUpdate[3][0]}`} style={{ position: "absolute", top: "-39px", left: "-10px" }}></div>
                 </div>
               }
-              {frameData && frameData.id && costUpdate && costUpdate[0] &&
+              {frameData && frameData.id && (!frameData.unique_id || frameData.id == 2 || frameData.id == 3 || frameData.id == 20) && costUpdate && costUpdate.length >= 3 && costUpdate[2] &&
+                <div className="flex flex-row justify-center inline-block relative">
+                  <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "32px" }}>{costUpdate[2][1]}</div>
+                  <div className={"mb-3 small"+`${costUpdate[2][0]}`} style={{ position: "absolute", top: "-39px", left: "25px" }}></div>
+                </div>
+              }
+              {frameData && frameData.id && (!frameData.unique_id || frameData.id == 2 || frameData.id == 3 || frameData.id == 20) && costUpdate && costUpdate[1] &&
+                <div className="flex flex-row justify-center inline-block relative">
+                  <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "70px" }}>{costUpdate[1][1]}</div>
+                  <div className={"mb-3 small"+`${costUpdate[1][0]}`} style={{ position: "absolute", top: "-39px", left: "61px" }}></div>
+                </div>
+              }
+              {frameData && frameData.id && (!frameData.unique_id || frameData.id == 2 || frameData.id == 3 || frameData.id == 20) && costUpdate && costUpdate[0] &&
                 <div className="flex flex-row justify-center inline-block relative">
                     <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "105px" }}>{costUpdate[0][1]}</div>
                     <div className={"mb-3 small"+`${costUpdate[0][0]}`} style={{ position: "absolute", top: "-39px", left: "97px" }}></div>
@@ -320,9 +363,16 @@ export function BuildingFrame(props: any) {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-2" style={{ height: "30px", marginLeft: "205px" }}>
-          <div className="relative flex jutify-center items-center inline-block" style={{ width: "60px", paddingTop: "10px" }}>
 
+        {/* <div className="grid grid-cols-2" style={{ height: "30px", marginLeft: "205px" }}> */}
+        <div className={"grid grid-cols-2 "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 4 && frameData.id != 5) && frameData.unique_id ? "l1R" : "l1noR" }`}>
+          <div className="relative flex jutify-center items-center inline-block" style={{ width: "60px", paddingTop: "10px" }}>
+          {frameData && frameData.id && dailyCosts && dailyCosts.length == 4 && dailyCosts[3] &&
+              <div className="flex flex-row justify-center inline-block relative">
+                <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "15px" }}>{dailyCosts[3][1]}</div>
+                <div className={"mb-3 small"+`${dailyCosts[3][0]}`} style={{ position: "absolute", top: "-39px", left: "3px" }}></div>
+              </div>
+            }
           {frameData && frameData.id && dailyCosts && dailyCosts.length == 3 && dailyCosts[2] &&
               <div className="flex flex-row justify-center inline-block relative">
                 <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "15px" }}>{dailyCosts[2][1]}</div>
@@ -343,7 +393,8 @@ export function BuildingFrame(props: any) {
             }
           </div>
         </div>
-        <div className="grid grid-cols-2" style={{ height: "30px", marginLeft: "205px" }}>
+        {/* <div className="grid grid-cols-2" style={{ height: "30px", marginLeft: "205px" }}> */}
+        <div className={"grid grid-cols-2 "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 4 && frameData.id != 5) && frameData.unique_id ? "l2R" : "l2noR" }`}>
           <div className="relative flex jutify-center items-center inline-block" style={{ width: "60px", paddingTop: "10px" }}>
 
             {frameData && frameData.id && dailyHarvest && dailyHarvest[2] &&
@@ -366,7 +417,76 @@ export function BuildingFrame(props: any) {
             }
           </div>
         </div>
-      </div>
+        {/* Pour les buildings qui sont rechargeables */}
+        {frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 4 && frameData.id != 5) &&
+          frameData.unique_id && 
+          <>
+            <div className="grid grid-cols-2" style={{ height: "28px", marginTop: '-10px', marginLeft: "181px" }}>
+              <div className="relative flex jutify-center items-center inline-block fontHPxl" style={{ width: "100px", paddingTop: "7px", fontSize: '19px' }}>
+                {buildingData && buildingData.active && buildingData.active[frameData.unique_id as any] ? buildingData.active[frameData.unique_id as any]['recharges'] : 0}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2" style={{ height: "55px", marginLeft: "0px", pointerEvents: "all" }}>
+              {buildingData && buildingData.active && buildingData.active[frameData.unique_id as any] ? 
+                <div>
+                  <div className="btnFuelProd pixelated" onClick={() => console.log('fuelProd')} style={{marginTop: '-9px', marginLeft: '-18px'}}></div>
+                  {inputFuel == 1 || inputFuel == 10 || inputFuel == 100 ? 
+                    <div style={{height: "41px"}} onClick={() => updateInputFuel()} ><div className={"pixelated btnInput"+`${inputFuel}`} style={{marginTop: '-100px', marginLeft: "30px"}}></div></div>
+                    : 
+                    <div style={{height: "41px"}} onClick={() => updateInputFuel()} ><div className="pixelated btnInputMax" style={{marginTop: '-100px', marginLeft: "30px"}}></div></div>
+                  }
+                </div>
+              :
+                <>
+                  <div>
+                    <div className="btnStartProd pixelated" onClick={() => console.log('startProd')} style={{marginTop: '-9px', marginLeft: '-18px'}}></div>
+                    {inputFuel == 1 || inputFuel == 10 || inputFuel == 100 ? 
+                      <div style={{height: "41px"}} onClick={() => updateInputFuel()} ><div className={"pixelated btnInput"+`${inputFuel}`} style={{marginTop: '-100px', marginLeft: "30px"}}></div></div>
+                      : 
+                      <div style={{height: "41px"}} onClick={() => updateInputFuel()} ><div className="pixelated btnInputMax" style={{marginTop: '-100px', marginLeft: "30px"}}></div></div>
+                    }
+                  </div>
+                </>
+              }
+              <div className="relative flex jutify-center items-center inline-block" style={{ width: "60px", marginTop: "-30px" }}>
+                {frameData && frameData.id && dailyCosts && dailyCosts.length == 4 && dailyCosts[3] &&
+                  <div className="flex flex-row justify-center inline-block relative">
+                    <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "-10px" }}>{dailyCosts[3][1] * inputFuel}</div>
+                    <div className={"mb-3 small"+`${dailyCosts[3][0]}`} style={{ position: "absolute", top: "-39px", left: "3px" }}></div>
+                  </div>
+                }
+                {frameData && frameData.id && dailyCosts && dailyCosts.length == 3 && dailyCosts[2] &&
+                <div className="flex flex-row justify-center inline-block relative">
+                  <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "1px" }}>{dailyCosts[2][1] * inputFuel}</div>
+                  <div className={"mb-3 small"+`${dailyCosts[2][0]}`} style={{ position: "absolute", top: "-39px", left: "3px" }}></div>
+                </div>
+                }
+                {frameData && frameData.id && dailyCosts && dailyCosts[1] &&
+                  <div className="flex flex-row justify-center inline-block relative">
+                    <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "50px" }}>{dailyCosts[1][1] * inputFuel}</div>
+                    <div className={"mb-3 small"+`${dailyCosts[1][0]}`} style={{ position: "absolute", top: "-39px", left: "52px" }}></div>
+                  </div>
+                }
+                {frameData && frameData.id && dailyCosts && dailyCosts[0] &&
+                  <div className="flex flex-row justify-center inline-block relative">
+                      <div className="fontHPxl-sm" style={{ position: "absolute", top: "-15px", left: "95px" }}>{dailyCosts[0][1] * inputFuel}</div>
+                      <div className={"mb-3 small"+`${dailyCosts[0][0]}`} style={{ position: "absolute", top: "-39px", left: "97px" }}></div>
+                  </div>
+                }
+              </div>
+            </div>
+
+          </>
+        }
+        {/* <div className="grid grid-cols-2" style={{ height: "30px", marginLeft: "15px" }}>
+          <div className="btnUpgradeRed"></div>
+          <div className="relative flex jutify-center items-center inline-block" style={{ width: "60px", paddingTop: "10px" }}>
+          
+          
+          </div>
+        </div> */}
+      </div> 
     </>
   );
 }

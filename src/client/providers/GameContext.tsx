@@ -1,18 +1,7 @@
-import React, {
-  useReducer,
-  useEffect,
-  useState,
-  useCallback,
-  useContext,
-  Fragment,
-  ReactFragment,
-} from "react";
+import React, { useReducer, useEffect, useState, useCallback } from "react";
 import * as starknet from "starknet";
-import { defaultProvider, number, uint256 } from "starknet";
+import { uint256 } from "starknet";
 import { toBN } from "starknet/dist/utils/number";
-import { bnToUint256, uint256ToBN } from 'starknet/dist/utils/uint256'
-import { BuildingFrame } from "../components/GameUI/BuildingFrame";
-
 import { useBuildingsContract } from "../hooks/contracts/buildings";
 import { useWorldsContract } from "../hooks/contracts/worlds";
 import { useResourcesContract } from "../hooks/contracts/resources";
@@ -21,8 +10,6 @@ import { useMapsContract } from "../hooks/contracts/maps";
 import { useERC1155Contract } from "../hooks/contracts/erc1155";
 import { useStarknet } from "@starknet-react/core";
 import { GetBlockResponse } from 'starknet'
-import { List } from 'immutable'
-
 
 export interface IFrame {
   id?: number;
@@ -49,6 +36,11 @@ export interface IPopUp {
   pop?: number;
 }
 
+export interface IBuildingData {
+  active?: [],
+  inactive?: []
+}
+
 export interface IGameState {
   lastUpdated: string;
   currentBlock: number;
@@ -72,16 +64,8 @@ export interface IGameState {
   updateBuildings: (t: number) => void;
   setAddress: (addr: string) => void;
   updateTokenId: (id: string) => void;
-  // showFrame?: boolean;
-  // frameData?: IFrame;
-  // updateBuildingFrame: (show: boolean, data: {}) => void;
-  farmResource: (id: any, data: {}) => void;
   fetchMapType: (id: string) => void;
-  // Select building to
-  // buildEvent: (type_id: number) => void;
-  // buildingSelected: number;
-  build: (id: number, pos: number, pop: number, type: number) => void;
-  buildData?: [];
+  buildingData?: IBuildingData;
 }
 
 export const GameState: IGameState = {
@@ -104,19 +88,11 @@ export const GameState: IGameState = {
   coal: 0,
   populationBusy: 0,
   populationFree: 0,
-  // startBlockNumber: "", // start_block_(tokenId)
   updateBuildings: () => {},
   setAddress: () => {},
   updateTokenId: () => {},
-  // showFrame: false,
-  // frameData: undefined,
-  // updateBuildingFrame: (show, data) => {},
-  farmResource: (id, data) => {},
   fetchMapType: (id) => {},
-  // buildEvent: (type_id) => {},
-  // buildingSelected: 0
-  build: (id, pos, pop) => {},
-  buildData: [],
+  buildingData: {"active": [], "inactive": []},
 };
 
 const StateContext = React.createContext(GameState);
@@ -194,9 +170,10 @@ interface SetMapType {
   type: "set_mapType";
   mapType?: string;
 }
-interface SetBuildData {
-  type: "set_buildData";
-  buildData?: [];
+interface SetBuildingData {
+  type: "set_buildingData";
+  inactive?: [];
+  active?: [];
 }
 
 type Action =
@@ -204,7 +181,6 @@ type Action =
   | SetTokenId
   | SetBuildingCount
   | SetMapArray
-  // | SetFrameData
   | SetShowFrame
   | SetEnergy
   | SetFrensCoins
@@ -213,7 +189,7 @@ type Action =
   | SetPopulation
   | SetLastUpdatedAt
   | SetMapType
-  | SetBuildData
+  | SetBuildingData
   | SetError;
 
 function reducer(state: IGameState, action: Action): IGameState {
@@ -230,16 +206,14 @@ function reducer(state: IGameState, action: Action): IGameState {
     case "set_mapArray": {
       return { ...state, mapArray: action.mapArray };
     }
-    case "set_buildData": {
-      // @ts-ignore
-      return { ...state, buildData: state.buildData.push(action.buildData)};
+    case "set_buildingData": {
+      return { ...state, 
+        buildingData: {
+          "active" : action.active,
+          "inactive": action.inactive
+        }
+      };
     }
-    // case "set_showFrame": {
-    //   return { ...state, 
-    //     showFrame: action.showFrame, 
-    //     frameData: action.frameData,
-    //   };
-    // }
     case "set_energy": {
       return { ...state, energy: action.energy };
     }
@@ -271,12 +245,6 @@ function reducer(state: IGameState, action: Action): IGameState {
     case "set_mapType": {
       return {...state, mapType: state.mapType}
     }
-    // case "set_build": {
-    //   return {... state, txHistory: state.txHistory}
-    // }
-    // case "set_buildingSelected": {
-    //   return {...state, buildingSelected: state.buildingSelected}
-    // }
     case "set_error": {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -284,34 +252,6 @@ function reducer(state: IGameState, action: Action): IGameState {
       return state;
     }
   }
-}
-
-const arrayIds = {
-  0: 0,
-  1: 1,
-  179: 2,
-  15: 3,
-  3: 4,
-  10: 5,
-  5: 6,
-  8: 7,
-  7: 8,
-  6: 9,
-  59: 10,
-  11: 11,
-  9: 12,
-  12: 13,
-  13: 14,
-  60: 15,
-  52: 16,
-  58: 17,
-  61: 18,
-  4: 19,
-  20: 20,
-  14:21,
-  49: 22,
-  57: 23,
-  100: 24
 }
 
 export const AppStateProvider: React.FC<
@@ -333,7 +273,6 @@ export const AppStateProvider: React.FC<
   const [state, dispatch] = useReducer(reducer, GameState);
   const value = React.useMemo(() => [state, dispatch], [state])
   // [state, dispatch] = useReducer(reducer, GameState);
-
 
   const fetchBlock = useCallback(() => {
     if (library) {
@@ -383,6 +322,7 @@ export const AppStateProvider: React.FC<
       refreshBalance(coins)
       refreshEnergyLevel(resources)
       refreshBlockGame(resources)
+      refreshBuildingData(building)
       dispatch({ type: 'set_last_updated_at', blockHash: block.block_hash, currentBlock: block.block_number })
     }
   }, [block?.block_hash, state.lastUpdated])
@@ -415,6 +355,10 @@ export const AppStateProvider: React.FC<
   useEffect(() => {
     updateTokenId(state.address)
   }, [starknet, state.address])
+
+  useEffect(() => {
+    refreshBuildingData(building)
+  }, [state.tokenId, starknet, state.address])
 
   const updateBuildings = React.useCallback((t: number) => {
     dispatch({
@@ -497,7 +441,7 @@ export const AppStateProvider: React.FC<
             coal: uint256.uint256ToBN(_erc1155Balance[0][6]).toNumber(),
           });
         } catch (e) {
-          console.warn("Error when retrieving resources ");
+          console.warn("Error when retrieving resources.");
           console.warn(e);
         }
       }
@@ -592,90 +536,62 @@ export const AppStateProvider: React.FC<
       });
     }, []);
 
-  // const buildEvent = React.useCallback((type : number) => {
-  //   console.log('dispatching building selected ', type)
-  //   // dispatch({
-  //   //   type: "set_buildingSelected",
-  //   //   buildingSelected: type as number
-  //   // });
-  //   if (state.buildingSelected != type) {
-  //     console.log('dispatching building selected ', type)
-  //     dispatch({
-  //       type: "set_buildingSelected",
-  //       buildingSelected: type as number
-  //     });
-  //   }
-  // }, []);
-
-  const build = React.useCallback(async (id: number, pos_start : number, population : number) => {
-    let _build_tx;
-    if (building && state.address && state.tokenId) {
+  const refreshBuildingData = React.useCallback(async (building : any) => {
+    let _lastestBuildingData : any;
+    if (state.address && state.tokenId) {
       try {
-        _build_tx = await building.invoke("update", [
-          uint256.bnToUint256(state.tokenId),
-          id,
-          1,
-          pos_start,
-          population,
-          worlds?.address,
-          resources?.address,
-          erc1155?.address,
-          coins?.address
+        _lastestBuildingData = await building.call("get_all_buildings_data", [
+          uint256.bnToUint256(state.tokenId)
         ]);
+        console.log('_lastestBuildingData', _lastestBuildingData[0])
+
+        var maxLength = Object.keys(_lastestBuildingData[0]).length
+        var i = 0;
+        var inactiveBuildings : any[] = [];
+        var activeBuildings : any[] = [];
+        while (i < maxLength) {
+          if (toBN(_lastestBuildingData[0][i + 3]).toNumber() == 0 && toBN(_lastestBuildingData[0][i]).toNumber() != 1) {
+            inactiveBuildings[toBN(_lastestBuildingData[0][i]).toNumber()] = []
+            inactiveBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['type'] = toBN(_lastestBuildingData[0][i + 1]).toNumber()
+            inactiveBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['pos_start'] = toBN(_lastestBuildingData[0][i + 2]).toNumber()
+            inactiveBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['recharges'] = toBN(_lastestBuildingData[0][i + 3]).toNumber()
+            inactiveBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['last_claim'] = toBN(_lastestBuildingData[0][i + 4]).toNumber()
+          } else if (toBN(_lastestBuildingData[0][i]).toNumber() != 1) {
+            activeBuildings[toBN(_lastestBuildingData[0][i]).toNumber()] = []
+            activeBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['type'] = toBN(_lastestBuildingData[0][i + 1]).toNumber()
+            activeBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['pos_start'] = toBN(_lastestBuildingData[0][i + 2]).toNumber()
+            activeBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['recharges'] = toBN(_lastestBuildingData[0][i + 3]).toNumber()
+            activeBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['last_claim'] = toBN(_lastestBuildingData[0][i + 4]).toNumber()
+          }
+
+          i += 5;
+        }
+
+        // Test
+        activeBuildings[201] = []
+        activeBuildings[201]['type'] = 7
+        activeBuildings[201]['pos_start'] = 48
+        activeBuildings[201]['recharges'] = 5
+        activeBuildings[201]['last_claim'] = 200
+
+        inactiveBuildings[202] = []
+        inactiveBuildings[202]['type'] = 8
+        inactiveBuildings[202]['pos_start'] = 1
+        inactiveBuildings[202]['recharges'] = 0
+        inactiveBuildings[202]['last_claim'] = 200
+        // end test
+
         dispatch({
-          type: "set_buildData",
-          // @ts-ignore
-          buildData: [id, pos_start, population, 1]
-          // id: id,
-          // pos_start: pos_start
-          // id: [ "id": id, "pos_start": pos_start, "population": population, "status": 1]
+          type: "set_buildingData",
+          active: activeBuildings as [],
+          inactive: inactiveBuildings as []
         });
       } catch (e) {
-        console.warn("Error when retrieving get_latest_block in M02_Resources");
+        console.warn("Error when retrieving get_all_buildings_data in M03_Buildings");
         console.warn(e);
       }
     }
-
-  },[]);
-
-  const farmResource = React.useCallback(async (building_unique_id: any, data: {}) => {
-      const { contract: resources } = useResourcesContract();
-      console.log('in context farming resources with id ', building_unique_id)
-      // let _farm_tx;
-      // if (resources && state.address) {
-      //   try {
-      //     // tokenId (uint), building_unique_id,
-      //     _farm_tx = await resources.invoke("farm", [
-      //       uint256.bnToUint256(0),
-      //       building_unique_id,
-      //       "0x05e10dc2d99756ff7e339912a8723ecb9c596e8ecd4f3c3a9d03eb06096b153f",
-      //       "0x072c5b060c922f01383d432624fa389bf8b087013b9702b669c484857d23eea1",
-      //       "0x0574fe8bbe799ce7583ef1aefe4c6cf1135dc21c092471982e56b038355f8249",
-      //       "0x04e8653b61e068c01e95f4df9e7504b6c71f2937e2bf00ec6734f4b2d33c13e0"
-      //     ]);
-      //     console.log('_farm_tx', _farm_tx)
-      //     // dispatch({
-      //     //   type: "set_lastBlock",
-      //     //   blockGame: toBN(_lastestBlock).toString()
-      //     // });
-      //   } catch (e) {
-      //     console.warn("Error when retrieving get_latest_block in M02_Resources");
-      //     console.warn(e);
-      //   }
-      // }
-      // Send tx from there
-      // dispatch({
-      //   type: "set_showFrame",
-      //   showFrame: show,
-      //   frameData: data,
-      // });
-      // dispatch({
-      //   type: "set_frameData",
-      //   frameData: data,
-      // });
-    },
-    []
-  );
+  }, [state.address, state.tokenId]);
 
   return (
     <StateContext.Provider
@@ -699,17 +615,11 @@ export const AppStateProvider: React.FC<
         populationBusy: state.populationBusy,
         populationFree: state.populationFree,
         coal: state.coal,
-        // frameData: state.frameData,
-        // showFrame: state.showFrame,
         updateBuildings,
         setAddress,
         updateTokenId,
-        farmResource,
         fetchMapType,
-        build,
-        buildData: state.buildData
-        // buildEvent,
-        // buildingSelected: state.buildingSelected,
+        buildingData: state.buildingData
       }}
     >
       {props.children}
@@ -718,3 +628,32 @@ export const AppStateProvider: React.FC<
 };
 
 export default StateContext;
+
+
+// const arrayIds = {
+//   0: 0,
+//   1: 1,
+//   179: 2,
+//   15: 3,
+//   3: 4,
+//   10: 5,
+//   5: 6,
+//   8: 7,
+//   7: 8,
+//   6: 9,
+//   59: 10,
+//   11: 11,
+//   9: 12,
+//   12: 13,
+//   13: 14,
+//   60: 15,
+//   52: 16,
+//   58: 17,
+//   61: 18,
+//   4: 19,
+//   20: 20,
+//   14:21,
+//   49: 22,
+//   57: 23,
+//   100: 24
+// }

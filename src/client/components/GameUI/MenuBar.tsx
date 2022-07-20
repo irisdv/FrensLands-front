@@ -17,7 +17,7 @@ export function MenuBar() {
   const {account} = useStarknet()
   const { data: block } = useStarknetBlock()
 
-  const {tokenId, updateTokenId, setAddress, blockGame } = useGameContext();
+  const {tokenId, updateTokenId, setAddress, blockGame, buildingData } = useGameContext();
   const {energy, frensCoins, wood, rock, coal, metal, populationBusy, populationFree, meat, cereal} = useResourcesContext();
   const { updateSound, sound } = useSelectContext()
 
@@ -72,6 +72,19 @@ export function MenuBar() {
         }
       }
     }, [claiming, activeNotifications])
+
+    const blockClaimable = useMemo(() => {
+      if (buildingData) {
+        let _newBlockClaimable = 0;
+        buildingData.active?.forEach((elem : any) => {
+          if (elem['recharges']) {
+            _newBlockClaimable += elem['recharges']
+          }
+        })
+        console.log('_newBlockClaimable', _newBlockClaimable)
+        return _newBlockClaimable
+      }
+    }, [buildingData])
 
 
     // Resources daily costs & harvest
@@ -261,56 +274,23 @@ export function MenuBar() {
               </div>
             </div>
             <div className="flex jutify-center relative pr-5" style={{ marginTop: "-13px" }}>
-              {tokenId && btnClaim ? 
-                <>
-                  <div className="btnClaim pixelated" 
-                    onClick={() => claimResources()} 
-                    onMouseEnter={() => setPopUpClaim(true)}
-                    onMouseLeave={() => setPopUpClaim(false)}
-                  ></div>
-                  {popUpClaim && 
-                    <div className="popUpClaim fontHPxl-sm pixelated">
-                      {/* <p>Gold : {DailyHarvestGoldValue?.dailyHarvestGold - DailyCostGoldValue?.dailyCostGold}</p>
-                      <p>Energy: {DailyHarvestEnergyValue?.dailyHarvestEnergy - DailyCostEnergyValue?.dailyCostEnergy}</p>
-                      <p>Wood : {DailyCoststValue?.dailyCosts[1] - DailyHarvestValue?.dailyHarvest[1]}</p>
-                      <p>Rock : {DailyCoststValue?.dailyCosts[2] - DailyHarvestValue?.dailyHarvest[2]}</p>
-                      <p>Metal : {DailyCoststValue?.dailyCosts[6] - DailyHarvestValue?.dailyHarvest[6]}</p>
-                      <p>Coal : {DailyCoststValue?.dailyCosts[8] - DailyHarvestValue?.dailyHarvest[8]}</p>
-                      <p>Meat : {DailyCoststValue?.dailyCosts[3] - DailyHarvestValue?.dailyHarvest[3]}</p>
-                      <p>Cereal : {DailyCoststValue?.dailyCosts[5] - DailyHarvestValue?.dailyHarvest[5]}</p> */}
-                    </div>
-                  }
-                </>
-
-                : ""
-              }
-              {!btnClaim ?
-                <>
-                  <div className="btnClaimDisabled pixelated"
-                    onMouseEnter={() => setPopUpClaim(true)}
-                    onMouseLeave={() => setPopUpClaim(false)}></div>
-                  {popUpClaim && 
-                    <div className="popUpClaim fontHPxl-sm pixelated">
-                      {!tokenId && <p>"no token id"</p>}
-                      {tokenId && 
-                        <div>
-                          <p>GameBlock : {blockGame}</p>
-                          <p>Current block : {toBN(block?.block_number as number).toNumber()}</p>
-                        </div>
-                      }
-                    </div>
-                  }
-                </>
-                : ""
-              }
+              {tokenId && blockClaimable && blockClaimable > 0 ? <div className="btnClaim pixelated" onClick={() => claimResources()} ></div> :  <div className="btnClaimDisabled pixelated"></div> }
             </div>
+            <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}></div>
             <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
-            </div>
-            <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
-             <ConnectWallet />
+              <ConnectWallet />
             </div>
             
           </div>
+        </div>
+      </div>
+      <div className="absolute" style={{zIndex: "1", pointerEvents: "none"}}>
+        <div className="subBar" style={{ marginTop: "55px", marginLeft: "65px" }}>
+          <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "284px" }}>2mn 30</div>
+          <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "674px" }}>2mn 30</div>
+          <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "898px" }}>{buildingData && buildingData.inactive ? Object.keys(buildingData.inactive).length : 0}</div>
+          <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "1078px" }}>{buildingData && buildingData.active ? Object.keys(buildingData.active).length : 0}</div>
+          <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "1261px" }}>{blockClaimable}</div>
         </div>
       </div>
       {/* { claiming != null ?  */}

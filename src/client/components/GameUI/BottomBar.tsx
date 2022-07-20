@@ -66,8 +66,8 @@ export function BottomBar() {
 - **coal plant** 21 */}
       <div className="absolute" style={{ bottom: "60px", right: "0px", display: `${displayNature ? "block" : "none"}`, zIndex: "1" }}>
         <div className="flex flex-row justify-center inline-block">
-          <div className="btnCategory pixelated relative" onClick={() => setDisplayingFrame(1, 17)}>
-            <div className="building17 pixelated absolute" style={{bottom: "-31px", left: "-29px"}}></div>
+          <div className="btnCategory pixelated relative" onClick={() => setDisplayingFrame(1, 16)}>
+            <div className="building16 pixelated absolute" style={{bottom: "-31px", left: "-29px"}}></div>
           </div>
           <div className="btnCategory pixelated" onClick={() => setDisplayingFrame(1, 18)}>
             <div className="building18 pixelated absolute" style={{bottom: "-28px", left: "32px"}}></div>
