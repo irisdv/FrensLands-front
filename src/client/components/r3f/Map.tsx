@@ -345,7 +345,7 @@ export const Map = (props : any)=> {
             txList.map((tx) => {
                 console.log('tx map', tx)
                 // TX for upgrades 
-                if (tx.status == 'ACCEPTED_ON_L2' && tx.metadata.method == 'upgrade') {
+                if (tx.status == 'ACCEPTED_ON_L2' && tx.metadata.method == 'build') {
                     if (frontBlockArray[tx.metadata.posY][tx.metadata.posX] 
                         && frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] == 0 ) {
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1
