@@ -27,7 +27,7 @@ export interface ISelectObject {
 }
 
 export const Map = (props : any)=> {
-    const { frontBlockArray, rightBuildingType, textArrRef, worldType, mouseLeftPressed, mouseMiddlePressed, buildingsIDs } = props
+    const { frontBlockArray, rightBuildingType, textArrRef, worldType, mouseLeftPressed, mouseMiddlePressed, mouseRightPressed, buildingsIDs } = props
 
     const mapRef = useRef<any>()
     useBVH(mapRef)
@@ -329,11 +329,10 @@ export const Map = (props : any)=> {
 
     const buildTx = async (uniqueId : number, typeId : number, posX: number, posY: number) => {
         if (account && tokenId) {
-            console.log("invoking test", account);
+            console.log("invoking building", account);
             const pos_start : number = (posY - 1) * 40 + posX
             let tx_hash = await generateBuild(tokenId, typeId, 1, pos_start, posX, posY, uniqueId)
             console.log('tx hash', tx_hash)
-          //   setTesting(tx_hash);
         }
     };
 

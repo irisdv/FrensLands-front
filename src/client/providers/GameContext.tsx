@@ -449,27 +449,29 @@ export const AppStateProvider: React.FC<
 
   const refreshMapArray = React.useCallback(async (worlds : any) => {
     let _mapArray : any[] = [];
-    try {
-      var elem = await worlds.call("get_map_array", [
-        uint256.bnToUint256(1),
-      ]);
-      var i = 0
-      elem.forEach((_map : any) => {
-        while (i < 640) {
-          var elem = toBN(_map[i])
-          _mapArray.push(elem.toString())
-          i++;
-        }
-      })
-      dispatch({
-        type: "set_mapArray",
-        mapArray: _mapArray,
-      });
-    } catch (e) {
-      console.warn("Error when retrieving get_map_array in M01_Worlds");
-      console.warn(e);
+    if (state.tokenId) {
+      try {
+        var elem = await worlds.call("get_map_array", [
+          uint256.bnToUint256(state.tokenId),
+        ]);
+        var i = 0
+        elem.forEach((_map : any) => {
+          while (i < 640) {
+            var elem = toBN(_map[i])
+            _mapArray.push(elem.toString())
+            i++;
+          }
+        })
+        dispatch({
+          type: "set_mapArray",
+          mapArray: _mapArray,
+        });
+      } catch (e) {
+        console.warn("Error when retrieving get_map_array in M01_Worlds");
+        console.warn(e);
+      }
     }
-  }, []);
+  }, [state.tokenId]);
 
   const refreshBalance = React.useCallback(async (coins : any) => {
     let _frensCoinsBalance : any;

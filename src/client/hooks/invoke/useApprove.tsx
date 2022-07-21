@@ -2,13 +2,13 @@ import { useStarknet } from '@starknet-react/core'
 import { useCallback } from 'react'
 import { AddTransactionResponse, uint256 } from 'starknet'
 import { useNotifTransactionManager } from '../../providers/transactions'
-import { useBuildingsContract } from '../contracts/buildings'
 import { useERC1155Contract } from '../contracts/erc1155'
+import { useResourcesContract } from '../contracts/resources'
 
 export default function useApprove() {
   const { account } = useStarknet()
   const { contract } = useERC1155Contract()
-  const { contract : buildings } = useBuildingsContract()
+  const { contract : resources } = useResourcesContract()
 
   const { addTransaction } = useNotifTransactionManager()
 
@@ -18,7 +18,7 @@ export default function useApprove() {
     }
 
     return contract
-      .invoke('setApprovalForAll', [buildings?.address, 1])
+      .invoke('setApprovalForAll', [resources?.address, 1])
       .then((tx: AddTransactionResponse) => {
         console.log('Transaction hash: ', tx.transaction_hash)
 

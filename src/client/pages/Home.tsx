@@ -20,6 +20,7 @@ import useStartGame from "../hooks/invoke/useStartGame"
 import useTest from "../hooks/invoke/useTest";
 import { useERC1155Contract } from "../hooks/contracts/erc1155";
 import useApprove from "../hooks/invoke/useApprove";
+import { useResourcesContract } from "../hooks/contracts/resources";
 
 export default function Home() {
   // const { account } = useStarknet();
@@ -41,6 +42,7 @@ export default function Home() {
   const { contract: worlds } = useWorldsContract();
   const { contract: maps } = useMapsContract();
   const { contract: buildings } = useBuildingsContract();
+  const { contract: resources } = useResourcesContract();
   const { contract: erc1155 } = useERC1155Contract();
   const [watch, setWatch] = useState(true);
   // Invoke
@@ -170,7 +172,7 @@ export default function Home() {
   const { data: fetchApprovalState } = useStarknetCall({
     contract: erc1155,
     method: "isApprovedForAll",
-    args: [account, buildings?.address],
+    args: [account, resources?.address],
     options: { watch },
   });
 
@@ -257,7 +259,7 @@ export default function Home() {
 
   return (
     <>
-      <div style={{backgroundColor: "#151d28", width: "100vw", height:"100vh"}}>
+      <div style={{backgroundColor: "#151d28", width: "100vw", height: "100vh"}}>
         
         <div className="backgroundImg relative pixelated" style={{width: "1280px", height:"720px"}}>
 

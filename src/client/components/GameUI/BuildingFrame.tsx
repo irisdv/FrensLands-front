@@ -17,6 +17,7 @@ import useActiveNotifications from '../../hooks/useNotifications'
 import { useWorldsContract } from '../../hooks/contracts/worlds'
 import useTest from "../../hooks/invoke/useTest";
 import useResourcesContext from "../../hooks/useResourcesContext";
+import useUpgrade from "../../hooks/invoke/useUpgrade";
 
 
 export function BuildingFrame(props: any) {
@@ -37,6 +38,8 @@ export function BuildingFrame(props: any) {
   const activeNotifications = useActiveNotifications()
   const harvestingInvoke = useHarvestResource()
   const [ harvesting, setHarvesting ] = useState<any>(null)
+  const upgradingInvoke = useUpgrade()
+  const [ upgrading, setUpgrading ] = useState<any>(null)
 
   const buildingInvoke = useBuild()
   const [ building, setBuilding ] = useState<any>(null)
@@ -119,6 +122,18 @@ export function BuildingFrame(props: any) {
       }
     }
   }, [harvesting, activeNotifications])
+
+  const upgradeBuilding = (type_id : number, pos_x: number, pos_y: number, level : number) => {
+    let pos_start = (pos_y - 1) * 40 + pos_x
+    console.log('pos_start', pos_start)
+    if (tokenId) {
+      let tx_hash = upgradingInvoke(tokenId, pos_start, parseInt(frameData?.unique_id as string), type_id, level, pos_x, pos_y)
+      console.log('tx hash upgrade', tx_hash)
+      setUpgrading(tx_hash);
+    } else {
+      console.log('Missing tokenId')
+    }
+  }
 
   useEffect(() => {
     if (frameData && frameData.id && frameData.level) {
@@ -302,7 +317,7 @@ export function BuildingFrame(props: any) {
               }
               {frameData && frameData.id == 1 && frameData.level == 1 &&
                   <div className="btnUpgrade"
-                  onClick={() => console.log('upgrade cabin')}
+                  onClick={() => upgradeBuilding(frameData.id as number, frameData.posX, frameData.posY, frameData.level as number)}
                 ></div>
               }
               {frameData && frameData.id == 1 && frameData.level == 2 &&

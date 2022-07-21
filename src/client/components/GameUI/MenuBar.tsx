@@ -213,61 +213,61 @@ export function MenuBar() {
             ></div>
           }
           <div id="menuBar" className="relative flex jutify-center items-center inline-block pixelated" style={{ fontSize: "16px" }}>
-            <div className="flex jutify-center pl-2 pr-4 relative" style={{ marginTop: "-13px", marginLeft: "50px" }}>
+            <div className="flex jutify-center pl-2 pr-2 relative" style={{ marginTop: "-13px", marginLeft: "50px" }}>
               <div id="menuGold" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {frensCoins ? frensCoins : 0}
               </div>
             </div>
-            <div className="flex jutify-center relative pr-4"  style={{ marginTop: "-13px" }}>
+            <div className="flex jutify-center relative pr-2"  style={{ marginTop: "-13px" }}>
               <div id="menuWood" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {wood ? wood : 0}
               </div>
             </div>
-            <div className="flex jutify-center relative pr-4" style={{ marginTop: "-13px" }}>
+            <div className="flex jutify-center relative pr-2" style={{ marginTop: "-13px" }}>
               <div id="menuRock" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {rock ? rock : 0}
               </div>
             </div>
-            <div className="flex jutify-center relative pr-4" style={{ marginTop: "-13px" }}>
+            <div className="flex jutify-center relative pr-2" style={{ marginTop: "-13px" }}>
               <div id="menuMetal" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {metal ? metal : 0}
               </div>
             </div>
-            <div className="flex jutify-center relative pr-4" style={{ marginTop: "-13px" }}>
+            <div className="flex jutify-center relative pr-2" style={{ marginTop: "-13px" }}>
               <div id="menuCoal" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {coal ? coal : 0}
               </div>
             </div>
-            <div className="flex jutify-center relative pr-4" style={{ marginTop: "-13px" }}>
+            <div className="flex jutify-center relative pr-2" style={{ marginTop: "-13px" }}>
               <div id="menuPop" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
               {populationBusy ? populationBusy : 0}
               </div>
             </div>
-            <div className="flex jutify-center relative pr-4" style={{ marginTop: "-13px" }}>
+            <div className="flex jutify-center relative pr-2" style={{ marginTop: "-13px" }}>
               <div id="menuPopFree" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {populationFree ? populationFree : 0}
               </div>
             </div>
-            <div className="flex jutify-center relative pr-4" style={{ marginTop: "-13px" }}>
+            <div className="flex jutify-center relative pr-2" style={{ marginTop: "-13px" }}>
               <div id="menuMeat" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated"  style={{ marginTop: "-2px" }}>
                 {meat ? meat : 0}
               </div>
             </div>
-            <div className="flex jutify-center relative pr-4" style={{ marginTop: "-13px" }}>
+            <div className="flex jutify-center relative pr-2" style={{ marginTop: "-13px" }}>
               <div id="menuCereal" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {cereal ? cereal : 0}
               </div>
             </div>
-            <div className="flex jutify-center relative pr-4" style={{ marginTop: "-13px" }}>
+            <div className="flex jutify-center relative pr-2" style={{ marginTop: "-13px" }}>
               <div id="menuEnergy" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {energy ? energy : 0}

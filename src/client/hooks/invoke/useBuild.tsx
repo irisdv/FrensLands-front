@@ -25,7 +25,7 @@ export default function useBuild() {
     }
 
     return contract
-      .invoke('upgrade', [uint256.bnToUint256(tokenId as number), building_type_id, level, pos_start, 1])
+      .invoke('build', [uint256.bnToUint256(tokenId as number), building_type_id, pos_start])
       .then((tx: AddTransactionResponse) => {
         console.log('Transaction hash: ', tx.transaction_hash)
 

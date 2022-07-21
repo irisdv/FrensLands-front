@@ -55,21 +55,6 @@
         "type": "event"
     },
     {
-        "data": [
-            {
-                "name": "previousOwner",
-                "type": "felt"
-            },
-            {
-                "name": "newOwner",
-                "type": "felt"
-            }
-        ],
-        "keys": [],
-        "name": "OwnershipTransferred",
-        "type": "event"
-    },
-    {
         "inputs": [
             {
                 "name": "name",
@@ -181,18 +166,6 @@
             {
                 "name": "remaining",
                 "type": "Uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "owner",
-        "outputs": [
-            {
-                "name": "owner",
-                "type": "felt"
             }
         ],
         "stateMutability": "view",
@@ -320,34 +293,6 @@
     {
         "inputs": [
             {
-                "name": "newOwner",
-                "type": "felt"
-            }
-        ],
-        "name": "transferOwnership",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "renounceOwnership",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "amount",
-                "type": "Uint256"
-            }
-        ],
-        "name": "burn",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
                 "name": "account",
                 "type": "felt"
             },
@@ -356,7 +301,7 @@
                 "type": "Uint256"
             }
         ],
-        "name": "burnFrom",
+        "name": "burn",
         "outputs": [],
         "type": "function"
     }

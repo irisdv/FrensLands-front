@@ -42,52 +42,8 @@ export const Scene = (props : any) => {
     const [frontBlockArray, setFrontBlockArray] = useState([])
 
     const keyMap : any[] = []
-    var customMouse = new THREE.Vector2(0, 0);
-    var tempMousePos = new THREE.Vector2(0, 0);
-
-    useEffect(() => {
-        if (mouseRightPressed == 1) {
-            var mouseMove = new Vector2(0, 0)
-            var difX = (tempMousePos.x - customMouse.x) * 100;
-            var difY = (tempMousePos.y - customMouse.y) * 100;
-    
-            if (difX < 0)  difX = difX * -1;
-            if (difY < 0) difY = difY * -1;
-    
-            if (tempMousePos.x < customMouse.x) {
-                if (cameraPositionX > 0) {
-                    mouseMove.x = 0.1 * difX;
-                    setCameraPositionX(cameraPositionX - mouseMove.x)
-                }
-            }
-            else if (tempMousePos.x > customMouse.x) {
-                if (cameraPositionX < 40) {
-                    mouseMove.x = 0.1 * difX;
-                    setCameraPositionX(cameraPositionX + mouseMove.x)
-                }
-            }
-            else if (tempMousePos.x == customMouse.x) {
-                mouseMove.x = 0;
-            }
-            if (tempMousePos.y < customMouse.y) {
-                if (cameraPositionZ < 16) {
-                    mouseMove.y = 0.1 * difY;
-                    setCameraPositionZ(cameraPositionX + mouseMove.y)
-                }
-            }
-            else if (tempMousePos.y > customMouse.y) {
-                if (cameraPositionZ > 0) {
-                    mouseMove.y = 0.1 * difY;
-                    setCameraPositionZ(cameraPositionX - mouseMove.y)
-                }
-            }
-            else if (tempMousePos.y == customMouse.y) {
-                mouseMove.y = 0;
-            }
-            tempMousePos.x = customMouse.x;
-            tempMousePos.y = customMouse.y;
-        }
-    }, [mouseRightPressed])
+    const [customMouse, setCustomMouse] = useState(new Vector2(0, 0))
+    const [tempMousePos, setTempMousePos] = useState(new Vector2(0, 0))
         
     return(
     <>
@@ -142,8 +98,9 @@ export const Scene = (props : any) => {
                 keyMap[keyCode as any](false);
             }}
             onMouseMove={(event) => {
-                customMouse.x = ( event.clientX / window.innerWidth ) * 2 - 1
-                customMouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1
+                setCustomMouse(new Vector2(( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1))
+                // customMouse.x = ( event.clientX / window.innerWidth ) * 2 - 1
+                // customMouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1
             }}
             onContextMenu={(event) => {
                 event.preventDefault()
@@ -155,6 +112,7 @@ export const Scene = (props : any) => {
             <Camera 
                 position={[cameraPositionX, cameraPositionY, cameraPositionZ]} 
                 aspect={window.innerWidth / window.innerHeight} 
+                mouseRightPressed={mouseRightPressed}
             />
             <ContextBridge>
                 <Map 
@@ -165,6 +123,7 @@ export const Scene = (props : any) => {
                     mouseLeftPressed={mouseLeftPressed}
                     mouseMiddlePressed={mouseMiddlePressed}
                     buildingsIDs={UBlockIDs}
+                    mouseRightPressed={mouseRightPressed}
                 />            
             </ContextBridge>
             <TerrainBackground />

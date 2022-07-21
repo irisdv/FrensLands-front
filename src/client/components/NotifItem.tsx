@@ -44,7 +44,7 @@ export function NotifItem(props: any) {
   } else if (content.description.method == "build") {
     textNotif = "Frens are building hard... Almost ready..."
   } else if (content.description.method == "approve") {
-    textNotif = "Frens are building hard... Almost ready..."
+    textNotif = "Aproving... Almost ready..."
   } else {
     textNotif = "Testing..."
   }

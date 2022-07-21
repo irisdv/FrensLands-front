@@ -10,7 +10,7 @@ export default function useBuild() {
 
   const { addTransaction } = useNotifTransactionManager()
 
-  return useCallback(async (tokenId : number, building_type_id: number, level: number, pos_start: number, posX: number, posY: number, uniqueId: number) => {
+  return useCallback(async (tokenId : number, pos_start: number, uniqueId: number, building_type_id: number, level: number, posX: number, posY: number) => {
     if (!contract || !account) {
       throw new Error('Missing Dependencies')
     }

@@ -39,18 +39,13 @@
                 "type": "felt"
             },
             {
-                "name": "pop_max",
-                "offset": 13,
-                "type": "felt"
-            },
-            {
                 "name": "new_pop",
-                "offset": 14,
+                "offset": 13,
                 "type": "felt"
             }
         ],
         "name": "BuildingFixedData",
-        "size": 15,
+        "size": 14,
         "type": "struct"
     },
     {
@@ -262,19 +257,22 @@
                 "type": "felt"
             },
             {
-                "name": "level",
+                "name": "pos_start",
                 "type": "felt"
+            }
+        ],
+        "name": "build",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "tokenId",
+                "type": "Uint256"
             },
             {
                 "name": "pos_start",
-                "type": "felt"
-            },
-            {
-                "name": "allocated_population",
-                "type": "felt"
-            },
-            {
-                "name": "current_block",
                 "type": "felt"
             }
         ],
