@@ -76,9 +76,18 @@ export function MenuBar() {
     const blockClaimable = useMemo(() => {
       if (buildingData) {
         let _newBlockClaimable = 0;
+        console.log('block', block?.block_number)
+        console.log('gameBlock', blockGame)
         buildingData.active?.forEach((elem : any) => {
           if (elem['recharges']) {
-            _newBlockClaimable += elem['recharges']
+            // check lasr claim block number 
+            // current block - last_claim block > then add recharges 
+            if (block?.block_number) {
+              var check = toBN(block?.block_number).toNumber() - elem['last_claim']
+              console.log('check', check)
+              // if (check > )
+              _newBlockClaimable += elem['recharges']
+            }
           }
         })
         console.log('_newBlockClaimable', _newBlockClaimable)

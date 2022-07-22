@@ -18,6 +18,7 @@ import { useWorldsContract } from '../../hooks/contracts/worlds'
 import useTest from "../../hooks/invoke/useTest";
 import useResourcesContext from "../../hooks/useResourcesContext";
 import useUpgrade from "../../hooks/invoke/useUpgrade";
+import useRecharge from "../../hooks/invoke/useRecharge";
 
 
 export function BuildingFrame(props: any) {
@@ -40,6 +41,8 @@ export function BuildingFrame(props: any) {
   const [ harvesting, setHarvesting ] = useState<any>(null)
   const upgradingInvoke = useUpgrade()
   const [ upgrading, setUpgrading ] = useState<any>(null)
+  const rechargingInvoke = useRecharge()
+  const [ recharging, setRecharging ] = useState<any>(null)
 
   const buildingInvoke = useBuild()
   const [ building, setBuilding ] = useState<any>(null)
@@ -129,6 +132,20 @@ export function BuildingFrame(props: any) {
     if (tokenId) {
       let tx_hash = upgradingInvoke(tokenId, pos_start, parseInt(frameData?.unique_id as string), type_id, level, pos_x, pos_y)
       console.log('tx hash upgrade', tx_hash)
+      setUpgrading(tx_hash);
+    } else {
+      console.log('Missing tokenId')
+    }
+  }
+
+  const fuelProd = (nb_days: number, type_id: number, pos_x: number, pos_y: number, uniqueId: number) => {
+
+    let pos_start = (pos_y - 1) * 40 + pos_x
+    console.log('pos_start', pos_start)
+    if (tokenId) {
+      // tokenId : number, pos_start: number, nb_days: number, building_type_id: number, posX: number, posY: number, uniqueId: number
+      let tx_hash = rechargingInvoke(tokenId, pos_start, nb_days, type_id, pos_x, pos_y, uniqueId)
+      console.log('tx hash recharging', tx_hash)
       setUpgrading(tx_hash);
     } else {
       console.log('Missing tokenId')
@@ -445,7 +462,11 @@ export function BuildingFrame(props: any) {
             <div className="grid grid-cols-2" style={{ height: "55px", marginLeft: "0px", pointerEvents: "all" }}>
               {buildingData && buildingData.active && buildingData.active[frameData.unique_id as any] ? 
                 <div>
-                  <div className="btnFuelProd pixelated" onClick={() => console.log('fuelProd')} style={{marginTop: '-9px', marginLeft: '-18px'}}></div>
+                  <div 
+                    className="btnFuelProd pixelated" 
+                    onClick={() => fuelProd(inputFuel, frameData.id as number, frameData.posX, frameData.posY, frameData.unique_id as any)}
+                    style={{marginTop: '-9px', marginLeft: '-18px'}}
+                  ></div>
                   {inputFuel == 1 || inputFuel == 10 || inputFuel == 100 ? 
                     <div style={{height: "41px"}} onClick={() => updateInputFuel()} ><div className={"pixelated btnInput"+`${inputFuel}`} style={{marginTop: '-100px', marginLeft: "30px"}}></div></div>
                     : 
@@ -455,7 +476,7 @@ export function BuildingFrame(props: any) {
               :
                 <>
                   <div>
-                    <div className="btnStartProd pixelated" onClick={() => console.log('startProd')} style={{marginTop: '-9px', marginLeft: '-18px'}}></div>
+                    <div className="btnStartProd pixelated" onClick={() => fuelProd(inputFuel, frameData.id as number, frameData.posX, frameData.posY, frameData.unique_id as any)} style={{marginTop: '-9px', marginLeft: '-18px'}}></div>
                     {inputFuel == 1 || inputFuel == 10 || inputFuel == 100 ? 
                       <div style={{height: "41px"}} onClick={() => updateInputFuel()} ><div className={"pixelated btnInput"+`${inputFuel}`} style={{marginTop: '-100px', marginLeft: "30px"}}></div></div>
                       : 

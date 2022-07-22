@@ -552,13 +552,13 @@ export const AppStateProvider: React.FC<
         var inactiveBuildings : any[] = [];
         var activeBuildings : any[] = [];
         while (i < maxLength) {
-          if (toBN(_lastestBuildingData[0][i + 3]).toNumber() == 0 && toBN(_lastestBuildingData[0][i]).toNumber() != 1) {
+          if (toBN(_lastestBuildingData[0][i + 3]).toNumber() == 0 && (toBN(_lastestBuildingData[0][i]).toNumber() != 1 && toBN(_lastestBuildingData[0][i + 1]).toNumber() != 4 && toBN(_lastestBuildingData[0][i + 1]).toNumber() != 5)) {
             inactiveBuildings[toBN(_lastestBuildingData[0][i]).toNumber()] = []
             inactiveBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['type'] = toBN(_lastestBuildingData[0][i + 1]).toNumber()
             inactiveBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['pos_start'] = toBN(_lastestBuildingData[0][i + 2]).toNumber()
             inactiveBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['recharges'] = toBN(_lastestBuildingData[0][i + 3]).toNumber()
             inactiveBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['last_claim'] = toBN(_lastestBuildingData[0][i + 4]).toNumber()
-          } else if (toBN(_lastestBuildingData[0][i]).toNumber() != 1) {
+          } else if (toBN(_lastestBuildingData[0][i]).toNumber() != 1 && toBN(_lastestBuildingData[0][i + 1]).toNumber() != 4 && toBN(_lastestBuildingData[0][i + 1]).toNumber() != 5) {
             activeBuildings[toBN(_lastestBuildingData[0][i]).toNumber()] = []
             activeBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['type'] = toBN(_lastestBuildingData[0][i + 1]).toNumber()
             activeBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['pos_start'] = toBN(_lastestBuildingData[0][i + 2]).toNumber()
@@ -569,18 +569,21 @@ export const AppStateProvider: React.FC<
           i += 5;
         }
 
-        // Test
-        activeBuildings[201] = []
-        activeBuildings[201]['type'] = 7
-        activeBuildings[201]['pos_start'] = 48
-        activeBuildings[201]['recharges'] = 5
-        activeBuildings[201]['last_claim'] = 200
+        console.log('inactive', inactiveBuildings)
+        console.log('active', activeBuildings)
 
-        inactiveBuildings[202] = []
-        inactiveBuildings[202]['type'] = 8
-        inactiveBuildings[202]['pos_start'] = 1
-        inactiveBuildings[202]['recharges'] = 0
-        inactiveBuildings[202]['last_claim'] = 200
+        // Test
+        // activeBuildings[201] = []
+        // activeBuildings[201]['type'] = 7
+        // activeBuildings[201]['pos_start'] = 48
+        // activeBuildings[201]['recharges'] = 5
+        // activeBuildings[201]['last_claim'] = 200
+
+        // inactiveBuildings[202] = []
+        // inactiveBuildings[202]['type'] = 8
+        // inactiveBuildings[202]['pos_start'] = 1
+        // inactiveBuildings[202]['recharges'] = 0
+        // inactiveBuildings[202]['last_claim'] = 200
         // end test
 
         dispatch({

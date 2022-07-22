@@ -165,7 +165,7 @@ export default function Play() {
             <MenuBar />
             <div style={{ height: "100vh", width: "100vw", zIndex: "0" }}>
               {frontBlockArray && Object.keys(frontBlockArray).length > 0 &&
-                worldType && worldType != -1 &&
+                worldType != null && worldType != -1 &&
                   <Scene
                     mapArray={frontBlockArray.frontArray}
                     textArrRef={textArrRef}
