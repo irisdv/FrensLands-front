@@ -32,9 +32,6 @@ export const Scene = (props : any) => {
 
     const { mapArray, textArrRef, rightBuildingType, worldType, UBlockIDs } = props
 
-    const [cameraPositionX, setCameraPositionX] = useState(21)
-    const [cameraPositionY, setCameraPositionY] = useState(150)
-    const [cameraPositionZ, setCameraPositionZ] = useState(9)
     const [mouseWheelProp, setMouseWheelProp] = useState(0)
     const [mouseLeftPressed, setMouseLeftPressed] = useState(0)
     const [mouseRightPressed, setMouseRightPressed] = useState(0)
@@ -43,7 +40,6 @@ export const Scene = (props : any) => {
 
     const keyMap : any[] = []
     const [customMouse, setCustomMouse] = useState(new Vector2(0, 0))
-    const [tempMousePos, setTempMousePos] = useState(new Vector2(0, 0))
         
     return(
     <>
@@ -55,16 +51,13 @@ export const Scene = (props : any) => {
                 event.stopPropagation()
                 if (event.deltaY > 0) {
                     setMouseWheelProp(-1)
-                    if (cameraPositionY > 45) setCameraPositionY(cameraPositionY - 15)
                 } else if (event.deltaY < 0)  {
                     setMouseWheelProp(1)
-                    if (cameraPositionY < 300) setCameraPositionY(cameraPositionY + 15)
                 } else {
                     setMouseWheelProp(0)
                 }
             }}
             onMouseDown={(event) => {
-                // event.stopPropagation()
                 if (event.button == 2) {
                     setMouseRightPressed(1)
                 }
@@ -99,8 +92,6 @@ export const Scene = (props : any) => {
             }}
             onMouseMove={(event) => {
                 setCustomMouse(new Vector2(( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1))
-                // customMouse.x = ( event.clientX / window.innerWidth ) * 2 - 1
-                // customMouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1
             }}
             onContextMenu={(event) => {
                 event.preventDefault()
@@ -110,9 +101,9 @@ export const Scene = (props : any) => {
             <directionalLight color={0xffffff} intensity={0.5} position={[12, 12, 8]} />
             <color attach="background" args={[0x73bed3]} />
             <Camera 
-                position={[cameraPositionX, cameraPositionY, cameraPositionZ]} 
                 aspect={window.innerWidth / window.innerHeight} 
                 mouseRightPressed={mouseRightPressed}
+                mouseWheelProp={mouseWheelProp}
             />
             <ContextBridge>
                 <Map 
