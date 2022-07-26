@@ -19,8 +19,14 @@ export const Camera = (props : any) => {
         if (cameraRef.current) {
 
             if (mouseWheelProp == -1 && cameraPositionY > 45) {
+                cameraRef.current.aspect = size.width / size.height
+                cameraRef.current.position.set(cameraPositionX, cameraPositionY - 15, cameraPositionZ)
+                cameraRef.current.updateProjectionMatrix()
                 setCameraPositionY(cameraPositionY - 15)
             } else if (mouseWheelProp == 1 && cameraPositionY < 300) {
+                cameraRef.current.aspect = size.width / size.height
+                cameraRef.current.position.set(cameraPositionX, cameraPositionY + 15, cameraPositionZ)
+                cameraRef.current.updateProjectionMatrix()
                 setCameraPositionY(cameraPositionY + 15)
             }
 
@@ -67,6 +73,7 @@ export const Camera = (props : any) => {
                 }
             }
             setTempMousePos(new Vector2(mouse.x, mouse.y))
+
             cameraRef.current.aspect = size.width / size.height
             cameraRef.current.position.set(cameraPositionX, cameraPositionY, cameraPositionZ)
             cameraRef.current.updateProjectionMatrix()
