@@ -25,6 +25,8 @@ export const Camera = (props : any) => {
             }
             
             if (mouseRightPressed == 1) {
+                console.log('mouse', mouse)
+                console.log('tempMousePos', tempMousePos)
                 var mouseMove = new Vector2(0, 0)
                 var difX = (tempMousePos.x - mouse.x) * 100;
                 var difY = (tempMousePos.y - mouse.y) * 100;
