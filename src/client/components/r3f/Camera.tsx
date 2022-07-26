@@ -19,11 +19,13 @@ export const Camera = (props : any) => {
         if (cameraRef.current) {
 
             if (mouseWheelProp == -1 && cameraPositionY > 45) {
+                console.log("wheel----")
                 cameraRef.current.aspect = size.width / size.height
                 cameraRef.current.position.set(cameraPositionX, cameraPositionY - 15, cameraPositionZ)
                 cameraRef.current.updateProjectionMatrix()
                 setCameraPositionY(cameraPositionY - 15)
             } else if (mouseWheelProp == 1 && cameraPositionY < 300) {
+                console.log("wheel++++")
                 cameraRef.current.aspect = size.width / size.height
                 cameraRef.current.position.set(cameraPositionX, cameraPositionY + 15, cameraPositionZ)
                 cameraRef.current.updateProjectionMatrix()
