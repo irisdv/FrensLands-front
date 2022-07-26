@@ -14,7 +14,7 @@ export const Camera = (props : any) => {
     const [cameraPositionX, setCameraPositionX] = useState(21)
     const [cameraPositionY, setCameraPositionY] = useState(150)
     const [cameraPositionZ, setCameraPositionZ] = useState(9)
-    
+
     useFrame(({ mouse }) => {
         if (cameraRef.current) {
 
@@ -23,17 +23,18 @@ export const Camera = (props : any) => {
             } else if (mouseWheelProp == 1 && cameraPositionY < 300) {
                 setCameraPositionY(cameraPositionY + 15)
             }
-            
+
             if (mouseRightPressed == 1) {
-                console.log('mouse', mouse)
-                console.log('tempMousePos', tempMousePos)
+                var posX = cameraPositionX;
+                var posZ = cameraPositionZ;
+
                 var mouseMove = new Vector2(0, 0)
                 var difX = (tempMousePos.x - mouse.x) * 100;
                 var difY = (tempMousePos.y - mouse.y) * 100;
-        
+
                 if (difX < 0)  difX = difX * -1;
                 if (difY < 0) difY = difY * -1;
-        
+
                 if (tempMousePos.x < mouse.x) {
                     if (cameraPositionX > 0) {
                         mouseMove.x = 0.1 * difX;
@@ -64,15 +65,14 @@ export const Camera = (props : any) => {
                 else if (tempMousePos.y == mouse.y) {
                     mouseMove.y = 0;
                 }
-                setTempMousePos(new Vector2(mouse.x, mouse.y))
             }
-
+            setTempMousePos(new Vector2(mouse.x, mouse.y))
             cameraRef.current.aspect = size.width / size.height
             cameraRef.current.position.set(cameraPositionX, cameraPositionY, cameraPositionZ)
             cameraRef.current.updateProjectionMatrix()
         }
     })
-    
+
     useLayoutEffect(() => {
         set({ camera: cameraRef.current as THREE.PerspectiveCamera })
       }, [])
@@ -80,20 +80,18 @@ export const Camera = (props : any) => {
 
     return(
     <>
-            <PerspectiveCamera 
+            <PerspectiveCamera
                 manual
                 ref={cameraRef}
-                fov={5} 
+                fov={5}
                 near={1}
                 far={1000}
                 rotation={[-Math.PI * 0.5, 0, 0]}
                 {...props}
             />
-    
+
     </>
     )
 
 
 }
-
-
