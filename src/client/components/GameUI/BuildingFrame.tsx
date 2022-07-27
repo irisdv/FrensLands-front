@@ -276,7 +276,10 @@ export function BuildingFrame(props: any) {
 
   return (
     <>
-      <div id="bFrame" className={"absolute "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 4 && frameData.id != 5) && frameData.unique_id ? "buildingFrameRecharged" : "buildingFrame" }`}>
+      <div id="bFrame" 
+        className={"absolute "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 4 && frameData.id != 5) && frameData.unique_id ? "buildingFrameRecharged" : "buildingFrame" }`}
+      >
+        <div className='btnCloseFrame' onClick={() => updateBuildingFrame(false, {"id": 0, "level": 0, "posX": 0, "posY": 0, "selected": 0})}></div>
         <div className="grid grid-cols-2 inline-block" style={{ height: "20px" }}>
           <div className="font8BITWonder uppercase text-center" style={{ height: "20px" }} >
             {frameData && frameData.id ? DB.buildings[frameData.id as any].name : ""}

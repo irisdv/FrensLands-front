@@ -76,7 +76,7 @@ export function BottomBar() {
             <div className="building19 pixelated absolute" style={{bottom: "-36px", left: "95px"}}></div>
           </div>
           <div className="btnCategory pixelated" onClick={() => setDisplayingFrame(1, 21)}>
-            <div className="building21 pixelated absolute" style={{bottom: "-29px", right: "-34px"}}></div>
+            <div className="building21 pixelated absolute" style={{bottom: "-34px", right: "-30px"}}></div>
           </div>
         </div>
       </div>

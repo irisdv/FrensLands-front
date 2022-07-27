@@ -952,7 +952,7 @@ body {
     width:calc(64px * 2);
     background-position:calc(17 * 1 * 64px) calc(14 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
-    margin-left: 20px
+    /* margin-left: 20px */
 }
 .btnClaim:hover {
     display:inline-block;
@@ -991,6 +991,32 @@ body {
     left: 18px;
     padding: 23px;
 } */
+
+.btnCloseFrame {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(32px * 1);
+    width:calc(32px * 2);
+    background-position:calc(9 * 1 * 64px) calc(10 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+    margin-left: 20px;
+    position: absolute;
+    right: 102px;
+    top: 122px;
+    pointer-events: all;
+}
+.btnCloseFrame:active {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(32px * 1);
+    width:calc(32px * 2);
+    background-position:calc(10 * 1 * 64px) calc(10 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+    margin-left: 20px;
+    position: absolute;
+    right: 102px;
+    top: 122px;
+}
 
 
 
