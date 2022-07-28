@@ -259,70 +259,156 @@ export default function Home() {
 
   return (
     <>
-      <div style={{backgroundColor: "#151d28", width: "100vw", height: "100vh"}}>
-        
-        <div className="backgroundImg relative pixelated" style={{width: "1280px", height:"720px"}}>
-
-        {activeNotifications && activeNotifications.length > 0 &&
-          <div className="popUpNotifs fontHPxl-sm pixelated" style={{padding: "23px"}}>
-            <Notifications />
+    <div className="" style={{overflowY: "scroll", overflowX: 'hidden', height: "100vh"}}>
+      <div className="home-s1">
+        <div className="relative">
+          <div className="absolute" style={{width: "100vw", top: '0'}}>
+            <img src="resources/front/UI_MainScreenPlanet.png" className="relative mx-auto pixelated frensLandsWorld" />
           </div>
-        }
-        {/* <button onClick={() => testContract()}>TEST test test test </button> */}
 
-          <img className="absolute pixelated frensLandsLogo" src="resources/front/UI_GameTitle.png" 
-              style={{width : "640px", height: "640px", marginTop: '-165px', marginLeft: "320px", zIndex: "1", position: "absolute"}} />
+          <div className="absolute" style={{width: "100vw", top: '0'}}>
+            <img src="resources/front/UI_GameTitle.png" className="relative mx-auto pixelated frensLandsLogo" />
+          </div>
 
-          <img className="absolute pixelated frensLandsWorld" src="resources/front/UI_MainScreenPlanet.png" 
-              style={{width : "640px", height: "640px", marginTop: '180px', marginLeft: "320px"}} />
-
+          <div className="absolute" style={{width: "100vw", top: '0'}}>
             {account && BalanceNFTValue && (BalanceNFTValue.NFTbalance == 0 || BalanceNFTValue.NFTbalance == 1) &&
-            <>
-              <img className="absolute pixelated" src="resources/maps/FrensLand_NFTs_V2.png" style={{height: "256px", width: "256px", marginLeft: "512px", marginTop: "290px"}} />
-              {/* <img className="absolute pixelated" src="resources/maps/FrensLand_NFTs_V3.png" style={{height: "256px", width: "256px", marginLeft: "512px", marginTop: "290px"}} />
-              <img className="absolute pixelated" src="resources/maps/FrensLand_NFTs_V4.png" style={{height: "256px", width: "256px", marginLeft: "512px", marginTop: "290px"}} />
-              <img className="absolute pixelated" src="resources/maps/FrensLand_NFTs_V5.png" style={{height: "256px", width: "256px", marginLeft: "512px", marginTop: "290px"}} />
-              <img className="absolute pixelated" src="resources/maps/FrensLand_NFTs_V6.png" style={{height: "256px", width: "256px", marginLeft: "512px", marginTop: "290px"}} /> */}
-            </>
+              <img className="relative mx-auto pixelated" src="resources/maps/FrensLand_NFTs_V2.png" style={{marginTop: "300px"}} />
             }
-              {account && 
-                BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&
-                <div style={{height: "128px", width: "128px", marginTop: "414px", marginLeft: "576px"}} className="absolute"> 
-                  <div>
-                    <button className="pixelated btnMint" onClick={() => mintMap()} style={{marginLeft: "-36px", marginTop: "120px"}}></button>
-                  </div>
-                </div>
-              }
-              {account && BalanceNFTValue && (BalanceNFTValue.NFTbalance == 1 || minting == true) && GameStatusValue && GameStatusValue.gameStatus == 0 &&
-                  <>
-                    <div style={{height: "128px", width: "128px", marginTop: "510px", marginLeft: "576px"}} className="absolute"> 
-                      <button className="pixelated btnPlay" onClick={() => startGame()}></button>
-                    </div>
-                  </>
-              }
-              {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && GameStatusValue && GameStatusValue.gameStatus == 1 && !approved &&
-                  <>
-                    <div style={{height: "128px", width: "128px", marginTop: "545px", marginLeft: "576px"}} className="absolute"> 
-                      <button className="pixelated btnApproval" onClick={() => approveM03()}></button>
-                    </div>
-                  </>
-              }
-              {!account &&
-                <div style={{height: "128px", width: "128px", marginTop: "414px", marginLeft: "576px"}} className="absolute"> 
-                  <ConnectWallet/>
-                </div>
-              }
-              {account && canPlay && approved &&
-              <>
-                <div style={{height: "128px", width: "128px", marginTop: "510px", marginLeft: "576px"}} className="absolute"> 
-                  <button className="pixelated btnPlay" onClick={() => navigate('/play')}></button>
-                </div>
-              </>
-              
-              }
+            {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&
+              <button className="relative mx-auto pixelated btnMint" onClick={() => mintMap()}></button> 
+            }
+            {account && BalanceNFTValue && (BalanceNFTValue.NFTbalance == 1 || minting == true) && GameStatusValue && GameStatusValue.gameStatus == 0 &&
+              <button className="relative mx-auto pixelated btnPlay" onClick={() => startGame()} style={{marginTop: '-65px'}}></button>
+            }
+            {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && GameStatusValue && GameStatusValue.gameStatus == 1 && !approved &&
+              <button className="relative mx-auto pixelated btnApproval" onClick={() => approveM03()}></button>
+            }
+            {!account && 
+              <ConnectWallet/>
+            }
+            {account && canPlay && approved && 
+              <button className="relative mx-auto pixelated btnPlay" onClick={() => navigate('/play')} style={{marginTop: '-65px'}}></button>
+            }              
+          </div>
         </div>
       </div>
-      {/* <button onClick={() => testContract()}>TEST test test test </button> */}
+
+      <div className="home-s2 py-5">
+        <div className="relative">
+            
+          <div className="pixelated mx-auto roadmapT"></div>
+
+          <hr></hr>
+
+          <div className="flex flex-row justify-center inline-block mx-auto mt-5">
+            <img src="resources/front/Gif_Population.gif" className="mt-7 roadmapGif" />
+            <div className="lineWTop">
+                <div className="lineG pixelated"></div>
+            </div>
+            <div className="" style={{marginLeft: '-30px'}}>
+              <div className="hackT pixelated mt-3"></div>
+              <div className="fontHPxl" style={{fontSize: '15px', color: "#a8b5b2", paddingLeft: '30px', marginTop:'-23px'}}>
+                <p>Creation of the prototype</p>
+                <ul style={{listStyle: 'disc', paddingLeft: '20px'}}>
+                  <li>20 buildings</li>
+                  <li>10 different resources</li>
+                  <li>5 different biomes</li>
+                </ul>
+              </div>
+              <div className="currentB pixelated"></div>
+            </div>
+          </div>
+
+
+          <div className="flex flex-row justify-center inline-block mx-auto">
+            <img src="resources/front/Gif_Community.gif" className="mt-16 roadmapGif" />
+            <div className="grid">
+              <div className="lineWTopS" style={{'transform': 'rotate(180deg)', marginTop: '-27px'}}></div>
+              <div className="lineWxs" style={{'transform': 'rotate(180deg)'}}></div>
+              <div className="lineWTop" style={{'transform': 'rotate(180deg)'}}></div>
+            </div>
+
+            <div className="" style={{marginLeft: '-30px'}}>
+              <div className="QAT pixelated mt-7"></div>
+              <div className="fontHPxl" style={{fontSize: '15px', color: "#a8b5b2", paddingLeft: '30px', width: "320px", marginTop: '-15px'}}>
+                <p>Testing sessions of the game with early adopters. We gather feedback from our community and build our game features and economy accordingly.</p>
+              </div>
+            </div>
+
+          </div>
+
+          <div className="flex flex-row justify-center inline-block mx-auto">
+            <img src="resources/front/Gif_FrensEvents.gif" className="roadmapGif" style={{width: "190px", height: "190px", marginTop: '-37px'}} />
+
+            <div className="grid">
+              <div className="lineWxs" style={{'transform': 'rotate(180deg)', marginTop: '-11px'}}></div>
+              <div className="lineWTop" style={{'transform': 'rotate(180deg)'}}></div>
+            </div>
+
+            <div className="" style={{marginLeft: '-30px', marginTop: '-15px'}}>
+            <div className="V01 pixelated" style={{marginTop: '-50px'}}></div>
+              <div className="fontHPxl" style={{fontSize: '15px', color: "#a8b5b2", paddingLeft: '30px', width: "320px", marginTop: '-15px'}}>
+              <ul style={{listStyle: 'disc', paddingLeft: '20px'}}>
+                  <li>Cleaning of the hackathon code</li>
+                  <li>Level system</li>
+                  <li>Finish all buildings, frens & resources</li>
+                  <li>Buildings upgrades</li>
+                  <li>Add animations</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-row justify-center inline-block mx-auto">
+            <img src="resources/front/Gif_TradeRessource.gif" className="roadmapGif" style={{marginTop: '-37px'}} />
+            <div className="grid">
+              <div className="lineWxs" style={{'transform': 'rotate(180deg)', marginTop: '-11px'}}></div>
+              <div className="lineWTop" style={{'transform': 'rotate(180deg)'}}></div>
+            </div>
+
+            <div className="" style={{marginLeft: '-30px', marginTop: '-15px'}}>
+            <div className="V02 pixelated" style={{marginTop: '-50px'}}></div>
+              <div className="fontHPxl" style={{fontSize: '15px', color: "#a8b5b2", paddingLeft: '30px', width: "320px", marginTop: '-15px'}}>
+              <ul style={{listStyle: 'disc', paddingLeft: '20px'}}>
+                  <li>Event system (disease, weather...)</li>
+                  <li>Save worlds in NFT/land format</li>
+                  <li>Marketplace to sell resources</li>
+                  <li>Optimization</li>
+                  <li>More biomes!</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-row justify-center inline-block mx-auto">
+            <img src="resources/front/Gif_Combine.gif" className="roadmapGif" style={{marginTop: '-37px'}} />
+
+            <div className="grid">
+              <div className="lineWxs" style={{'transform': 'rotate(180deg)', marginTop: '-11px'}}></div>
+              <div className="lineWxs" style={{'transform': 'rotate(180deg)', marginTop: '-9px'}}></div>
+              <div className="lineWxs" style={{'transform': 'rotate(180deg)', marginTop: '-9px'}}></div>
+            </div>
+
+            <div className="" style={{marginLeft: '-30px', marginTop: '-15px'}}>
+              <div className="V03 pixelated" style={{marginTop: '-50px'}}></div>
+              <div className="fontHPxl" style={{fontSize: '15px', color: "#a8b5b2", paddingLeft: '30px', width: "320px", marginTop: '-15px'}}>
+              <ul style={{listStyle: 'disc', paddingLeft: '20px'}}>
+                  <li>Optimization to make lands bigger</li>
+                  <li>Combine / join your lands together</li>
+                  <li>Multiplayer suppport</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+      </div>
+
+
+
     </>
   );
 }

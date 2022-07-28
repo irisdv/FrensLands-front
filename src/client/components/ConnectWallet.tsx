@@ -26,7 +26,7 @@ export function ConnectWallet() {
       ))} */}
       {connectors.map((connector) =>
         connector.available() ? (
-          <button className="btnPlay pixelated" key={connector.id()} onClick={() => connect(connector)}>
+          <button className="relative mx-auto btnPlay pixelated" style={{marginTop: '300px'}} key={connector.id()} onClick={() => connect(connector)}>
           </button>
         ) : null
       )}

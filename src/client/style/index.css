@@ -120,25 +120,7 @@ body {
 
 /* -------------------- MENU BAR -------------------- */
 
-
-/* @keyframes rotate {
-    from {
-      transform: rotate(0deg);
-    }
-    to { 
-      transform: rotate(360deg);
-    }
-  } */
   
-  /* img.frensLandsWorld {
-      animation-name:            rotate; 
-      animation-duration:        120s; 
-      animation-iteration-count: infinite;
-      animation-timing-function: linear;
-      image-rendering: pixelated;
-      image-rendering: -moz-crisp-edges;
-      image-rendering: crisp-edges;
-  } */
   @keyframes float {
 	0% {
 		transform: translatey(0px);
@@ -154,8 +136,185 @@ body {
 	transform: translatey(0px);
 	animation: float 6s ease-in-out infinite;
 }
-.frensLandsWorld {
+/* .frensLandsWorld {
     position: absolute;
+} */
+/* 
+320px — 480px: Mobile devices
+481px — 768px: iPads, Tablets
+769px — 1024px: Small screens, laptops
+1025px — 1200px: Desktops, large screens
+1201px and more —  Extra large screens, TV */
+
+.home-s1 {
+    background-color: #151d28;
+    /* overflow-y: scroll; */
+    /* overflow: hidden;  */
+    height: 720px;
+    background: url("resources/front/UI_MainScreen.png") no-repeat center top #151d28;
+}
+.home-s2 {
+    background-color: #151d28;
+    /* overflow-y: scroll; */
+    /* overflow: hidden;  */
+    height: 1400px;
+    background: url("resources/front/UI_MainScreen.png") repeat-y center top #151d28;
+}
+.roadmapT {
+    display:block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height:calc(64px * 1);
+    width:calc(64px * 6);
+    background-position:calc(10 * 1 * 64px) calc(3 * 1 * 64px);
+    background-size:calc(640px * 1) calc(640px * 1);
+}
+.home-s2 hr {
+    border: 3px solid #84BCD0;
+    margin-top: 20px;
+}
+.lineG {
+    display:inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height:calc(64px * 3);
+    width:calc(64px * 2);
+    background-position:calc(10 * 1 * 64px) calc(6 * 1 * 64px);
+    background-size:calc(640px * 1) calc(640px * 1);
+}
+.lineWTop {
+    display:inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height:calc(64px * 3);
+    width:calc(64px * 2);
+    background-position:calc(8 * 1 * 64px) calc(6 * 1 * 64px);
+    background-size:calc(640px * 1) calc(640px * 1);
+}
+.lineWxs {
+    display:inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(8 * 1 * 64px) calc(4 * 1 * 64px);
+    background-size:calc(640px * 1) calc(640px * 1);
+}
+.hackT {
+    display:inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height:calc(64px * 1);
+    width:calc(64px * 5);
+    background-position:calc(10 * 1 * 64px) calc(9 * 1 * 64px);
+    background-size:calc(640px * 1) calc(640px * 1);
+}
+.lineSG {
+    display:inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(4 * 1 * 64px) calc(6 * 1 * 64px);
+    background-size:calc(640px * 1) calc(640px * 1);
+    /* transform: rotate(90deg); */
+}
+.currentB {
+    display:inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height:calc(64px * 1);
+    width:calc(64px * 5);
+    background-position:calc(5 * 1 * 64px) calc(9 * 1 * 64px);
+    background-size:calc(640px * 1) calc(640px * 1);
+}
+.lineWTopS {
+    display:inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(6 * 1 * 64px) calc(6 * 1 * 64px);
+    background-size:calc(640px * 1) calc(640px * 1);
+}
+.QAT {
+    display:inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height:calc(64px * 1);
+    width:calc(64px * 5);
+    background-position:calc(0 * 1 * 64px) calc(8 * 1 * 64px);
+    background-size:calc(640px * 1) calc(640px * 1);
+}
+.V01 {
+    display:inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(0 * 1 * 64px) calc(10 * 1 * 64px);
+    background-size:calc(640px * 1) calc(640px * 1);
+}
+.V02 {
+    display:inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(8 * 1 * 64px) calc(10 * 1 * 64px);
+    background-size:calc(640px * 1) calc(640px * 1);
+}
+.V03 {
+    display:inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(6 * 1 * 64px) calc(10 * 1 * 64px);
+    background-size:calc(640px * 1) calc(640px * 1);
+}
+.V04 {
+    display:inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(4 * 1 * 64px) calc(10 * 1 * 64px);
+    background-size:calc(640px * 1) calc(640px * 1);
+}
+
+.roadmapGif {
+    width: 190px;
+    height: 190px;
+}
+
+@media screen and (max-width: 480px) {
+    .frensLandsWorld {
+        margin-top: 165px;
+    }
+    .frensLandsLogo {
+        margin-top: 0px;
+    }
+    .roadmapGif {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 481px) and (max-width: 768px) {
+    .frensLandsWorld {
+        margin-top: 100px;
+    }
+    .frensLandsLogo {
+        margin-top: -150px;
+    }
+    .roadmapGif {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .frensLandsWorld {
+        margin-top: 100px;
+    }
+    .frensLandsLogo {
+        margin-top: -150px;
+    }
+}
+
+@media screen and (min-width: 1025px) {
+    .frensLandsWorld {
+        margin-top: 150px;
+    }
+    .frensLandsLogo {
+        margin-top: -150px;
+    }
 }
 
 #menuBar {
@@ -871,7 +1030,7 @@ body {
 }
 
 .btnMint {
-    display:inline-block;
+    display:block;
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 2);
     width:calc(64px * 3);
@@ -879,7 +1038,7 @@ body {
     background-size:calc(1408px * 1) calc(768px * 1);
 }
 .btnMint:hover {
-    display:inline-block;
+    display:block;
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 2);
     width:calc(64px * 3);
@@ -887,7 +1046,7 @@ body {
     background-size:calc(1408px * 1) calc(768px * 1);
 }
 .btnMint:active {
-    display:inline-block;
+    display:block;
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 2);
     width:calc(64px * 3);
@@ -896,7 +1055,7 @@ body {
 }
 
 .btnApproval {
-    display:inline-block;
+    display:block;
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
     width:calc(64px * 2);
@@ -904,7 +1063,7 @@ body {
     background-size:calc(1408px * 1) calc(768px * 1);
 }
 .btnApproval:hover {
-    display:inline-block;
+    display:block;
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
     width:calc(64px * 2);
@@ -912,7 +1071,7 @@ body {
     background-size:calc(1408px * 1) calc(768px * 1);
 }
 .btnApproval:active {
-    display:inline-block;
+    display:block;
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
     width:calc(64px * 2);
@@ -921,28 +1080,28 @@ body {
 }
 
 .btnPlay {
-    display:inline-block;
+    display:block;
     background-image: url("resources/front/btn_play.png");
-    height:calc(64px * 2);
-    width:calc(64px * 2);
-    background-position:calc(6 * 1 * 64px) calc(2 * 1 * 64px);
-    background-size:calc(384px * 1) calc(128px * 1);
+    height:calc(64px * 2 * 2);
+    width:calc(64px * 2 * 2);
+    background-position:calc(6 * 2 * 64px) calc(2 * 2 * 64px);
+    background-size:calc(384px * 2) calc(128px * 2);
 }
 .btnPlay:hover {
-    display:inline-block;
+    display:block;
     background-image: url("resources/front/btn_play.png");
-    height:calc(64px * 2);
-    width:calc(64px * 2);
-    background-position:calc(4 * 1 * 64px) calc(2 * 1 * 64px);
-    background-size:calc(384px * 1) calc(128px * 1);
+    height:calc(64px * 2 * 2);
+    width:calc(64px * 2 * 2);
+    background-position:calc(4 * 2 * 64px) calc(2 * 2 * 64px);
+    background-size:calc(384px * 2) calc(128px * 2);
 }
 .btnPlay:active {
-    display:inline-block;
+    display:block;
     background-image: url("resources/front/btn_play.png");
-    height:calc(64px * 2);
-    width:calc(64px * 2);
-    background-position:calc(2 * 1 * 64px) calc(2 * 1 * 64px);
-    background-size:calc(384px * 1) calc(128px * 1);
+    height:calc(64px * 2 * 2);
+    width:calc(64px * 2 * 2);
+    background-position:calc(2 * 2 * 64px) calc(2 * 2 * 64px);
+    background-size:calc(384px * 2) calc(128px * 2);
 }
 
 .btnClaim {
