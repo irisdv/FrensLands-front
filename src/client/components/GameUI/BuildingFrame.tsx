@@ -487,9 +487,9 @@ export function BuildingFrame(props: any) {
                     style={{marginTop: '-9px', marginLeft: '-18px'}}
                   ></div>
                   {inputFuel == 1 || inputFuel == 10 || inputFuel == 100 ? 
-                    <div style={{height: "41px"}} onClick={() => updateInputFuel()} ><div className={"pixelated btnInput"+`${inputFuel}`} style={{marginTop: '-100px', marginLeft: "30px"}}></div></div>
+                    <div style={{height: "42px", marginTop: '-23px', marginLeft: '30px', pointerEvents: 'all'}} onClick={() => updateInputFuel()} ><div className={"pixelated btnInput"+`${inputFuel}`} style={{marginTop: '-25px', pointerEvents: 'none'}}></div></div>
                     : 
-                    <div style={{height: "41px"}} onClick={() => updateInputFuel()} ><div className="pixelated btnInputMax" style={{marginTop: '-100px', marginLeft: "30px"}}></div></div>
+                    <div style={{height: "42px", marginTop: '-23px', marginLeft: '30px', pointerEvents: 'all'}} onClick={() => updateInputFuel()} ><div className="pixelated btnInputMax" style={{marginTop: '-25px', pointerEvents: 'none'}}></div></div>
                   }
                 </div>
               :
@@ -497,9 +497,9 @@ export function BuildingFrame(props: any) {
                   <div>
                     <div className="btnStartProd pixelated" onClick={() => fuelProd(inputFuel, frameData.id as number, frameData.posX, frameData.posY, frameData.unique_id as any)} style={{marginTop: '-9px', marginLeft: '-18px'}}></div>
                     {inputFuel == 1 || inputFuel == 10 || inputFuel == 100 ? 
-                      <div style={{height: "41px"}} onClick={() => updateInputFuel()} ><div className={"pixelated btnInput"+`${inputFuel}`} style={{marginTop: '-100px', marginLeft: "30px"}}></div></div>
+                      <div style={{height: "42px", marginTop: '-23px', marginLeft: '30px', pointerEvents: 'all'}} onClick={() => updateInputFuel()} ><div className={"pixelated btnInput"+`${inputFuel}`} style={{marginTop: '-25px', pointerEvents: 'none'}}></div></div>
                       : 
-                      <div style={{height: "41px"}} onClick={() => updateInputFuel()} ><div className="pixelated btnInputMax" style={{marginTop: '-100px', marginLeft: "30px"}}></div></div>
+                      <div style={{height: "42px", marginTop: '-23px', marginLeft: '30px', pointerEvents: 'all'}} onClick={() => updateInputFuel()} ><div className="pixelated btnInputMax" style={{marginTop: '-25px', pointerEvents: 'none'}}></div></div>
                     }
                   </div>
                 </>
