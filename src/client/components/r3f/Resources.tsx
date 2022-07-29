@@ -84,6 +84,7 @@ export default function Resources ({frontBlockArray, textArrRef, rightBuildingTy
                         textureLoader={textureLoader} 
                         textureSelected={textureLoaderSelected} 
                         position={position}
+                        worldType={worldType}
                     />
         })
     )

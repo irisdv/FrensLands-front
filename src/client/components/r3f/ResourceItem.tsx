@@ -16,10 +16,11 @@ interface IBlock {
     frontBlockArray: any
     textureLoader : any
     textureSelected: any
+    worldType: any
     // updateBuildingFrame?: (show: boolean, data: {}) => void;
 }
 
-export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType, position, frontBlockArray, textureLoader, textureSelected}) : any => {
+export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType, position, frontBlockArray, textureLoader, textureSelected, worldType}) : any => {
 
     const meshRef = useRef<any>()
     const [clicked, setClicked] = useState(false)
@@ -127,7 +128,28 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
         if (meshRef.current && blockValue && textureValue) {
             if (blockValue && blockValue[0] == position.x && blockValue[1] == position.y && frontBlockArray[blockValue[1]][blockValue[0]][10] == 1) {
                 // Selected not under construction
-                textureSelected.offset.set(textureValue.x, textureValue.y);
+                if (block[9] > 0 && block[3] == 3 && worldType > 0) {
+                    let textureType : Vector2 = new Vector2(0, 0);
+                    if (block[9] == 1) {
+                        if (worldType == 1) textureType = findTextByID(46);
+                        if (worldType == 2) textureType = findTextByID(96); // 95
+                        if (worldType == 3) textureType = findTextByID(63);
+                        if (worldType == 4) textureType = new Vector2(textureValue.x, textureValue.y)
+                    } else if (block[9] == 2) {
+                        if (worldType == 1) textureType = findTextByID(47);
+                        if (worldType == 2) textureType = findTextByID(95); // 96
+                        if (worldType == 3) textureType = findTextByID(64);
+                        if (worldType == 4) textureType = new Vector2(textureValue.x, textureValue.y)
+                    } else if (block[9] == 3) {
+                        if (worldType == 1) textureType = findTextByID(62);
+                        if (worldType == 2) textureType = findTextByID(30);
+                        if (worldType == 3) textureType = findTextByID(78);
+                        if (worldType == 4) textureType = findTextByID(30);
+                    }
+                    textureSelected.offset.set(textureType.x, textureType.y);
+                } else {
+                    textureSelected.offset.set(textureValue.x, textureValue.y);
+                }
                 meshRef.current.material.map = textureSelected
             } else if (blockValue && blockValue[0] == position.x && blockValue[1] == position.y && frontBlockArray[blockValue[1]][blockValue[0]][10] == 0) {
                 // Selected under construction
@@ -152,18 +174,6 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
             position={[blockValue[0] + 0.5, 0.2 + (blockValue[1] * 0.02), blockValue[1]]}
             name={`${blockValue[4]}`.toString()}
             rotation={[-Math.PI * 0.5, 0, 0]}
-            // dispose={null}
-            // visible
-            // onClick={(event) => {
-            //     event.stopPropagation()
-            //     if (frameData?.selected == 1 && frameData.id != blockValue[3]) {
-            //         console.log('en train de build')
-            //     } else {
-            //         console.log('clicked', blockValue[3])
-            //         updateBuildingFrame(true, {"id": blockValue[3], "unique_id": blockValue[4], "posX": (blockValue[0]), "posY": blockValue[1], "selected": 0});
-            //         setClicked(true)
-            //     }
-            // }}
         >
             <planeBufferGeometry
                 name={`${blockValue[4]}`.toString()+"_geom"}
