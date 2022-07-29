@@ -361,7 +361,18 @@ export const Map = (props : any)=> {
                         frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0
                         frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0
                         frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] = 1
+                        frontBlockArray[tx.metadata.posY][tx.metadata.posX][9] = 0
                     }
+                }
+                // tx for destroying building 
+                if (tx.status == 'ACCEPTED_ON_L2' && tx.metadata.method == 'destroy_building') {
+                    if (frontBlockArray[tx.metadata.posY][tx.metadata.posX] 
+                        && frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] == 0 ) {
+                            frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0
+                            frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0
+                            frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] = 1
+                            frontBlockArray[tx.metadata.posY][tx.metadata.posX][9] = 0
+                        }
                 }
             })
         }

@@ -10,6 +10,7 @@ import DB from '../../db.json';
 import { useSelectContext } from "../../hooks/useSelectContext";
 import useHarvestResource from "../../hooks/invoke/useHarvestResource";
 import useBuild from "../../hooks/invoke/useBuild";
+import useDestroy from "../../hooks/invoke/useDestroy";
 import useActiveNotifications from '../../hooks/useNotifications'
 
 
@@ -43,6 +44,8 @@ export function BuildingFrame(props: any) {
   const [ upgrading, setUpgrading ] = useState<any>(null)
   const rechargingInvoke = useRecharge()
   const [ recharging, setRecharging ] = useState<any>(null)
+  const detroyingInvoke = useDestroy()
+  const [ destroying, setDestroying ] = useState<any>(null)
 
   const buildingInvoke = useBuild()
   const [ building, setBuilding ] = useState<any>(null)
@@ -147,6 +150,18 @@ export function BuildingFrame(props: any) {
       let tx_hash = rechargingInvoke(tokenId, pos_start, nb_days, type_id, pos_x, pos_y, uniqueId)
       console.log('tx hash recharging', tx_hash)
       setUpgrading(tx_hash);
+    } else {
+      console.log('Missing tokenId')
+    }
+  }
+
+  const destroyBuilding = (type_id : number, pos_x: number, pos_y: number) => {
+    let pos_start = (pos_y - 1) * 40 + pos_x
+    console.log('pos_start', pos_start)
+    if (tokenId) {
+      let tx_hash = detroyingInvoke(tokenId, pos_start, type_id, pos_x, pos_y, parseInt(frameData?.unique_id as string))
+      console.log('tx hash destroy', tx_hash)
+      setDestroying(tx_hash);
     } else {
       console.log('Missing tokenId')
     }
@@ -279,6 +294,7 @@ export function BuildingFrame(props: any) {
       <div id="bFrame" 
         className={"absolute "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 4 && frameData.id != 5) && frameData.unique_id ? "buildingFrameRecharged" : "buildingFrame" }`}
       >
+        {frameData && frameData.unique_id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20) && <div className="btnDestroy absolute" onClick={() => destroyBuilding(frameData?.id as number, frameData?.posX, frameData?.posY)}></div>}
         <div className='btnCloseFrame' onClick={() => updateBuildingFrame(false, {"id": 0, "level": 0, "posX": 0, "posY": 0, "selected": 0})}></div>
         <div className="grid grid-cols-2 inline-block" style={{ height: "20px" }}>
           <div className="font8BITWonder uppercase text-center" style={{ height: "20px" }} >
