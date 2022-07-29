@@ -110,19 +110,19 @@ export function BuildingFrame(props: any) {
 
   useEffect(() => {
     if (harvesting) {
-      var dataMinting = activeNotifications.filter((transactions) => (transactions?.content.transactionHash as string) === harvesting as string)
+      var dataMinting = activeNotifications.filter((transactions) => (transactions?.transactionHash as string) === harvesting as string)
       console.log('harvestingData', dataMinting )
-      if (dataMinting && dataMinting[0] && dataMinting[0].content) {
-        if (dataMinting[0].content.status == 'REJECTED') {
-          setMessage("Your transaction has failed... Try again.")
-          setHarvesting(null)
-        } else if (dataMinting[0].content.status == 'ACCEPTED_ON_L1' || dataMinting[0].content.status == 'ACCEPTED_ON_L2') {
-          setMessage("Your transaction was accepted. Now you need to initialize the game!")
-          setHarvesting(true)
-        } else {
-          setMessage("Your transaction is ongoing.")
-        }
-      }
+      // if (dataMinting && dataMinting[0] && dataMinting[0].content) {
+      //   if (dataMinting[0].content.status == 'REJECTED') {
+      //     setMessage("Your transaction has failed... Try again.")
+      //     setHarvesting(null)
+      //   } else if (dataMinting[0].content.status == 'ACCEPTED_ON_L1' || dataMinting[0].content.status == 'ACCEPTED_ON_L2') {
+      //     setMessage("Your transaction was accepted. Now you need to initialize the game!")
+      //     setHarvesting(true)
+      //   } else {
+      //     setMessage("Your transaction is ongoing.")
+      //   }
+      // }
     }
   }, [harvesting, activeNotifications])
 
@@ -188,14 +188,14 @@ export function BuildingFrame(props: any) {
   }, [frameData])
 
   // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST  TEST TEST TEST TEST TEST TEST TEST TEST TEST
-  const generateTest = useTest()
-  const [testing, setTesting] = useState<any>(null)
-  const testContract = async (unique_id : any, id : number, posX : number, posY : number) => {
-    console.log("invoking test", account);
-    let tx_hash = await generateTest(unique_id, id, posX, posY, frontBlockArray[posY][posX][7])
-    console.log('tx hash', tx_hash)
-    setTesting(tx_hash);
-  };
+  // const generateTest = useTest()
+  // const [testing, setTesting] = useState<any>(null)
+  // const testContract = async (unique_id : any, id : number, posX : number, posY : number) => {
+  //   console.log("invoking test", account);
+  //   let tx_hash = await generateTest(unique_id, id, posX, posY, frontBlockArray[posY][posX][7])
+  //   console.log('tx hash', tx_hash)
+  //   setTesting(tx_hash);
+  // };
 
   // useEffect(() => {
   //   if (testing) {

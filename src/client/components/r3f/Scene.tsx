@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { Canvas, useThree, useFrame, extend } from '@react-three/fiber';
-import { Html, PerspectiveCamera, PositionalAudio, useContextBridge } from '@react-three/drei';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { useContextBridge } from '@react-three/drei';
 import * as THREE from "three";
 
 import { Terrain } from './Terrain';
@@ -8,27 +8,19 @@ import { TerrainBorder } from './TerrainBorder';
 import { Camera } from './Camera';
 import { TerrainBackground } from './TerrainBackground'
 import { Map } from './Map'
-
-import { useGameContext } from '../../hooks/useGameContext'
-import useInGameContext from '../../hooks/useInGameContext'
-import { BottomBar } from '../GameUI/BottomBar';
-import { useSelectContext } from '../../hooks/useSelectContext';
-import { BuildingTemp } from './BuildingTemp';
-import { Vector2, Vector3 } from 'three';
+import { Vector2 } from 'three';
 import BuildingContext from '../../providers/BuildingContext';
 import SelectContext from '../../providers/SelectContext';
 import { TransactionManagerContext } from '../../providers/transactions/context'
-import { useTexture } from "@react-three/drei";
-import { NearestFilter, RepeatWrapping } from "three";
-import { StarknetProvider, useStarknet, useStarknetTransactionManager } from '@starknet-react/core';
 import { StarknetContext } from '@starknet-react/core/dist/providers/starknet';
 import StateContext from '../../providers/GameContext'
-
-
+import { useSelectContext } from '../../hooks/useSelectContext';
 
 export const Scene = (props : any) => {
     const ContextBridge = useContextBridge(SelectContext, BuildingContext, TransactionManagerContext, StarknetContext, StateContext)
     const refCanvas = useRef<any>()
+
+    const { updateBuildingFrame } = useSelectContext()
 
     const { mapArray, textArrRef, rightBuildingType, worldType, UBlockIDs } = props
 
@@ -38,9 +30,32 @@ export const Scene = (props : any) => {
     const [mouseMiddlePressed, setMouseMiddlePressed] = useState(0)
     const [frontBlockArray, setFrontBlockArray] = useState([])
 
-    const keyMap : any[] = []
+    const [keyMap, setKeyMap] = useState({
+        Escape: false,
+      })
     const [customMouse, setCustomMouse] = useState(new Vector2(0, 0))
-        
+
+    useEffect(() => {
+        const handleKeyDown = (event : any) => {
+            setKeyMap((m) => ({ ...m, [event.code]: true }))
+        }
+        const handleKeyUp = (event : any) => {
+            setKeyMap((m) => ({ ...m, [event.code]: false }))
+        }
+        document.addEventListener('keydown', handleKeyDown)
+        document.addEventListener('keyup', handleKeyUp)
+        return () => {
+          document.removeEventListener('keydown', handleKeyDown)
+          document.removeEventListener('keyup', handleKeyUp)
+        }
+      }, [])
+
+      useEffect(() => {
+        if (keyMap && keyMap['Escape'] == true) {
+            updateBuildingFrame(false, {"id": 0, "unique_id": 0, "posX": 0, "posY": 0, "selected": 0});
+        }
+      }, [keyMap])
+
     return(
     <>
         <Canvas id="canvasScene" gl={{ antialias: true, toneMapping: THREE.NoToneMapping }} linear ref={refCanvas}
@@ -80,16 +95,6 @@ export const Scene = (props : any) => {
                     setMouseMiddlePressed(0)
                 }
             }}
-            onKeyDown={(event)=> {
-                event.stopPropagation()
-                var keyCode = event.code;
-                keyMap[keyCode as any] = true;
-            }}
-            onKeyUp={(event)=> {
-                event.stopPropagation()
-                var keyCode = event.code;
-                keyMap[keyCode as any](false);
-            }}
             onMouseMove={(event) => {
                 setCustomMouse(new Vector2(( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1))
             }}
@@ -100,32 +105,31 @@ export const Scene = (props : any) => {
             <ambientLight color={0xffffff} intensity={0.9} />
             <directionalLight color={0xffffff} intensity={0.5} position={[12, 12, 8]} />
             <color attach="background" args={[0x73bed3]} />
-            <Camera 
-                aspect={window.innerWidth / window.innerHeight} 
+            <Camera
+                aspect={window.innerWidth / window.innerHeight}
                 mouseRightPressed={mouseRightPressed}
                 mouseWheelProp={mouseWheelProp}
             />
             <ContextBridge>
-                <Map 
-                    frontBlockArray={frontBlockArray} 
-                    textArrRef={textArrRef} 
-                    rightBuildingType={rightBuildingType} 
-                    worldType={worldType} 
+                <Map
+                    frontBlockArray={frontBlockArray}
+                    textArrRef={textArrRef}
+                    rightBuildingType={rightBuildingType}
+                    worldType={worldType}
                     mouseLeftPressed={mouseLeftPressed}
                     mouseMiddlePressed={mouseMiddlePressed}
                     buildingsIDs={UBlockIDs}
                     mouseRightPressed={mouseRightPressed}
-                />            
+                    keyMap={keyMap}
+                />
             </ContextBridge>
             <TerrainBackground />
             <Terrain worldType={worldType}  />
             <TerrainBorder worldType={worldType}  />
         </Canvas>
-    
+
     </>
     )
 
 
 }
-
-

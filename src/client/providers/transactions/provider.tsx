@@ -53,6 +53,7 @@ export function NotifTransactionManagerProvider({
             type: 'update_transaction',
             transactionResponse: transactionResponse,
             lastUpdatedAt: lastUpdatedAt,
+            show: true,
             transactionHash: transaction.transactionHash,
           })
         }
@@ -82,8 +83,9 @@ export function NotifTransactionManagerProvider({
       try {
         const transactionResponse = await library.getTransaction(transactionHash)
         const lastUpdatedAt = Date.now()
+        const show = true
 
-        dispatch({ type: 'update_transaction', transactionResponse, lastUpdatedAt, transactionHash })
+        dispatch({ type: 'update_transaction', transactionResponse, lastUpdatedAt, show, transactionHash })
       } catch (err) {
         console.error(err)
       }
@@ -109,8 +111,20 @@ export function NotifTransactionManagerProvider({
   )
 
   const removeTransaction = useCallback(
-    (transactionHash: string) => {
-      dispatch({ type: 'remove_transaction', transactionHash })
+    async (transactionHash: string) => {
+      // dispatch({ type: 'remove_transaction', transactionHash })
+
+      try {
+        const transactionResponse = await library.getTransaction(transactionHash)
+        const lastUpdatedAt = Date.now()
+        const show = false
+        console.log('in remove', transactionHash)
+
+        // dispatch({ type: 'update_transaction', transactionResponse, lastUpdatedAt, show, transactionHash })
+        dispatch({ type: 'remove_transaction', transactionResponse, lastUpdatedAt, show, transactionHash })
+      } catch (err) {
+        console.error(err)
+      }
     },
     [dispatch]
   )
@@ -122,8 +136,8 @@ export function NotifTransactionManagerProvider({
     [refresh]
   )
 
-  const removeNotif = useCallback((key: string) => {
-    dispatch({ type: 'remove_notification', key })
+  const removeNotif = useCallback((key: string, content: any) => {
+    dispatch({ type: 'remove_notification', key, content })
   }, [])
 
   // periodically refresh all transactions.

@@ -77,6 +77,36 @@ body {
 
 }
 
+/* .notifContainer .popUpNotifsGame {
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(19 * 1 * 64px) calc(2 * 1* 64px);
+    background-size:calc(1408px* 1) calc(768px * 1);
+    padding-left: 23px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    left: 0px;
+    bottom: 0px;
+    position: relative;
+}
+
+.notifContainerGame .popUpNotifsGame {
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(19 * 1 * 64px) calc(2 * 1* 64px);
+    background-size:calc(1408px* 1) calc(768px * 1);
+    padding-left: 23px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    left: 0px;
+    bottom: 0px;
+    position: absolute;
+} */
+
 .popUpNotifs {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 2);
@@ -93,31 +123,54 @@ body {
     width:calc(64px * 2);
     background-position:calc(19 * 1 * 64px) calc(2 * 1* 64px);
     background-size:calc(1408px* 1) calc(768px * 1);
-    /* position: absolute;
-    bottom: 0px; */
     padding-left: 23px;
     padding-right: 20px;
     padding-top: 20px;
     padding-bottom: 20px;
     left: 0px;
-    bottom: 0px;
+    /* bottom: 0px; */
     position: absolute;
 }
-/* .notifContainer {
+.notifContainer {
     position: absolute;
     width: 128px;
     height: 100vh;
     display: grid;
-} */
-/* .notifPanel {
+}
+.notifPanel {
     position: relative;
     width: 100%;
     height: 100%;
     width: 128px;
     height: 100vh;
     display: inline-block;
-} */
-
+}
+.closeNotif {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(32px * 1);
+    width:calc(32px * 2);
+    background-position:calc(9 * 1 * 64px) calc(10 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+    margin-left: 20px;
+    position: absolute;
+    right: -11px;
+    top: -5px;
+    pointer-events: all;
+}
+.closeNotif:active {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(32px * 1);
+    width:calc(32px * 2);
+    background-position:calc(10 * 1 * 64px) calc(10 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+    margin-left: 20px;
+    position: absolute;
+    right: -11px;
+    top: -5px;
+    pointer-events: all;
+}
 /* -------------------- MENU BAR -------------------- */
 
   
@@ -277,7 +330,7 @@ body {
 
 @media screen and (max-width: 480px) {
     .frensLandsWorld {
-        margin-top: 165px;
+        margin-top: 220px;
     }
     .frensLandsLogo {
         margin-top: 0px;
@@ -290,6 +343,8 @@ body {
 @media screen and (min-width: 481px) and (max-width: 768px) {
     .frensLandsWorld {
         margin-top: 100px;
+        height: 640px;
+        width: 640px;
     }
     .frensLandsLogo {
         margin-top: -150px;
@@ -302,6 +357,8 @@ body {
 @media screen and (min-width: 769px) and (max-width: 1024px) {
     .frensLandsWorld {
         margin-top: 100px;
+        height: 640px;
+        width: 640px;
     }
     .frensLandsLogo {
         margin-top: -150px;
@@ -311,6 +368,8 @@ body {
 @media screen and (min-width: 1025px) {
     .frensLandsWorld {
         margin-top: 150px;
+        height: 640px;
+        width: 640px;
     }
     .frensLandsLogo {
         margin-top: -150px;
@@ -1136,7 +1195,6 @@ body {
     width:calc(64px * 2);
     background-position:calc(11 * 1 * 64px) calc(14 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
-    margin-left: 20px
 }
 
 /* .popUpClaim {

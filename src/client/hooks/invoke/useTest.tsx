@@ -10,7 +10,7 @@ export default function useTest() {
 
   const { addTransaction } = useNotifTransactionManager()
 
-  return useCallback(async (unique_id: any, type_id: any, posX: any, posY: any, level_start: any) => {
+  return useCallback(async () => {
     if (!contract || !account) {
       throw new Error('Missing Dependencies')
     }
@@ -26,11 +26,7 @@ export default function useTest() {
           address: account,
           metadata: {
             method: "harvest",
-            message: "Mint Frens Lands map",
-            unique_id: unique_id,
-            type_id: type_id,
-            posX: posX,
-            posY: posY
+            message: "Mint Frens Lands map"
           }
         })
 

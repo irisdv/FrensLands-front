@@ -4,6 +4,7 @@ export interface TransactionSubmitted {
   status: TransactionStatus
   transactionHash: string
   address?: string
+  show?: boolean
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata?: any
 }
@@ -13,6 +14,7 @@ export interface TransactionReceived {
   transaction: NotifTransaction
   transactionHash: string
   lastUpdatedAt: number
+  show?: boolean
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata?: any
 }
@@ -35,7 +37,7 @@ export interface NotifTransactionManager {
   addTransaction: (transaction: TransactionSubmitted) => void
   removeTransaction: (transactionHash: string) => void
   refreshTransaction: (transactionHash: string) => void
-  removeNotif: (_transactionHash: string) => void
+  removeNotif: (_transactionHash: string, _txContent: any) => void
 }
 
 export const TRANSACTION_MANAGER_INITIAL_STATE: NotifTransactionManager = {
@@ -44,5 +46,5 @@ export const TRANSACTION_MANAGER_INITIAL_STATE: NotifTransactionManager = {
   addTransaction: (_transaction) => undefined,
   removeTransaction: (_transactionHash) => undefined,
   refreshTransaction: (_transactionHash) => undefined,
-  removeNotif: (_transactionHash) => undefined
+  removeNotif: (_transactionKey, _txContent) => undefined
 }

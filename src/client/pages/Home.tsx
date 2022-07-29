@@ -150,23 +150,23 @@ export default function Home() {
     setMinting(tx_hash);
   };
 
-  useEffect(() => {
-    if (minting) {
-      var dataMinting = activeNotifications.filter((transactions) => (transactions?.content.transactionHash as string) === minting as string)
-      console.log('mintingData', dataMinting )
-      if (dataMinting && dataMinting[0] && dataMinting[0].content) {
-        if (dataMinting[0].content.status == 'REJECTED') {
-          setMessage("Your transaction has failed... Try again.")
-          setMinting(null)
-        } else if (dataMinting[0].content.status == 'ACCEPTED_ON_L1' || dataMinting[0].content.status == 'ACCEPTED_ON_L2') {
-          setMessage("Your transaction was accepted. Now you need to initialize the game!")
-          setMinting(true)
-        } else {
-          setMessage("Your transaction is ongoing.")
-        }
-      }
-    }
-  }, [minting, activeNotifications])
+  // useEffect(() => {
+  //   if (minting) {
+  //     var dataMinting = activeNotifications.filter((transactions) => (transactions?.transactionHash as string) === minting as string)
+  //     console.log('mintingData', dataMinting )
+  //     if (dataMinting && dataMinting[0] && dataMinting[0].content) {
+  //       if (dataMinting[0].content.status == 'REJECTED') {
+  //         setMessage("Your transaction has failed... Try again.")
+  //         setMinting(null)
+  //       } else if (dataMinting[0].content.status == 'ACCEPTED_ON_L1' || dataMinting[0].content.status == 'ACCEPTED_ON_L2') {
+  //         setMessage("Your transaction was accepted. Now you need to initialize the game!")
+  //         setMinting(true)
+  //       } else {
+  //         setMessage("Your transaction is ongoing.")
+  //       }
+  //     }
+  //   }
+  // }, [minting, activeNotifications])
 
   // Check if is approved 
   const { data: fetchApprovalState } = useStarknetCall({
@@ -213,12 +213,12 @@ export default function Home() {
 
   useEffect(() => {
     if (settingUp) {
-      var data = activeNotifications.filter((transactions) => (transactions?.content.transactionHash) === settingUp as string);
-      if (data && data[0] && data[0].content) {
-        if (data[0].content.status == 'REJECTED') {
+      var data = activeNotifications.filter((transactions) => (transactions?.transactionHash) === settingUp as string);
+      if (data && data[0]) {
+        if (data[0].status == 'REJECTED') {
           setMessage("Your transaction has failed... Try again.")
           setSettingUp(null)
-        } else if (data[0].content.status == 'ACCEPTED_ON_L1' || data[0].content.status == 'ACCEPTED_ON_L2') {
+        } else if (data[0].status == 'ACCEPTED_ON_L1' || data[0].status == 'ACCEPTED_ON_L2') {
           setMessage("Your transaction was accepted. Now you can play!")
           setSettingUp(true)
           if (approved) navigate('/play')
@@ -240,17 +240,17 @@ export default function Home() {
 
   // useEffect(() => {
   //   if (testing) {
-  //     var data = activeNotifications.filter((transactions) => (transactions?.content.transactionHash as string) === testing as string)
+  //     var data = activeNotifications.filter((transactions) => (transactions?.transactionHash as string) === testing as string)
   //     console.log('data test', data )
   //     console.log('state', testing)
-  //     if (data && data[0] && data[0].content) {
-  //       if (data[0].content.status == 'REJECTED') {
+  //     if (data && data[0]) {
+  //       if (data[0].status == 'REJECTED') {
   //         setMessage("Your transaction has failed... Try again.")
-  //       } else if (data[0].content.status == 'ACCEPTED_ON_L1' || data[0].content.status == 'ACCEPTED_ON_L2') {
+  //       } else if (data[0].status == 'ACCEPTED_ON_L1' || data[0].status == 'ACCEPTED_ON_L2') {
   //         setMessage("Your transaction was accepted. Now you can play!")
   //         console.log('in data')
   //         setTesting(true)
-  //         navigate('/game')
+  //         // navigate('/game')
   //       }
   //     }
   //   }
@@ -262,8 +262,15 @@ export default function Home() {
     <div className="" style={{overflowY: "scroll", overflowX: 'hidden', height: "100vh"}}>
       <div className="home-s1">
         <div className="relative">
+
+        <div className="notifContainer">
+          <div className="notifPanel">
+            <Notifications />
+          </div>
+        </div>
+
           <div className="absolute" style={{width: "100vw", top: '0'}}>
-            <img src="resources/front/UI_MainScreenPlanet.png" className="relative mx-auto pixelated frensLandsWorld" />
+            <img src="resources/front/UI_MainScreenPlanet.svg" className="relative mx-auto pixelated frensLandsWorld" />
           </div>
 
           <div className="absolute" style={{width: "100vw", top: '0'}}>
@@ -288,6 +295,7 @@ export default function Home() {
             }
             {account && canPlay && approved && 
               <button className="relative mx-auto pixelated btnPlay" onClick={() => navigate('/play')} style={{marginTop: '-65px'}}></button>
+              // <button className="relative mx-auto pixelated btnPlay" onClick={() => testContract()} style={{marginTop: '-65px'}}></button>
             }              
           </div>
         </div>
@@ -302,8 +310,11 @@ export default function Home() {
 
           <div className="flex flex-row justify-center inline-block mx-auto mt-5">
             <img src="resources/front/Gif_Population.gif" className="mt-7 roadmapGif" />
-            <div className="lineWTop">
-                <div className="lineG pixelated"></div>
+            <div className="grid">
+              <div className="lineWTop">
+                  <div className="lineG pixelated"></div>
+              </div>
+              {/* <div className="lineSG pixelated"></div> */}
             </div>
             <div className="" style={{marginLeft: '-30px'}}>
               <div className="hackT pixelated mt-3"></div>
