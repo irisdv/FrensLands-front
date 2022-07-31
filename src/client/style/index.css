@@ -20,7 +20,7 @@
     font-family: 'Hpxl_Condensed';
     font-style: normal;
     font-weight: 400;
-    src: url('resources/fonts/Hpxl_CondensedV6.ttf');
+    src: url('resources/fonts/Hpxl_CondensedV7.ttf');
 }
 
 @font-face {
@@ -222,7 +222,7 @@ body {
     background-size:calc(640px * 1) calc(640px * 1);
 }
 .home-s2 hr {
-    border: 3px solid #84BCD0;
+    border: 3px solid #73bed3;
     margin-top: 20px;
 }
 .lineG {

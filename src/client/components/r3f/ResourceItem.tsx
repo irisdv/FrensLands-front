@@ -63,6 +63,12 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
             }
         } else if (block[3] == 1 && block[7] == 1) {
             textureType = findTextByID(2)
+        // } else if (block[3] == 1 && block[7] == 1) {
+        //     textureType = findTextByID(87)
+        // } else if (block[3] == 6) {
+        //     textureType = findTextByID(105)
+        // } else if (block[3] == 11) {
+        //     textureType = findTextByID(85)
         } else {
             textureType = findTextByID(rightBuildingType[block[3]]);
         }
@@ -132,12 +138,12 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
                     let textureType : Vector2 = new Vector2(0, 0);
                     if (block[9] == 1) {
                         if (worldType == 1) textureType = findTextByID(46);
-                        if (worldType == 2) textureType = findTextByID(96); // 95
+                        if (worldType == 2) textureType = findTextByID(95); // 95
                         if (worldType == 3) textureType = findTextByID(63);
                         if (worldType == 4) textureType = new Vector2(textureValue.x, textureValue.y)
                     } else if (block[9] == 2) {
                         if (worldType == 1) textureType = findTextByID(47);
-                        if (worldType == 2) textureType = findTextByID(95); // 96
+                        if (worldType == 2) textureType = findTextByID(96); // 96
                         if (worldType == 3) textureType = findTextByID(64);
                         if (worldType == 4) textureType = new Vector2(textureValue.x, textureValue.y)
                     } else if (block[9] == 3) {
