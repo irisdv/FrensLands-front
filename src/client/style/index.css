@@ -20,7 +20,7 @@
     font-family: 'Hpxl_Condensed';
     font-style: normal;
     font-weight: 400;
-    src: url('resources/fonts/Hpxl_CondensedV6.ttf');
+    src: url('resources/fonts/Hpxl_CondensedV7.ttf');
 }
 
 @font-face {
@@ -222,7 +222,7 @@ body {
     background-size:calc(640px * 1) calc(640px * 1);
 }
 .home-s2 hr {
-    border: 3px solid #84BCD0;
+    border: 3px solid #73bed3;
     margin-top: 20px;
 }
 .lineG {
@@ -627,7 +627,7 @@ body {
 }
 .l1noR {
     height: 30px;
-    margin-left: 205px;
+    margin-left: 219px;
 }
 .l1noR:nth-child(1) {
     width: 60px;
@@ -641,7 +641,7 @@ body {
 }
 .l2noR {
     height: 30px;
-    margin-left: 205px;
+    margin-left: 218px;
 }
 .l3R {
     height: 30px;

@@ -316,7 +316,7 @@ export default function Home() {
               </div>
               {/* <div className="lineSG pixelated"></div> */}
             </div>
-            <div className="" style={{marginLeft: '-30px'}}>
+            <div className="" style={{marginLeft: '-20px'}}>
               <div className="hackT pixelated mt-3"></div>
               <div className="fontHPxl" style={{fontSize: '15px', color: "#a8b5b2", paddingLeft: '30px', marginTop:'-23px'}}>
                 <p>Creation of the prototype</p>
@@ -339,7 +339,7 @@ export default function Home() {
               <div className="lineWTop" style={{'transform': 'rotate(180deg)'}}></div>
             </div>
 
-            <div className="" style={{marginLeft: '-30px'}}>
+            <div className="" style={{marginLeft: '-20px'}}>
               <div className="QAT pixelated mt-7"></div>
               <div className="fontHPxl" style={{fontSize: '15px', color: "#a8b5b2", paddingLeft: '30px', width: "320px", marginTop: '-15px'}}>
                 <p>Testing sessions of the game with early adopters. We gather feedback from our community and build our game features and economy accordingly.</p>
@@ -356,7 +356,7 @@ export default function Home() {
               <div className="lineWTop" style={{'transform': 'rotate(180deg)'}}></div>
             </div>
 
-            <div className="" style={{marginLeft: '-30px', marginTop: '-15px'}}>
+            <div className="" style={{marginLeft: '-20px', marginTop: '-15px'}}>
             <div className="V01 pixelated" style={{marginTop: '-50px'}}></div>
               <div className="fontHPxl" style={{fontSize: '15px', color: "#a8b5b2", paddingLeft: '30px', width: "320px", marginTop: '-15px'}}>
               <ul style={{listStyle: 'disc', paddingLeft: '20px'}}>
@@ -377,7 +377,7 @@ export default function Home() {
               <div className="lineWTop" style={{'transform': 'rotate(180deg)'}}></div>
             </div>
 
-            <div className="" style={{marginLeft: '-30px', marginTop: '-15px'}}>
+            <div className="" style={{marginLeft: '-20px', marginTop: '-15px'}}>
             <div className="V02 pixelated" style={{marginTop: '-50px'}}></div>
               <div className="fontHPxl" style={{fontSize: '15px', color: "#a8b5b2", paddingLeft: '30px', width: "320px", marginTop: '-15px'}}>
               <ul style={{listStyle: 'disc', paddingLeft: '20px'}}>
@@ -400,7 +400,7 @@ export default function Home() {
               <div className="lineWxs" style={{'transform': 'rotate(180deg)', marginTop: '-9px'}}></div>
             </div>
 
-            <div className="" style={{marginLeft: '-30px', marginTop: '-15px'}}>
+            <div className="" style={{marginLeft: '-20px', marginTop: '-15px'}}>
               <div className="V03 pixelated" style={{marginTop: '-50px'}}></div>
               <div className="fontHPxl" style={{fontSize: '15px', color: "#a8b5b2", paddingLeft: '30px', width: "320px", marginTop: '-15px'}}>
               <ul style={{listStyle: 'disc', paddingLeft: '20px'}}>
