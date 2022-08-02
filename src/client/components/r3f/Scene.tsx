@@ -49,7 +49,7 @@ export const Scene = (props : any) => {
             setKeyMap((m) => ({ ...m, [event.code]: false }))
         }
         const handleMouseWheelProp = (event : any) => {
-          if (event.deltaY > 0 && indexRef.current > 3) {
+          if (event.deltaY > 0 && indexRef.current > 4) {
               setIndex(() => indexRef.current - 1);
           } else if (event.deltaY < 0 && indexRef.current < 20)  {
               setIndex(() => indexRef.current + 1);
