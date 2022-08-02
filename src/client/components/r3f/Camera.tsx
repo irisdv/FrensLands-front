@@ -13,25 +13,21 @@ export const Camera = (props : any) => {
     const [cameraPositionX, setCameraPositionX] = useState(21)
     const [cameraPositionY, setCameraPositionY] = useState(150)
     const [cameraPositionZ, setCameraPositionZ] = useState(9)
+    const [zoom, setZoom] = useState(0)
+
+    const mouseWheelValue = useMemo(() => {
+      console.log(mouseWheelProp)
+        if (mouseWheelProp != null){
+            setZoom(1)
+            console.log('mouseWheelProp', mouseWheelProp)
+           return mouseWheelProp
+        }
+    }, [mouseWheelProp])
 
     useFrame(({ mouse }) => {
         if (cameraRef.current) {
 
-          console.log('mouseWheelProp', mouseWheelProp)
-
-            if (mouseWheelProp == -1 && cameraPositionY > 45) {
-                console.log("wheel----");
-                setCameraPositionY(cameraPositionY - 15);
-                // cameraRef.current.aspect = size.width / size.height
-                // cameraRef.current.position.set(cameraPositionX, cameraPositionY, cameraPositionZ)
-                // cameraRef.current.updateProjectionMatrix()
-            } else if (mouseWheelProp == 1 && cameraPositionY < 300) {
-                console.log("wheel++++");
-                setCameraPositionY(cameraPositionY + 15);
-                // cameraRef.current.aspect = size.width / size.height
-                // cameraRef.current.position.set(cameraPositionX, cameraPositionY, cameraPositionZ)
-                // cameraRef.current.updateProjectionMatrix()
-            }
+          setCameraPositionY(15 * props.index);
 
             if (mouseRightPressed == 1) {
                 var posX = cameraPositionX;

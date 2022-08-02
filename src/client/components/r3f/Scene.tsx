@@ -37,6 +37,10 @@ export const Scene = (props : any) => {
       })
     const [customMouse, setCustomMouse] = useState(new Vector2(0, 0))
 
+    const indexRef = useRef<any>()
+    const [ index, setIndex ] = useState(10);
+    indexRef.current = index;
+
     useEffect(() => {
         const handleKeyDown = (event : any) => {
             setKeyMap((m) => ({ ...m, [event.code]: true }))
@@ -45,21 +49,21 @@ export const Scene = (props : any) => {
             setKeyMap((m) => ({ ...m, [event.code]: false }))
         }
         const handleMouseWheelProp = (event : any) => {
-          if (event.deltaY > 0) {
-              setMouseWheelProp(-1);
-          } else if (event.deltaY < 0)  {
-              setMouseWheelProp(1);
-          } else {
-              setMouseWheelProp(0);
+          if (event.deltaY > 0 && indexRef.current > 3) {
+              setIndex(() => indexRef.current - 1);
+          } else if (event.deltaY < 0 && indexRef.current < 20)  {
+              setIndex(() => indexRef.current + 1);
           }
         }
         document.addEventListener('keydown', handleKeyDown)
         document.addEventListener('keyup', handleKeyUp)
-        document.addEventListener("wheel", handleMouseWheelProp, true);
+        let passiveObject: any = { passive: true }
+        document.addEventListener("wheel", handleMouseWheelProp, passiveObject);
         return () => {
           document.removeEventListener('keydown', handleKeyDown)
           document.removeEventListener('keyup', handleKeyUp)
-          document.removeEventListener("wheel", handleMouseWheelProp);
+          let passiveObject: any = { passive: true }
+          document.removeEventListener("wheel", handleMouseWheelProp, passiveObject);
         }
       }, [])
 
@@ -75,18 +79,6 @@ export const Scene = (props : any) => {
             onCreated={() => {
                 setFrontBlockArray(mapArray)
             }}
-            // onWheel={(event)=> {
-            //     event.stopPropagation()
-            //     if (event.deltaY > 0) {
-            //         setMouseWheelProp(-1);
-            //         // mouseWheelPropTest = -1
-            //     } else if (event.deltaY < 0)  {
-            //         setMouseWheelProp(1);
-            //         // mouseWheelPropTest = 1
-            //     } else {
-            //         setMouseWheelProp(0);
-            //     }
-            // }}
             onMouseDown={(event) => {
                 if (event.button == 2) {
                     setMouseRightPressed(1)
@@ -124,6 +116,7 @@ export const Scene = (props : any) => {
                 aspect={window.innerWidth / window.innerHeight}
                 mouseRightPressed={mouseRightPressed}
                 mouseWheelProp={mouseWheelProp}
+                index={index}
             />
             <ContextBridge>
                 <Map
