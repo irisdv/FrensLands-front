@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState, useMemo } from 'react';
 import { Canvas, useThree, useFrame, useLoader } from '@react-three/fiber';
 import { PerspectiveCamera } from '@react-three/drei';
 import { Vector2 } from 'three';
@@ -8,7 +8,6 @@ export const Camera = (props : any) => {
     const set = useThree(({ set }) => set)
     const size = useThree(({ size }) => size)
 
-    // const { mouse } = useThree()
     const { mouseRightPressed, mouseWheelProp } = props
     const [tempMousePos, setTempMousePos] = useState(new Vector2(0, 0))
     const [cameraPositionX, setCameraPositionX] = useState(21)
@@ -18,18 +17,20 @@ export const Camera = (props : any) => {
     useFrame(({ mouse }) => {
         if (cameraRef.current) {
 
+          console.log('mouseWheelProp', mouseWheelProp)
+
             if (mouseWheelProp == -1 && cameraPositionY > 45) {
-                console.log("wheel----")
-                cameraRef.current.aspect = size.width / size.height
-                cameraRef.current.position.set(cameraPositionX, cameraPositionY - 15, cameraPositionZ)
-                cameraRef.current.updateProjectionMatrix()
-                setCameraPositionY(cameraPositionY - 15)
+                console.log("wheel----");
+                setCameraPositionY(cameraPositionY - 15);
+                // cameraRef.current.aspect = size.width / size.height
+                // cameraRef.current.position.set(cameraPositionX, cameraPositionY, cameraPositionZ)
+                // cameraRef.current.updateProjectionMatrix()
             } else if (mouseWheelProp == 1 && cameraPositionY < 300) {
-                console.log("wheel++++")
-                cameraRef.current.aspect = size.width / size.height
-                cameraRef.current.position.set(cameraPositionX, cameraPositionY + 15, cameraPositionZ)
-                cameraRef.current.updateProjectionMatrix()
-                setCameraPositionY(cameraPositionY + 15)
+                console.log("wheel++++");
+                setCameraPositionY(cameraPositionY + 15);
+                // cameraRef.current.aspect = size.width / size.height
+                // cameraRef.current.position.set(cameraPositionX, cameraPositionY, cameraPositionZ)
+                // cameraRef.current.updateProjectionMatrix()
             }
 
             if (mouseRightPressed == 1) {

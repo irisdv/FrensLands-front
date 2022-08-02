@@ -30,6 +30,8 @@ export const Scene = (props : any) => {
     const [mouseMiddlePressed, setMouseMiddlePressed] = useState(0)
     const [frontBlockArray, setFrontBlockArray] = useState([])
 
+    var mouseWheelPropTest = 0
+
     const [keyMap, setKeyMap] = useState({
         Escape: false,
       })
@@ -42,11 +44,22 @@ export const Scene = (props : any) => {
         const handleKeyUp = (event : any) => {
             setKeyMap((m) => ({ ...m, [event.code]: false }))
         }
+        const handleMouseWheelProp = (event : any) => {
+          if (event.deltaY > 0) {
+              setMouseWheelProp(-1);
+          } else if (event.deltaY < 0)  {
+              setMouseWheelProp(1);
+          } else {
+              setMouseWheelProp(0);
+          }
+        }
         document.addEventListener('keydown', handleKeyDown)
         document.addEventListener('keyup', handleKeyUp)
+        document.addEventListener("wheel", handleMouseWheelProp, true);
         return () => {
           document.removeEventListener('keydown', handleKeyDown)
           document.removeEventListener('keyup', handleKeyUp)
+          document.removeEventListener("wheel", handleMouseWheelProp);
         }
       }, [])
 
@@ -62,16 +75,18 @@ export const Scene = (props : any) => {
             onCreated={() => {
                 setFrontBlockArray(mapArray)
             }}
-            onWheel={(event)=> {
-                event.stopPropagation()
-                if (event.deltaY > 0) {
-                    setMouseWheelProp(-1)
-                } else if (event.deltaY < 0)  {
-                    setMouseWheelProp(1)
-                } else {
-                    setMouseWheelProp(0)
-                }
-            }}
+            // onWheel={(event)=> {
+            //     event.stopPropagation()
+            //     if (event.deltaY > 0) {
+            //         setMouseWheelProp(-1);
+            //         // mouseWheelPropTest = -1
+            //     } else if (event.deltaY < 0)  {
+            //         setMouseWheelProp(1);
+            //         // mouseWheelPropTest = 1
+            //     } else {
+            //         setMouseWheelProp(0);
+            //     }
+            // }}
             onMouseDown={(event) => {
                 if (event.button == 2) {
                     setMouseRightPressed(1)
