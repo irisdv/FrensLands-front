@@ -12,7 +12,8 @@
         "paths": {
             "~/*": ["./src/client/*"],
             "three/examples/jsm/libs/tween.module.min": ["../typings/tween.js"]
+
         }
     },
-    "include": ["**/*.ts", "**/*.tsx"]
+    "include": ["**/*.ts", "**/*.tsx", "./src/custom.d.ts"]
 }
