@@ -123,7 +123,7 @@ export function BottomBar(props : any) {
 - **agriculture/biology lab (cure disease, unlock new farms and updates, etc 24 */}
       <div className="absolute" style={{ bottom: "60px", right: "0px", display: `${displaySecurity ? "block" : "none"}` }}>
         <div className="flex flex-row justify-center inline-block">
-          {level >= (buildingInfo[22].level as number) ?
+          {level >= (buildingInfo[22].level as any) ?
             <div className="btnCategory pixelated" onClick={() => setDisplayingFrame(1, 22)}>
               <div className="building22 pixelated absolute" style={{bottom: "-30px", left: "-30px"}}></div>
             </div>
@@ -155,7 +155,7 @@ export function BottomBar(props : any) {
 - **swimming pool** 13 */}
       <div className="absolute" style={{ bottom: "60px", right: "0px", display: `${displayEntertainment ? "block" : "none"}` }}>
         <div className="flex flex-row justify-center inline-block">
-          {level >= (buildingInfo[11].level as number) ?
+          {level >= (buildingInfo[11].level as any) ?
             <div className="btnCategory pixelated" onClick={() => setDisplayingFrame(1, 11)}>
               <div className="building11 pixelated absolute" style={{bottom: "-30px", left: "-31px"}}></div>
             </div>
