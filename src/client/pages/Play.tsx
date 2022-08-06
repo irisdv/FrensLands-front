@@ -1,28 +1,20 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useStarknet, useStarknetCall } from "@starknet-react/core";
+import { useStarknet } from "@starknet-react/core";
 import useInGameContext from "../hooks/useInGameContext";
-// import { useSelectContext } from "../hooks/useSelectContext";
-// import { useBuildingsContract } from "../hooks/contracts/buildings";
-// import { number, shortString, uint256 } from "starknet";
-// import { toBN } from "starknet/dist/utils/number";
-import useTxGame from "../hooks/useTxGame";
 import DB from '../db.json';
-
 import { Scene } from '../components/r3f/Scene'
 import { MenuBar } from "../components/GameUI/MenuBar";
 import { BottomBar } from "../components/GameUI/BottomBar";
 import { BuildingFrame } from "../components/GameUI/BuildingFrame";
 import { SelectStateProvider } from "../providers/SelectContext";
 import { BuildingStateProvider } from "../providers/BuildingContext";
-// import { useMapsContract } from "../hooks/contracts/maps";
 import { useGameContext } from "../hooks/useGameContext";
+import { Achievements } from "../components/GameUI/Achievements";
 
 export default function Play() {
   const { account } = useStarknet();
-  // const { contract: building } = useBuildingsContract();
   const { setAddress, updateTokenId, tokenId, fetchMapType } = useGameContext();
   const [render, setRender] = useState(true);
-  // const [watch, setWatch] = useState(true);
   const [worldType, setWorldType] = useState(-1)
 
   const { mapArray } = useInGameContext()
@@ -31,6 +23,9 @@ export default function Play() {
   const [textArrRef, setTextArrRef] = useState<any[]>([])
   const [UBlockIDs, setUBlockIDs] = useState(0);
   // var validatedBlockArray : any[]= [];
+
+  const [buildingCounters, setBuildingCounters] = useState<any[]>([])
+  const [level, setLevel] = useState(1);
 
   useEffect(() => {
     if (account) {
@@ -82,6 +77,8 @@ export default function Play() {
       var i = 0;
       var buildingIDs = 0;
 
+      var counters : any[] = []
+
       while (indexI < 17)
       {
         // validatedBlockArray[indexI] = [];
@@ -95,6 +92,17 @@ export default function Play() {
           // frontArray[indexI][indexJ][4] = i;
           if (frontArray[indexI][indexJ][4] != 0) buildingIDs++;
 
+          if (frontArray[indexI][indexJ] && frontArray[indexI][indexJ][3] && frontArray[indexI][indexJ][3] > 0) {
+            let currCounter = 0;
+            if (counters[frontArray[indexI][indexJ][3]] > 0) currCounter = counters[frontArray[indexI][indexJ][3]]
+
+            if (frontArray[indexI][indexJ][3] == 2 || frontArray[indexI][indexJ][3] == 3 || frontArray[indexI][indexJ][3] == 20) {
+              counters[frontArray[indexI][indexJ][3]] = currCounter + (4 - frontArray[indexI][indexJ][7])
+            } else {
+              counters[frontArray[indexI][indexJ][3]] = currCounter + 1
+            }
+          }
+
           indexJ++;
           i++;
         }
@@ -102,11 +110,22 @@ export default function Play() {
         indexI++;
         }
         setUBlockIDs(buildingIDs)
+        // console.log('building counters', counters)
+        setBuildingCounters(counters)
+
+        // Calculate level 
+        if (frontArray[8][20][7] == 2)  setLevel(2)
+        if (counters[4] && counters[4] > 0 && counters[16] && counters[16] > 0) setLevel(3)
+        if (counters[21] && counters[21] > 0) setLevel(4)
+        if (counters[8] && counters[7] && counters[8] > 0 && counters [7] > 0) setLevel(5)
+        if (counters[9] && counters[11] && counters[9] > 0 && counters[11] > 0) setLevel(6)
+        if (counters[22] && counters[22] > 0) setLevel(7)
+        if (counters[5] && counters[5] > 0) setLevel(8)
+
         return { frontArray }
     }
   }, [mapArray])
 
-  // ADD random texture rocks + bois + mine ici
   function decompose(elem: any)
   {
     var tempDecomp : any[] = [];
@@ -124,6 +143,7 @@ export default function Play() {
         tempDecomp[8] = parseInt(elem[14]);                     //[size]
         tempDecomp[9] = 0;                                      //[random ID]
         tempDecomp[10] = 1                                      // Local: Status of building (1 = built, 0 = en construction)
+        tempDecomp[11] = []                                     // last tx hash
     }
     else
     {
@@ -138,6 +158,7 @@ export default function Play() {
         tempDecomp[8] = parseInt(elem[15]);                     //[activity index or number of days active]
         tempDecomp[9] = 0;                                      //[random ID]
         tempDecomp[10] = 1                                      // Local : Status of building (1 = built, 0 = en construction)
+        tempDecomp[11] = []                                     // last tx hash
     }
 
     if (tempDecomp[3] == 2 || tempDecomp[3] == 3)
@@ -153,9 +174,6 @@ export default function Play() {
     return (tempDecomp);
   }
 
-  // console.log('tokenId', tokenId)
-  // console.log('account', account)
-
   return (
     <>
       {frontBlockArray?.frontArray && Object.keys(frontBlockArray.frontArray).length > 0 ? (
@@ -163,6 +181,7 @@ export default function Play() {
         <BuildingStateProvider>
           <SelectStateProvider>
             <MenuBar />
+            <Achievements level={level} />
             <div style={{ height: "100vh", width: "100vw", zIndex: "0" }}>
               {frontBlockArray && Object.keys(frontBlockArray).length > 0 &&
                 worldType != null && worldType != -1 &&
@@ -176,9 +195,9 @@ export default function Play() {
                 }
             </div>
             {frontBlockArray && Object.keys(frontBlockArray).length > 0 &&
-              <BuildingFrame frontBlockArray={frontBlockArray.frontArray} />
+              <BuildingFrame frontBlockArray={frontBlockArray.frontArray} level={level} />
             }
-            <BottomBar />
+            <BottomBar level={level} />
           </SelectStateProvider>
           </BuildingStateProvider>
         </>

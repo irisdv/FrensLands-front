@@ -2,11 +2,11 @@ import { useStarknet, useStarknetBlock } from "@starknet-react/core";
 import React, { useMemo, useState, useEffect } from "react";
 import { toBN } from "starknet/dist/utils/number";
 import { useGameContext } from "../../hooks/useGameContext";
-import { useResourcesContract } from "../../hooks/contracts/resources";
 import { ConnectWallet } from "../ConnectWallet";
 import useClaim from "../../hooks/invoke/useClaim";
 import useActiveNotifications from "../../hooks/useNotifications";
 import Notifications from "../Notifications";
+import DB from '../../db.json';
 
 import useResourcesContext from "../../hooks/useResourcesContext";
 import { useSelectContext } from "../../hooks/useSelectContext";
@@ -17,18 +17,15 @@ export function MenuBar() {
 
   const {tokenId, updateTokenId, setAddress, blockGame, buildingData } = useGameContext();
   const {energy, frensCoins, wood, rock, coal, metal, populationBusy, populationFree, meat, cereal} = useResourcesContext();
-  const { updateSound, sound } = useSelectContext()
+  const { updateSound, sound, tutorial, updateTutorial } = useSelectContext()
 
   const claimingInvoke = useClaim()
   const activeNotifications = useActiveNotifications()
 
-  // const { contract: resources } = useResourcesContract();
-  const [watch, setWatch] = useState(true);
-
   const [ claiming, setClaiming ] = useState<any>(null)
   const [ btnClaim, setBtnClaim ] = useState(false)
-  const [ popUpClaim, setPopUpClaim] = useState(false)
-  const [ message, setMessage ] = useState("")
+
+  const [claimableResources, setClaimableResources] = useState<any[]>([])
 
     useEffect(() => {
       if (account) setAddress(account)
@@ -76,18 +73,45 @@ export function MenuBar() {
         let _newBlockClaimable = 0;
         console.log('block', block?.block_number)
         console.log('gameBlock', blockGame)
+
+        let _resources : any[] = []
+
         buildingData.active?.forEach((elem : any) => {
           if (elem['recharges']) {
             // check lasr claim block number 
             // current block - last_claim block > then add recharges 
             if (block?.block_number) {
               var check = toBN(block?.block_number).toNumber() - elem['last_claim']
-              console.log('check', check)
-              // if (check > )
-              _newBlockClaimable += elem['recharges']
+              var block2Claim = 0;
+              if (check > elem['recharges']) {
+                block2Claim = elem['recharges']
+              } else {
+                block2Claim = check
+              }
+              _newBlockClaimable += block2Claim
+              console.log('block2Claim', block2Claim)
+              
+              // Get resources to harvest for each claimable building
+              if (block2Claim > 0) {
+
+                // @ts-ignore
+                DB.buildings[elem['type']].daily_harvest.level[0].resources.map((elem: any) => {
+                  console.log('elem', elem)
+                  let _currValue = 0
+                  if (_resources[elem.id] && _resources[elem.id] > 0) {
+                    _currValue =  _resources[elem.id] + (elem.quantity * block2Claim)
+                  } else {
+                    _currValue += (elem.quantity * block2Claim)
+                  }
+                  _resources[elem.id] = _currValue
+                })
+                console.log('_resources', _resources)
+
+              }
             }
           }
         })
+        setClaimableResources(_resources)
         console.log('_newBlockClaimable', _newBlockClaimable)
         return _newBlockClaimable
       }
@@ -98,9 +122,6 @@ export function MenuBar() {
     if (block && blockGame) {
       let current_block = toBN(block?.block_number).toNumber()
       if (current_block >= blockGame) {
-        console.log('SUP blockGame', blockGame)
-        console.log('SUP current_block', current_block)
-        console.log('SUP', current_block - blockGame)
         setBtnClaim(true)
       } else {
         setBtnClaim(false)
@@ -112,7 +133,7 @@ export function MenuBar() {
     <>
       <div className="absolute" style={{zIndex: "1"}}>
         <div className="flex flex-row justify-center inline-block">
-          {sound ? 
+          {/* {sound ? 
             <div 
               className="btnSound1 pixelated" 
               style={{ left: "5px" }}
@@ -124,6 +145,19 @@ export function MenuBar() {
               style={{ left: "5px" }}
               onClick={() => updateSound(true)}
             ></div>
+          } */}
+          {tutorial ? 
+            <div 
+              className="btnSound1 pixelated" 
+              style={{ left: "5px" }}
+              onClick={() => updateTutorial(false)}
+            ></div>
+            : 
+            <div 
+              className="btnSound0 pixelated" 
+              style={{ left: "5px" }}
+              onClick={() => updateTutorial(true)}
+            ></div>
           }
           <div id="menuBar" className="relative flex jutify-center items-center inline-block pixelated" style={{ fontSize: "16px" }}>
             <div className="flex jutify-center pl-2 pr-1 relative" style={{ marginTop: "-13px", marginLeft: "50px" }}>
@@ -131,11 +165,17 @@ export function MenuBar() {
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {frensCoins ? frensCoins : 0}
               </div>
+              <div className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"  style={{ marginTop: "-11px", marginLeft:'5px', color: '#55813E', fontSize: '16px' }}>
+                {claimableResources[10] ? "+"+claimableResources[10] : ''}
+              </div>
             </div>
             <div className="flex jutify-center relative pr-1"  style={{ marginTop: "-13px" }}>
               <div id="menuWood" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {wood ? wood : 0}
+              </div>
+              <div className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"  style={{ marginTop: "-11px", marginLeft:'5px', color: '#55813E', fontSize: '16px' }}>
+                {claimableResources[1] ? "+"+claimableResources[1] : ''}
               </div>
             </div>
             <div className="flex jutify-center relative pr-1" style={{ marginTop: "-13px" }}>
@@ -143,17 +183,26 @@ export function MenuBar() {
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {rock ? rock : 0}
               </div>
+              <div className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"  style={{ marginTop: "-11px", marginLeft:'5px', color: '#55813E', fontSize: '16px' }}>
+                {claimableResources[2] ? "+"+claimableResources[2] : ''}
+              </div>
             </div>
             <div className="flex jutify-center relative pr-1" style={{ marginTop: "-13px" }}>
               <div id="menuMetal" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {metal ? metal : 0}
               </div>
+              <div className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"  style={{ marginTop: "-11px", marginLeft:'5px', color: '#55813E', fontSize: '16px' }}>
+                {claimableResources[6] ? "+"+claimableResources[6] : ''}
+              </div>
             </div>
             <div className="flex jutify-center relative pr-1" style={{ marginTop: "-13px" }}>
               <div id="menuCoal" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {coal ? coal : 0}
+              </div>
+              <div className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"  style={{ marginTop: "-11px", marginLeft:'5px', color: '#55813E', fontSize: '16px' }}>
+                {claimableResources[8] ? "+"+claimableResources[8] : ''}
               </div>
             </div>
             <div className="flex jutify-center relative pr-1" style={{ marginTop: "-13px" }}>
@@ -173,17 +222,17 @@ export function MenuBar() {
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated"  style={{ marginTop: "-2px" }}>
                 {meat ? meat : 0}
               </div>
-            </div>
-            <div className="flex jutify-center relative pr-1" style={{ marginTop: "-13px" }}>
-              <div id="menuCereal" className="pixelated"></div>
-              <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
-                {cereal ? cereal : 0}
+              <div className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"  style={{ marginTop: "-11px", marginLeft:'5px', color: '#55813E', fontSize: '16px' }}>
+                {claimableResources[3] ? "+"+claimableResources[3] : ''}
               </div>
             </div>
             <div className="flex jutify-center relative pr-1" style={{ marginTop: "-13px" }}>
               <div id="menuEnergy" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {energy ? energy : 0}
+              </div>
+              <div className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"  style={{ marginTop: "-11px", marginLeft:'5px', color: '#55813E', fontSize: '16px' }}>
+                {claimableResources[11] ? "+"+claimableResources[11] : ''}
               </div>
             </div>
             <div className="flex jutify-center relative pr-5" style={{ marginTop: "-13px" }}>
@@ -206,13 +255,15 @@ export function MenuBar() {
           <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "1261px" }}>{blockClaimable}</div>
         </div>
       </div>
-      {/* <div className="notifContainer">
-        <div className="notifPanel"> */}
-          <Notifications />
-          {/* <div className="popUpNotifsGame pixelated fontHPxl-sm"></div>
-          <div className="popUpNotifsGame pixelated fontHPxl-sm"></div> */}
-        {/* </div>
+      <Notifications />
+
+      {/* <div className="popUpNotifsGame pixelated fontHPxl-sm"  style={{zIndex: 1, bottom: (0 * 128)+"px" }} >
+            <div className="closeNotif"></div>
+            <p>Notif test</p>
       </div> */}
+      
+    
+
     </>
   );
 }

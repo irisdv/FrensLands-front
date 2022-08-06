@@ -16,6 +16,10 @@ module.exports = {
                     "style-loader", "css-loader", "postcss-loader"
                 ],
             },
+            {
+                test: /\.svg$/i,
+                use: 'raw-loader',
+            },
         ],
     },
     resolve: {

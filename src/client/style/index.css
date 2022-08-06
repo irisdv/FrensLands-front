@@ -42,7 +42,7 @@
 }
 .fontHPxl-sm {
     font-family: 'Hpxl_Condensed', monospace;
-    font-size: 14px
+    font-size: 15px
 }
 .font04B {
     font-family: '04B_03', monospace;
@@ -107,6 +107,16 @@ body {
     position: absolute;
 } */
 
+.messageNotif {
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 2 * 2);
+    width:calc(64px * 2 * 2);
+    background-position:calc(19 * 2 * 64px) calc(2 * 2 * 64px);
+    background-size:calc(1408px* 2) calc(768px * 2);
+    margin-top: 350px;
+    padding: 50px;
+}
+
 .popUpNotifs {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 2);
@@ -119,6 +129,7 @@ body {
 }
 .popUpNotifsGame {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    /* background-image: url("resources/front/Ui_Frames2.svg"); */
     height:calc(64px * 2);
     width:calc(64px * 2);
     background-position:calc(19 * 1 * 64px) calc(2 * 1* 64px);
@@ -128,8 +139,41 @@ body {
     padding-top: 20px;
     padding-bottom: 20px;
     left: 0px;
-    /* bottom: 0px; */
     position: absolute;
+}
+.popUpNotifsAchievement {
+    position: absolute;
+    width: calc(100% + 12px);
+    height: calc(100% + 12px);
+    box-sizing: border-box;
+    border-style: solid;
+    border-width: 18px;
+}
+.parentNotif {
+    z-index: 1;
+    height: 400px;
+    width: 400px;
+    position: absolute;
+    margin-top: 120px;
+
+}
+.achievementText {
+ margin: 38px 44px;
+ position: relative;
+ font-size: 15px;
+}
+.closeAchievement {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(32px * 1);
+    width:calc(32px * 2);
+    background-position:calc(9 * 1 * 64px) calc(10 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+    margin-left: 20px;
+    position: absolute;
+    right: -2px;
+    top: -4px;
+    pointer-events: all;
 }
 .notifContainer {
     position: absolute;
@@ -1080,6 +1124,16 @@ body {
     margin-top: 3px;
     margin-left: -2px;
 }
+.menuLock {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(14 * 1 * 64px) calc(5 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+    margin-top: 3px;
+    margin-left: -2px;
+}
 
 
 
@@ -1306,9 +1360,6 @@ Lab = 24 */
 39 = Cow Farm - 18 -- 1 - 4
 
 */
-    /* const Rock = 2
-    const Tree = 3 */
-    /* const CoalPlant = 21 */
 
 .building1 {
     display:inline-block;
@@ -1320,26 +1371,25 @@ Lab = 24 */
     pointer-events: none;
 }
 /* Tree  */
-/* .building2 {
+.building2 {
     display:inline-block;
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(13 * 2 * 64px) calc(6 * 2 * 64px);
+    background-position:calc(1 * 2 * 64px) calc(2 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
     pointer-events: none;
 }
 /* Rocks */
-/* .building3 {
+.building3 {
     display:inline-block;
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(13 * 2 * 64px) calc(6 * 2 * 64px);
+    background-position:calc(2 * 2 * 64px) calc(2 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
     pointer-events: none;
-} */
-
+}
 .building4 {
     display:inline-block;
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
@@ -1490,7 +1540,7 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(6 * 2 * 64px) calc(2 * 2 * 64px);
+    background-position:calc(10 * 2 * 64px) calc(2 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
     pointer-events: none;
 }
@@ -1536,6 +1586,26 @@ Lab = 24 */
     height:calc(64px * 2);
     width:calc(64px * 2);
     background-position:calc(8 * 2 * 64px) calc(6 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
+}
+/* Coal mine == 17 */
+.building25 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(10 * 2 * 64px) calc(5 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(384px * 1);
+    pointer-events: none;
+}
+/* Metal Mine == 21 */
+.building26 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(6 * 2 * 64px) calc(2 * 2 * 64px);
     background-size:calc(1664px * 1) calc(384px * 1);
     pointer-events: none;
 }

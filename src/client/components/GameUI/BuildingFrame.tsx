@@ -1,15 +1,15 @@
-import { useStarknet, useStarknetCall, useStarknetInvoke, useStarknetTransactionManager } from "@starknet-react/core";
+import { useStarknet } from "@starknet-react/core";
 import React, { useMemo, useState, useRef, useEffect } from "react";
 // import { useBuildingsContract } from "../../hooks/buildings";
-import { number, transaction, uint256 } from "starknet";
-import { toBN } from "starknet/dist/utils/number";
+// import { number, transaction, uint256 } from "starknet";
+// import { toBN } from "starknet/dist/utils/number";
 import { useGameContext } from "../../hooks/useGameContext";
-import { useResourcesContract } from "../../hooks/contracts/resources";
+// import { useResourcesContract } from "../../hooks/contracts/resources";
 import DB from '../../db.json';
 // import { InstancedMesh } from "three";
 import { useSelectContext } from "../../hooks/useSelectContext";
 import useHarvestResource from "../../hooks/invoke/useHarvestResource";
-import useBuild from "../../hooks/invoke/useBuild";
+// import useBuild from "../../hooks/invoke/useBuild";
 import useDestroy from "../../hooks/invoke/useDestroy";
 import useActiveNotifications from '../../hooks/useNotifications'
 

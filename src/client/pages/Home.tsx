@@ -41,7 +41,7 @@ export default function Home() {
   // Call
   const { contract: worlds } = useWorldsContract();
   const { contract: maps } = useMapsContract();
-  const { contract: buildings } = useBuildingsContract();
+  // const { contract: buildings } = useBuildingsContract();
   const { contract: resources } = useResourcesContract();
   const { contract: erc1155 } = useERC1155Contract();
   const [watch, setWatch] = useState(true);
@@ -49,8 +49,6 @@ export default function Home() {
   const generateMap = useMintMap()
   const initializeGame = useStartGame()
   const approveMO3ERC1155 = useApprove()
-
-  const [minting, setMinting] = useState<any>(null)
   const [settingUp, setSettingUp] = useState<any>(null)
   const [canPlay, setCanPlay] = useState(0)
   const [message, setMessage] = useState<any>(null)
@@ -143,31 +141,6 @@ export default function Home() {
     }
   }, [fetchtokenType, account, tokenId]);
 
-  // Invoke Minting Maps 
-  const mintMap = () => {
-    let tx_hash = generateMap()
-    console.log('tx hash generating map', tx_hash)
-    setMinting(tx_hash);
-  };
-
-  // useEffect(() => {
-  //   if (minting) {
-  //     var dataMinting = activeNotifications.filter((transactions) => (transactions?.transactionHash as string) === minting as string)
-  //     console.log('mintingData', dataMinting )
-  //     if (dataMinting && dataMinting[0] && dataMinting[0].content) {
-  //       if (dataMinting[0].content.status == 'REJECTED') {
-  //         setMessage("Your transaction has failed... Try again.")
-  //         setMinting(null)
-  //       } else if (dataMinting[0].content.status == 'ACCEPTED_ON_L1' || dataMinting[0].content.status == 'ACCEPTED_ON_L2') {
-  //         setMessage("Your transaction was accepted. Now you need to initialize the game!")
-  //         setMinting(true)
-  //       } else {
-  //         setMessage("Your transaction is ongoing.")
-  //       }
-  //     }
-  //   }
-  // }, [minting, activeNotifications])
-
   // Check if is approved 
   const { data: fetchApprovalState } = useStarknetCall({
     contract: erc1155,
@@ -179,7 +152,6 @@ export default function Home() {
   const approvalStatusValue = useMemo(() => {
     if (fetchApprovalState && fetchApprovalState.length > 0) {
       var elem = uint256.uint256ToBN(fetchApprovalState[0]);
-      // console.log("Approval state", uint256.uint256ToBN(fetchApprovalState[0]).toNumber());
       var appr = toBN(fetchApprovalState[0]).toNumber();
 
       console.log('appr', appr)
@@ -189,8 +161,6 @@ export default function Home() {
       return { appr };
     }
   }, [fetchApprovalState, account, tokenId, approved]);
-
-  // Si faux, btn invoke 
 
   const approveM03 = () => {
     let tx_hash = approveMO3ERC1155()
@@ -278,13 +248,17 @@ export default function Home() {
           </div>
 
           <div className="absolute" style={{width: "100vw", top: '0'}}>
-            {account && BalanceNFTValue && (BalanceNFTValue.NFTbalance == 0 || BalanceNFTValue.NFTbalance == 1) &&
+            {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 &&
               <img className="relative mx-auto pixelated" src="resources/maps/FrensLand_NFTs_V2.png" style={{marginTop: "300px"}} />
             }
             {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&
-              <button className="relative mx-auto pixelated btnMint" onClick={() => mintMap()}></button> 
+              <div className="messageNotif fontHPxl-sm mx-auto text-center">
+                <p>You don't own a map... </p>
+                <br/>
+                <p>Join the <a style={{color: "#964489"}} href="discord.gg/gehYZU9Trf">Frens Lands discord server</a> to take part in the next testing sessions.</p>
+              </div>
             }
-            {account && BalanceNFTValue && (BalanceNFTValue.NFTbalance == 1 || minting == true) && GameStatusValue && GameStatusValue.gameStatus == 0 &&
+            {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && GameStatusValue && GameStatusValue.gameStatus == 0 &&
               <button className="relative mx-auto pixelated btnPlay" onClick={() => startGame()} style={{marginTop: '-65px'}}></button>
             }
             {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && GameStatusValue && GameStatusValue.gameStatus == 1 && !approved &&
@@ -305,16 +279,13 @@ export default function Home() {
         <div className="relative">
             
           <div className="pixelated mx-auto roadmapT"></div>
-
           <hr></hr>
-
           <div className="flex flex-row justify-center inline-block mx-auto mt-5">
             <img src="resources/front/Gif_Population.gif" className="mt-7 roadmapGif" />
             <div className="grid">
               <div className="lineWTop">
                   <div className="lineG pixelated"></div>
               </div>
-              {/* <div className="lineSG pixelated"></div> */}
             </div>
             <div className="" style={{marginLeft: '-20px'}}>
               <div className="hackT pixelated mt-3"></div>
@@ -415,11 +386,7 @@ export default function Home() {
 
         </div>
       </div>
-
       </div>
-
-
-
     </>
   );
 }
