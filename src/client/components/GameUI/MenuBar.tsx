@@ -17,7 +17,7 @@ export function MenuBar() {
 
   const {tokenId, updateTokenId, setAddress, blockGame, buildingData } = useGameContext();
   const {energy, frensCoins, wood, rock, coal, metal, populationBusy, populationFree, meat, cereal} = useResourcesContext();
-  const { updateSound, sound, tutorial, updateTutorial } = useSelectContext()
+  const { updateSound, sound } = useSelectContext()
 
   const claimingInvoke = useClaim()
   const activeNotifications = useActiveNotifications()
@@ -39,10 +39,8 @@ export function MenuBar() {
   
     // Invoke claim resources
     const claimResources = () => {
-      console.log("invoking claiming", tokenId);
       if (tokenId) {
         let tx_hash = claimingInvoke(tokenId)
-        console.log('tx hash claiming resources', tx_hash)
         setClaiming(tx_hash);
       } else {
         console.log('Missing tokenId')
@@ -50,29 +48,11 @@ export function MenuBar() {
       setClaiming(true);
     };
 
-    useEffect(() => {
-      if (claiming) {
-        var dataMinting = activeNotifications.filter((transactions) => (transactions?.transactionHash as string) === claiming as string)
-        console.log('claimingData', dataMinting )
-        // if (dataMinting && dataMinting[0] && dataMinting[0].content) {
-        //   if (dataMinting[0].content.status == 'REJECTED') {
-        //     setMessage("Your transaction has failed... Try again.")
-        //     setClaiming(null)
-        //   } else if (dataMinting[0].content.status == 'ACCEPTED_ON_L1' || dataMinting[0].content.status == 'ACCEPTED_ON_L2') {
-        //     setMessage("Your transaction was accepted. Now you need to initialize the game!")
-        //     setClaiming(true)
-        //   } else {
-        //     setMessage("Your transaction is ongoing.")
-        //   }
-        // }
-      }
-    }, [claiming, activeNotifications])
-
     const blockClaimable = useMemo(() => {
       if (buildingData) {
         let _newBlockClaimable = 0;
-        console.log('block', block?.block_number)
-        console.log('gameBlock', blockGame)
+        // console.log('block', block?.block_number)
+        // console.log('gameBlock', blockGame)
 
         let _resources : any[] = []
 
@@ -89,14 +69,13 @@ export function MenuBar() {
                 block2Claim = check
               }
               _newBlockClaimable += block2Claim
-              console.log('block2Claim', block2Claim)
+              // console.log('block2Claim', block2Claim)
               
               // Get resources to harvest for each claimable building
               if (block2Claim > 0) {
 
                 // @ts-ignore
                 DB.buildings[elem['type']].daily_harvest.level[0].resources.map((elem: any) => {
-                  console.log('elem', elem)
                   let _currValue = 0
                   if (_resources[elem.id] && _resources[elem.id] > 0) {
                     _currValue =  _resources[elem.id] + (elem.quantity * block2Claim)
@@ -105,8 +84,7 @@ export function MenuBar() {
                   }
                   _resources[elem.id] = _currValue
                 })
-                console.log('_resources', _resources)
-
+                // console.log('_resources', _resources)
               }
             }
           }
@@ -133,7 +111,7 @@ export function MenuBar() {
     <>
       <div className="absolute" style={{zIndex: "1"}}>
         <div className="flex flex-row justify-center inline-block">
-          {/* {sound ? 
+          {sound ? 
             <div 
               className="btnSound1 pixelated" 
               style={{ left: "5px" }}
@@ -144,19 +122,6 @@ export function MenuBar() {
               className="btnSound0 pixelated" 
               style={{ left: "5px" }}
               onClick={() => updateSound(true)}
-            ></div>
-          } */}
-          {tutorial ? 
-            <div 
-              className="btnSound1 pixelated" 
-              style={{ left: "5px" }}
-              onClick={() => updateTutorial(false)}
-            ></div>
-            : 
-            <div 
-              className="btnSound0 pixelated" 
-              style={{ left: "5px" }}
-              onClick={() => updateTutorial(true)}
             ></div>
           }
           <div id="menuBar" className="relative flex jutify-center items-center inline-block pixelated" style={{ fontSize: "16px" }}>
@@ -242,8 +207,13 @@ export function MenuBar() {
             <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
               <ConnectWallet />
             </div>
-            
           </div>
+            {/* <div 
+              className="btnBottom pixelated" 
+              style={{ left: "5px" }}
+            >
+              <div className="menuSettings pixelated"></div>
+            </div> */}
         </div>
       </div>
       <div className="absolute" style={{zIndex: "1", pointerEvents: "none"}}>
@@ -255,15 +225,8 @@ export function MenuBar() {
           <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "1261px" }}>{blockClaimable}</div>
         </div>
       </div>
+
       <Notifications />
-
-      {/* <div className="popUpNotifsGame pixelated fontHPxl-sm"  style={{zIndex: 1, bottom: (0 * 128)+"px" }} >
-            <div className="closeNotif"></div>
-            <p>Notif test</p>
-      </div> */}
-      
-    
-
     </>
   );
 }

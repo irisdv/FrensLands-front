@@ -47,8 +47,6 @@ import React, {
     updateBuildingFrame: (show: boolean, data: {}) => void;
     sound?: boolean
     updateSound: (val : boolean) => void;
-    tutorial?: boolean
-    updateTutorial: (val : boolean) => void;
   }
   
   export const SelectState: ISelectState = {
@@ -57,8 +55,6 @@ import React, {
     updateBuildingFrame: (show, data) => {},
     sound: true,
     updateSound: (val) => {},
-    tutorial: true,
-    updateTutorial: (val) => {},
   };
   
   const SelectContext = React.createContext(SelectState);
@@ -79,16 +75,10 @@ import React, {
     type: "set_sound";
     sound?: boolean
   }
-
-  interface SetTutorial {
-    type: "set_tutorial";
-    tutorial?: boolean
-  }
   
   type Action =
     | SetShowFrame
     | SetSound
-    | SetTutorial
     | SetError;
   
   function reducer(state: ISelectState, action: Action): ISelectState {
@@ -102,11 +92,6 @@ import React, {
       case "set_sound": {
         return { ...state, 
           sound: action.sound
-        };
-      }
-      case "set_tutorial": {
-        return { ...state, 
-          tutorial: action.tutorial
         };
       }
       case "set_error": {
@@ -143,14 +128,6 @@ import React, {
     []
   );
 
-  const updateTutorial = React.useCallback((val: boolean) => {
-    dispatch({
-      type: "set_tutorial",
-      tutorial: val,
-    });
-  },
-  []
-);
 
     return (
       <SelectContext.Provider
@@ -159,9 +136,7 @@ import React, {
           showFrame: state.showFrame,
           updateBuildingFrame,
           sound: state.sound,
-          updateSound,
-          tutorial: state.tutorial,
-          updateTutorial
+          updateSound
         }}
       >
         {props.children}

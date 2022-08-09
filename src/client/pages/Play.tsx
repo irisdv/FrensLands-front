@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useStarknet } from "@starknet-react/core";
 import useInGameContext from "../hooks/useInGameContext";
-import DB from '../db.json';
 import { Scene } from '../components/r3f/Scene'
 import { MenuBar } from "../components/GameUI/MenuBar";
 import { BottomBar } from "../components/GameUI/BottomBar";
@@ -10,26 +9,28 @@ import { SelectStateProvider } from "../providers/SelectContext";
 import { BuildingStateProvider } from "../providers/BuildingContext";
 import { useGameContext } from "../hooks/useGameContext";
 import { Achievements } from "../components/GameUI/Achievements";
+import { useNavigate } from "react-router-dom";
+import { allMetadata } from "../data/metadata";
 
 export default function Play() {
   const { account } = useStarknet();
   const { setAddress, updateTokenId, tokenId, fetchMapType } = useGameContext();
-  const [render, setRender] = useState(true);
   const [worldType, setWorldType] = useState(-1)
+  const navigate = useNavigate()
 
   const { mapArray } = useInGameContext()
 
   const rightBuildingType : any[] = [0, 1, 179, 15, 3, 10, 5, 8, 7, 6, 59, 11, 9, 12, 13, 60, 52, 58, 61, 4, 20, 14, 49, 57, 100]
   const [textArrRef, setTextArrRef] = useState<any[]>([])
   const [UBlockIDs, setUBlockIDs] = useState(0);
-  // var validatedBlockArray : any[]= [];
-
   const [buildingCounters, setBuildingCounters] = useState<any[]>([])
   const [level, setLevel] = useState(1);
 
   useEffect(() => {
     if (account) {
       setAddress(account as string);
+    } else {
+      navigate('/')
     }
   }, [account])
 
@@ -41,8 +42,8 @@ export default function Play() {
 
   useEffect(() => {
     if (tokenId) {
-      // @ts-ignore
-      setWorldType(DB.metadata[tokenId].type)
+      let _metadata = allMetadata.filter(res => res.id == tokenId as number )
+      setWorldType(_metadata[0].biome)
     }
   }, [tokenId])
 

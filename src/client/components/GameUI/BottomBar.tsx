@@ -272,7 +272,7 @@ export function BottomBar(props : any) {
                 setDisplayShop(false)
                 setDisplayingFrame(0, 0)
               }}>
-              <div className="menuNature pixelated"></div>
+              <div className="menuFactory pixelated"></div>
             </div> 
           : <div className="menuLock pixelated"></div>}
 

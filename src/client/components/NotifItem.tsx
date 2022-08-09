@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect } from "react";
 import useActiveNotifications from '../hooks/useNotifications'
 import { useNotifTransactionManager } from "../providers/transactions";
+import UI_Frames from '../style/resources/front/Ui_Frames3.svg';
 
-// export default function NotifItem({ content }) {
 export function NotifItem(props: any) {
   const activeNotifications = useActiveNotifications()
   const { removeTransaction, transactions } = useNotifTransactionManager()
@@ -23,7 +23,7 @@ export function NotifItem(props: any) {
   } else if (content.method == "claim_resources") {
     textNotif = "Your resources are on it's way..."
   } else if (content.method == "build") {
-    textNotif = "Frens are building hard... Almost ready..."
+    textNotif = "Frens are building... Almost ready..."
   } else if (content.method == "approve") {
     textNotif = "Aproving... Almost ready..."
   } else if (content.method == "destroy_building") {
@@ -34,7 +34,8 @@ export function NotifItem(props: any) {
 
   return (
     <>
-        <div className="popUpNotifsGame pixelated fontHPxl-sm" onClick={() => removeThisTransaction()}  style={{zIndex: index+1, bottom: (index * 128)+"px" }} >
+      <div className="parentNotifGame" style={{bottom: (index * 100 + 18)+"px"}}>
+        <div className="popUpNotifsGame pixelated fontHPxl-sm" onClick={() => removeThisTransaction()}  style={{borderImage: `url(data:image/svg+xml;base64,${btoa(UI_Frames)}) 18 fill stretch` }} >
             <div className="closeNotif"></div>
             <p>{textNotif}</p>
             {status && status == "NOT_RECEIVED" && <p>tx not received yet</p>}
@@ -43,7 +44,8 @@ export function NotifItem(props: any) {
             {status && status == "ACCEPTED_ON_L2" && <p>tx accepted on L2</p>}
             {status && status == "ACCEPTED_ON_L1" && <p>tx accepted on L1</p>}
             {status && status == "REJECTED" && <p>tx was rejected... try again</p>}
-         </div>
+        </div>
+      </div>
     </>
   )
 }

@@ -1,11 +1,7 @@
-import React, { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { Canvas, useThree, useFrame, useLoader } from '@react-three/fiber';
-import THREE, { TextureLoader, RepeatWrapping, NearestFilter, PlaneGeometry, Vector2, Vector3, MeshStandardMaterial } from "three";
-// import * as fs from "fs"
-// const { promises: Fs} = require('fs');
+import React, { memo, useMemo, useRef, useState } from 'react';
+import { useFrame } from '@react-three/fiber';
+import THREE, { Vector2 } from "three";
 
-import useInGameContext from '../../hooks/useInGameContext'
-import { useGameContext } from '../../hooks/useGameContext'
 import {useSelectContext} from '../../hooks/useSelectContext'
 
 interface IBlock {
@@ -17,15 +13,23 @@ interface IBlock {
     textureLoader : any
     textureSelected: any
     worldType: any
-    // updateBuildingFrame?: (show: boolean, data: {}) => void;
+    level: number;
 }
 
-export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType, position, frontBlockArray, textureLoader, textureSelected, worldType}) : any => {
+export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType, position, frontBlockArray, textureLoader, textureSelected, worldType, level}) : any => {
 
     const meshRef = useRef<any>()
     const [clicked, setClicked] = useState(false)
     const [localTexture, setLocalTexture] = useState<any>(null)
     const {frameData, updateBuildingFrame} = useSelectContext();
+    const rockTextures = [[177, 171, 172], [180, 174, 175], [179, 171, 173]]
+    const treeTextures = [
+        [[15, 126, 128], [16, 119, 127], [30, 120, 127]],
+        [[46, 206, 207], [47, 110, 111], [48, 222, 223]],
+        [[95, 124, 127], [96, 125, 128], [30, 120, 127]],
+        [[63, 121, 127], [64, 122, 128], [78, 123, 127]],
+        [[15, 126, 128], [16, 119, 127], [30, 120, 127]]
+    ]
 
     const frameDataValue = useMemo(() => {
         if (frameData && clicked) {
@@ -39,27 +43,15 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
             setLocalTexture(textureLoader)
             return block
         }
-    }, [block])
+    }, [block, level])
 
     const textureValue = useMemo(() => {
         let textureType : Vector2 = new Vector2(0, 0);
         if (block[9] > 0) {
             if (block[3] == 2) {
-                if (block[9] == 1) {
-                    textureType = findTextByID(177);
-                } else if (block[9] == 2) {
-                    textureType = findTextByID(180);
-                } else if (block[9] == 3) {
-                    textureType = findTextByID(179);
-                }
+                textureType = findTextByID(rockTextures[block[9] - 1][block[7] - 1]);
             } else {
-                if (block[9] == 1) {
-                    textureType = findTextByID(15);
-                } else if (block[9] == 2) {
-                    textureType = findTextByID(16);
-                } else if (block[9] == 3) {
-                    textureType = findTextByID(30);
-                }
+                textureType = findTextByID(treeTextures[worldType][block[9] - 1][block[7] - 1]);
             }
         } else if (block[3] == 1 && block[7] == 1) {
             textureType = findTextByID(2)
@@ -77,7 +69,7 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
         localT.offset.set(textureType.x, textureType.y);
         setLocalTexture(localT)
         return textureType
-    }, [block])
+    }, [block, blockValue, level])
 
     const underConstruction = useMemo(() => {
         if (textureValue) {
@@ -136,22 +128,7 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
                 // Selected not under construction
                 if (block[9] > 0 && block[3] == 3 && worldType > 0) {
                     let textureType : Vector2 = new Vector2(0, 0);
-                    if (block[9] == 1) {
-                        if (worldType == 1) textureType = findTextByID(46);
-                        if (worldType == 2) textureType = findTextByID(95); // 95
-                        if (worldType == 3) textureType = findTextByID(63);
-                        if (worldType == 4) textureType = new Vector2(textureValue.x, textureValue.y)
-                    } else if (block[9] == 2) {
-                        if (worldType == 1) textureType = findTextByID(47);
-                        if (worldType == 2) textureType = findTextByID(96); // 96
-                        if (worldType == 3) textureType = findTextByID(64);
-                        if (worldType == 4) textureType = new Vector2(textureValue.x, textureValue.y)
-                    } else if (block[9] == 3) {
-                        if (worldType == 1) textureType = findTextByID(62);
-                        if (worldType == 2) textureType = findTextByID(30);
-                        if (worldType == 3) textureType = findTextByID(78);
-                        if (worldType == 4) textureType = findTextByID(30);
-                    }
+                    textureType = findTextByID(treeTextures[worldType][block[9] - 1][block[7] - 1])
                     textureSelected.offset.set(textureType.x, textureType.y);
                 } else {
                     textureSelected.offset.set(textureValue.x, textureValue.y);

@@ -1,26 +1,24 @@
 import React, { useMemo, useEffect, useState, useRef } from "react";
 import { useStarknet, useStarknetCall, InjectedConnector} from "@starknet-react/core";
-import { TransactionList } from "../components/TransactionList";
 import { toBN } from "starknet/dist/utils/number";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { gsap } from 'gsap';
-import { ConnectWallet } from "../components/ConnectWallet";
-
-import Notifications from '../components/Notifications'
 import { uint256 } from "starknet";
-
+import { ConnectWallet } from "../components/ConnectWallet";
+import Notifications from '../components/Notifications'
+import UI_Frames from '../style/resources/front/Ui_Frames3.svg';
 import { useMapsContract } from "../hooks/contracts/maps";
 import { useWorldsContract } from "../hooks/contracts/worlds";
-import { useBuildingsContract } from "../hooks/contracts/buildings";
 import { useGameContext } from "../hooks/useGameContext";
 import useActiveNotifications from '../hooks/useNotifications'
 import useMintMap from "../hooks/invoke/useMintMap";
 import useStartGame from "../hooks/invoke/useStartGame"
-
-import useTest from "../hooks/invoke/useTest";
 import { useERC1155Contract } from "../hooks/contracts/erc1155";
 import useApprove from "../hooks/invoke/useApprove";
 import { useResourcesContract } from "../hooks/contracts/resources";
+import { allMetadata } from "../data/metadata";
+
+import useTest from "../hooks/invoke/useTest";
 
 export default function Home() {
   // const { account } = useStarknet();
@@ -37,6 +35,7 @@ export default function Home() {
 
   const { setAddress, updateTokenId, tokenId, fetchMapType } = useGameContext();
   const activeNotifications = useActiveNotifications()
+  const [worldType, setWorldType] = useState<any>(null)
 
   // Call
   const { contract: worlds } = useWorldsContract();
@@ -66,6 +65,14 @@ export default function Home() {
     }
   }, [account, tokenId])
 
+  useEffect(() => {
+    if (account && tokenId) {
+      let _metadata = allMetadata.filter(res => res.id == tokenId as number )
+      setWorldType(_metadata[0].biome)
+    }
+  }, [account, tokenId])
+
+
   // Rotation world
   useEffect(() => {
     gsap.timeline().to('.frensLandsWorld', {
@@ -75,12 +82,6 @@ export default function Home() {
       ease: "none"
     })
   })
-
-  // useEffect(() => {
-  //   if (canPlay == 1 && approved) {
-  //     navigate('/play')
-  //   }
-  // }, [canPlay])
 
   // Fetch NFT balance of user
   const { data: fetchBalanceNFTResult } = useStarknetCall({
@@ -122,24 +123,24 @@ export default function Home() {
   }, [fetchGameStatus, tokenId]);
 
   // Fetch tokenType
-  const { data: fetchtokenType } = useStarknetCall({
-    contract: maps,
-    method: "tokenURI",
-    args: [uint256.bnToUint256(tokenId as number)],
-    options: { watch },
-  });
+  // const { data: fetchtokenType } = useStarknetCall({
+  //   contract: maps,
+  //   method: "tokenURI",
+  //   args: [uint256.bnToUint256(tokenId as number)],
+  //   options: { watch },
+  // });
 
-  const tokenTypeValue = useMemo(() => {
-    if (fetchtokenType && fetchtokenType.length > 0) {
-      var elem = uint256.uint256ToBN(fetchtokenType[0]);
-      console.log("Token URI", fetchtokenType);
-      var balance = elem.toString();
+  // const tokenTypeValue = useMemo(() => {
+  //   if (fetchtokenType && fetchtokenType.length > 0) {
+  //     var elem = uint256.uint256ToBN(fetchtokenType[0]);
+  //     console.log("Token URI", fetchtokenType);
+  //     var balance = elem.toString();
 
-      fetchMapType(balance)
+  //     fetchMapType(balance)
 
-      return { tokenType: balance };
-    }
-  }, [fetchtokenType, account, tokenId]);
+  //     return { tokenType: balance };
+  //   }
+  // }, [fetchtokenType, account, tokenId]);
 
   // Check if is approved 
   const { data: fetchApprovalState } = useStarknetCall({
@@ -248,14 +249,16 @@ export default function Home() {
           </div>
 
           <div className="absolute" style={{width: "100vw", top: '0'}}>
-            {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 &&
-              <img className="relative mx-auto pixelated" src="resources/maps/FrensLand_NFTs_V2.png" style={{marginTop: "300px"}} />
+            {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && worldType >= 0 &&
+              <img className="relative mx-auto pixelated" src={`resources/maps/FrensLand_NFTs_${worldType}.png`} style={{marginTop: "300px"}} />
             }
             {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&
-              <div className="messageNotif fontHPxl-sm mx-auto text-center">
-                <p>You don't own a map... </p>
-                <br/>
-                <p>Join the <a style={{color: "#964489"}} href="discord.gg/gehYZU9Trf">Frens Lands discord server</a> to take part in the next testing sessions.</p>
+              <div className="messageNotifParent">
+                <div className="messageNotif fontHPxl-sm mx-auto text-center" style={{borderImage: `url(data:image/svg+xml;base64,${btoa(UI_Frames)}) 18 fill stretch` }}>
+                  <p>You don't own a map... </p>
+                  <br/>
+                  <p>Join the <a style={{color: "#964489"}} href="discord.gg/gehYZU9Trf">Frens Lands discord server</a> to take part in the next testing sessions.</p>
+                </div>
               </div>
             }
             {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && GameStatusValue && GameStatusValue.gameStatus == 0 &&

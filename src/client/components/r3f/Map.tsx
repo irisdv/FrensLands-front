@@ -39,7 +39,7 @@ export const Map = (props : any)=> {
     const { tokenId } = useGameContext();
     const { transactions, removeTransaction } = useNotifTransactionManager()
     const { frameData, updateBuildingFrame, sound } = useSelectContext();
-    const { buildingList, addBuilding } = useBuildingContext()
+    // const { buildingList, addBuilding } = useBuildingContext()
 
     // Buildings
     var currBlockPos = new Vector2(0, 0)
@@ -52,16 +52,16 @@ export const Map = (props : any)=> {
 
     // Select objects
     const [objectSelected, setObjectSelected] = useState(0);
-    const [objectSelectedID, setObjectSelectedID] = useState(0);
+    // const [objectSelectedID, setObjectSelectedID] = useState(0);
     const [selectedObj, setSelectedObj] = useState<ISelectObject>();
     const [currBlockPosState, setCurrBlockPosState] = useState(new Vector2);
 
     // Event listeners
-    const [mouse, setMouse] = useState(new Vector2())
-    const [mouseWheelPropMap, setMouseWheelPropMap] = useState(0)
-    const [mouseLeftPressedMap, setMouseLeftPressedMap] = useState(0)
-    const [mouseRightPressedMap, setMouseRightPressedMap] = useState(0)
-    const [mouseMiddlePressedMap, setMouseMiddlePressedMap] = useState(0)
+    // const [mouse, setMouse] = useState(new Vector2())
+    // const [mouseWheelPropMap, setMouseWheelPropMap] = useState(0)
+    // const [mouseLeftPressedMap, setMouseLeftPressedMap] = useState(0)
+    // const [mouseRightPressedMap, setMouseRightPressedMap] = useState(0)
+    // const [mouseMiddlePressedMap, setMouseMiddlePressedMap] = useState(0)
 
     // Frens 
     const frensArray = useMemo(() => {
@@ -205,10 +205,6 @@ export const Map = (props : any)=> {
 
             if (objectSelected == 1 && mouseLeftPressed == 1)
             {
-                // console.log('posX', frontBlockArray[rayY][rayX][0])
-                // console.log('posY', frontBlockArray[rayY][rayX][1])
-                // console.log('comp', frontBlockArray[rayY][rayX])
-                // console.log('level', frontBlockArray[rayY][rayX][7])
                 // OPEN POPUP BUILDING WITH INFORMATION - NOT SELECTED
                 updateBuildingFrame(true, {
                     "id": selectedObj?.type_id, 
@@ -278,12 +274,11 @@ export const Map = (props : any)=> {
             pos.y = tempBuildMesh.z;
 
             console.log('create building on Map', frameData?.id)
-            // ADD BUILDING IN LIST
             // Update frontBlockArray to update mesh on map
             frontBlockArray[pos.y][pos.x - 0.5][3] = frameData?.id
             frontBlockArray[pos.y][pos.x - 0.5][4] = UBlockIDs + 1
+            // frontBlockArray[pos.y][pos.x - 0.5][10] = 1
             frontBlockArray[pos.y][pos.x - 0.5][10] = 0 // status : building
-            // INVOKE FUNCTION TX BUILD HERE
             buildTx(UBlockIDs + 1, frameData?.id as number, pos.x - 0.5, pos.y)
             // Update global variables 
             setUBlockIDs(UBlockIDs + 1)
@@ -325,11 +320,9 @@ export const Map = (props : any)=> {
     }
 
     const generateBuild = useBuild()
-    // const [building, setBuilding] = useState<any>(null)
 
     const buildTx = async (uniqueId : number, typeId : number, posX: number, posY: number) => {
         if (account && tokenId) {
-            console.log("invoking building", account);
             const pos_start : number = (posY - 1) * 40 + posX
             let tx_hash = await generateBuild(tokenId, typeId, 1, pos_start, posX, posY, uniqueId)
             console.log('tx hash', tx_hash)
@@ -344,36 +337,37 @@ export const Map = (props : any)=> {
         if (txList) {
             txList.map((tx) => {
                 console.log('tx map', tx)
-                // TX for upgrades 
-                if (tx.status == 'ACCEPTED_ON_L2' && tx.metadata.method == 'build') {
-                    if (frontBlockArray[tx.metadata.posY][tx.metadata.posX] 
-                        && frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] == 0 ) {
-                            frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1
-                        }
-                }
-                // TX for harvesting 
-                if (tx.status == 'ACCEPTED_ON_L2' && tx.metadata.method == 'harvest_resources') {
-                    if (frontBlockArray[tx.metadata.posY][tx.metadata.posX] 
-                        && frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] == tx.metadata.level_start ) {
-                            frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] = tx.metadata.level_start + 1
-                        }
-                    if (tx.metadata.level_start == 3) {
-                        frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0
-                        frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0
-                        frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] = 1
-                        frontBlockArray[tx.metadata.posY][tx.metadata.posX][9] = 0
+
+                if (tx.status == 'ACCEPTED_ON_L2') {
+                    let _txExists : {} = {};
+                    if (Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11]).length > 0) {
+                        _txExists = frontBlockArray[tx.metadata.posY][tx.metadata.posX][11].includes(tx.transactionHash)
                     }
-                }
-                // tx for destroying building 
-                if (tx.status == 'ACCEPTED_ON_L2' && tx.metadata.method == 'destroy_building') {
-                    if (frontBlockArray[tx.metadata.posY][tx.metadata.posX] 
-                        && frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] == 0 ) {
+
+                    if (Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11]).length == 0 || !_txExists) {
+                        frontBlockArray[tx.metadata.posY][tx.metadata.posX][11].push(tx.transactionHash)
+
+                        if (tx.metadata.method == 'build') {
+                            if (frontBlockArray[tx.metadata.posY][tx.metadata.posX] && frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] == 0 ) {
+                                frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1
+                            }
+                        } else if (tx.metadata.method == 'harvest_resources') {
+                            if (frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] == 3) {
+                                frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0
+                                frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0
+                                frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] = 1
+                                frontBlockArray[tx.metadata.posY][tx.metadata.posX][9] = 0
+                            } else {
+                                frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] += 1
+                            }
+                        } else if (tx.metadata.method == 'destroy_building') {
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] = 1
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][9] = 0
                         }
-                }
+                    }
+                } 
             })
         }
 
