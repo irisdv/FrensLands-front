@@ -63,6 +63,9 @@
     font-family: 'Hpxl_JuicySmall', monospace;
     font-size: 11px;
 }
+.fontRed {
+    color: red;
+}
 
 .pixelated {
     -ms-interpolation-mode: nearest-neighbor;
@@ -74,47 +77,23 @@
 body {
     margin: 0px;
     overflow: hidden;
-
 }
 
-/* .notifContainer .popUpNotifsGame {
-    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
-    height:calc(64px * 2);
-    width:calc(64px * 2);
-    background-position:calc(19 * 1 * 64px) calc(2 * 1* 64px);
-    background-size:calc(1408px* 1) calc(768px * 1);
-    padding-left: 23px;
-    padding-right: 20px;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    left: 0px;
-    bottom: 0px;
-    position: relative;
+.messageNotifParent {
+    z-index: 1;
+    height: 128px;
+    width: 256px;
+    margin: auto;
 }
-
-.notifContainerGame .popUpNotifsGame {
-    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
-    height:calc(64px * 2);
-    width:calc(64px * 2);
-    background-position:calc(19 * 1 * 64px) calc(2 * 1* 64px);
-    background-size:calc(1408px* 1) calc(768px * 1);
-    padding-left: 23px;
-    padding-right: 20px;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    left: 0px;
-    bottom: 0px;
-    position: absolute;
-} */
-
 .messageNotif {
-    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
-    height:calc(64px * 2 * 2);
-    width:calc(64px * 2 * 2);
-    background-position:calc(19 * 2 * 64px) calc(2 * 2 * 64px);
-    background-size:calc(1408px* 2) calc(768px * 2);
     margin-top: 350px;
-    padding: 50px;
+    position: absolute;
+    width: calc(256px);
+    height: calc(180px);
+    box-sizing: border-box;
+    border-style: solid;
+    border-width: 18px;
+    padding: 10px;
 }
 
 .popUpNotifs {
@@ -128,17 +107,18 @@ body {
     left: 0px;
 }
 .popUpNotifsGame {
-    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
-    /* background-image: url("resources/front/Ui_Frames2.svg"); */
-    height:calc(64px * 2);
-    width:calc(64px * 2);
-    background-position:calc(19 * 1 * 64px) calc(2 * 1* 64px);
-    background-size:calc(1408px* 1) calc(768px * 1);
-    padding-left: 23px;
-    padding-right: 20px;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    left: 0px;
+    position: absolute;
+    width: calc(100% + 12px);
+    height: calc(100% + 12px);
+    box-sizing: border-box;
+    border-style: solid;
+    border-width: 18px;
+    /* border-image-slice: 31 fill; */
+}
+.parentNotifGame {
+    z-index: 1;
+    height: 90px;
+    width: 256px;
     position: absolute;
 }
 .popUpNotifsAchievement {
@@ -148,17 +128,16 @@ body {
     box-sizing: border-box;
     border-style: solid;
     border-width: 18px;
+    border-image-slice: 31 fill;
 }
 .parentNotif {
     z-index: 1;
-    height: 400px;
-    width: 400px;
+    height: 250px;
+    width: 500px;
     position: absolute;
-    margin-top: 120px;
-
+    margin-top: 150px;
 }
 .achievementText {
- margin: 38px 44px;
  position: relative;
  font-size: 15px;
 }
@@ -171,8 +150,8 @@ body {
     background-size:calc(1408px * 1) calc(768px * 1);
     margin-left: 20px;
     position: absolute;
-    right: -2px;
-    top: -4px;
+    right: -40px;
+    top: -33px;
     pointer-events: all;
 }
 .notifContainer {
@@ -185,7 +164,7 @@ body {
     position: relative;
     width: 100%;
     height: 100%;
-    width: 128px;
+    width: 256px;
     height: 100vh;
     display: inline-block;
 }
@@ -196,10 +175,9 @@ body {
     width:calc(32px * 2);
     background-position:calc(9 * 1 * 64px) calc(10 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
-    margin-left: 20px;
     position: absolute;
-    right: -11px;
-    top: -5px;
+    right: -28px;
+    top: -21px;
     pointer-events: all;
 }
 .closeNotif:active {
@@ -209,10 +187,9 @@ body {
     width:calc(32px * 2);
     background-position:calc(10 * 1 * 64px) calc(10 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
-    margin-left: 20px;
     position: absolute;
-    right: -11px;
-    top: -5px;
+    right: -28px;
+    top: -21px;
     pointer-events: all;
 }
 /* -------------------- MENU BAR -------------------- */
@@ -423,7 +400,7 @@ body {
 #menuBar {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
-    width:calc(1408px * 1);
+    width:calc(64px * 21);
     background-position:calc(22 * 1 * 64px) calc(0 * 1* 64px);
     background-size:calc(1408px* 1) calc(768px * 1);
 }
@@ -519,16 +496,6 @@ body {
 }
 
 
-/* 10 : gold */
-.small10 {
-    display:inline-block;
-    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
-    height:calc(64px * 1);
-    width:calc(64px * 1);
-    background-position:calc(22 * 1 * 64px) calc(21 * 1 * 64px);
-    background-size:calc(1408px * 1) calc(768px * 1);
-}
-
 .small1 {
     display:inline-block;
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
@@ -586,6 +553,15 @@ body {
     background-position:calc(17 * 1 * 64px) calc(23 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
 }
+/* 10 : gold */
+.small10 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(22 * 1 * 64px) calc(21 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
 /* Energy */
 .small11{
     display:inline-block;
@@ -595,7 +571,6 @@ body {
     background-position:calc(14 * 1 * 64px) calc(21 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
 }
-
 /* Pop  */
 .small12{
     display:inline-block;
@@ -1114,7 +1089,7 @@ body {
     background-size:calc(1408px * 1) calc(768px * 1);
     margin-top: 3px;
 }
-.menuNature {
+.menuSettings {
     display:inline-block;
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
@@ -1123,6 +1098,16 @@ body {
     background-size:calc(1408px * 1) calc(768px * 1);
     margin-top: 3px;
     margin-left: -2px;
+}
+.menuFactory {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(20 * 1 * 64px) calc(5 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+    margin-top: 7px;
+    margin-left: 3px;
 }
 .menuLock {
     display:inline-block;
@@ -1135,6 +1120,203 @@ body {
     margin-left: -2px;
 }
 
+.btnGoals {
+    display:inline-block;
+    background-image: url("resources/front/UI_ObjectiveFrame1.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(4 * 1 * 64px) calc(4 * 1 * 64px);
+    background-size:calc(320px * 1) calc(320px * 1);
+    top: 136px;
+    right: 0px;
+    z-index: 1;
+}
+.btnGoals:hover {
+    display:inline-block;
+    background-image: url("resources/front/UI_ObjectiveFrame1.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(3 * 1 * 64px) calc(4 * 1 * 64px);
+    background-size:calc(320px * 1) calc(320px * 1);
+    top: 136px;
+    right: 0px;
+    z-index: 1;
+}
+.btnGoals:active {
+    display:inline-block;
+    background-image: url("resources/front/UI_ObjectiveFrame1.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(2 * 1 * 64px) calc(4 * 1 * 64px);
+    background-size:calc(320px * 1) calc(320px * 1);
+    top: 136px;
+    right: 0px;
+    z-index: 1;
+}
+.btnShowTuto1 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(8 * 1 * 64px) calc(5 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+    top: 100px;
+    right: 0px;
+    z-index: 1;
+    position: absolute;
+    opacity: 0.5;
+}
+.btnShowTuto1:hover {
+    opacity: 1;
+}
+.btnShowTuto0 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(10 * 1 * 64px) calc(5 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+    top: 100px;
+    right: 0px;
+    z-index: 1;
+    position: absolute;
+    opacity: 0.5;
+}
+.btnShowTuto0:hover {
+    opacity: 1;
+}
+.goalFrame {
+    z-index: 1;
+    pointer-events: none;
+}
+.goalText {
+    position: relative;
+    top: 86px;
+    margin-left: 78px;
+}
+.goalDesc {
+    position: relative;
+    top: 104px;
+    padding-left: 34px;
+    padding-right: 31px;
+}
+.GoalArrowRight {
+    display:inline-block;
+    background-image: url("resources/front/UI_ObjectiveFrame1.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(4 * 1 * 64px) calc(3 * 1 * 64px);
+    background-size:calc(320px * 1) calc(320px * 1);
+    top: 63px;
+    right: -5px;
+    z-index: 1;
+    position: absolute;
+    pointer-events: all;
+}
+.GoalArrowRight:hover {
+    display:inline-block;
+    background-image: url("resources/front/UI_ObjectiveFrame1.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(3 * 1 * 64px) calc(3 * 1 * 64px);
+    background-size:calc(320px * 1) calc(320px * 1);
+    top: 63px;
+    right: -5px;
+    z-index: 1;
+    position: absolute;
+    pointer-events: all;
+}
+.GoalArrowRight:active {
+    display:inline-block;
+    background-image: url("resources/front/UI_ObjectiveFrame1.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(2 * 1 * 64px) calc(3 * 1 * 64px);
+    background-size:calc(320px * 1) calc(320px * 1);
+    top: 63px;
+    right: -5px;
+    z-index: 1;
+    position: absolute;
+    pointer-events: all;
+}
+.GoalArrowDown {
+    display:inline-block;
+    background-image: url("resources/front/UI_ObjectiveFrame1.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(4 * 1 * 64px) calc(2 * 1 * 64px);
+    background-size:calc(320px * 1) calc(320px * 1);
+    top: 96px;
+    right: 121px;
+    z-index: 1;
+    position: absolute;
+    pointer-events: all;
+}
+.GoalArrowDown:hover {
+    display:inline-block;
+    background-image: url("resources/front/UI_ObjectiveFrame1.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(3 * 1 * 64px) calc(2 * 1 * 64px);
+    background-size:calc(320px * 1) calc(320px * 1);
+    top: 96px;
+    right: 121px;
+    z-index: 1;
+    position: absolute;
+    pointer-events: all;
+}
+.GoalArrowDown:active {
+    display:inline-block;
+    background-image: url("resources/front/UI_ObjectiveFrame1.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(2 * 1 * 64px) calc(2 * 1 * 64px);
+    background-size:calc(320px * 1) calc(320px * 1);
+    top: 96px;
+    right: 121px;
+    z-index: 1;
+    position: absolute;
+    pointer-events: all;
+}
+.GoalArrowUp {
+    display:inline-block;
+    background-image: url("resources/front/UI_ObjectiveFrame1.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(4 * 1 * 64px) calc(1 * 1 * 64px);
+    background-size:calc(320px * 1) calc(320px * 1);
+    top: 192px;
+    right: 121px;
+    z-index: 1;
+    position: absolute;
+    pointer-events: all;
+}
+.GoalArrowUp:hover {
+    display:inline-block;
+    background-image: url("resources/front/UI_ObjectiveFrame1.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(3 * 1 * 64px) calc(1 * 1 * 64px);
+    background-size:calc(320px * 1) calc(320px * 1);
+    top: 192px;
+    right: 121px;
+    z-index: 1;
+    position: absolute;
+    pointer-events: all;
+}
+.GoalArrowUp:active {
+    display:inline-block;
+    background-image: url("resources/front/UI_ObjectiveFrame1.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(2 * 1 * 64px) calc(1 * 1 * 64px);
+    background-size:calc(320px * 1) calc(320px * 1);
+    top: 192px;
+    right: 121px;
+    z-index: 1;
+    position: absolute;
+    pointer-events: all;
+}
 
 
 
@@ -1366,8 +1548,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(13 * 2 * 64px) calc(6 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(13 * 2 * 64px) calc(5 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 /* Tree  */
@@ -1376,8 +1558,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(1 * 2 * 64px) calc(2 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(1 * 2 * 64px) calc(4 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 /* Rocks */
@@ -1386,8 +1568,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(2 * 2 * 64px) calc(2 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(2 * 2 * 64px) calc(4 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building4 {
@@ -1395,8 +1577,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(11 * 2 * 64px) calc(6 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(11 * 2 * 64px) calc(5 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building5 {
@@ -1404,8 +1586,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(4 * 2 * 64px) calc(6 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(4 * 2 * 64px) calc(5 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building6 {
@@ -1413,8 +1595,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(9 * 2 * 64px) calc(6 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(9 * 2 * 64px) calc(5 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building7 {
@@ -1422,8 +1604,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(6 * 2 * 64px) calc(6 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(6 * 2 * 64px) calc(5 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building8 {
@@ -1431,8 +1613,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(7 * 2 * 64px) calc(6 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(7 * 2 * 64px) calc(5 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building9 {
@@ -1440,8 +1622,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(8 * 2 * 64px) calc(6 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(8 * 2 * 64px) calc(5 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building10 {
@@ -1449,8 +1631,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(3 * 2 * 64px) calc(4 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(3 * 2 * 64px) calc(3 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building11 {
@@ -1458,8 +1640,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(3 * 2 * 64px) calc(6 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(3 * 2 * 64px) calc(5 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building12 {
@@ -1467,8 +1649,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(5 * 2 * 64px) calc(6 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(5 * 2 * 64px) calc(5 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building13 {
@@ -1476,8 +1658,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(2 * 2 * 64px) calc(6 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(2 * 2 * 64px) calc(5 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building14 {
@@ -1485,8 +1667,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(1 * 2 * 64px) calc(6 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(1 * 2 * 64px) calc(5 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building15 {
@@ -1494,8 +1676,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(2 * 2 * 64px) calc(4 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(2 * 2 * 64px) calc(3 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building16 {
@@ -1503,8 +1685,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(10 * 2 * 64px) calc(4 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(10 * 2 * 64px) calc(3 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building17 {
@@ -1512,8 +1694,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(4 * 2 * 64px) calc(4 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(4 * 2 * 64px) calc(3 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building18 {
@@ -1521,8 +1703,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(1 * 2 * 64px) calc(4 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(1 * 2 * 64px) calc(3 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 
@@ -1531,8 +1713,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(10 * 2 * 64px) calc(6 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(10 * 2 * 64px) calc(5 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building20 {
@@ -1540,8 +1722,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(10 * 2 * 64px) calc(2 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(10 * 2 * 64px) calc(1 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building21 {
@@ -1549,8 +1731,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(3 * 2 * 64px) calc(2 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(3 * 2 * 64px) calc(4 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building22 {
@@ -1558,8 +1740,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(13 * 2 * 64px) calc(4 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(13 * 2 * 64px) calc(3 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building23 {
@@ -1567,8 +1749,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(5 * 2 * 64px) calc(4 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(5 * 2 * 64px) calc(3 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building24 {
@@ -1576,8 +1758,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(8 * 2 * 64px) calc(4 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(8 * 2 * 64px) calc(3 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 .building9 {
@@ -1585,8 +1767,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(8 * 2 * 64px) calc(6 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(8 * 2 * 64px) calc(5 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 /* Coal mine == 17 */
@@ -1595,8 +1777,8 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(10 * 2 * 64px) calc(5 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(10 * 2 * 64px) calc(4 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
 /* Metal Mine == 21 */
@@ -1605,7 +1787,7 @@ Lab = 24 */
     background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
     height:calc(64px * 2);
     width:calc(64px * 2);
-    background-position:calc(6 * 2 * 64px) calc(2 * 2 * 64px);
-    background-size:calc(1664px * 1) calc(384px * 1);
+    background-position:calc(6 * 2 * 64px) calc(4 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }

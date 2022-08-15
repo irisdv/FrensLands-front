@@ -41,6 +41,18 @@ export interface IBuildingData {
   inactive?: []
 }
 
+export interface IResources {
+  wood?: number;
+  rock?: number;
+  meat?: number;
+  metal?: number;
+  coal?: number;
+  frensCoins?: number;
+  energy?: number;
+  populationBusy?: number;
+  populationFree?: number;
+}
+
 export interface IGameState {
   lastUpdated: string;
   currentBlock: number;
@@ -61,6 +73,7 @@ export interface IGameState {
   populationBusy?: number;
   populationFree?: number;
   coal?: number;
+  resources: number[];
   updateBuildings: (t: number) => void;
   setAddress: (addr: string) => void;
   updateTokenId: (id: string) => void;
@@ -88,6 +101,7 @@ export const GameState: IGameState = {
   coal: 0,
   populationBusy: 0,
   populationFree: 0,
+  resources : [],
   updateBuildings: () => {},
   setAddress: () => {},
   updateTokenId: () => {},
@@ -215,10 +229,18 @@ function reducer(state: IGameState, action: Action): IGameState {
       };
     }
     case "set_energy": {
-      return { ...state, energy: action.energy };
+      let _resources = state.resources
+      console.log('state.resources energy', state.resources)
+      if (_resources) _resources[11] = action.energy as number
+      return { ...state, 
+        energy: action.energy,
+        resources : _resources
+      };
     }
     case "set_frensCoins": {
-      return { ...state, frensCoins: action.frensCoins };
+      let _resources = state.resources
+      if (_resources) _resources[10] = action.frensCoins as number
+      return { ...state, frensCoins: action.frensCoins, resources : _resources };
     }
     case "set_population": {
       return { ...state,
@@ -234,6 +256,17 @@ function reducer(state: IGameState, action: Action): IGameState {
           cereal: action.cereal,
           metal: action.metal,
           coal: action.coal,
+          resources: [
+              0, 
+              action.wood as number, 
+              action.rock as number,
+              action.meat as number,
+              0,
+              action.cereal as number,
+              action.metal as number,
+              0,
+              action.coal as number
+          ]
         };
     }
     case "set_lastBlock": {
@@ -438,7 +471,7 @@ export const AppStateProvider: React.FC<
             meat: uint256.uint256ToBN(_erc1155Balance[0][3]).toNumber(),
             cereal: uint256.uint256ToBN(_erc1155Balance[0][4]).toNumber(),
             metal: uint256.uint256ToBN(_erc1155Balance[0][5]).toNumber(),
-            coal: uint256.uint256ToBN(_erc1155Balance[0][6]).toNumber(),
+            coal: uint256.uint256ToBN(_erc1155Balance[0][6]).toNumber()
           });
         } catch (e) {
           console.warn("Error when retrieving resources.");
@@ -620,6 +653,7 @@ export const AppStateProvider: React.FC<
         populationBusy: state.populationBusy,
         populationFree: state.populationFree,
         coal: state.coal,
+        resources: state.resources,
         updateBuildings,
         setAddress,
         updateTokenId,

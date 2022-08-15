@@ -1,74 +1,89 @@
-import { useStarknet, useStarknetCall } from "@starknet-react/core";
 import React, { useMemo, useState, useRef, useEffect } from "react";
-import { useBuildingsContract } from "../../hooks/contracts/buildings";
-import { number, uint256 } from "starknet";
-import { toBN } from "starknet/dist/utils/number";
-import { useGameContext } from "../../hooks/useGameContext";
-import { useSelectContext } from "../../hooks/useSelectContext";
-
 import { allAchievements } from "../../data/achievements";
 import { Achievement } from "../../model/achievement";
-import UI_Frames2 from '../../style/resources/front/Ui_Frames2.svg';
+import UI_Frames from '../../style/resources/front/Ui_Frames3.svg';
 import DB from '../../db.json';
 
 export function Achievements(props : any) {
-  // const { address, showFrame, updateBuildingFrame } = useGameContext();
-  const { address } = useGameContext();
-  const { tutorial } = useSelectContext();
+  const [showAchievement, setShowAchievement] = useState(true)
   const [lastAchievement, setLastAchievement] = useState<Achievement>()
-  const [isNew, setIsNew] = useState(0)
-  const [showAchievement, setShowAchievement] = useState(0)
-
-  const { level } = props
+  const [showGoal, setShowGoal] = useState(false)
+  const [showDesc, setShowDesc] = useState(false)
+  const [showInfo, setShowInfo] = useState(true)
+  const [lastLevel, setLastLevel] = useState(0)
 
   const currAchievement = useMemo(() => {
-    let _newAchievement : Achievement = allAchievements[0];
-    allAchievements.map((achievement: Achievement) => {
-        if (achievement.level == level) {
-          if (lastAchievement && achievement.level > lastAchievement?.level) {
-            setIsNew(1)
-            setShowAchievement(1)
-          } else if (!lastAchievement) {
-            setIsNew(1)
-            setShowAchievement(1)
+    if (props.level != lastLevel) {
+      setLastLevel(props.level)
+
+      allAchievements.map((achievement: Achievement) => {
+          if (achievement.level == props.level) {
+            setLastAchievement(achievement)
+            setShowInfo(true)
+            return achievement
           }
-          setLastAchievement(achievement)
-          console.log('current achievement', achievement)
-          _newAchievement = achievement
-        }
-    })
-    console.log('isNew', isNew)
-    return _newAchievement
+      })
+    }
+
   }, [props])
-
-  // Close achievement, function met le isNew à 0
-  // Show achievement : show le current achievement 
-
-  const closeAchievement = () => {
-    setIsNew(0)
-    setShowAchievement(0)
-  }
-
 
   return (
     <>
-      {tutorial && showAchievement ?
+      {showAchievement ? 
+        <div className="btnShowTuto1 pixelated" onClick={() => setShowAchievement(!showAchievement)}></div>
+      : 
+        <div className="btnShowTuto0 pixelated" onClick={() => setShowAchievement(!showAchievement)}></div>
+      }
+
+      {!showGoal && showAchievement &&
+        <div 
+          className="btnGoals absolute pixelated"
+          onClick={() => setShowGoal(!showGoal)}
+        ></div>
+
+      }
+      {showGoal && showAchievement &&
+        <div className="absolute goalFrame pixelated" style={{width: "320px", right:'-12px', top: '77px'}}>
+          {!showDesc && 
+            <>
+              <img src="resources/front/UI_ObjectiveFrame2.png" className="absolute" />
+              <p className="goalText fontHPxl-sm">{lastAchievement && lastAchievement.goal}</p>
+            </>
+          }
+          <div className="GoalArrowRight pixelated" onClick={() => {
+            setShowGoal(!showGoal) 
+            setShowDesc(!showDesc)
+          }}></div>
+          
+          {!showDesc && <div className="GoalArrowDown" onClick={() => setShowDesc(!showDesc)}></div>}
+
+          {showDesc &&
+            <div>
+              <img src="resources/front/UI_ObjectiveFrame3.png" className="absolute" />
+              <p className="goalText fontHPxl-sm">{lastAchievement && lastAchievement.goal}</p>
+              <p className="goalDesc fontHPxl-sm">{lastAchievement && lastAchievement.goalDesc}</p>
+              <div className="GoalArrowUp pixelated"onClick={() => setShowDesc(!showDesc)}></div>
+           </div>
+          }
+        </div>
+      }
+
+      {showInfo && lastAchievement && lastLevel > 0 ?
         <div className="flex justify-center">
           <div className="parentNotif">
-            <div className="popUpNotifsAchievement pixelated fontHPxl-sm" style={{zIndex: 1, borderImage: `url(data:image/svg+xml;base64,${btoa(UI_Frames2)}) 18 fill stretch`, borderImageSlice: "67 fill" }}>
-              <div className="closeAchievement" onClick={() => closeAchievement()}></div>
+            <div className="popUpNotifsAchievement pixelated fontHPxl-sm" style={{zIndex: 1, borderImage: `url(data:image/svg+xml;base64,${btoa(UI_Frames)}) 18 fill stretch` }}>
+              <div className="closeAchievement" onClick={() => setShowInfo(false)}></div>
               <div className="achievementText">
-                {currAchievement && currAchievement?.description &&  <p>{currAchievement.description}</p> }
+                {lastAchievement && lastAchievement?.description &&  <p>{lastAchievement.description}</p> }
                 <br/>
-                <p><span>Next goal: </span>{currAchievement.goal}</p>
+                <p><span>Next goal: </span>{lastAchievement.goal}</p>
                 <br/>
-                {currAchievement && currAchievement.unlock.length > 0 && <p>You just unlocked : </p>}
+                {lastAchievement && lastAchievement.unlock.length > 0 && <p>You just unlocked : </p>}
                 <div className="flex flex-row justify-center inline-block relative">
-                  {currAchievement && currAchievement.unlock.map((building : number) => {
+                  {lastAchievement && lastAchievement.unlock.map((building : number) => {
                     return (
-                      <div style={{width: '64px', height: '64px', position: 'relative'}}>
+                      <div key={building} style={{width: '64px', height: '64px', position: 'relative'}}>
                         <div className={"building"+`${building}`} style={{marginLeft: "-32px", marginTop: "-32px"}}></div>
-                        {/* <p style={{marginTop: '-12px', marginLeft: '-12px'}}>{DB.buildings[building].name}</p> */}
                       </div>)
                   })}
                 </div>

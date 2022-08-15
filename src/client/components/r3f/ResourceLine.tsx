@@ -20,7 +20,7 @@ export const ResourceLine = (props : any)=> {
 
     return(
         lineValue && lineValue.map((elem : any, key : any) => {
-            if (elem && elem[3] && elem[3] != 0) return <ResourceItem key={elem[4]} block={elem} textArrRef={textArrRef} rightBuildingType={rightBuildingType} position={position} frontBlockArray={frontBlockArray} textureLoader={textureLoader} textureSelected={textureSelected} worldType={worldType} />
+            if (elem && elem[3] && elem[3] != 0) return <ResourceItem key={elem[4]} block={elem} textArrRef={textArrRef} rightBuildingType={rightBuildingType} position={position} frontBlockArray={frontBlockArray} textureLoader={textureLoader} textureSelected={textureSelected} worldType={worldType} level={elem[7]} />
             })
     )
 

@@ -1,15 +1,9 @@
 import { useStarknet } from "@starknet-react/core";
 import React, { useMemo, useState, useRef, useEffect } from "react";
-// import { useBuildingsContract } from "../../hooks/buildings";
-// import { number, transaction, uint256 } from "starknet";
-// import { toBN } from "starknet/dist/utils/number";
 import { useGameContext } from "../../hooks/useGameContext";
-// import { useResourcesContract } from "../../hooks/contracts/resources";
 import DB from '../../db.json';
-// import { InstancedMesh } from "three";
 import { useSelectContext } from "../../hooks/useSelectContext";
 import useHarvestResource from "../../hooks/invoke/useHarvestResource";
-// import useBuild from "../../hooks/invoke/useBuild";
 import useDestroy from "../../hooks/invoke/useDestroy";
 import useActiveNotifications from '../../hooks/useNotifications'
 
@@ -25,9 +19,10 @@ import { FrameItem } from "./FrameItem";
 
 export function BuildingFrame(props: any) {
   const { tokenId, address, setAddress, updateTokenId, mapArray, buildingData } = useGameContext();
-  const { frensCoins, energy, wood, rock, metal, coal, populationBusy, populationFree, meat, cereal} = useResourcesContext();
+  const { frensCoins, energy, wood, rock, metal, coal, populationBusy, populationFree, meat, cereal, resources} = useResourcesContext();
   const { account } = useStarknet();
   const { showFrame, frameData, updateBuildingFrame } = useSelectContext();
+  const { frontBlockArray } = props
 
   // Test
   const { contract: worlds } = useWorldsContract();
@@ -43,12 +38,7 @@ export function BuildingFrame(props: any) {
   const [ recharging, setRecharging ] = useState<any>(null)
   const detroyingInvoke = useDestroy()
   const [ destroying, setDestroying ] = useState<any>(null)
-
-  // const buildingInvoke = useBuild()
-  // const [ building, setBuilding ] = useState<any>(null)
-  // const [ farming, setFarming ] = useState(false)
   const [ message, setMessage ] = useState("")
-  // const [buildingSelec, setBuildingSelec] = useState(false)
 
   const [ costUpdate, setCostUpdate ] = useState<any>(null)
   const [ dailyCosts, setDailyCosts ] = useState<any>(null)
@@ -107,24 +97,6 @@ export function BuildingFrame(props: any) {
       console.log('Missing tokenId')
     }
   }
-
-  useEffect(() => {
-    if (harvesting) {
-      var dataMinting = activeNotifications.filter((transactions) => (transactions?.transactionHash as string) === harvesting as string)
-      console.log('harvestingData', dataMinting )
-      // if (dataMinting && dataMinting[0] && dataMinting[0].content) {
-      //   if (dataMinting[0].content.status == 'REJECTED') {
-      //     setMessage("Your transaction has failed... Try again.")
-      //     setHarvesting(null)
-      //   } else if (dataMinting[0].content.status == 'ACCEPTED_ON_L1' || dataMinting[0].content.status == 'ACCEPTED_ON_L2') {
-      //     setMessage("Your transaction was accepted. Now you need to initialize the game!")
-      //     setHarvesting(true)
-      //   } else {
-      //     setMessage("Your transaction is ongoing.")
-      //   }
-      // }
-    }
-  }, [harvesting, activeNotifications])
 
   const upgradeBuilding = (type_id : number, pos_x: number, pos_y: number, level : number) => {
     let pos_start = (pos_y - 1) * 40 + pos_x
@@ -295,23 +267,23 @@ export function BuildingFrame(props: any) {
             {frameData && frameData.id ? DB.buildings[frameData.id as any].name : ""}
           </div>
           <div className="relative flex jutify-center items-center inline-block" style={{ paddingLeft: "8px" }}>
-                {frameData && frameData.id && DB.buildings[frameData.id].pop_min && (!frameData.unique_id) &&
+                {frameData && frameData.id && DB.buildings[frameData.id].pop_min && (!frameData.unique_id) ?
                 <div className="flex flex-row justify-center inline-block relative">
                     <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "100px" }}>-{DB.buildings[frameData.id].pop_min}</div>
                     <div className={"mb-3 small12"} style={{ position: "absolute", top: "-34px", left: "105px" }}></div>
-                </div>
+                </div> : ''
                 }
-                {frameData && frameData.id && DB.buildings[frameData.id].new_pop != null && (!frameData.unique_id) &&
+                {frameData && frameData.id && DB.buildings[frameData.id].new_pop != null && (!frameData.unique_id) ?
                 <div className="flex flex-row justify-center inline-block relative">
                     <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "46px" }}>+{DB.buildings[frameData.id].new_pop}</div>
                     <div className={"mb-3 small12"} style={{ position: "absolute", top: "-34px", left: "45px" }}></div>
-                </div>
+                </div> : ''
                 }
-                {frameData && frameData.id && DB.buildings[frameData.id].pop_min != null && frameData.unique_id &&
+                {frameData && frameData.id && DB.buildings[frameData.id].pop_min != null && frameData.unique_id ?
                 <div className="flex flex-row justify-center inline-block relative">
                     <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "46px" }}>{DB.buildings[frameData.id].pop_min}</div>
                     <div className={"mb-3 small12"} style={{ position: "absolute", top: "-34px", left: "45px" }}></div>
-                </div>
+                </div> : ''
                 }
           </div>
         </div>
@@ -324,7 +296,7 @@ export function BuildingFrame(props: any) {
               {frameData && frameData.id ? DB.buildings[frameData.id as any].name : 0}
             </div>
             <div className="font04B mx-auto text-center" style={{   fontSize: "12px",   paddingTop: "34px",   width: "67px", }}>
-              1
+              {frameData && frameData.posX && frameData.posY ? frontBlockArray[frameData?.posY][frameData?.posX][7] : 1}
             </div>
             <div className="font04B text-center mx-auto relative" style={{   fontSize: "12px",   paddingTop: "34px",   width: "65px", }}>
               1 x 1

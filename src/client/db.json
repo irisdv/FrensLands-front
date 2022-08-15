@@ -1,36 +1,4 @@
 {
-    "metadata" : [
-        {   
-            "type" : 0
-        },
-        {   
-            "type" : 4
-        },
-        {   
-            "type" : 3
-        },
-        {   
-            "type" : 3
-        },
-        {   
-            "type" : 4
-        },
-        {   
-            "type" : 0
-        },
-        {   
-            "type" : 1
-        },
-        {   
-            "type" : 2
-        },
-        {   
-            "type" : 3
-        },
-        {   
-            "type" : 4
-        }
-    ],
     "buildings" : [
         {
             "name": "",
@@ -56,6 +24,7 @@
         {
             "name": "Cabin",
             "category": "Housing",
+            "level": 1,
             "cost_update": {
                 "level" : [
                     {
@@ -114,6 +83,7 @@
         {
             "name": "Rock",
             "category": "",
+            "level": "0",
             "cost_update": {
                 "level" : [
                     {
@@ -274,6 +244,7 @@
         {
             "name": "Tree",
             "category": "",
+            "level": "0",
             "cost_update": {
                 "level" : [
                     {
@@ -437,6 +408,7 @@
         {
             "name": "House",
             "category": "Housing",
+            "level": "2",
             "cost_update": {
                 "level" : [
                     {
@@ -451,10 +423,6 @@
                             },
                             {
                                 "id": 3,
-                                "quantity": 3
-                            },
-                            {
-                                "id": 5,
                                 "quantity": 3
                             },
                             {
@@ -493,6 +461,7 @@
         {
             "name": "Appartment",
             "category": "Housing",
+            "level": "7",
             "cost_update": {
                 "level" : [
                     {
@@ -553,6 +522,7 @@
         {
             "name": "Hotel",
             "category": "Housing",
+            "level": "8",
             "cost_update": {
                 "level" : [
                     {
@@ -636,6 +606,7 @@
         {
             "name": "Bakery",
             "category": "Shops",
+            "level": "3",
             "cost_update": {
                 "level" : [
                     {
@@ -715,6 +686,7 @@
         {
             "name": "Grocery shop",
             "category": "Shops",
+            "level": "3",
             "cost_update": {
                 "level" : [
                     {
@@ -802,6 +774,7 @@
         {
             "name": "Restaurant",
             "category": "Shops",
+            "level": "5",
             "cost_update": {
                 "level" : [
                     {
@@ -889,6 +862,7 @@
         {
             "name": "Mall",
             "category": "Shops",
+            "level": "8",
             "cost_update": {
                 "level" : [
                     {
@@ -976,6 +950,7 @@
         {
             "name": "Bar",
             "category": "Entertainment",
+            "level": "5",
             "cost_update": {
                 "level" : [
                     {
@@ -1063,6 +1038,7 @@
         {
             "name": "Library",
             "category": "Entertainment",
+            "level": "7",
             "cost_update": {
                 "level" : [
                     {
@@ -1150,6 +1126,7 @@
         {
             "name": "Swimming Pool",
             "category": "Entertainment",
+            "level": "8",
             "cost_update": {
                 "level" : [
                     {
@@ -1237,6 +1214,7 @@
         {
             "name": "Cinema",
             "category": "Entertainment",
+            "level": "8",
             "cost_update": {
                 "level" : [
                     {
@@ -1324,6 +1302,7 @@
         {
             "name": "Market",
             "category": "Shops",
+            "level": "7",
             "cost_update": {
                 "level" : [
                     {
@@ -1405,8 +1384,9 @@
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
         },
         {
-            "name": "Cereal Farm",
+            "name": "Wheat Farm",
             "category": "Agriculture",
+            "level": "2",
             "cost_update": {
                 "level" : [
                     {
@@ -1466,7 +1446,7 @@
                     {
                         "resources": [
                             {
-                                "id": 5,
+                                "id": 3,
                                 "quantity": 20
                             }
                         ],
@@ -1482,6 +1462,7 @@
         {
             "name": "Vegetable Farm",
             "category": "Agriculture",
+            "level": "7",
             "cost_update": {
                 "level" : [
                     {
@@ -1528,6 +1509,7 @@
         {
             "name": "Cow Farm",
             "category": "Agriculture",
+            "level": "4",
             "cost_update": {
                 "level" : [
                     {
@@ -1595,6 +1577,7 @@
         {
             "name": "Tree Farm",
             "category": "Agriculture",
+            "level": "4",
             "cost_update": {
                 "level" : [
                     {
@@ -1682,6 +1665,7 @@
         {
             "name": "Mine",
             "category": "Mining",
+            "level": "0",
             "cost_update": {
                 "level" : [
                     {
@@ -1813,11 +1797,12 @@
             },
             "pop_min": 10,
             "new_pop": 0,
-            "description": "Natural mine."
+            "description": "This mine will bring you coal, metal and rocks. Once you've harvested all your mines you should start building new mines or you'll soon start running out of coal and metal."
         },
         {
             "name": "Coal Plant",
             "category": "Energy",
+            "level": "3",
             "cost_update": {
                 "level" : [
                     {
@@ -1907,6 +1892,7 @@
         {
             "name": "Police Station",
             "category": "Security",
+            "level": "6",
             "cost_update": {
                 "level" : [
                     {
@@ -1989,6 +1975,7 @@
         {
             "name": "Hospital",
             "category": "Health",
+            "level": "7",
             "cost_update": {
                 "level" : [
                     {
@@ -2076,6 +2063,7 @@
         {
             "name": "Lab",
             "category": "Reasearch",
+            "level": "8",
             "cost_update": {
                 "level" : [
                     {
@@ -2155,6 +2143,258 @@
             "pop_min": 10,
             "new_pop": 0,
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Coal Mine",
+            "category": "Mining",
+            "level": "5",
+            "cost_update": {
+                "level" : [
+                    {
+                        "resources": [
+                            {
+                                "id": 2,
+                                "quantity": 30
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 42
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 36
+                            },
+                            {
+                                "id": 6,
+                                "quantity": 56
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 54
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 25
+                            }
+                        ],
+                        "gold": 54,
+                        "energy": 25,
+                        "pop_min": 10,
+                        "new_pop": 0
+                    }
+                ]
+            },
+            "daily_cost": {
+                "level" : [
+                    {
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 8
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 8
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 2
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 1
+                            }
+                        ],
+                        "gold": 2,
+                        "energy": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "level" : [
+                    {
+                        "resources": [
+                            {
+                                "id": 10,
+                                "quantity": 14
+                            }
+                        ],
+                        "gold": 14,
+                        "energy": 0
+                    }
+                ]
+            },
+            "pop_min": 10,
+            "new_pop": 0,
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Metal Mine",
+            "category": "Mining",
+            "level": "5",
+            "cost_update": {
+                "level" : [
+                    {
+                        "resources": [
+                            {
+                                "id": 2,
+                                "quantity": 30
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 42
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 36
+                            },
+                            {
+                                "id": 6,
+                                "quantity": 56
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 54
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 25
+                            }
+                        ],
+                        "gold": 54,
+                        "energy": 25,
+                        "pop_min": 10,
+                        "new_pop": 0
+                    }
+                ]
+            },
+            "daily_cost": {
+                "level" : [
+                    {
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 8
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 8
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 2
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 1
+                            }
+                        ],
+                        "gold": 2,
+                        "energy": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "level" : [
+                    {
+                        "resources": [
+                            {
+                                "id": 10,
+                                "quantity": 14
+                            }
+                        ],
+                        "gold": 14,
+                        "energy": 0
+                    }
+                ]
+            },
+            "pop_min": 10,
+            "new_pop": 0,
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum iaculis hendrerit leo in malesuada. Curabitur convallis nunc quis est congue."
+        },
+        {
+            "name": "Bush",
+            "category": "Resource",
+            "level": "0",
+            "cost_update": {
+                "level" : [
+                    {
+                        "resources": [
+                            {
+                                "id": 2,
+                                "quantity": 30
+                            },
+                            {
+                                "id": 3,
+                                "quantity": 42
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 36
+                            },
+                            {
+                                "id": 6,
+                                "quantity": 56
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 54
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 25
+                            }
+                        ],
+                        "gold": 54,
+                        "energy": 25,
+                        "pop_min": 10,
+                        "new_pop": 0
+                    }
+                ]
+            },
+            "daily_cost": {
+                "level" : [
+                    {
+                        "resources": [
+                            {
+                                "id": 3,
+                                "quantity": 8
+                            },
+                            {
+                                "id": 5,
+                                "quantity": 8
+                            },
+                            {
+                                "id": 10,
+                                "quantity": 2
+                            },
+                            {
+                                "id": 11,
+                                "quantity": 1
+                            }
+                        ],
+                        "gold": 2,
+                        "energy": 1
+                    }
+                ]
+            },
+            "daily_harvest": {
+                "level" : [
+                    {
+                        "resources": [
+                            {
+                                "id": 10,
+                                "quantity": 14
+                            }
+                        ],
+                        "gold": 14,
+                        "energy": 0
+                    }
+                ]
+            },
+            "pop_min": 1,
+            "new_pop": 0,
+            "description": "Bushes are a good way to get some food."
         }
     ]
 
