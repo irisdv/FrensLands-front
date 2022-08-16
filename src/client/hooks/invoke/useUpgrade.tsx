@@ -10,7 +10,7 @@ export default function useBuild() {
 
   const { addTransaction } = useNotifTransactionManager()
 
-  return useCallback(async (tokenId : number, pos_start: number, uniqueId: number, building_type_id: number, level: number, posX: number, posY: number) => {
+  return useCallback(async (tokenId : number, pos_start: number, uniqueId: number, building_type_id: number, level: number, posX: number, posY: number, nonce: string) => {
     if (!contract || !account) {
       throw new Error('Missing Dependencies')
     }
@@ -20,7 +20,7 @@ export default function useBuild() {
     }
 
     return contract
-      .invoke('upgrade', [uint256.bnToUint256(tokenId as number), pos_start])
+      .invoke('upgrade', [uint256.bnToUint256(tokenId as number), pos_start], {nonce: nonce})
       .then((tx: AddTransactionResponse) => {
         console.log('Transaction hash: ', tx.transaction_hash)
 
@@ -43,6 +43,7 @@ export default function useBuild() {
       })
       .catch((e) => {
         console.error(e)
+        return (0)
       })
   }, [account, addTransaction, contract])
 }

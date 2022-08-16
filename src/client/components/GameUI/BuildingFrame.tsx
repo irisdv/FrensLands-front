@@ -1,16 +1,14 @@
-import { useStarknet } from "@starknet-react/core";
+import { useStarknet, useStarknetBlock } from "@starknet-react/core";
 import React, { useMemo, useState, useRef, useEffect } from "react";
 import { useGameContext } from "../../hooks/useGameContext";
-import DB from '../../db.json';
 import { useSelectContext } from "../../hooks/useSelectContext";
 import useHarvestResource from "../../hooks/invoke/useHarvestResource";
 import useDestroy from "../../hooks/invoke/useDestroy";
-import useActiveNotifications from '../../hooks/useNotifications'
-
+import { allBuildings } from "../../data/buildings";
 
 // Test
-import { useWorldsContract } from '../../hooks/contracts/worlds'
-import useTest from "../../hooks/invoke/useTest";
+// import { useWorldsContract } from '../../hooks/contracts/worlds'
+// import useTest from "../../hooks/invoke/useTest";
 import useResourcesContext from "../../hooks/useResourcesContext";
 import useUpgrade from "../../hooks/invoke/useUpgrade";
 import useRecharge from "../../hooks/invoke/useRecharge";
@@ -23,28 +21,33 @@ export function BuildingFrame(props: any) {
   const { account } = useStarknet();
   const { showFrame, frameData, updateBuildingFrame } = useSelectContext();
   const { frontBlockArray } = props
+  const { data: block } = useStarknetBlock()
+  const { nonce, updateNonce } = useGameContext();
 
   // Test
-  const { contract: worlds } = useWorldsContract();
-  const [watch, setWatch] = useState(true);
+  // const { contract: worlds } = useWorldsContract();
+  // const [watch, setWatch] = useState(true);
   // end test
 
-  const activeNotifications = useActiveNotifications()
+  // const activeNotifications = useActiveNotifications()
   const harvestingInvoke = useHarvestResource()
-  const [ harvesting, setHarvesting ] = useState<any>(null)
+  // const [ harvesting, setHarvesting ] = useState<any>(null)
   const upgradingInvoke = useUpgrade()
-  const [ upgrading, setUpgrading ] = useState<any>(null)
+  // const [ upgrading, setUpgrading ] = useState<any>(null)
   const rechargingInvoke = useRecharge()
-  const [ recharging, setRecharging ] = useState<any>(null)
+  // const [ recharging, setRecharging ] = useState<any>(null)
   const detroyingInvoke = useDestroy()
-  const [ destroying, setDestroying ] = useState<any>(null)
-  const [ message, setMessage ] = useState("")
+  // const [ destroying, setDestroying ] = useState<any>(null)
+  // const [ message, setMessage ] = useState("")
 
   const [ costUpdate, setCostUpdate ] = useState<any>(null)
   const [ dailyCosts, setDailyCosts ] = useState<any>(null)
   const [ dailyHarvest, setDailyHarvests ] = useState<any>(null)
   const [show, setShow] = useState(false)
   const [inputFuel, setInputFuel] = useState(1)
+  const [harvestTreeNb, setHarvestTreeNb] = useState(0)
+  const [harvestRockNb, setHarvestRockNb] = useState(0)
+  const [harvestMineNb, setHarvestMineNb] = useState(0)
 
   useEffect(() => {
     if (showFrame) {
@@ -53,6 +56,11 @@ export function BuildingFrame(props: any) {
       setShow(false)
     }
   }, [show, showFrame, frameData])
+
+  const nonceValue = useMemo(() => {
+    console.log('new nonce value', nonce)
+    return nonce
+  }, [nonce])
 
   // Test
   // const { data: fetchMapBlock } = useStarknetCall({
@@ -90,9 +98,21 @@ export function BuildingFrame(props: any) {
   const harvestingResources = (type_id : number, pos_x: number, pos_y: number, level : number) => {
     let pos_start = (pos_y - 1) * 40 + pos_x
     if (tokenId) {
-      let tx_hash = harvestingInvoke(tokenId, pos_start, parseInt(frameData?.unique_id as string), type_id, level, pos_x, pos_y)
-      console.log('tx hash harvesting resource', tx_hash)
-      setHarvesting(tx_hash);
+      if ((type_id == 2 && harvestRockNb <= 3) || (type_id == 3 && harvestTreeNb <= 3) || (type_id == 20 && harvestMineNb <= 3)) {
+        let tx_hash = harvestingInvoke(tokenId, pos_start, parseInt(frameData?.unique_id as string), type_id, level, pos_x, pos_y, nonceValue)
+        // if (type_id == 2) setHarvestRockNb(harvestRockNb+1)
+        // if (type_id == 3) setHarvestTreeNb(harvestTreeNb+1)
+        // if (type_id == 20) setHarvestMineNb(harvestMineNb+1)
+
+        // console.log('tx hash harvesting resource', )
+        tx_hash.then((res) => {
+          console.log('res', res)
+          if (res != 0) {
+            updateNonce(nonceValue)
+          }
+        })
+      }
+      // setHarvesting(tx_hash);
     } else {
       console.log('Missing tokenId')
     }
@@ -102,23 +122,36 @@ export function BuildingFrame(props: any) {
     let pos_start = (pos_y - 1) * 40 + pos_x
     console.log('pos_start', pos_start)
     if (tokenId) {
-      let tx_hash = upgradingInvoke(tokenId, pos_start, parseInt(frameData?.unique_id as string), type_id, level, pos_x, pos_y)
+      let tx_hash = upgradingInvoke(tokenId, pos_start, parseInt(frameData?.unique_id as string), type_id, level, pos_x, pos_y, nonceValue)
       console.log('tx hash upgrade', tx_hash)
-      setUpgrading(tx_hash);
+      // setUpgrading(tx_hash);
+
+      tx_hash.then((res) => {
+        console.log('res', res)
+        if (res != 0) {
+          updateNonce(nonceValue)
+        }
+      })
     } else {
       console.log('Missing tokenId')
     }
   }
 
   const fuelProd = (nb_days: number, type_id: number, pos_x: number, pos_y: number, uniqueId: number) => {
-
     let pos_start = (pos_y - 1) * 40 + pos_x
     console.log('pos_start', pos_start)
     if (tokenId) {
       // tokenId : number, pos_start: number, nb_days: number, building_type_id: number, posX: number, posY: number, uniqueId: number
-      let tx_hash = rechargingInvoke(tokenId, pos_start, nb_days, type_id, pos_x, pos_y, uniqueId)
+      let tx_hash = rechargingInvoke(tokenId, pos_start, nb_days, type_id, pos_x, pos_y, uniqueId, nonceValue)
       console.log('tx hash recharging', tx_hash)
-      setUpgrading(tx_hash);
+      // setUpgrading(tx_hash);
+
+      tx_hash.then((res) => {
+        console.log('res', res)
+        if (res != 0) {
+          updateNonce(nonceValue)
+        }
+      })
     } else {
       console.log('Missing tokenId')
     }
@@ -128,9 +161,16 @@ export function BuildingFrame(props: any) {
     let pos_start = (pos_y - 1) * 40 + pos_x
     console.log('pos_start', pos_start)
     if (tokenId) {
-      let tx_hash = detroyingInvoke(tokenId, pos_start, type_id, pos_x, pos_y, parseInt(frameData?.unique_id as string))
+      let tx_hash = detroyingInvoke(tokenId, pos_start, type_id, pos_x, pos_y, parseInt(frameData?.unique_id as string), nonceValue)
       console.log('tx hash destroy', tx_hash)
-      setDestroying(tx_hash);
+      // setDestroying(tx_hash);
+
+      tx_hash.then((res) => {
+        console.log('res', res)
+        if (res != 0) {
+          updateNonce(nonceValue)
+        }
+      })
     } else {
       console.log('Missing tokenId')
     }
@@ -139,10 +179,11 @@ export function BuildingFrame(props: any) {
   useEffect(() => {
     if (frameData && frameData.id && frameData.level) {
       var newCost : any[] = [];
-      // @ts-ignore
-      DB.buildings[frameData.id as any].cost_update.level[frameData.level - 1].resources.map((item : any) => {
-        newCost.push([item.id, item.quantity])
-      })
+      if (allBuildings[frameData.id - 1].cost_update) {
+        allBuildings[frameData.id - 1].cost_update?.[frameData.level - 1].resources.forEach((cost : any) => {
+          newCost.push([cost.id, cost.qty])
+        })
+      }
       setCostUpdate(newCost)
     }
   }, [frameData])
@@ -150,10 +191,11 @@ export function BuildingFrame(props: any) {
   useEffect(() => {
     if (frameData && frameData.id && frameData.level) {
       var newDailyHarvest : any[] = [];
-      // @ts-ignore
-      DB.buildings[frameData.id as any].daily_harvest.level[frameData.level - 1].resources.map((item : any) => {
-        newDailyHarvest.push([item.id, item.quantity])
-      })
+      if (allBuildings[frameData.id - 1].daily_harvest) {
+        allBuildings[frameData.id - 1].daily_harvest?.[frameData.level - 1].resources.forEach((harvest : any) => {
+          newDailyHarvest.push([harvest.id, harvest.qty])
+        })
+      }
       setDailyHarvests(newDailyHarvest)
     }
   }, [frameData])
@@ -161,10 +203,11 @@ export function BuildingFrame(props: any) {
   useEffect(() => {
     if (frameData && frameData.id && frameData.level) {
       var newDailyCost : any[] = [];  
-      // @ts-ignore
-      DB.buildings[frameData.id as any].daily_cost.level[frameData.level - 1].resources.map((item : any) => {
-        newDailyCost.push([item.id, item.quantity])
-      })
+      if (allBuildings[frameData.id - 1].daily_cost) {
+        allBuildings[frameData.id - 1].daily_cost?.[frameData.level - 1].resources.forEach((cost : any) => {
+          newDailyCost.push([cost.id, cost.qty])
+        })
+      }
       setDailyCosts(newDailyCost)
     }
   }, [frameData])
@@ -258,30 +301,32 @@ export function BuildingFrame(props: any) {
   return (
     <>
       <div id="bFrame" 
-        className={"absolute "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 4 && frameData.id != 5) && frameData.unique_id ? "buildingFrameRecharged" : "buildingFrame" }`}
+        className={"absolute "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5) && frameData.unique_id ? "buildingFrameRecharged" : "buildingFrame" }`}
       >
-        {frameData && frameData.unique_id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20) && <div className="btnDestroy absolute" onClick={() => destroyBuilding(frameData?.id as number, frameData?.posX, frameData?.posY)}></div>}
+        {frameData && frameData.unique_id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27) && <div className="btnDestroy absolute" onClick={() => destroyBuilding(frameData?.id as number, frameData?.posX, frameData?.posY)}></div>}
         <div className='btnCloseFrame' onClick={() => updateBuildingFrame(false, {"id": 0, "level": 0, "posX": 0, "posY": 0, "selected": 0})}></div>
         <div className="grid grid-cols-2 inline-block" style={{ height: "20px" }}>
           <div className="font8BITWonder uppercase text-center" style={{ height: "20px" }} >
-            {frameData && frameData.id ? DB.buildings[frameData.id as any].name : ""}
+            { frameData && frameData.id ? allBuildings[frameData.id - 1].name : ""}
           </div>
           <div className="relative flex jutify-center items-center inline-block" style={{ paddingLeft: "8px" }}>
-                {frameData && frameData.id && DB.buildings[frameData.id].pop_min && (!frameData.unique_id) ?
+                {frameData && frameData.id && frameData.level && allBuildings[frameData.id - 1].cost_update && allBuildings[frameData.id - 1].cost_update?.[frameData.level - 1].pop_min && (!frameData.unique_id) ?
                 <div className="flex flex-row justify-center inline-block relative">
-                    <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "100px" }}>-{DB.buildings[frameData.id].pop_min}</div>
+                    <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "100px" }}>
+                      {allBuildings[frameData.id - 1].cost_update?.[frameData.level - 1].pop_min}
+                    </div>
                     <div className={"mb-3 small12"} style={{ position: "absolute", top: "-34px", left: "105px" }}></div>
                 </div> : ''
                 }
-                {frameData && frameData.id && DB.buildings[frameData.id].new_pop != null && (!frameData.unique_id) ?
+                {frameData && frameData.id && frameData.level && allBuildings[frameData.id - 1].cost_update?.[0].new_pop != null && allBuildings[frameData.id - 1].cost_update?.[0].new_pop != 0 && (!frameData.unique_id) ?
                 <div className="flex flex-row justify-center inline-block relative">
-                    <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "46px" }}>+{DB.buildings[frameData.id].new_pop}</div>
+                    <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "46px" }}>+{allBuildings[frameData.id - 1].cost_update?.[frameData.level - 1].new_pop}</div>
                     <div className={"mb-3 small12"} style={{ position: "absolute", top: "-34px", left: "45px" }}></div>
                 </div> : ''
                 }
-                {frameData && frameData.id && DB.buildings[frameData.id].pop_min != null && frameData.unique_id ?
+                {frameData && frameData.id && frameData.level && allBuildings[frameData.id - 1].cost_update?.[frameData.level - 1].pop_min != null && allBuildings[frameData.id - 1].cost_update?.[frameData.level - 1].pop_min != 0 && frameData.unique_id ?
                 <div className="flex flex-row justify-center inline-block relative">
-                    <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "46px" }}>{DB.buildings[frameData.id].pop_min}</div>
+                    <div className="fontHPxl-sm" style={{ position: "absolute", top: "-9px", left: "46px" }}>{allBuildings[frameData.id - 1].cost_update?.[frameData.level - 1].pop_min}</div>
                     <div className={"mb-3 small12"} style={{ position: "absolute", top: "-34px", left: "45px" }}></div>
                 </div> : ''
                 }
@@ -293,7 +338,7 @@ export function BuildingFrame(props: any) {
               <div className={"building"+`${frameData?.id}`} style={{left: "-26px", top: "-39px", position: "absolute"}}></div>
               </div>
             <div className="font04B text-center mx-auto" style={{fontSize: "12px", paddingTop: "34px", width: "85px"}}>
-              {frameData && frameData.id ? DB.buildings[frameData.id as any].name : 0}
+              {frameData && frameData.id ? allBuildings[frameData.id - 1].name : 0}
             </div>
             <div className="font04B mx-auto text-center" style={{   fontSize: "12px",   paddingTop: "34px",   width: "67px", }}>
               {frameData && frameData.posX && frameData.posY ? frontBlockArray[frameData?.posY][frameData?.posX][7] : 1}
@@ -307,12 +352,12 @@ export function BuildingFrame(props: any) {
           </div>
         </div>
         <div className="font04B" style={{   height: "109px",   fontSize: "13px",   paddingLeft: "9px",   paddingTop: "6px"}}>
-          {frameData && frameData.id ? DB.buildings[frameData.id as any].description : ""}
+          {frameData && frameData.id ? allBuildings[frameData.id - 1].description : ""}
         </div>
         <div className="relative flex jutify-center items-center inline-block" style={{ height: "45px", paddingTop: "8px", pointerEvents: "all" }}>
           <div className="flex flex-row justify-center inline-block">
             <div style={{ width: "135px", paddingTop: "10px" }}>
-              {frameData && (frameData.id == 2 || frameData.id == 3 || frameData.id == 20 ) &&
+              {frameData && (frameData.id == 2 || frameData.id == 3 || frameData.id == 20 || frameData.id == 27 ) &&
                 <>
                   <div className="btnHarvest" onClick={() => harvestingResources(frameData.id as number, frameData.posX, frameData.posY, frameData.level as number)}></div>
                 </>
@@ -327,52 +372,61 @@ export function BuildingFrame(props: any) {
                   <div className="btnUpgradeRed"></div>
                 </>
               }
-              {frameData && frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && !frameData.unique_id &&
+              {frameData && frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && !frameData.unique_id &&
                 <>
                     <div className="btnBuild"
                       onClick={() => showBuildingCursor(frameData.id as number)}
                     ></div>
                 </>
               } 
-              {frameData && frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.unique_id &&
+              {frameData && frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.unique_id &&
                 <>
                     <div className="btnUpgradeRed"></div>
                 </>
               }
             </div>
-            {frameData && frameData.id && (!frameData.unique_id || frameData.id == 2 || frameData.id == 3 || frameData.id == 20) && costUpdate && costUpdate.length > 0 &&
+            {frameData && frameData.id && (!frameData.unique_id || frameData.id == 2 || frameData.id == 3 || frameData.id == 20 || frameData.id == 27) && costUpdate && costUpdate.length > 0 &&
             
               <div className="relative flex justify-end items-center inline-block" style={{ width: "201px", height: "80px", paddingTop: "10px" }} >
 
                 {Object.keys(costUpdate).map((elem : any) => {
-                  return <FrameItem key={elem} content={costUpdate[elem]} />           
+                  return <FrameItem key={elem} content={costUpdate[elem]} option={1} />           
                 })}
               </div>
             }
+            {frameData && frameData.id && frameData.unique_id && frameData.id == 1 && costUpdate && costUpdate.length > 0 &&
+            
+            <div className="relative flex justify-end items-center inline-block" style={{ width: "201px", height: "80px", paddingTop: "10px" }} >
+
+              {Object.keys(costUpdate).map((elem : any) => {
+                return <FrameItem key={elem} content={costUpdate[elem]} option={1} />           
+              })}
+            </div>
+          }
           </div>
         </div>
 
-        <div className={"grid grid-cols-2 "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 4 && frameData.id != 5) && frameData.unique_id ? "l1R" : "l1noR" }`}>
+        <div className={"grid grid-cols-2 "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5) && frameData.unique_id ? "l1R" : "l1noR" }`}>
           <div className="relative flex justify-end items-center inline-block" style={{ width: "115px", marginTop: "-21px" }}>
             {frameData && frameData.id && dailyCosts && dailyCosts.length > 0 &&
               Object.keys(dailyCosts).map((elem : any) => {
-                return <FrameItem key={elem} content={dailyCosts[elem]} />      
+                return <FrameItem key={elem} content={dailyCosts[elem]} option={1} />      
               })
             }
           </div>
         </div>
-        <div className={"grid grid-cols-2 "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 4 && frameData.id != 5) && frameData.unique_id ? "l2R" : "l2noR" }`}>
+        <div className={"grid grid-cols-2 "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5) && frameData.unique_id ? "l2R" : "l2noR" }`}>
           <div className="relative flex justify-end items-center inline-block" style={{ width: "122px", marginTop: "-22px" }}>
 
           {frameData && frameData.id && dailyHarvest && dailyHarvest.length > 0 &&
               Object.keys(dailyHarvest).map((elem : any) => {
-                return <FrameItem key={elem} content={dailyHarvest[elem]} />      
+                return <FrameItem key={elem} content={dailyHarvest[elem]} option={0} />      
               })
             }
           </div>
         </div>
         {/* Pour les buildings qui sont rechargeables */}
-        {frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 4 && frameData.id != 5) &&
+        {frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5) &&
           frameData.unique_id && 
           <>
             <div className="grid grid-cols-2" style={{ height: "28px", marginTop: '-10px', marginLeft: "190px" }}>
@@ -411,7 +465,7 @@ export function BuildingFrame(props: any) {
 
                 {frameData && frameData.id && dailyCosts && dailyCosts.length > 0 &&
                   Object.keys(dailyCosts).map((elem : any) => {
-                    return <FrameItem key={elem} content={dailyCosts[elem]} inputFuel={inputFuel} />      
+                    return <FrameItem key={elem} content={dailyCosts[elem]} inputFuel={inputFuel} option={1} />      
                   })
                 }
               </div>

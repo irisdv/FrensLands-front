@@ -1,9 +1,10 @@
 import React, { useMemo, useEffect, useState, useRef } from "react";
-import { useStarknet, useStarknetCall, useConnectors, useStarknetExecute} from "@starknet-react/core";
+import { useStarknet, useStarknetCall, useConnectors, useStarknetExecute, useContract} from "@starknet-react/core";
 import { toBN } from "starknet/dist/utils/number";
 import { useNavigate } from "react-router-dom";
 import { gsap } from 'gsap';
-import { uint256 } from "starknet";
+import { Abi, uint256 } from "starknet";
+const starknet = require("starknet")
 import { ConnectWallet } from "../components/ConnectWallet";
 import Notifications from '../components/Notifications'
 import UI_Frames from '../style/resources/front/Ui_Frames3.svg';
@@ -18,6 +19,8 @@ import useApprove from "../hooks/invoke/useApprove";
 import { useResourcesContract } from "../hooks/contracts/resources";
 import { allMetadata } from "../data/metadata";
 
+import AccountAbi from "../abi/Account.json";
+
 import useTest from "../hooks/invoke/useTest";
 
 export default function Home() {
@@ -30,7 +33,7 @@ export default function Home() {
   // END DEBUG 
 
   const navigate = useNavigate()
-  const { setAddress, updateTokenId, tokenId, fetchMapType } = useGameContext();
+  const { setAddress, updateTokenId, tokenId, nonce, setAccountContract, accountContract, updateNonce } = useGameContext();
   const activeNotifications = useActiveNotifications()
   const [worldType, setWorldType] = useState<any>(null)
 
@@ -69,6 +72,12 @@ export default function Home() {
     }
   }, [account, tokenId])
 
+  useEffect(() => {
+    if (account && !accountContract) {
+      let accountC = new starknet.Account(AccountAbi as Abi, account, starknet.Provider)
+      setAccountContract(accountC)
+    }
+  }, [account, accountContract])
 
   // Rotation world
   useEffect(() => {
@@ -79,6 +88,11 @@ export default function Home() {
       ease: "none"
     })
   })
+
+  const nonceValue = useMemo(() => {
+    console.log('new nonce value', nonce)
+    return nonce
+  }, [nonce])
 
   // Fetch NFT balance of user
   const { data: fetchBalanceNFTResult } = useStarknetCall({
@@ -161,18 +175,32 @@ export default function Home() {
   }, [fetchApprovalState, account, tokenId, approved]);
 
   const approveM03 = () => {
-    let tx_hash = approveMO3ERC1155()
+    let tx_hash = approveMO3ERC1155(nonceValue)
     console.log('tx hash approval ERC1155', tx_hash)
     setApproved(tx_hash);
+
+    tx_hash.then((res) => {
+      console.log('res', res)
+      if (res != 0) {
+        updateNonce(nonceValue)
+      }
+    })
   }
 
   // Invoke Starting game 
   const startGame = () => {
     console.log('startingGame invoke')
     if (tokenId) {
-      let tx_hash = initializeGame(tokenId)
+      let tx_hash = initializeGame(tokenId, nonceValue)
       console.log('tx hash', tx_hash)
       setSettingUp(tx_hash);
+
+      tx_hash.then((res) => {
+        console.log('res', res)
+        if (res != 0) {
+          updateNonce(nonceValue)
+        }
+      })
     } else {
       console.log('Missing tokenId')
       setMessage("You need to own a Frens Lands map to initialize a game.")
@@ -246,7 +274,7 @@ export default function Home() {
           </div>
 
           <div className="absolute" style={{width: "100vw", top: '0'}}>
-            {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && worldType >= 0 &&
+            {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && worldType >= 0 && worldType != null &&
               <img className="relative mx-auto pixelated" src={`resources/maps/FrensLand_NFTs_${worldType}.png`} style={{marginTop: "300px"}} />
             }
             {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&

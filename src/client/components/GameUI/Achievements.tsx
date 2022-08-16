@@ -1,8 +1,8 @@
 import React, { useMemo, useState, useRef, useEffect } from "react";
 import { allAchievements } from "../../data/achievements";
+import { useSelectContext } from "../../hooks/useSelectContext";
 import { Achievement } from "../../model/achievement";
 import UI_Frames from '../../style/resources/front/Ui_Frames3.svg';
-import DB from '../../db.json';
 
 export function Achievements(props : any) {
   const [showAchievement, setShowAchievement] = useState(true)
@@ -76,7 +76,9 @@ export function Achievements(props : any) {
               <div className="achievementText">
                 {lastAchievement && lastAchievement?.description &&  <p>{lastAchievement.description}</p> }
                 <br/>
-                <p><span>Next goal: </span>{lastAchievement.goal}</p>
+                {showAchievement ? 
+                  <p><span>Next goal: </span>{lastAchievement.goal}</p>
+                : ""}
                 <br/>
                 {lastAchievement && lastAchievement.unlock.length > 0 && <p>You just unlocked : </p>}
                 <div className="flex flex-row justify-center inline-block relative">

@@ -3,14 +3,16 @@ import { useCallback } from 'react'
 import { AddTransactionResponse, uint256 } from 'starknet'
 import { useNotifTransactionManager } from '../../providers/transactions'
 import { useResourcesContract } from '../contracts/resources'
+import { useGameContext } from '../useGameContext'
 
 export default function useClaim() {
   const { account } = useStarknet()
   const { contract } = useResourcesContract()
 
   const { addTransaction } = useNotifTransactionManager()
+  const { nonce, updateNonce } = useGameContext();
 
-  return useCallback(async (tokenId : number) => {
+  return useCallback(async (tokenId : number, nonce : string) => {
     if (!contract || !account) {
       throw new Error('Missing Dependencies')
     }
@@ -20,7 +22,7 @@ export default function useClaim() {
     }
 
     return contract
-      .invoke('claim', [uint256.bnToUint256(tokenId as number)])
+      .invoke('claim', [uint256.bnToUint256(tokenId as number)], {nonce: nonce})
       .then((tx: AddTransactionResponse) => {
         console.log('Transaction hash: ', tx.transaction_hash)
 
@@ -38,6 +40,7 @@ export default function useClaim() {
       })
       .catch((e) => {
         console.error(e)
+        return (0)
       })
   }, [account, addTransaction, contract])
 }

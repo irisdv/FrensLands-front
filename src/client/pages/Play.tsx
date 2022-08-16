@@ -19,8 +19,12 @@ export default function Play() {
   const navigate = useNavigate()
 
   const { mapArray } = useInGameContext()
-
-  const rightBuildingType : any[] = [0, 1, 179, 15, 3, 10, 5, 8, 7, 6, 59, 11, 9, 12, 13, 60, 52, 58, 61, 4, 20, 14, 49, 57, 100]
+  const rightBuildingType : any[] = [0, 1, 179, 15, 3, 10, 5, 8, 7, 6, 59, 11, 9, 12, 13, 60, 52, 58, 61, 4, 20, 14, 33, 57, 100, 20, 24, 183]
+  // Big building type
+  // const rightBuildingType : any[] = [0, 81, 179, 15, 83, 114, 105, 89, 90, 91, 108, 85, 86, 87, 88, 109, 104, 102, 45, 84, 20, 93, 97, 107, 100, 148, 146, 184]
+  // XL Cow farm = 45 ou 99
+  // Vegetable farm = 42 ou 102
+  // Wheat farm = 36 ou 103 ou 104
   const [textArrRef, setTextArrRef] = useState<any[]>([])
   const [UBlockIDs, setUBlockIDs] = useState(0);
   const [buildingCounters, setBuildingCounters] = useState<any[]>([])

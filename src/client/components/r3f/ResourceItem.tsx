@@ -55,12 +55,6 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
             }
         } else if (block[3] == 1 && block[7] == 1) {
             textureType = findTextByID(2)
-        // } else if (block[3] == 1 && block[7] == 1) {
-        //     textureType = findTextByID(87)
-        // } else if (block[3] == 6) {
-        //     textureType = findTextByID(105)
-        // } else if (block[3] == 11) {
-        //     textureType = findTextByID(85)
         } else {
             textureType = findTextByID(rightBuildingType[block[3]]);
         }

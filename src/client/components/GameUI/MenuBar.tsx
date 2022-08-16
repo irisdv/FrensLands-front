@@ -2,25 +2,28 @@ import { useStarknet, useStarknetBlock } from "@starknet-react/core";
 import React, { useMemo, useState, useEffect } from "react";
 import { toBN } from "starknet/dist/utils/number";
 import { useGameContext } from "../../hooks/useGameContext";
-import { ConnectWallet } from "../ConnectWallet";
+// import { ConnectWallet } from "../ConnectWallet";
 import useClaim from "../../hooks/invoke/useClaim";
 import useActiveNotifications from "../../hooks/useNotifications";
 import Notifications from "../Notifications";
-import DB from '../../db.json';
+import { allBuildings } from "../../data/buildings";
 
 import useResourcesContext from "../../hooks/useResourcesContext";
 import { useSelectContext } from "../../hooks/useSelectContext";
+import useReinitialize from "../../hooks/invoke/useReinitialize";
 
 export function MenuBar() {
   const {account} = useStarknet()
   const { data: block } = useStarknetBlock()
 
-  const {tokenId, updateTokenId, setAddress, blockGame, buildingData } = useGameContext();
+  const {tokenId, updateTokenId, setAddress, blockGame, buildingData, nonce, updateNonce } = useGameContext();
   const {energy, frensCoins, wood, rock, coal, metal, populationBusy, populationFree, meat, cereal} = useResourcesContext();
   const { updateSound, sound } = useSelectContext()
 
   const claimingInvoke = useClaim()
   const activeNotifications = useActiveNotifications()
+
+  const reinitializeInvoke = useReinitialize()
 
   const [ claiming, setClaiming ] = useState<any>(null)
   const [ btnClaim, setBtnClaim ] = useState(false)
@@ -40,12 +43,39 @@ export function MenuBar() {
     // Invoke claim resources
     const claimResources = () => {
       if (tokenId) {
-        let tx_hash = claimingInvoke(tokenId)
+        let tx_hash = claimingInvoke(tokenId, nonceValue)
         setClaiming(tx_hash);
+
+        tx_hash.then((res) => {
+          console.log('res', res)
+          if (res != 0) {
+            updateNonce(nonceValue)
+          }
+        })
       } else {
         console.log('Missing tokenId')
       }
       setClaiming(true);
+    };
+
+    const nonceValue = useMemo(() => {
+      console.log('new nonce value', nonce)
+      return nonce
+    }, [nonce])
+
+    const reinitializeLand = () => {
+      if (tokenId) {
+        let tx_hash = reinitializeInvoke(tokenId, nonceValue)
+
+        tx_hash.then((res) => {
+          console.log('res', res)
+          if (res != 0) {
+            updateNonce(nonceValue)
+          }
+        })
+      } else {
+        console.log('Missing tokenId')
+      }
     };
 
     const blockClaimable = useMemo(() => {
@@ -69,13 +99,12 @@ export function MenuBar() {
                 block2Claim = check
               }
               _newBlockClaimable += block2Claim
-              // console.log('block2Claim', block2Claim)
               
               // Get resources to harvest for each claimable building
               if (block2Claim > 0) {
 
-                // @ts-ignore
-                DB.buildings[elem['type']].daily_harvest.level[0].resources.map((elem: any) => {
+                allBuildings[elem['type'] - 1].daily_harvest?.[0].resources.map((elem: any) => {
+                // DB.buildings[elem['type']].daily_harvest.level[0].resources.map((elem: any) => {
                   let _currValue = 0
                   if (_resources[elem.id] && _resources[elem.id] > 0) {
                     _currValue =  _resources[elem.id] + (elem.quantity * block2Claim)
@@ -84,7 +113,6 @@ export function MenuBar() {
                   }
                   _resources[elem.id] = _currValue
                 })
-                // console.log('_resources', _resources)
               }
             }
           }
@@ -125,7 +153,7 @@ export function MenuBar() {
             ></div>
           }
           <div id="menuBar" className="relative flex jutify-center items-center inline-block pixelated" style={{ fontSize: "16px" }}>
-            <div className="flex jutify-center pl-2 pr-1 relative" style={{ marginTop: "-13px", marginLeft: "50px" }}>
+            <div className="flex jutify-center pl-2 pr-3 relative" style={{ marginTop: "-13px", marginLeft: "50px" }}>
               <div id="menuGold" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {frensCoins ? frensCoins : 0}
@@ -134,7 +162,7 @@ export function MenuBar() {
                 {claimableResources[10] ? "+"+claimableResources[10] : ''}
               </div>
             </div>
-            <div className="flex jutify-center relative pr-1"  style={{ marginTop: "-13px" }}>
+            <div className="flex jutify-center relative pr-3"  style={{ marginTop: "-13px" }}>
               <div id="menuWood" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {wood ? wood : 0}
@@ -143,7 +171,7 @@ export function MenuBar() {
                 {claimableResources[1] ? "+"+claimableResources[1] : ''}
               </div>
             </div>
-            <div className="flex jutify-center relative pr-1" style={{ marginTop: "-13px" }}>
+            <div className="flex jutify-center relative pr-3" style={{ marginTop: "-13px" }}>
               <div id="menuRock" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {rock ? rock : 0}
@@ -152,7 +180,7 @@ export function MenuBar() {
                 {claimableResources[2] ? "+"+claimableResources[2] : ''}
               </div>
             </div>
-            <div className="flex jutify-center relative pr-1" style={{ marginTop: "-13px" }}>
+            <div className="flex jutify-center relative pr-3" style={{ marginTop: "-13px" }}>
               <div id="menuMetal" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {metal ? metal : 0}
@@ -161,7 +189,7 @@ export function MenuBar() {
                 {claimableResources[6] ? "+"+claimableResources[6] : ''}
               </div>
             </div>
-            <div className="flex jutify-center relative pr-1" style={{ marginTop: "-13px" }}>
+            <div className="flex jutify-center relative pr-3" style={{ marginTop: "-13px" }}>
               <div id="menuCoal" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {coal ? coal : 0}
@@ -170,19 +198,19 @@ export function MenuBar() {
                 {claimableResources[8] ? "+"+claimableResources[8] : ''}
               </div>
             </div>
-            <div className="flex jutify-center relative pr-1" style={{ marginTop: "-13px" }}>
+            <div className="flex jutify-center relative pr-3" style={{ marginTop: "-13px" }}>
               <div id="menuPop" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
               {populationBusy ? populationBusy : 0}
               </div>
             </div>
-            <div className="flex jutify-center relative pr-1" style={{ marginTop: "-13px" }}>
+            <div className="flex jutify-center relative pr-3" style={{ marginTop: "-13px" }}>
               <div id="menuPopFree" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px" }}>
                 {populationFree ? populationFree : 0}
               </div>
             </div>
-            <div className="flex jutify-center relative pr-1" style={{ marginTop: "-13px" }}>
+            <div className="flex jutify-center relative pr-3" style={{ marginTop: "-13px" }}>
               <div id="menuMeat" className="pixelated"></div>
               <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated"  style={{ marginTop: "-2px" }}>
                 {meat ? meat : 0}
@@ -203,10 +231,13 @@ export function MenuBar() {
             <div className="flex jutify-center relative pr-5" style={{ marginTop: "-13px" }}>
               {tokenId && blockClaimable && blockClaimable > 0 ? <div className="btnClaim pixelated" onClick={() => claimResources()} ></div> :  <div className="btnClaimDisabled pixelated"></div> }
             </div>
-            <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}></div>
-            <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
-              <ConnectWallet />
+            <div className="flex jutify-center relative pr-5" style={{ marginTop: "-13px" }}>
+              {tokenId && <div className="btnInit pixelated" onClick={() => reinitializeLand()} >Reinitialize land</div> }
             </div>
+            <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}></div>
+            {/* <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
+              <ConnectWallet />
+            </div> */}
           </div>
             {/* <div 
               className="btnBottom pixelated" 

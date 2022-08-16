@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import useActiveNotifications from '../hooks/useNotifications'
 import { useNotifTransactionManager } from "../providers/transactions";
 import UI_Frames from '../style/resources/front/Ui_Frames3.svg';
+import { allBuildings } from "../data/buildings";
 
 export function NotifItem(props: any) {
   const activeNotifications = useActiveNotifications()
@@ -13,21 +14,25 @@ export function NotifItem(props: any) {
 
   console.log('transactions', transactions)
 
+  // content.building_type_id
+
   let textNotif = "";
   if (content.method == "get_map") {
     textNotif = "Minting a map..."
   } else if (content.method  == "start_game") {
     textNotif = "Initializing game..."
   } else if (content.method == "harvest_resources") {
-    textNotif = "Frens are harvesting..."
+    textNotif = "Frens are harvesting a " + allBuildings[content.type_id - 1].name + "..."
   } else if (content.method == "claim_resources") {
-    textNotif = "Your resources are on it's way..."
+    textNotif = "Your resources are on their way..."
   } else if (content.method == "build") {
-    textNotif = "Frens are building... Almost ready..."
+    textNotif = "Frens are building your " + allBuildings[content.type_id - 1].name + "..."
   } else if (content.method == "approve") {
-    textNotif = "Aproving... Almost ready..."
+    textNotif = "Aproving..."
   } else if (content.method == "destroy_building") {
     textNotif = "Frens are on there way to destroy your building..."
+  } else if (content.method == "upgrade") {
+    textNotif = "Upgrading your cabin..."
   } else {
     textNotif = "Testing..."
   }

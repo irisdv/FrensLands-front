@@ -12,25 +12,6 @@ export default function Game() {
   const { account } = useStarknet();
   const { contract: building } = useBuildingsContract();
   const [render, setRender] = useState(true);
-  const [watch, setWatch] = useState(true);
-
-  // const { data: counterBuildingsResult } = useStarknetCall({
-  //   contract: building,
-  //   method: "get_building_count",
-  //   args: [uint256.bnToUint256(1)],
-  //   options: { watch },
-  // });
-
-  // const counterBuildingsValue = useMemo(() => {
-  //   if (counterBuildingsResult && counterBuildingsResult.length > 0) {
-  //     var elem = toBN(counterBuildingsResult[0]);
-  //     var newCounter = elem.toNumber();
-
-  //     // updateBuildings(newCounter);
-
-  //     return { counter: newCounter };
-  //   }
-  // }, [counterBuildingsResult]);
 
   return (
     <>

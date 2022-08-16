@@ -3,17 +3,14 @@ import { Canvas, useThree, useFrame, useLoader } from '@react-three/fiber';
 import { TextureLoader, RepeatWrapping, NearestFilter, PlaneGeometry, Vector2, Vector3, AudioLoader } from "three";
 const { promises: Fs} = require('fs');
 
-import useInGameContext from '../../hooks/useInGameContext'
 import { useGameContext } from '../../hooks/useGameContext'
-import { ResourceItem } from './ResourceItem';
 import { useBVH } from '@react-three/drei';
 import { useSelectContext } from '../../hooks/useSelectContext';
-import { useBuildingContext } from '../../hooks/useBuildingContext'
 import { BuildingTemp } from './BuildingTemp';
 import Resources from './Resources';
 import { Frens } from './Frens'
 import useTest from '../../hooks/invoke/useTest';
-import { StarknetProvider, useStarknet, useStarknetTransactionManager } from '@starknet-react/core';
+import { useStarknet } from '@starknet-react/core';
 
 import useTxGame from '../../hooks/useTxGame'
 import { useNotifTransactionManager } from '../../providers/transactions';
@@ -34,12 +31,15 @@ export const Map = (props : any)=> {
     const musicRef = useRef<THREE.Audio>()
     const { scene, raycaster, camera } = useThree()
 
+    // Audio 
+    // const menuTheme = useLoader(AudioLoader, "resources/sounds/ogg/FrensLand_MenuTheme.ogg");
+    // const [listener] = useState(() => new AudioListener());
+
     // Context
     const { account } = useStarknet();
-    const { tokenId } = useGameContext();
+    const { tokenId, nonce, updateNonce } = useGameContext();
     const { transactions, removeTransaction } = useNotifTransactionManager()
     const { frameData, updateBuildingFrame, sound } = useSelectContext();
-    // const { buildingList, addBuilding } = useBuildingContext()
 
     // Buildings
     var currBlockPos = new Vector2(0, 0)
@@ -52,16 +52,13 @@ export const Map = (props : any)=> {
 
     // Select objects
     const [objectSelected, setObjectSelected] = useState(0);
-    // const [objectSelectedID, setObjectSelectedID] = useState(0);
     const [selectedObj, setSelectedObj] = useState<ISelectObject>();
     const [currBlockPosState, setCurrBlockPosState] = useState(new Vector2);
 
-    // Event listeners
-    // const [mouse, setMouse] = useState(new Vector2())
-    // const [mouseWheelPropMap, setMouseWheelPropMap] = useState(0)
-    // const [mouseLeftPressedMap, setMouseLeftPressedMap] = useState(0)
-    // const [mouseRightPressedMap, setMouseRightPressedMap] = useState(0)
-    // const [mouseMiddlePressedMap, setMouseMiddlePressedMap] = useState(0)
+    const nonceValue = useMemo(() => {
+        console.log('new nonce value', nonce)
+        return nonce
+    }, [nonce])
 
     // Frens 
     const frensArray = useMemo(() => {
@@ -90,10 +87,6 @@ export const Map = (props : any)=> {
             return frameData
         }
     }, [frameData])
-
-    // Audio 
-    // const menuTheme = useLoader(AudioLoader, "resources/sounds/ogg/FrensLand_MenuTheme");
-    // const [listener] = useState(() => new AudioListener());
 
     function exists(path: String) {
       try {
@@ -277,9 +270,13 @@ export const Map = (props : any)=> {
             // Update frontBlockArray to update mesh on map
             frontBlockArray[pos.y][pos.x - 0.5][3] = frameData?.id
             frontBlockArray[pos.y][pos.x - 0.5][4] = UBlockIDs + 1
-            // frontBlockArray[pos.y][pos.x - 0.5][10] = 1
+            frontBlockArray[pos.y][pos.x - 0.5][10] = 1
+
+            // TEST
             frontBlockArray[pos.y][pos.x - 0.5][10] = 0 // status : building
             buildTx(UBlockIDs + 1, frameData?.id as number, pos.x - 0.5, pos.y)
+            // END TEST
+            
             // Update global variables 
             setUBlockIDs(UBlockIDs + 1)
             setPlacementActive(0)
@@ -324,8 +321,18 @@ export const Map = (props : any)=> {
     const buildTx = async (uniqueId : number, typeId : number, posX: number, posY: number) => {
         if (account && tokenId) {
             const pos_start : number = (posY - 1) * 40 + posX
-            let tx_hash = await generateBuild(tokenId, typeId, 1, pos_start, posX, posY, uniqueId)
+            let tx_hash = await generateBuild(tokenId, typeId, 1, pos_start, posX, posY, uniqueId, nonceValue)
             console.log('tx hash', tx_hash)
+
+            if (tx_hash == 0) {
+                // In case tx rejected
+                frontBlockArray[posY][posX][3] = 0
+                frontBlockArray[posY][posX][4] = 0
+                frontBlockArray[posY][posX][10] = 0
+                setUBlockIDs(UBlockIDs - 1)
+            } else {
+                updateNonce(nonceValue)
+            }
         }
     };
 
@@ -338,7 +345,7 @@ export const Map = (props : any)=> {
             txList.map((tx) => {
                 console.log('tx map', tx)
 
-                if (tx.status == 'ACCEPTED_ON_L2') {
+                if (tx.status == 'ACCEPTED_ON_L2' && tx.metadata.posY && tx.metadata.posX) {
                     let _txExists : {} = {};
                     if (Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11]).length > 0) {
                         _txExists = frontBlockArray[tx.metadata.posY][tx.metadata.posX][11].includes(tx.transactionHash)
@@ -365,6 +372,8 @@ export const Map = (props : any)=> {
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] = 1
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][9] = 0
+                        } else if (tx.metadata.method == 'upgrade') {
+                            frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] += 1
                         }
                     }
                 } 
@@ -378,13 +387,23 @@ export const Map = (props : any)=> {
         if (rejectedTxList) {
             txList.map((tx) => {
                 // TX for upgrades 
-                if (tx.status == 'REJECTED' && tx.metadata.method == 'upgrade') {
-                    if (frontBlockArray[tx.metadata.posY][tx.metadata.posX] 
-                        && frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] == 0 ) {
+                if (tx.status == 'REJECTED' && (tx.metadata.method == 'upgrade' || tx.metadata.method == 'build' || tx.metadata.method == 'harvest')) {
+
+                    let _txExists : {} = {};
+                    if (Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11]).length > 0) {
+                        _txExists = frontBlockArray[tx.metadata.posY][tx.metadata.posX][11].includes(tx.transactionHash)
+                    }
+
+                    if (Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11]).length == 0 || !_txExists) {
+                        frontBlockArray[tx.metadata.posY][tx.metadata.posX][11].push(tx.transactionHash)
+                        
+                        if (frontBlockArray[tx.metadata.posY][tx.metadata.posX] && frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] == 0 ) {
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0
                         }
+
+                    }
                 }
             })
         }
@@ -416,24 +435,8 @@ export const Map = (props : any)=> {
         }
     }, [textArrRef])
 
-    // useEffect(() => {
-    //     if (musicRef && musicRef.current && listener) {
-    //         if (sound) {
-    //             musicRef.current.setBuffer(menuTheme);
-    //             musicRef.current.setLoop(true);
-    //             musicRef.current.setVolume(1);
-    //             musicRef.current.setPlaybackRate(1);
-    //             musicRef.current.play();
-    //         } else {
-    //             musicRef.current.stop()
-    //         }
-    //     }
-    // })
     return(
         <>
-            {/* {sound && listener &&  */}
-                {/* <audio ref={musicRef} args={[listener]} /> */}
-            {/* } */}
             { textArrRef && textArrRef.length > 0 && frontBlockArray && Object.keys(frontBlockArray).length > 0 &&
                 <Resources
                     frontBlockArray={frontBlockArray}
