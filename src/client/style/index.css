@@ -1816,3 +1816,12 @@ Lab = 24 */
     background-size:calc(1664px * 1) calc(640px * 1);
     pointer-events: none;
 }
+.building27 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(13 * 2 * 64px) calc(2 * 2 * 64px);
+    background-size:calc(1664px * 1) calc(640px * 1);
+    pointer-events: none;
+}
