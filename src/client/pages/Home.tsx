@@ -1,5 +1,5 @@
 import React, { useMemo, useEffect, useState, useRef } from "react";
-import { useStarknet, useStarknetCall, InjectedConnector} from "@starknet-react/core";
+import { useStarknet, useStarknetCall, useConnectors, useStarknetExecute} from "@starknet-react/core";
 import { toBN } from "starknet/dist/utils/number";
 import { useNavigate } from "react-router-dom";
 import { gsap } from 'gsap';
@@ -21,8 +21,8 @@ import { allMetadata } from "../data/metadata";
 import useTest from "../hooks/invoke/useTest";
 
 export default function Home() {
-  // const { account } = useStarknet();
-  // const { available, connect, disconnect } = useConnectors();
+  const { account } = useStarknet();
+  const { available, connect, disconnect } = useConnectors();
 
   // START DEBUG
   const [testing, setTesting] = useState<any>(null)
@@ -30,9 +30,6 @@ export default function Home() {
   // END DEBUG 
 
   const navigate = useNavigate()
-  const { account, connect, connectors, disconnect } = useStarknet();
-  const injected = useMemo(() => new InjectedConnector(), []);
-
   const { setAddress, updateTokenId, tokenId, fetchMapType } = useGameContext();
   const activeNotifications = useActiveNotifications()
   const [worldType, setWorldType] = useState<any>(null)
