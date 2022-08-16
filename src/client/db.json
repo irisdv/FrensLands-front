@@ -251,18 +251,10 @@
                         "resources": [
                             {
                                 "id": 3,
-                                "quantity": 2
-                            },
-                            {
-                                "id": 5,
-                                "quantity": 3
-                            },
-                            {
-                                "id": 10,
                                 "quantity": 1
                             }
                         ],
-                        "gold": 1,
+                        "gold": 0,
                         "energy": 0,
                         "pop_min": 1,
                         "new_pop": 0
@@ -271,18 +263,10 @@
                         "resources": [
                             {
                                 "id": 3,
-                                "quantity": 2
-                            },
-                            {
-                                "id": 5,
-                                "quantity": 3
-                            },
-                            {
-                                "id": 10,
                                 "quantity": 1
                             }
                         ],
-                        "gold": 1,
+                        "gold": 0,
                         "energy": 0,
                         "pop_min": 1,
                         "new_pop": 0
@@ -291,18 +275,10 @@
                         "resources": [
                             {
                                 "id": 3,
-                                "quantity": 2
-                            },
-                            {
-                                "id": 5,
-                                "quantity": 3
-                            },
-                            {
-                                "id": 10,
                                 "quantity": 1
                             }
                         ],
-                        "gold": 1,
+                        "gold": 0,
                         "energy": 0,
                         "pop_min": 1,
                         "new_pop": 0
@@ -315,54 +291,30 @@
                         "resources": [
                             {
                                 "id": 3,
-                                "quantity": 2
-                            },
-                            {
-                                "id": 5,
-                                "quantity": 3
-                            },
-                            {
-                                "id": 10,
                                 "quantity": 1
                             }
                         ],
-                        "gold": 1,
+                        "gold": 0,
                         "energy": 0
                     },
                     {
                         "resources": [
                             {
                                 "id": 3,
-                                "quantity": 2
-                            },
-                            {
-                                "id": 5,
-                                "quantity": 3
-                            },
-                            {
-                                "id": 10,
                                 "quantity": 1
                             }
                         ],
-                        "gold": 1,
+                        "gold": 0,
                         "energy": 0
                     },
                     {
                         "resources": [
                             {
                                 "id": 3,
-                                "quantity": 2
-                            },
-                            {
-                                "id": 5,
-                                "quantity": 3
-                            },
-                            {
-                                "id": 10,
                                 "quantity": 1
                             }
                         ],
-                        "gold": 1,
+                        "gold": 0,
                         "energy": 0
                     }
                 ]
@@ -373,7 +325,7 @@
                         "resources": [
                             {
                                 "id": 1,
-                                "quantity": 20
+                                "quantity": 2
                             }
                         ],
                         "gold": 0,
@@ -383,7 +335,7 @@
                         "resources": [
                             {
                                 "id": 1,
-                                "quantity": 20
+                                "quantity": 2
                             }
                         ],
                         "gold": 0,
@@ -393,7 +345,7 @@
                         "resources": [
                             {
                                 "id": 1,
-                                "quantity": 20
+                                "quantity": 2
                             }
                         ],
                         "gold": 0,
@@ -1809,26 +1761,18 @@
                         "resources": [
                             {
                                 "id": 2,
-                                "quantity": 35
-                            },
-                            {
-                                "id": 3,
-                                "quantity": 15
+                                "quantity": 5
                             },
                             {
                                 "id": 5,
-                                "quantity": 30
+                                "quantity": 4
                             },
                             {
-                                "id": 6,
-                                "quantity": 15
-                            },
-                            {
-                                "id": 10,
-                                "quantity": 14
+                                "id": 8,
+                                "quantity": 4
                             }
                         ],
-                        "gold": 14,
+                        "gold": 0,
                         "energy": 0,
                         "pop_min": 12,
                         "new_pop": 0
@@ -1836,19 +1780,15 @@
                     {
                         "resources": [
                             {
-                                "id": 3,
-                                "quantity": 4
-                            },
-                            {
                                 "id": 5,
-                                "quantity": 4
+                                "quantity": 1
                             },
                             {
-                                "id": 10,
-                                "quantity": 3
+                                "id": 8,
+                                "quantity": 1
                             }
                         ],
-                        "gold": 3,
+                        "gold": 0,
                         "energy": 0
                     }
                 ]
@@ -1877,11 +1817,11 @@
                         "resources": [
                             {
                                 "id": 11,
-                                "quantity": 20
+                                "quantity": 2
                             }
                         ],
                         "gold": 0,
-                        "energy": 11
+                        "energy": 2
                     }
                 ]
             },
@@ -2153,33 +2093,21 @@
                     {
                         "resources": [
                             {
+                                "id": 1,
+                                "quantity": 12
+                            },
+                            {
                                 "id": 2,
-                                "quantity": 30
-                            },
-                            {
-                                "id": 3,
-                                "quantity": 42
-                            },
-                            {
-                                "id": 5,
-                                "quantity": 36
+                                "quantity": 3
                             },
                             {
                                 "id": 6,
-                                "quantity": 56
-                            },
-                            {
-                                "id": 10,
-                                "quantity": 54
-                            },
-                            {
-                                "id": 11,
-                                "quantity": 25
+                                "quantity": 5
                             }
                         ],
-                        "gold": 54,
-                        "energy": 25,
-                        "pop_min": 10,
+                        "gold": 0,
+                        "energy": 0,
+                        "pop_min": 3,
                         "new_pop": 0
                     }
                 ]
@@ -2237,33 +2165,21 @@
                     {
                         "resources": [
                             {
+                                "id": 1,
+                                "quantity": 12
+                            },
+                            {
                                 "id": 2,
-                                "quantity": 30
-                            },
-                            {
-                                "id": 3,
-                                "quantity": 42
-                            },
-                            {
-                                "id": 5,
-                                "quantity": 36
+                                "quantity": 3
                             },
                             {
                                 "id": 6,
-                                "quantity": 56
-                            },
-                            {
-                                "id": 10,
-                                "quantity": 54
-                            },
-                            {
-                                "id": 11,
-                                "quantity": 25
+                                "quantity": 5
                             }
                         ],
-                        "gold": 54,
-                        "energy": 25,
-                        "pop_min": 10,
+                        "gold": 0,
+                        "energy": 0,
+                        "pop_min": 3,
                         "new_pop": 0
                     }
                 ]

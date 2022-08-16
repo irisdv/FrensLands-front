@@ -27,7 +27,7 @@ export const allAchievements: Achievement[] = [
         goal: "Build a bakery & a grocery shop",
         goalDesc: "Your frens have to go a long way out of your community to get some basic products, you need to build a grocery shop & a bakery",
         description: "You can now produce energy! Your coal plant is recharged for the next 3 blocks then you can fuel it. It will bring you 2 energy / block.",
-        unlock: [7, 8, 18, 19]
+        unlock: [7, 8, 18, 19, 25, 26]
     },
     {
         level: 5,
