@@ -5,7 +5,6 @@ import { getInstalledInjectedConnectors, StarknetProvider } from "@starknet-reac
 import { BrowserRouter } from "react-router-dom";
 import { AppStateProvider } from "./providers/GameContext";
 import { NotifTransactionManagerProvider } from './providers/transactions'
-import './CustomAudio.type'
 
 const container = document.getElementById("root");
 const root = createRoot(container!); // createRoot(container!) if you use TypeScript
