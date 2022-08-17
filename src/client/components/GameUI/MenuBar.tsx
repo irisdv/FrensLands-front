@@ -137,7 +137,7 @@ export function MenuBar() {
 
   return (
     <>
-      <div className="absolute" style={{zIndex: "1"}}>
+      <div className="absolute selectDisable" style={{zIndex: "1"}}>
         <div className="flex flex-row justify-center inline-block">
           {sound ? 
             <div 
@@ -247,7 +247,7 @@ export function MenuBar() {
             </div> */}
         </div>
       </div>
-      <div className="absolute" style={{zIndex: "1", pointerEvents: "none"}}>
+      <div className="absolute selectDisable" style={{zIndex: "1", pointerEvents: "none"}}>
         <div className="subBar" style={{ marginTop: "55px", marginLeft: "65px" }}>
           <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "284px" }}>2mn 30</div>
           <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "674px" }}>2mn 30</div>

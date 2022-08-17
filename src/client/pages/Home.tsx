@@ -277,16 +277,16 @@ export default function Home() {
         </div>
 
           <div className="absolute" style={{width: "100vw", top: '0'}}>
-            <img src="resources/front/UI_MainScreenPlanet.svg" className="relative mx-auto pixelated frensLandsWorld" />
+            <img src="resources/front/UI_MainScreenPlanet.svg" className="relative mx-auto pixelated frensLandsWorld selectDisable" />
           </div>
 
           <div className="absolute" style={{width: "100vw", top: '0'}}>
-            <img src="resources/front/UI_GameTitle.png" className="relative mx-auto pixelated frensLandsLogo" />
+            <img src="resources/front/UI_GameTitle.png" className="relative mx-auto pixelated frensLandsLogo selectDisable" />
           </div>
 
           <div className="absolute" style={{width: "100vw", top: '0'}}>
             {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && worldType >= 0 && worldType != null &&
-              <img className="relative mx-auto pixelated" src={`resources/maps/FrensLand_NFTs_${worldType}.png`} style={{marginTop: "300px"}} />
+              <img className="relative mx-auto pixelated selectDisable" src={`resources/maps/FrensLand_NFTs_${worldType}.png`} style={{marginTop: "300px"}} />
             }
             {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&
               <div className="messageNotifParent">
@@ -321,7 +321,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="home-s2 py-5">
+      <div className="home-s2 py-5 selectDisable">
         <div className="relative">
             
           <div className="pixelated mx-auto roadmapT"></div>

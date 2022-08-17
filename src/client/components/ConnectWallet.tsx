@@ -4,7 +4,7 @@ import { useStarknet, useConnectors, InjectedConnector } from "@starknet-react/c
 export function ConnectWallet() {
   const { account } = useStarknet();
   const { available, connect, disconnect, connectors } = useConnectors();
-  
+
   const manualConnectors = [
     new InjectedConnector({
       options: { id: "argent-x" },
@@ -24,11 +24,12 @@ export function ConnectWallet() {
 
   return (
     <div>
-      {manualConnectors.map((connector, index) => (
-        <button key={index} onClick={() => connect(connector)} className="relative mx-auto btnPlay pixelated" style={{marginTop: '300px'}}>
-          {/* {`Connect ${connector.name()}`} */}
+      <button key={0} onClick={() => connect(manualConnectors[0])} className="relative mx-auto btnPlay pixelated" style={{marginTop: '300px'}}>
         </button>
-      ))}
+      {/* {manualConnectors.map((connector, index) => (
+        <button key={index} onClick={() => connect(connector)} className="relative mx-auto btnPlay pixelated" style={{marginTop: '300px'}}>
+        </button>
+      ))} */}
     </div>
   );
 }
