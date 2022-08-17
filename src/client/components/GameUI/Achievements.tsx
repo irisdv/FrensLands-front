@@ -74,6 +74,7 @@ export function Achievements(props : any) {
             <div className="popUpNotifsAchievement pixelated fontHPxl-sm" style={{zIndex: 1, borderImage: `url(data:image/svg+xml;base64,${btoa(UI_Frames)}) 18 fill stretch` }}>
               <div className="closeAchievement" onClick={() => setShowInfo(false)}></div>
               <div className="achievementText">
+                {lastLevel && lastLevel == 1 ? <><p>GM frens !</p><br/></> : ""}
                 {lastAchievement && lastAchievement?.description &&  <p>{lastAchievement.description}</p> }
                 <br/>
                 {showAchievement ? 

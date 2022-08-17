@@ -5,7 +5,7 @@ export const allAchievements: Achievement[] = [
         level: 1,
         goal: "Repair your cabin",
         goalDesc: "To repair your cabin you'll need wood. Start by harvesting some trees!",
-        description: `gm fren, welcome in Frend Lands ! We'll walk you through the first steps to play this pre-alpha version. If you don't want to see these updates in the future you can disable them by clicking on the checkbox on the top right side of your screen.`,
+        description: "Welcome to Frend Lands ! We'll walk you through the first steps to play this pre-alpha version. If you don't want to see these updates in the future you can disable them by clicking on the checkbox on the top right side of your screen.",
         unlock: []
     },
     {
