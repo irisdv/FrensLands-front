@@ -53,6 +53,9 @@ export default function Home() {
   const [message, setMessage] = useState<any>(null)
   const [approved, setApproved] = useState<any>(null)
 
+  console.log('DEBUG account', account)
+  console.log('DEBUG tokenID', tokenId)
+
   useEffect(() => {
     if (account) {
       setAddress(account as string);
@@ -175,22 +178,26 @@ export default function Home() {
   }, [fetchApprovalState, account, tokenId, approved]);
 
   const approveM03 = () => {
-    let tx_hash = approveMO3ERC1155(nonceValue)
-    console.log('tx hash approval ERC1155', tx_hash)
-    setApproved(tx_hash);
+    if (!approved && tokenId) {
+      let tx_hash = approveMO3ERC1155(nonceValue)
+      console.log('tx hash approval ERC1155', tx_hash)
+      setApproved(tx_hash);
 
-    tx_hash.then((res) => {
-      console.log('res', res)
-      if (res != 0) {
-        updateNonce(nonceValue)
-      }
-    })
+      tx_hash.then((res) => {
+        console.log('res', res)
+        if (res != 0) {
+          updateNonce(nonceValue)
+        } else {
+          setApproved(null)
+        }
+      })
+    }
   }
 
   // Invoke Starting game 
   const startGame = () => {
     console.log('startingGame invoke')
-    if (tokenId) {
+    if (tokenId && !settingUp) {
       let tx_hash = initializeGame(tokenId, nonceValue)
       console.log('tx hash', tx_hash)
       setSettingUp(tx_hash);
@@ -199,11 +206,15 @@ export default function Home() {
         console.log('res', res)
         if (res != 0) {
           updateNonce(nonceValue)
+        } else {
+          setSettingUp(null)
         }
       })
-    } else {
+    } else if (!tokenId) {
       console.log('Missing tokenId')
       setMessage("You need to own a Frens Lands map to initialize a game.")
+    } else {
+      console.log('Already Setting Up')
     }
   }
 
@@ -286,16 +297,23 @@ export default function Home() {
                 </div>
               </div>
             }
-            {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && GameStatusValue && GameStatusValue.gameStatus == 0 &&
+            {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && GameStatusValue && GameStatusValue.gameStatus == 0 && !settingUp &&
               <button className="relative mx-auto pixelated btnPlay" onClick={() => startGame()} style={{marginTop: '-65px'}}></button>
             }
+            {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && GameStatusValue && GameStatusValue.gameStatus == 0 && settingUp ?
+              <div className="messageNotifParent">
+              <div className="messageNotifInit fontHPxl-sm mx-auto text-center" style={{borderImage: `url(data:image/svg+xml;base64,${btoa(UI_Frames)}) 18 fill stretch` }}>
+                <p>Your land is initializing...</p>
+              </div>
+            </div>
+            : ""}
             {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && GameStatusValue && GameStatusValue.gameStatus == 1 && !approved &&
               <button className="relative mx-auto pixelated btnApproval" onClick={() => approveM03()}></button>
             }
             {!account && 
               <ConnectWallet/>
             }
-            {account && canPlay && approved && 
+            {account && canPlay && approved == true && 
               <button className="relative mx-auto pixelated btnPlay" onClick={() => navigate('/play')} style={{marginTop: '-65px'}}></button>
               // <button className="relative mx-auto pixelated btnPlay" onClick={() => testContract()} style={{marginTop: '-65px'}}></button>
             }              

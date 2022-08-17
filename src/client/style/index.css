@@ -95,7 +95,16 @@ body {
     border-width: 18px;
     padding: 10px;
 }
-
+.messageNotifInit {
+    margin-top: 8px;
+    position: absolute;
+    width: calc(256px);
+    height: calc(85px);
+    box-sizing: border-box;
+    border-style: solid;
+    border-width: 18px;
+    padding: 10px;
+}
 .popUpNotifs {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 2);

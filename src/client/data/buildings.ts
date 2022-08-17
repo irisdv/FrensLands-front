@@ -1483,7 +1483,7 @@ export const allBuildings: Building[] = [
         id: 24,
         name: "Lab",
         category: "Research",
-        description: "Lorem ipsum",
+        description: "With the lab you can create even more energy. You need 15 frens free to work in your lab.",
         level: 8,
         cost_update: [
             {
@@ -1551,7 +1551,7 @@ export const allBuildings: Building[] = [
         id: 25,
         name: "Coal Mine",
         category: "Mining",
-        description: "Lorem ipsum",
+        description: "Use coal mines to produce coal and rocks and sustain your other buildings. You need to have 3 frens available to work in your mine.",
         level: 5,
         cost_update: [
             {
@@ -1615,7 +1615,7 @@ export const allBuildings: Building[] = [
         id: 26,
         name: "Metal Mine",
         category: "Mining",
-        description: "Lorem ipsum",
+        description: "Use metal mines to produce metal and rocks and sustain your other buildings. You need to have 3 frens available to work in your mine.",
         level: 5,
         cost_update: [
             {
@@ -1679,7 +1679,7 @@ export const allBuildings: Building[] = [
         id: 27,
         name: "Bush",
         category: "Resource",
-        description: "Lorem ipsum",
+        description: "Bushes can be harvested 3 times. Bushes bring food. You need to have one fren available to harvest a bush.",
         level: 0,
         daily_cost: [
             {
