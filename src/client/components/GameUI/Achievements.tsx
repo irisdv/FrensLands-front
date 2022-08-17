@@ -43,7 +43,7 @@ export function Achievements(props : any) {
 
       }
       {showGoal && showAchievement &&
-        <div className="absolute goalFrame pixelated selectDisable" style={{width: "320px", right:'-12px', top: '77px'}}>
+        <div className="absolute goalFrame pixelated selectDisable">
           {!showDesc && 
             <>
               <img src="resources/front/UI_ObjectiveFrame2.png" className="absolute selectDisable" />
