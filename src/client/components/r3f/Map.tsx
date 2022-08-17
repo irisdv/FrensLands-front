@@ -37,7 +37,7 @@ export const Map = (props : any)=> {
 
     // Context
     const { account } = useStarknet();
-    const { tokenId, nonce, updateNonce } = useGameContext();
+    const { tokenId, nonce, updateNonce, populationBusy, populationFree } = useGameContext();
     const { transactions, removeTransaction } = useNotifTransactionManager()
     const { frameData, updateBuildingFrame, sound } = useSelectContext();
 
@@ -62,9 +62,17 @@ export const Map = (props : any)=> {
 
     // Frens 
     const frensArray = useMemo(() => {
+        var max = 1;
+        if (populationBusy && populationFree) {
+            if (populationBusy + populationFree > 35) {
+                max = 7
+            } else {
+                max = parseInt(((2) / 5).toFixed(0)) + 1
+            }
+        }
         var i = 0;
         var tempArray = []
-        while (i < 7) {
+        while (i < max) {
             var curPos = new Vector2;
             var targetPos = new Vector2;
     
@@ -79,7 +87,7 @@ export const Map = (props : any)=> {
         }
 
         return tempArray
-    }, [])
+    }, [populationBusy, populationFree])
 
     const frameDataValue = useMemo(() => {
         if (frameData) {
@@ -343,7 +351,7 @@ export const Map = (props : any)=> {
           )
         if (txList) {
             txList.map((tx) => {
-                console.log('tx map', tx)
+                // console.log('tx map', tx)
 
                 if (tx.status == 'ACCEPTED_ON_L2' && tx.metadata.posY && tx.metadata.posX) {
                     let _txExists : {} = {};
@@ -396,7 +404,7 @@ export const Map = (props : any)=> {
 
                     if (Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11]).length == 0 || !_txExists) {
                         frontBlockArray[tx.metadata.posY][tx.metadata.posX][11].push(tx.transactionHash)
-                        
+
                         if (frontBlockArray[tx.metadata.posY][tx.metadata.posX] && frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] == 0 ) {
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0

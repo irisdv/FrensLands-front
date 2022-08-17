@@ -53,9 +53,6 @@ export default function Home() {
   const [message, setMessage] = useState<any>(null)
   const [approved, setApproved] = useState<any>(null)
 
-  console.log('DEBUG account', account)
-  console.log('DEBUG tokenID', tokenId)
-
   useEffect(() => {
     if (account) {
       setAddress(account as string);
