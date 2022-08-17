@@ -56,7 +56,6 @@ export function BottomBar(props : any) {
 - **tree farm** 19
 - **Mines** 20
 - **coal plant** 21 */}
-      {showFrame && 
       <div className="absolute" style={{ bottom: "60px", right: "0px", display: `${displayNature ? "block" : "none"}`, zIndex: "1" }}>
         <div className="flex flex-row justify-center inline-block">
           {level >= (allBuildings[16 - 1].level as any) ?
@@ -117,7 +116,6 @@ export function BottomBar(props : any) {
 
         </div>
       </div>
-      }
       {/* Menu Security */}
       {/* - **Hospital 23
 - **police station 22
