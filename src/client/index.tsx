@@ -1,14 +1,19 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
-import { getInstalledInjectedConnectors, StarknetProvider } from "@starknet-react/core";
+import { getInstalledInjectedConnectors, InjectedConnector, StarknetProvider } from "@starknet-react/core";
 import { BrowserRouter } from "react-router-dom";
 import { AppStateProvider } from "./providers/GameContext";
 import { NotifTransactionManagerProvider } from './providers/transactions'
 
 const container = document.getElementById("root");
 const root = createRoot(container!); // createRoot(container!) if you use TypeScript
-const connectors = getInstalledInjectedConnectors();
+// const connectors = getInstalledInjectedConnectors();
+const connectors = [
+  new InjectedConnector({ options: { id: 'argentx' } }),
+  new InjectedConnector({ options: { id: 'braavos' } }),
+]
+console.log('DEBUG connectors', connectors)
 
 root.render(
   <>

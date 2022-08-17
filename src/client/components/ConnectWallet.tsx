@@ -1,9 +1,17 @@
 import React from "react";
-import { useStarknet, useConnectors } from "@starknet-react/core";
+import { useStarknet, useConnectors, InjectedConnector } from "@starknet-react/core";
 
 export function ConnectWallet() {
   const { account } = useStarknet();
-  const { available, connect, disconnect } = useConnectors();
+  const { available, connect, disconnect, connectors } = useConnectors();
+  
+  const manualConnectors = [
+    new InjectedConnector({
+      options: { id: "argent-x" },
+    }),
+    new InjectedConnector({ options: { id: "braavos" } }),
+  ];
+
 
   // if (account) {
   //   return (
@@ -16,8 +24,8 @@ export function ConnectWallet() {
 
   return (
     <div>
-      {available.map((connector) => (
-        <button key={connector.id()} onClick={() => connect(connector)} className="relative mx-auto btnPlay pixelated" style={{marginTop: '300px'}}>
+      {manualConnectors.map((connector, index) => (
+        <button key={index} onClick={() => connect(connector)} className="relative mx-auto btnPlay pixelated" style={{marginTop: '300px'}}>
           {/* {`Connect ${connector.name()}`} */}
         </button>
       ))}
