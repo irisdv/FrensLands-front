@@ -36,6 +36,8 @@ export function NotifItem(props: any) {
       textNotif = "Upgrading your cabin..."
     } else if (content.method == "reinitialize") {
       textNotif = "Reinitializing your land..."
+    } else if (content.method == "recharge_building") {
+      textNotif = "Recharging your " + allBuildings[content.type_id - 1].name + "..."
     } else {
       textNotif = "Testing..."
     }
@@ -58,6 +60,8 @@ export function NotifItem(props: any) {
       textNotif = "Your cabin was upgraded!"
     } else if (content.method == "reinitialize") {
       textNotif = "Your land is reinitialized!"
+    } else if (content.method == "recharge_building") {
+      textNotif = "Your" + allBuildings[content.type_id - 1].name + " is recharged !"
     } else {
       textNotif = "Test tx accepted."
     }
