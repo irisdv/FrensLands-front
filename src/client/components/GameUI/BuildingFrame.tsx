@@ -98,7 +98,7 @@ export function BuildingFrame(props: any) {
   const harvestingResources = (type_id : number, pos_x: number, pos_y: number, level : number) => {
     let pos_start = (pos_y - 1) * 40 + pos_x
     if (tokenId) {
-      if ((type_id == 2 && harvestRockNb <= 3) || (type_id == 3 && harvestTreeNb <= 3) || (type_id == 20 && harvestMineNb <= 3)) {
+      if ((type_id == 2 && harvestRockNb <= 3) || (type_id == 3 && harvestTreeNb <= 3) || (type_id == 20 && harvestMineNb <= 3) || (type_id == 27)) {
         let tx_hash = harvestingInvoke(tokenId, pos_start, parseInt(frameData?.unique_id as string), type_id, level, pos_x, pos_y, nonceValue)
         // if (type_id == 2) setHarvestRockNb(harvestRockNb+1)
         // if (type_id == 3) setHarvestTreeNb(harvestTreeNb+1)
