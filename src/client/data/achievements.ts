@@ -44,7 +44,7 @@ export const allAchievements: Achievement[] = [
     },
     {
         level: 7,
-        goal: "Build appartments.",
+        goal: "Build apartments.",
         description: "Frens are feeling safe again! Frens have voted, a police station should be built for every 20 buildings. Your community is ready to go to the next level.",
         unlock: [5, 15, 23, 12, 17]
     },
