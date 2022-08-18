@@ -38,7 +38,8 @@ export interface IPopUp {
 
 export interface IBuildingData {
   active?: [],
-  inactive?: []
+  inactive?: [],
+  total?: number,
 }
 
 export interface IResources {
@@ -73,6 +74,7 @@ export interface IGameState {
   populationBusy?: number;
   populationFree?: number;
   coal?: number;
+  counterResources: any[];
   resources: number[];
   updateBuildings: (t: number) => void;
   setAddress: (addr: string) => void;
@@ -106,6 +108,7 @@ export const GameState: IGameState = {
   populationBusy: 0,
   populationFree: 0,
   resources : [],
+  counterResources: [],
   updateBuildings: () => {},
   setAddress: () => {},
   updateTokenId: () => {},
@@ -144,6 +147,7 @@ interface SetBuildingCount {
 interface SetMapArray {
   type: "set_mapArray";
   mapArray?: any[];
+  counters: any[];
 }
 
 interface SetError {
@@ -196,6 +200,7 @@ interface SetBuildingData {
   type: "set_buildingData";
   inactive?: [];
   active?: [];
+  total?: number;
 }
 interface SetNonce {
   type: "set_nonce";
@@ -237,13 +242,17 @@ function reducer(state: IGameState, action: Action): IGameState {
       return { ...state, buildingCount: action.buildingCount };
     }
     case "set_mapArray": {
-      return { ...state, mapArray: action.mapArray };
+      return { ...state, 
+        mapArray: action.mapArray,
+        counterResources : action.counters
+      };
     }
     case "set_buildingData": {
       return { ...state, 
         buildingData: {
           "active" : action.active,
-          "inactive": action.inactive
+          "inactive": action.inactive,
+          "total": action.total
         }
       };
     }
@@ -515,16 +524,38 @@ export const AppStateProvider: React.FC<
           uint256.bnToUint256(state.tokenId),
         ]);
         var i = 0
+        var counters : any[] = [];
         elem.forEach((_map : any) => {
           while (i < 640) {
             var elem = toBN(_map[i])
             _mapArray.push(elem.toString())
+            if (elem.toString().length < 16) {
+              var type_id = parseInt(elem.toString()[4] + elem.toString()[5])
+              if (type_id == 2 || type_id == 3 || type_id == 20 || type_id == 27) {
+                if (counters[type_id]) {
+                  counters[type_id] += 1
+                } else {
+                  counters[type_id] = 1
+                }
+              }
+            } else {
+              var type_id = parseInt(elem.toString()[5] + elem.toString()[6])
+              if (type_id == 2 || type_id == 3 || type_id == 20 || type_id == 27) {
+                if (counters[type_id]) {
+                  counters[type_id] += 1
+                } else {
+                  counters[type_id] = 1
+                }
+              }
+            }
             i++;
           }
         })
+        console.log('counters', counters)
         dispatch({
           type: "set_mapArray",
           mapArray: _mapArray,
+          counters: counters
         });
       } catch (e) {
         console.warn("Error when retrieving get_map_array in M01_Worlds");
@@ -631,25 +662,13 @@ export const AppStateProvider: React.FC<
 
         console.log('inactive', inactiveBuildings)
         console.log('active', activeBuildings)
-
-        // Test
-        // activeBuildings[201] = []
-        // activeBuildings[201]['type'] = 7
-        // activeBuildings[201]['pos_start'] = 48
-        // activeBuildings[201]['recharges'] = 5
-        // activeBuildings[201]['last_claim'] = 200
-
-        // inactiveBuildings[202] = []
-        // inactiveBuildings[202]['type'] = 8
-        // inactiveBuildings[202]['pos_start'] = 1
-        // inactiveBuildings[202]['recharges'] = 0
-        // inactiveBuildings[202]['last_claim'] = 200
-        // end test
+        console.log('total Buildings', maxLength / 5)
 
         dispatch({
           type: "set_buildingData",
           active: activeBuildings as [],
-          inactive: inactiveBuildings as []
+          inactive: inactiveBuildings as [],
+          total: maxLength/ 5 as number
         });
       } catch (e) {
         console.warn("Error when retrieving get_all_buildings_data in M03_Buildings");
@@ -713,6 +732,7 @@ export const AppStateProvider: React.FC<
         populationFree: state.populationFree,
         coal: state.coal,
         resources: state.resources,
+        counterResources: state.counterResources,
         updateBuildings,
         setAddress,
         updateTokenId,
