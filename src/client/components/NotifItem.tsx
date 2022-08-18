@@ -21,47 +21,47 @@ export function NotifItem(props: any) {
     if (content.method == "get_map") {
       textNotif = "Minting a map..."
     } else if (content.method  == "start_game") {
-      textNotif = "Initializing game..."
+      textNotif = "IN Launched initialization of your game."
     } else if (content.method == "harvest_resources") {
-      textNotif = "Frens are harvesting a " + allBuildings[content.type_id - 1].name + "..."
+      textNotif = "IN Launched harvest on " + allBuildings[content.type_id - 1].name + " " + content.posX + " " + content.posY
     } else if (content.method == "claim_resources") {
-      textNotif = "Your resources are on their way..."
+      textNotif = "IN Launched claim resources."
     } else if (content.method == "build") {
-      textNotif = "Frens are building your " + allBuildings[content.type_id - 1].name + "..."
+      textNotif = "IN Launched build a " + allBuildings[content.type_id - 1].name + " on " + content.posX + " " + content.posY
     } else if (content.method == "approve") {
       textNotif = "Aproving..."
     } else if (content.method == "destroy_building") {
-      textNotif = "Frens are on there way to destroy your building..."
+      textNotif = "IN Launched destroy " + allBuildings[content.type_id - 1].name + " on " + content.posX + " " + content.posY
     } else if (content.method == "upgrade") {
-      textNotif = "Upgrading your cabin..."
+      textNotif = "IN Launched upgrade cabin."
     } else if (content.method == "reinitialize") {
-      textNotif = "Reinitializing your land..."
+      textNotif = "IN Launched reset land."
     } else if (content.method == "recharge_building") {
-      textNotif = "Recharging your " + allBuildings[content.type_id - 1].name + "..."
+      textNotif = "IN Launched recharge production of " + allBuildings[content.type_id - 1].name + " on " + content.posX + " " + content.posY
     } else {
       textNotif = "Testing..."
     }
   } else if (status && status == "ACCEPTED_ON_L2" || status && status == "ACCEPTED_ON_L1") {
     if (content.method == "get_map") {
-      textNotif = "You received your map. Now initialize your game."
+      textNotif = "OUT You received your map. Now you can initialize your game."
     } else if (content.method  == "start_game") {
-      textNotif = "Your game was initialized."
+      textNotif = "OUT Your game was initialized."
     } else if (content.method == "harvest_resources") {
-      textNotif = "Your frens successfully havested a " + allBuildings[content.type_id - 1].name
+      textNotif = "OUT Harvest completed for " + allBuildings[content.type_id - 1].name + " " + content.posX + " " + content.posY
     } else if (content.method == "claim_resources") {
-      textNotif = "Your ressources arrived!"
+      textNotif = "OUT Claim resources completed."
     } else if (content.method == "build") {
-      textNotif = "Frens successfully built a " + allBuildings[content.type_id - 1].name + "..."
+      textNotif = "OUT Build completed for " + allBuildings[content.type_id - 1].name + " " + content.posX + " " + content.posY
     } else if (content.method == "approve") {
       textNotif = "All set, you can now start playing!"
     } else if (content.method == "destroy_building") {
-      textNotif = "Frens successfully destroyed your building."
+      textNotif = "OUT Destroy completed for " + allBuildings[content.type_id - 1].name + " on " + content.posX + " " + content.posY
     } else if (content.method == "upgrade") {
-      textNotif = "Your cabin was upgraded!"
+      textNotif = "OUT Upgrade cabin completed."
     } else if (content.method == "reinitialize") {
-      textNotif = "Your land is reinitialized!"
+      textNotif = "OUT Reset land completed."
     } else if (content.method == "recharge_building") {
-      textNotif = "Your" + allBuildings[content.type_id - 1].name + " is recharged !"
+      textNotif = "OUT Recharge production completed for " + allBuildings[content.type_id - 1].name + " on " + content.posX + " " + content.posY
     } else {
       textNotif = "Test tx accepted."
     }
@@ -75,11 +75,11 @@ export function NotifItem(props: any) {
         <div className="popUpNotifsGame pixelated fontHPxl-sm" onClick={() => removeThisTransaction()}  style={{borderImage: `url(data:image/svg+xml;base64,${btoa(UI_Frames)}) 18 fill stretch` }} >
             <div className="closeNotif"></div>
             <p>{textNotif}</p>
-            {status && status == "NOT_RECEIVED" && <p>tx not received yet</p>}
+            {/* {status && status == "NOT_RECEIVED" && <p>tx not received yet</p>}
             {status && status == "PENDING" && <p>tx pending</p>}
             {status && status == "RECEIVED" && <p>tx received</p>}
             {status && status == "ACCEPTED_ON_L2" && <p>tx accepted on L2</p>}
-            {status && status == "ACCEPTED_ON_L1" && <p>tx accepted on L1</p>}
+            {status && status == "ACCEPTED_ON_L1" && <p>tx accepted on L1</p>} */}
         </div>
       </div>
     </>

@@ -37,6 +37,8 @@ export default function Home() {
   const activeNotifications = useActiveNotifications()
   const [worldType, setWorldType] = useState<any>(null)
 
+  const scrollRef = useRef<null | HTMLDivElement>(null); 
+
   // Call
   const { contract: worlds } = useWorldsContract();
   const { contract: maps } = useMapsContract();
@@ -261,6 +263,12 @@ export default function Home() {
   // }, [testing, activeNotifications])
   // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST  TEST TEST TEST TEST TEST TEST TEST TEST TEST 
 
+  const executeScroll = () => {
+    if (scrollRef.current) 
+    scrollRef.current.scrollIntoView({behavior: 'smooth'})
+    // window.scrollTo(0, scrollRef.current.offsetTop);
+  }   
+
   return (
     <>
     <div className="" style={{overflowY: "scroll", overflowX: 'hidden', height: "100vh"}}>
@@ -281,9 +289,9 @@ export default function Home() {
             <img src="resources/front/UI_GameTitle.png" className="relative mx-auto pixelated frensLandsLogo selectDisable" />
           </div>
 
-          <div className="absolute" style={{width: "100vw", top: '0'}}>
+          <div className="absolute selectDisable" style={{width: "100vw", top: '0'}}>
             {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && worldType >= 0 && worldType != null &&
-              <img className="relative mx-auto pixelated selectDisable" src={`resources/maps/FrensLand_NFTs_${worldType}.png`} style={{marginTop: "300px"}} />
+              <img className="relative mx-auto pixelated nftImg" src={`resources/maps/FrensLand_NFTs_${worldType}.png`} />
             }
             {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&
               <div className="messageNotifParent">
@@ -311,14 +319,17 @@ export default function Home() {
               <ConnectWallet/>
             }
             {account && canPlay && approved == true && 
-              <button className="relative mx-auto pixelated btnPlay" onClick={() => navigate('/play')} style={{marginTop: '-65px'}}></button>
+              <div style={{height: '170px', pointerEvents: 'all'}}>
+                <button className="relative mx-auto pixelated btnPlay" onClick={() => navigate('/play')} style={{marginTop: '-65px'}}></button>
+              </div>
               // <button className="relative mx-auto pixelated btnPlay" onClick={() => testContract()} style={{marginTop: '-65px'}}></button>
             }              
           </div>
         </div>
       </div>
+      <img src="resources/front/Web_SplashScrollFooter.png" className="splashScroll selectDisable" onClick={() => executeScroll()} />
 
-      <div className="home-s2 py-5 selectDisable">
+      <div className="home-s2 py-5 selectDisable" id="roadmap" ref={scrollRef}>
         <div className="relative">
             
           <div className="pixelated mx-auto roadmapT"></div>

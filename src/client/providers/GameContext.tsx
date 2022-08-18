@@ -38,7 +38,8 @@ export interface IPopUp {
 
 export interface IBuildingData {
   active?: [],
-  inactive?: []
+  inactive?: [],
+  total?: number,
 }
 
 export interface IResources {
@@ -73,6 +74,7 @@ export interface IGameState {
   populationBusy?: number;
   populationFree?: number;
   coal?: number;
+  counterResources: any[];
   resources: number[];
   updateBuildings: (t: number) => void;
   setAddress: (addr: string) => void;
@@ -83,6 +85,8 @@ export interface IGameState {
   updateNonce: (nonce : string) => void;
   setAccountContract: (account : any) => void;
   accountContract: any;
+  harvestingArr: any[];
+  setHarvesting: (posX : number, posY: number, status : number) => void;
 }
 
 export const GameState: IGameState = {
@@ -106,6 +110,7 @@ export const GameState: IGameState = {
   populationBusy: 0,
   populationFree: 0,
   resources : [],
+  counterResources: [],
   updateBuildings: () => {},
   setAddress: () => {},
   updateTokenId: () => {},
@@ -114,7 +119,9 @@ export const GameState: IGameState = {
   nonce: '',
   updateNonce: (nonce) => {},
   setAccountContract: (account) => {},
-  accountContract: null
+  accountContract: null,
+  harvestingArr : [],
+  setHarvesting : (posX, posY, status) => {}
 };
 
 const StateContext = React.createContext(GameState);
@@ -144,6 +151,7 @@ interface SetBuildingCount {
 interface SetMapArray {
   type: "set_mapArray";
   mapArray?: any[];
+  counters: any[];
 }
 
 interface SetError {
@@ -196,6 +204,7 @@ interface SetBuildingData {
   type: "set_buildingData";
   inactive?: [];
   active?: [];
+  total?: number;
 }
 interface SetNonce {
   type: "set_nonce";
@@ -205,6 +214,10 @@ interface SetAccountContract {
   type : "set_accountContract";
   accountContract?: any;
   nonce?: string;
+}
+interface SetHarvestingArr {
+  type : "set_harvestingArr";
+  harvestingArr: any[];
 }
 
 type Action =
@@ -223,6 +236,7 @@ type Action =
   | SetBuildingData
   | SetNonce
   | SetAccountContract
+  | SetHarvestingArr
   | SetError;
 
 function reducer(state: IGameState, action: Action): IGameState {
@@ -237,13 +251,17 @@ function reducer(state: IGameState, action: Action): IGameState {
       return { ...state, buildingCount: action.buildingCount };
     }
     case "set_mapArray": {
-      return { ...state, mapArray: action.mapArray };
+      return { ...state, 
+        mapArray: action.mapArray,
+        counterResources : action.counters
+      };
     }
     case "set_buildingData": {
       return { ...state, 
         buildingData: {
           "active" : action.active,
-          "inactive": action.inactive
+          "inactive": action.inactive,
+          "total": action.total
         }
       };
     }
@@ -306,6 +324,9 @@ function reducer(state: IGameState, action: Action): IGameState {
         accountContract: action.accountContract,
         nonce: action.nonce as string
       }
+    }
+    case "set_harvestingArr": {
+      return {...state, harvestingArr: action.harvestingArr}
     }
     case "set_error": {
       throw new Error(`Unhandled action type: ${action.type}`);
@@ -515,16 +536,38 @@ export const AppStateProvider: React.FC<
           uint256.bnToUint256(state.tokenId),
         ]);
         var i = 0
+        var counters : any[] = [];
         elem.forEach((_map : any) => {
           while (i < 640) {
             var elem = toBN(_map[i])
             _mapArray.push(elem.toString())
+            if (elem.toString().length < 16) {
+              var type_id = parseInt(elem.toString()[4] + elem.toString()[5])
+              if (type_id == 2 || type_id == 3 || type_id == 20 || type_id == 27) {
+                if (counters[type_id]) {
+                  counters[type_id] += 1
+                } else {
+                  counters[type_id] = 1
+                }
+              }
+            } else {
+              var type_id = parseInt(elem.toString()[5] + elem.toString()[6])
+              if (type_id == 2 || type_id == 3 || type_id == 20 || type_id == 27) {
+                if (counters[type_id]) {
+                  counters[type_id] += 1
+                } else {
+                  counters[type_id] = 1
+                }
+              }
+            }
             i++;
           }
         })
+        console.log('counters', counters)
         dispatch({
           type: "set_mapArray",
           mapArray: _mapArray,
+          counters: counters
         });
       } catch (e) {
         console.warn("Error when retrieving get_map_array in M01_Worlds");
@@ -631,25 +674,13 @@ export const AppStateProvider: React.FC<
 
         console.log('inactive', inactiveBuildings)
         console.log('active', activeBuildings)
-
-        // Test
-        // activeBuildings[201] = []
-        // activeBuildings[201]['type'] = 7
-        // activeBuildings[201]['pos_start'] = 48
-        // activeBuildings[201]['recharges'] = 5
-        // activeBuildings[201]['last_claim'] = 200
-
-        // inactiveBuildings[202] = []
-        // inactiveBuildings[202]['type'] = 8
-        // inactiveBuildings[202]['pos_start'] = 1
-        // inactiveBuildings[202]['recharges'] = 0
-        // inactiveBuildings[202]['last_claim'] = 200
-        // end test
+        console.log('total Buildings', maxLength / 5)
 
         dispatch({
           type: "set_buildingData",
           active: activeBuildings as [],
-          inactive: inactiveBuildings as []
+          inactive: inactiveBuildings as [],
+          total: maxLength/ 5 as number
         });
       } catch (e) {
         console.warn("Error when retrieving get_all_buildings_data in M03_Buildings");
@@ -690,6 +721,26 @@ export const AppStateProvider: React.FC<
     }
   }, [state.address, state.accountContract]);
 
+  const setHarvesting = React.useCallback(async (posX: number, posY: number, status: number) => {
+    if (posX && posY && state.harvestingArr && (status == 1 || status == 0) ) {
+      let currArr = state.harvestingArr
+      if (currArr[posY]) {
+        if (currArr[posY][posX]) currArr[posY][posX] = status
+        else {
+          currArr[posY] = []
+          currArr[posY][posX] = status
+        }
+      } else {
+        currArr[posY as number] = []
+        currArr[posY][posX] = status
+      }
+      dispatch({
+        type: "set_harvestingArr",
+        harvestingArr: currArr
+      });
+    }
+  }, [state.harvestingArr]);
+
   return (
     <StateContext.Provider
       value={{
@@ -713,6 +764,7 @@ export const AppStateProvider: React.FC<
         populationFree: state.populationFree,
         coal: state.coal,
         resources: state.resources,
+        counterResources: state.counterResources,
         updateBuildings,
         setAddress,
         updateTokenId,
@@ -721,7 +773,9 @@ export const AppStateProvider: React.FC<
         nonce: state.nonce,
         updateNonce,
         accountContract: state.accountContract,
-        setAccountContract
+        setAccountContract,
+        harvestingArr: state.harvestingArr,
+        setHarvesting
       }}
     >
       {props.children}

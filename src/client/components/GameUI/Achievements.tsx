@@ -30,9 +30,9 @@ export function Achievements(props : any) {
   return (
     <>
       {showAchievement ? 
-        <div className="btnShowTuto1 pixelated selectDisable" onClick={() => setShowAchievement(!showAchievement)}></div>
-      : 
         <div className="btnShowTuto0 pixelated selectDisable" onClick={() => setShowAchievement(!showAchievement)}></div>
+      : 
+        <div className="btnShowTuto1 pixelated selectDisable" onClick={() => setShowAchievement(!showAchievement)}></div>
       }
 
       {!showGoal && showAchievement &&

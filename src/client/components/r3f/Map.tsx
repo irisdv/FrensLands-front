@@ -37,7 +37,7 @@ export const Map = (props : any)=> {
 
     // Context
     const { account } = useStarknet();
-    const { tokenId, nonce, updateNonce, populationBusy, populationFree } = useGameContext();
+    const { tokenId, nonce, updateNonce, populationBusy, populationFree, harvestingArr, setHarvesting } = useGameContext();
     const { transactions, removeTransaction } = useNotifTransactionManager()
     const { frameData, updateBuildingFrame, sound } = useSelectContext();
 
@@ -367,13 +367,16 @@ export const Map = (props : any)=> {
                                 frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1
                             }
                         } else if (tx.metadata.method == 'harvest_resources') {
+                            setHarvesting(tx.metadata.posX, tx.metadata.posY, 1)
                             if (frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] == 3) {
                                 frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0
                                 frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0
                                 frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] = 1
                                 frontBlockArray[tx.metadata.posY][tx.metadata.posX][9] = 0
+                                frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1
                             } else {
                                 frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] += 1
+                                frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1
                             }
                         } else if (tx.metadata.method == 'destroy_building') {
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0
@@ -452,6 +455,7 @@ export const Map = (props : any)=> {
                     rightBuildingType={rightBuildingType}
                     position={currBlockPosState}
                     worldType={worldType}
+                    harvestingArr={harvestingArr}
                 />
             }
 

@@ -14,9 +14,10 @@ interface IBlock {
     textureSelected: any
     worldType: any
     level: number;
+    harvestingArr: any[];
 }
 
-export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType, position, frontBlockArray, textureLoader, textureSelected, worldType, level}) : any => {
+export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType, position, frontBlockArray, textureLoader, textureSelected, worldType, level, harvestingArr}) : any => {
 
     const meshRef = useRef<any>()
     const [clicked, setClicked] = useState(false)
@@ -139,10 +140,10 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
             return
         }
         if (meshRef.current && blockValue && textureValue && textureValueSelected) {
-            if (blockValue && (blockValue[0] == position.x && blockValue[1] == position.y && frontBlockArray[blockValue[1]][blockValue[0]][10] == 1) || blockValue[0] == frameData?.posX && blockValue[1] == frameData?.posY) {
+            if (blockValue && frontBlockArray[blockValue[1]][blockValue[0]][10] == 1 && ((blockValue[0] == position.x && blockValue[1] == position.y) || blockValue[0] == frameData?.posX && blockValue[1] == frameData?.posY)) {
                 // Selected not under construction
                 meshRef.current.material.map = localTextureSelected
-            } else if (blockValue && blockValue[0] == position.x && blockValue[1] == position.y && frontBlockArray[blockValue[1]][blockValue[0]][10] == 0) {
+            } else if (blockValue && frontBlockArray[blockValue[1]][blockValue[0]][10] == 0 && ((blockValue[0] == position.x && blockValue[1] == position.y) || blockValue[0] == frameData?.posX && blockValue[1] == frameData?.posY)) {
                 // Selected under construction
                 meshRef.current.material.map = underConstructionSelect
             } else if (blockValue && blockValue[0] && blockValue[1] && frontBlockArray && frontBlockArray[blockValue[1]][blockValue[0]][10] == 0 ){

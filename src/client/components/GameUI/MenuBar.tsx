@@ -2,11 +2,11 @@ import { useStarknet, useStarknetBlock } from "@starknet-react/core";
 import React, { useMemo, useState, useEffect } from "react";
 import { toBN } from "starknet/dist/utils/number";
 import { useGameContext } from "../../hooks/useGameContext";
-// import { ConnectWallet } from "../ConnectWallet";
 import useClaim from "../../hooks/invoke/useClaim";
 import useActiveNotifications from "../../hooks/useNotifications";
 import Notifications from "../Notifications";
 import { allBuildings } from "../../data/buildings";
+import UI_Frames from '../../style/resources/front/Ui_Frames3.svg';
 
 import useResourcesContext from "../../hooks/useResourcesContext";
 import { useSelectContext } from "../../hooks/useSelectContext";
@@ -16,7 +16,7 @@ export function MenuBar() {
   const {account} = useStarknet()
   const { data: block } = useStarknetBlock()
 
-  const {tokenId, updateTokenId, setAddress, blockGame, buildingData, nonce, updateNonce } = useGameContext();
+  const {tokenId, updateTokenId, setAddress, blockGame, buildingData, nonce, updateNonce, counterResources } = useGameContext();
   const {energy, frensCoins, wood, rock, coal, metal, populationBusy, populationFree, meat, cereal} = useResourcesContext();
   const { updateSound, sound } = useSelectContext()
 
@@ -27,6 +27,7 @@ export function MenuBar() {
 
   const [ claiming, setClaiming ] = useState<any>(null)
   const [ btnClaim, setBtnClaim ] = useState(false)
+  const [popUpInit, setPopUpInit] = useState(false)
 
   const [claimableResources, setClaimableResources] = useState<any[]>([])
 
@@ -232,12 +233,9 @@ export function MenuBar() {
               {tokenId && blockClaimable && blockClaimable > 0 ? <div className="btnClaim pixelated" onClick={() => claimResources()} ></div> :  <div className="btnClaimDisabled pixelated"></div> }
             </div>
             <div className="flex jutify-center relative pr-5" style={{ marginTop: "-13px" }}>
-              {tokenId && <div className="btnInit pixelated" onClick={() => reinitializeLand()} >Reinitialize land</div> }
+              {tokenId && <div className="btnInit pixelated" onClick={() => setPopUpInit(true)} ></div> }
             </div>
             <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}></div>
-            {/* <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}>
-              <ConnectWallet />
-            </div> */}
           </div>
             {/* <div 
               className="btnBottom pixelated" 
@@ -249,8 +247,10 @@ export function MenuBar() {
       </div>
       <div className="absolute selectDisable" style={{zIndex: "1", pointerEvents: "none"}}>
         <div className="subBar">
-          <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "284px" }}>2mn 30</div>
-          <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "674px" }}>2mn 30</div>
+          <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "268px" }}>{buildingData && buildingData.total && buildingData.total > 0 ? buildingData.total : 0}</div>
+          <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "452px" }}>{counterResources && counterResources[3] ? counterResources[3] : 0}</div>
+          <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "570px" }}>{counterResources && counterResources[2] ? counterResources[2] : 0}</div>
+          <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "700px" }}>{counterResources && counterResources[27] ? counterResources[27] : 0}</div>
           <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "898px" }}>{buildingData && buildingData.inactive ? Object.keys(buildingData.inactive).length : 0}</div>
           <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "1078px" }}>{buildingData && buildingData.active ? Object.keys(buildingData.active).length : 0}</div>
           <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "1261px" }}>{blockClaimable}</div>
@@ -258,6 +258,19 @@ export function MenuBar() {
       </div>
 
       <Notifications />
+
+      {popUpInit && 
+        <div className="flex justify-center selectDisable">
+        <div className="parentNotifInit">
+          <div className="popUpNotifsAchievement pixelated fontHPxl-sm" style={{zIndex: 1, borderImage: `url(data:image/svg+xml;base64,${btoa(UI_Frames)}) 18 fill stretch` , textAlign: 'center'}}>
+            <div className="closeAchievement" onClick={() => setPopUpInit(false)}></div>
+            <p>Beware fren !!</p><br/>
+            <p>Are you sure you want to reset your land ? You will loose the entirety of your progression (buildings & resources). This action is irreversible, there is no coming back.</p>
+            <div className="btnInit pixelated" onClick={() => reinitializeLand()}></div>
+          </div>
+        </div>
+        </div>
+      }
     </>
   );
 }

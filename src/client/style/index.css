@@ -2,6 +2,10 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+html {
+    scroll-behavior: smooth;
+}
+
 @font-face {
     font-family: '04B_03';
     font-style: normal;
@@ -123,6 +127,7 @@ body {
     border-style: solid;
     border-width: 18px;
     /* border-image-slice: 31 fill; */
+    padding-right: 16px;
 }
 .parentNotifGame {
     z-index: 1;
@@ -231,9 +236,7 @@ body {
 
 .home-s1 {
     background-color: #151d28;
-    /* overflow-y: scroll; */
-    /* overflow: hidden;  */
-    height: 720px;
+    height: 95vh;
     background: url("resources/front/UI_MainScreen.png") no-repeat center top #151d28;
 }
 .home-s2 {
@@ -357,13 +360,50 @@ body {
     width: 190px;
     height: 190px;
 }
+.splashScroll {
+    pointer-events: all;
+    height: auto;
+    width: 100%;
+}
+.nftImg {
+    margin-top: 300px;
+}
+.frensLandsWorld, .frensLandsLogo {
+    pointer-events: none;
+}
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 320px) {
+    .home-s1 {
+        height: 97vh;
+    }
     .frensLandsWorld {
-        margin-top: 220px;
+        margin-top: 160px;
     }
     .frensLandsLogo {
-        margin-top: 0px;
+        margin-top: -40px;
+    }
+    .nftImg {
+        margin-top: 240px;
+        height: 180px;
+    }
+    .roadmapGif {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 321px) and (max-width: 480px) {
+    .home-s1 {
+        height: 97vh;
+    }
+    .frensLandsWorld {
+        margin-top: 150px;
+    }
+    .frensLandsLogo {
+        margin-top: -85px;
+    }
+    .nftImg {
+        margin-top: 240px;
+        height: 180px;
     }
     .roadmapGif {
         display: none;
@@ -372,12 +412,18 @@ body {
 
 @media screen and (min-width: 481px) and (max-width: 768px) {
     .frensLandsWorld {
-        margin-top: 100px;
-        height: 640px;
-        width: 640px;
+        margin-top: 140px;
+        height: auto;
+        width: 500px;
     }
     .frensLandsLogo {
-        margin-top: -150px;
+        margin-top: -110px;
+        height: auto;
+        width: 500px;
+    }
+    .nftImg {
+        margin-top: 240px;
+        height: 180px;
     }
     .roadmapGif {
         display: none;
@@ -387,22 +433,37 @@ body {
 @media screen and (min-width: 769px) and (max-width: 1024px) {
     .frensLandsWorld {
         margin-top: 100px;
-        height: 640px;
-        width: 640px;
+        height: auto;
+        width: 500px;
     }
     .frensLandsLogo {
-        margin-top: -150px;
+        margin-top: -115px;
+        height: auto;
+        width: 500px;
+    }
+    .nftImg {
+        margin-top: 240px;
+        height: 190px;
     }
 }
 
 @media screen and (min-width: 1025px) {
+    .home-s1 {
+        height: 92vh;
+    }
     .frensLandsWorld {
-        margin-top: 150px;
-        height: 640px;
-        width: 640px;
+        margin-top: 120px;
+        height: auto;
+        width: 600px;
     }
     .frensLandsLogo {
-        margin-top: -150px;
+        margin-top: -100px;
+        height: auto;
+        width: 500px;
+    }
+    .nftImg {
+        margin-top: 240px;
+        height: 256px;
     }
 }
 
@@ -665,7 +726,7 @@ body {
 .l2R {
     height: 30px;
     margin-left: 205px;
-    margin-top: -8px;
+    margin-top: 43px;
 }
 .l2noR {
     height: 30px;
@@ -852,6 +913,14 @@ body {
     background-position:calc(13 * 1 * 64px) calc(13 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
 }
+.btnHarvestDisabled {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(11 * 1 * 64px) calc(13 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
 
 
 .btnUpgrade {
@@ -886,6 +955,7 @@ body {
     width:calc(64px * 2);
     background-position:calc(20 * 1 * 64px) calc(20 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
+    margin-top: 30px;
 }
 
 .btnStartProd {
@@ -1461,17 +1531,17 @@ body {
 .btnInit {
     display:inline-block;
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
-    height:calc(64px * 2);
-    width:calc(64px * 3);
-    background-position:calc(4 * 1 * 64px) calc(16 * 1 * 64px);
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(6 * 1 * 64px) calc(17 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
 }
-/* .btnInit:hover {
+.btnInit:hover {
     display:inline-block;
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
     width:calc(64px * 2);
-    background-position:calc(15 * 1 * 64px) calc(14 * 1 * 64px);
+    background-position:calc(4 * 1 * 64px) calc(17 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
 }
 .btnInit:active {
@@ -1479,9 +1549,18 @@ body {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
     height:calc(64px * 1);
     width:calc(64px * 2);
-    background-position:calc(13 * 1 * 64px) calc(14 * 1 * 64px);
+    background-position:calc(2 * 1 * 64px) calc(17 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
-} */
+}
+
+.parentNotifInit {
+    z-index: 1;
+    height: 215px;
+    width: 400px;
+    position: absolute;
+    margin-top: 150px;
+}
+
 
 /* .popUpClaim {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
