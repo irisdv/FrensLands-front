@@ -7,7 +7,7 @@ interface Imaps {
     compArray?: any[]
 }
 
-export default function Resources ({frontBlockArray, textArrRef, rightBuildingType, position, worldType} : any) : any{
+export default function Resources ({frontBlockArray, textArrRef, rightBuildingType, position, worldType, harvestingArr} : any) : any{
 
     const frontBlockArrayValue = useMemo(() => {
         if (frontBlockArray && Object.keys(frontBlockArray).length > 0) {
@@ -89,6 +89,7 @@ export default function Resources ({frontBlockArray, textArrRef, rightBuildingTy
                         textureSelected={textureLoaderSelected} 
                         position={position}
                         worldType={worldType}
+                        harvestingArr={harvestingArr}
                     />
         })
     )

@@ -162,7 +162,7 @@ export default function Play() {
         tempDecomp[7] = parseInt(elem[14]);                     //[current level]
         tempDecomp[8] = parseInt(elem[15]);                     //[activity index or number of days active]
         tempDecomp[9] = 0;                                      //[random ID]
-        tempDecomp[10] = 1                                      // Local : Status of building (1 = built, 0 = en construction)
+        tempDecomp[10] = 1                                      // Local : Status of building (1 = built, 0 = en construction // 1= not harvested, 0 = currently harvested)
         tempDecomp[11] = []                                     // last tx hash
     }
 

@@ -85,6 +85,8 @@ export interface IGameState {
   updateNonce: (nonce : string) => void;
   setAccountContract: (account : any) => void;
   accountContract: any;
+  harvestingArr: any[];
+  setHarvesting: (posX : number, posY: number, status : number) => void;
 }
 
 export const GameState: IGameState = {
@@ -117,7 +119,9 @@ export const GameState: IGameState = {
   nonce: '',
   updateNonce: (nonce) => {},
   setAccountContract: (account) => {},
-  accountContract: null
+  accountContract: null,
+  harvestingArr : [],
+  setHarvesting : (posX, posY, status) => {}
 };
 
 const StateContext = React.createContext(GameState);
@@ -211,6 +215,10 @@ interface SetAccountContract {
   accountContract?: any;
   nonce?: string;
 }
+interface SetHarvestingArr {
+  type : "set_harvestingArr";
+  harvestingArr: any[];
+}
 
 type Action =
   | SetAccount
@@ -228,6 +236,7 @@ type Action =
   | SetBuildingData
   | SetNonce
   | SetAccountContract
+  | SetHarvestingArr
   | SetError;
 
 function reducer(state: IGameState, action: Action): IGameState {
@@ -315,6 +324,9 @@ function reducer(state: IGameState, action: Action): IGameState {
         accountContract: action.accountContract,
         nonce: action.nonce as string
       }
+    }
+    case "set_harvestingArr": {
+      return {...state, harvestingArr: action.harvestingArr}
     }
     case "set_error": {
       throw new Error(`Unhandled action type: ${action.type}`);
@@ -709,6 +721,26 @@ export const AppStateProvider: React.FC<
     }
   }, [state.address, state.accountContract]);
 
+  const setHarvesting = React.useCallback(async (posX: number, posY: number, status: number) => {
+    if (posX && posY && state.harvestingArr && (status == 1 || status == 0) ) {
+      let currArr = state.harvestingArr
+      if (currArr[posY]) {
+        if (currArr[posY][posX]) currArr[posY][posX] = status
+        else {
+          currArr[posY] = []
+          currArr[posY][posX] = status
+        }
+      } else {
+        currArr[posY as number] = []
+        currArr[posY][posX] = status
+      }
+      dispatch({
+        type: "set_harvestingArr",
+        harvestingArr: currArr
+      });
+    }
+  }, [state.harvestingArr]);
+
   return (
     <StateContext.Provider
       value={{
@@ -741,7 +773,9 @@ export const AppStateProvider: React.FC<
         nonce: state.nonce,
         updateNonce,
         accountContract: state.accountContract,
-        setAccountContract
+        setAccountContract,
+        harvestingArr: state.harvestingArr,
+        setHarvesting
       }}
     >
       {props.children}

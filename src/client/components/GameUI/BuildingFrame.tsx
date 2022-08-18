@@ -16,7 +16,7 @@ import { FrameItem } from "./FrameItem";
 
 
 export function BuildingFrame(props: any) {
-  const { tokenId, address, setAddress, updateTokenId, mapArray, buildingData } = useGameContext();
+  const { tokenId, address, setAddress, updateTokenId, mapArray, buildingData, harvestingArr, setHarvesting } = useGameContext();
   const { frensCoins, energy, wood, rock, metal, coal, populationBusy, populationFree, meat, cereal, resources} = useResourcesContext();
   const { account } = useStarknet();
   const { showFrame, frameData, updateBuildingFrame } = useSelectContext();
@@ -62,6 +62,11 @@ export function BuildingFrame(props: any) {
     return nonce
   }, [nonce])
 
+  const harvestingArrValue = useMemo(() => {
+    console.log('new havestingArr Value', harvestingArr)
+    return harvestingArr
+  }, [harvestingArr])
+
   // Test
   // const { data: fetchMapBlock } = useStarknetCall({
   //   contract: worlds,
@@ -104,11 +109,12 @@ export function BuildingFrame(props: any) {
         // if (type_id == 3) setHarvestTreeNb(harvestTreeNb+1)
         // if (type_id == 20) setHarvestMineNb(harvestMineNb+1)
 
-        // console.log('tx hash harvesting resource', )
         tx_hash.then((res) => {
           console.log('res', res)
           if (res != 0) {
             updateNonce(nonceValue)
+            // Change status of harvesting to 0
+            setHarvesting(pos_x, pos_y, 0)
           }
         })
       }
@@ -359,7 +365,12 @@ export function BuildingFrame(props: any) {
             <div style={{ width: "135px", paddingTop: "10px" }}>
               {frameData && (frameData.id == 2 || frameData.id == 3 || frameData.id == 20 || frameData.id == 27 ) &&
                 <>
-                  <div className="btnHarvest" onClick={() => harvestingResources(frameData.id as number, frameData.posX, frameData.posY, frameData.level as number)}></div>
+                  {harvestingArrValue && harvestingArrValue.length > 0 && harvestingArr[frameData.posY] && harvestingArr[frameData.posY][frameData.posX] == 0 ?
+                    <div className="btnHarvestDisabled"></div>
+
+                  :
+                    <div className="btnHarvest" onClick={() => harvestingResources(frameData.id as number, frameData.posX, frameData.posY, frameData.level as number)}></div>
+                  }
                 </>
               }
               {frameData && frameData.id == 1 && frameData.level == 1 &&
