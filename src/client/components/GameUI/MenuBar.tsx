@@ -6,6 +6,7 @@ import useClaim from "../../hooks/invoke/useClaim";
 import useActiveNotifications from "../../hooks/useNotifications";
 import Notifications from "../Notifications";
 import { allBuildings } from "../../data/buildings";
+import UI_Frames from '../../style/resources/front/Ui_Frames3.svg';
 
 import useResourcesContext from "../../hooks/useResourcesContext";
 import { useSelectContext } from "../../hooks/useSelectContext";
@@ -26,6 +27,7 @@ export function MenuBar() {
 
   const [ claiming, setClaiming ] = useState<any>(null)
   const [ btnClaim, setBtnClaim ] = useState(false)
+  const [popUpInit, setPopUpInit] = useState(false)
 
   const [claimableResources, setClaimableResources] = useState<any[]>([])
 
@@ -231,7 +233,7 @@ export function MenuBar() {
               {tokenId && blockClaimable && blockClaimable > 0 ? <div className="btnClaim pixelated" onClick={() => claimResources()} ></div> :  <div className="btnClaimDisabled pixelated"></div> }
             </div>
             <div className="flex jutify-center relative pr-5" style={{ marginTop: "-13px" }}>
-              {tokenId && <div className="btnInit pixelated" onClick={() => reinitializeLand()} >Reinitialize land</div> }
+              {tokenId && <div className="btnInit pixelated" onClick={() => setPopUpInit(true)} ></div> }
             </div>
             <div className="flex jutify-center relative" style={{ marginTop: "-13px" }}></div>
           </div>
@@ -256,6 +258,19 @@ export function MenuBar() {
       </div>
 
       <Notifications />
+
+      {popUpInit && 
+        <div className="flex justify-center selectDisable">
+        <div className="parentNotifInit">
+          <div className="popUpNotifsAchievement pixelated fontHPxl-sm" style={{zIndex: 1, borderImage: `url(data:image/svg+xml;base64,${btoa(UI_Frames)}) 18 fill stretch` , textAlign: 'center'}}>
+            <div className="closeAchievement" onClick={() => setPopUpInit(false)}></div>
+            <p>Beware fren !!</p><br/>
+            <p>Are you sure you want to reinitialize your land ? You will loose the entirety of your progression (buildings & resources). This action is irreversible, there is no coming back.</p>
+            <div className="btnInit pixelated" onClick={() => reinitializeLand()}></div>
+          </div>
+        </div>
+        </div>
+      }
     </>
   );
 }
