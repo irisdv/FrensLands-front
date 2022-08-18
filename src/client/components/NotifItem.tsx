@@ -51,7 +51,7 @@ export function NotifItem(props: any) {
     } else if (content.method == "claim_resources") {
       textNotif = "OUT Claim resources completed."
     } else if (content.method == "build") {
-      textNotif = "OUT Harvest completed for " + allBuildings[content.type_id - 1].name + " " + content.posX + " " + content.posY
+      textNotif = "OUT Build completed for " + allBuildings[content.type_id - 1].name + " " + content.posX + " " + content.posY
     } else if (content.method == "approve") {
       textNotif = "All set, you can now start playing!"
     } else if (content.method == "destroy_building") {
