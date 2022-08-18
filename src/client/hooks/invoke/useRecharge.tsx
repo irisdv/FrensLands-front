@@ -10,7 +10,7 @@ export default function useRecharge() {
 
   const { addTransaction } = useNotifTransactionManager()
 
-  return useCallback(async (tokenId : number, pos_start: number, nb_days: number, building_type_id: number, posX: number, posY: number, uniqueId: number) => {
+  return useCallback(async (tokenId : number, pos_start: number, nb_days: number, building_type_id: number, posX: number, posY: number, uniqueId: number, nonce: string) => {
     if (!contract || !account) {
       throw new Error('Missing Dependencies')
     }
@@ -20,7 +20,7 @@ export default function useRecharge() {
     }
 
     return contract
-      .invoke('recharge_building', [uint256.bnToUint256(tokenId as number), pos_start, nb_days])
+      .invoke('recharge_building', [uint256.bnToUint256(tokenId as number), pos_start, nb_days], {nonce: nonce})
       .then((tx: AddTransactionResponse) => {
         console.log('Transaction hash: ', tx.transaction_hash)
 
@@ -43,6 +43,7 @@ export default function useRecharge() {
       })
       .catch((e) => {
         console.error(e)
+        return (0)
       })
   }, [account, addTransaction, contract])
 }

@@ -21,6 +21,7 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
     const meshRef = useRef<any>()
     const [clicked, setClicked] = useState(false)
     const [localTexture, setLocalTexture] = useState<any>(null)
+    const [localTextureSelected, setLocalTextureSelected] = useState<any>(null)
     const {frameData, updateBuildingFrame} = useSelectContext();
     const rockTextures = [[177, 171, 172], [180, 174, 175], [179, 171, 173]]
     const treeTextures = [
@@ -55,12 +56,6 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
             }
         } else if (block[3] == 1 && block[7] == 1) {
             textureType = findTextByID(2)
-        // } else if (block[3] == 1 && block[7] == 1) {
-        //     textureType = findTextByID(87)
-        // } else if (block[3] == 6) {
-        //     textureType = findTextByID(105)
-        // } else if (block[3] == 11) {
-        //     textureType = findTextByID(85)
         } else {
             textureType = findTextByID(rightBuildingType[block[3]]);
         }
@@ -68,6 +63,26 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
         localT.needsUpdate = true
         localT.offset.set(textureType.x, textureType.y);
         setLocalTexture(localT)
+        return textureType
+    }, [block, blockValue, level])
+
+    const textureValueSelected = useMemo(() => {
+        let textureType : Vector2 = new Vector2(0, 0);
+        if (block[9] > 0) {
+            if (block[3] == 2) {
+                textureType = findTextByID(rockTextures[block[9] - 1][block[7] - 1]);
+            } else {
+                textureType = findTextByID(treeTextures[worldType][block[9] - 1][block[7] - 1]);
+            }
+        } else if (block[3] == 1 && block[7] == 1) {
+            textureType = findTextByID(2)
+        } else {
+            textureType = findTextByID(rightBuildingType[block[3]]);
+        }
+        const localT = textureSelected.clone()
+        localT.needsUpdate = true
+        localT.offset.set(textureType.x, textureType.y);
+        setLocalTextureSelected(localT)
         return textureType
     }, [block, blockValue, level])
 
@@ -123,17 +138,10 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
         if (!meshRef || !meshRef.current) {
             return
         }
-        if (meshRef.current && blockValue && textureValue) {
-            if (blockValue && blockValue[0] == position.x && blockValue[1] == position.y && frontBlockArray[blockValue[1]][blockValue[0]][10] == 1) {
+        if (meshRef.current && blockValue && textureValue && textureValueSelected) {
+            if (blockValue && (blockValue[0] == position.x && blockValue[1] == position.y && frontBlockArray[blockValue[1]][blockValue[0]][10] == 1) || blockValue[0] == frameData?.posX && blockValue[1] == frameData?.posY) {
                 // Selected not under construction
-                if (block[9] > 0 && block[3] == 3 && worldType > 0) {
-                    let textureType : Vector2 = new Vector2(0, 0);
-                    textureType = findTextByID(treeTextures[worldType][block[9] - 1][block[7] - 1])
-                    textureSelected.offset.set(textureType.x, textureType.y);
-                } else {
-                    textureSelected.offset.set(textureValue.x, textureValue.y);
-                }
-                meshRef.current.material.map = textureSelected
+                meshRef.current.material.map = localTextureSelected
             } else if (blockValue && blockValue[0] == position.x && blockValue[1] == position.y && frontBlockArray[blockValue[1]][blockValue[0]][10] == 0) {
                 // Selected under construction
                 meshRef.current.material.map = underConstructionSelect

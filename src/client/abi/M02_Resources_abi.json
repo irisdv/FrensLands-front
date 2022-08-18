@@ -78,21 +78,6 @@
     {
         "data": [
             {
-                "name": "previousOwner",
-                "type": "felt"
-            },
-            {
-                "name": "newOwner",
-                "type": "felt"
-            }
-        ],
-        "keys": [],
-        "name": "OwnershipTransferred",
-        "type": "event"
-    },
-    {
-        "data": [
-            {
                 "name": "owner",
                 "type": "felt"
             },
@@ -123,34 +108,7 @@
     {
         "inputs": [
             {
-                "name": "admin_addr",
-                "type": "felt"
-            }
-        ],
-        "name": "constructor",
-        "outputs": [],
-        "type": "constructor"
-    },
-    {
-        "inputs": [
-            {
-                "name": "address_m3",
-                "type": "felt"
-            },
-            {
-                "name": "address_m1",
-                "type": "felt"
-            },
-            {
-                "name": "erc1155_address",
-                "type": "felt"
-            },
-            {
-                "name": "gold_erc20_address",
-                "type": "felt"
-            },
-            {
-                "name": "maps_addr",
+                "name": "address_of_controller",
                 "type": "felt"
             }
         ],
@@ -207,7 +165,7 @@
                 "type": "felt"
             }
         ],
-        "name": "_has_resources",
+        "name": "has_resources",
         "outputs": [
             {
                 "name": "bool",
@@ -395,6 +353,21 @@
             }
         ],
         "name": "_update_energy",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "tokenId",
+                "type": "Uint256"
+            },
+            {
+                "name": "caller",
+                "type": "felt"
+            }
+        ],
+        "name": "_reinitialize_resources",
         "outputs": [],
         "type": "function"
     }

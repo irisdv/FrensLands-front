@@ -7,6 +7,6 @@ export function useERC1155Contract() {
   return useContract({
     abi: ERC1155Abi as Abi,
     address:
-      "0x018ab1a2888a584ff7a7b2122c6a8e22b95918e06f338024fc160000fa4ebf3f",
+      "0x0793db0827a27dd9d4147be13ffaf9d7fa01abce0c2019e2a560af41de6d975c",
   });
 }

@@ -2,25 +2,25 @@ import { useStarknet } from '@starknet-react/core'
 import { useCallback } from 'react'
 import { AddTransactionResponse, uint256 } from 'starknet'
 import { useNotifTransactionManager } from '../../providers/transactions'
-import { useBuildingsContract } from '../contracts/buildings'
+import { useWorldsContract } from '../contracts/worlds'
 
-export default function useDestroy() {
+export default function useReinitialize() {
   const { account } = useStarknet()
-  const { contract } = useBuildingsContract()
+  const { contract } = useWorldsContract()
 
   const { addTransaction } = useNotifTransactionManager()
 
-  return useCallback(async (tokenId : number, pos_start: number, building_type_id: number, posX: number, posY: number, uniqueId: number, nonce : string) => {
+  return useCallback(async (tokenId : number, nonce: string) => {
     if (!contract || !account) {
       throw new Error('Missing Dependencies')
     }
 
-    if (!tokenId || tokenId == 0 || !pos_start ) {
+    if (!tokenId || tokenId == 0) {
         throw new Error('Missing Arguments')
     }
 
     return contract
-      .invoke('destroy', [uint256.bnToUint256(tokenId as number), pos_start], {nonce: nonce})
+      .invoke('reinitialize_game', [uint256.bnToUint256(tokenId as number)], {nonce: nonce})
       .then((tx: AddTransactionResponse) => {
         console.log('Transaction hash: ', tx.transaction_hash)
 
@@ -29,12 +29,8 @@ export default function useDestroy() {
           transactionHash: tx.transaction_hash,
           address: account,
           metadata: {
-            method: "destroy_building",
-            message: "Destroying building",
-            posX: posX,
-            posY: posY,
-            uniqueId: uniqueId,
-            type_id: building_type_id
+            method: "reinitialize",
+            message: "Reinitialize land",
           }
         })
 

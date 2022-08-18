@@ -5,7 +5,7 @@ export const allAchievements: Achievement[] = [
         level: 1,
         goal: "Repair your cabin",
         goalDesc: "To repair your cabin you'll need wood. Start by harvesting some trees!",
-        description: `gm fren, welcome in Frend Lands ! We'll walk you through the first steps to play this pre-alpha version. If you don't want to see these updates in the future you can disable them by clicking on the checkbox on the top right side of your screen.`,
+        description: "Welcome to Frend Lands ! We'll walk you through the first steps to play this pre-alpha version. If you don't want to see these updates in the future you can disable them by clicking on the checkbox on the top right side of your screen.",
         unlock: []
     },
     {
@@ -27,7 +27,7 @@ export const allAchievements: Achievement[] = [
         goal: "Build a bakery & a grocery shop",
         goalDesc: "Your frens have to go a long way out of your community to get some basic products, you need to build a grocery shop & a bakery",
         description: "You can now produce energy! Your coal plant is recharged for the next 3 blocks then you can fuel it. It will bring you 2 energy / block.",
-        unlock: [7, 8, 18, 19]
+        unlock: [7, 8, 18, 19, 25, 26]
     },
     {
         level: 5,

@@ -1,6 +1,6 @@
 import React, { useReducer, useEffect, useState, useCallback } from "react";
 import * as starknet from "starknet";
-import { uint256 } from "starknet";
+import { uint256, Account, defaultProvider, stark, KeyPair } from "starknet";
 import { toBN } from "starknet/dist/utils/number";
 import { useBuildingsContract } from "../hooks/contracts/buildings";
 import { useWorldsContract } from "../hooks/contracts/worlds";
@@ -79,6 +79,10 @@ export interface IGameState {
   updateTokenId: (id: string) => void;
   fetchMapType: (id: string) => void;
   buildingData?: IBuildingData;
+  nonce: string;
+  updateNonce: (nonce : string) => void;
+  setAccountContract: (account : any) => void;
+  accountContract: any;
 }
 
 export const GameState: IGameState = {
@@ -107,6 +111,10 @@ export const GameState: IGameState = {
   updateTokenId: () => {},
   fetchMapType: (id) => {},
   buildingData: {"active": [], "inactive": []},
+  nonce: '',
+  updateNonce: (nonce) => {},
+  setAccountContract: (account) => {},
+  accountContract: null
 };
 
 const StateContext = React.createContext(GameState);
@@ -189,6 +197,15 @@ interface SetBuildingData {
   inactive?: [];
   active?: [];
 }
+interface SetNonce {
+  type: "set_nonce";
+  nonce: string;
+}
+interface SetAccountContract {
+  type : "set_accountContract";
+  accountContract?: any;
+  nonce?: string;
+}
 
 type Action =
   | SetAccount
@@ -204,6 +221,8 @@ type Action =
   | SetLastUpdatedAt
   | SetMapType
   | SetBuildingData
+  | SetNonce
+  | SetAccountContract
   | SetError;
 
 function reducer(state: IGameState, action: Action): IGameState {
@@ -278,6 +297,16 @@ function reducer(state: IGameState, action: Action): IGameState {
     case "set_mapType": {
       return {...state, mapType: state.mapType}
     }
+    case "set_nonce": {
+      console.log('set_nonce', action.nonce)
+      return {...state, nonce: action.nonce as string}
+    }
+    case "set_accountContract": {
+      return {...state, 
+        accountContract: action.accountContract,
+        nonce: action.nonce as string
+      }
+    }
     case "set_error": {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -305,7 +334,6 @@ export const AppStateProvider: React.FC<
 
   const [state, dispatch] = useReducer(reducer, GameState);
   const value = React.useMemo(() => [state, dispatch], [state])
-  // [state, dispatch] = useReducer(reducer, GameState);
 
   const fetchBlock = useCallback(() => {
     if (library) {
@@ -463,7 +491,6 @@ export const AppStateProvider: React.FC<
             ],
             [uint256.bnToUint256(0), uint256.bnToUint256(1), uint256.bnToUint256(2), uint256.bnToUint256(3), uint256.bnToUint256(5), uint256.bnToUint256(6), uint256.bnToUint256(8)]
           ]);
-          // console.log('_erc1155Balance', uint256.uint256ToBN(_erc1155Balance[0][1]).toNumber())
           dispatch({
             type: "set_erc1155Res",
             wood: uint256.uint256ToBN(_erc1155Balance[0][1]).toNumber(),
@@ -631,6 +658,38 @@ export const AppStateProvider: React.FC<
     }
   }, [state.address, state.tokenId]);
 
+  const updateNonce = React.useCallback(async (nonce: string) => {
+    console.log('state.nonce', nonce)
+    if (nonce) {
+        console.log('updating nonce to', (parseInt(nonce, 16) + 1).toString(16))
+        dispatch({
+          type: "set_nonce",
+          nonce: "0x" + (parseInt(nonce, 16) + 1).toString(16),
+        });
+    }
+  }, [state.nonce]);
+
+  const setAccountContract = React.useCallback(async (account : any) => {
+
+    let _currNonce;
+    if (account) {
+      console.log('state.address', account)
+      try {
+        _currNonce = await account.getNonce()
+        console.log('_currNonce', _currNonce)
+        // console.log('nonce', "0x" + (parseInt(_currNonce, 16) + 1).toString(16))
+        dispatch({
+          type: "set_accountContract",
+          accountContract: account,
+          nonce: _currNonce
+        });
+      } catch (e) {
+        console.warn("Error when retrieving get nonce of account");
+        console.warn(e);
+      }
+    }
+  }, [state.address, state.accountContract]);
+
   return (
     <StateContext.Provider
       value={{
@@ -658,7 +717,11 @@ export const AppStateProvider: React.FC<
         setAddress,
         updateTokenId,
         fetchMapType,
-        buildingData: state.buildingData
+        buildingData: state.buildingData,
+        nonce: state.nonce,
+        updateNonce,
+        accountContract: state.accountContract,
+        setAccountContract
       }}
     >
       {props.children}

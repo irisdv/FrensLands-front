@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { useContextBridge } from '@react-three/drei';
+import { PositionalAudio, useContextBridge } from '@react-three/drei';
 import * as THREE from "three";
 
 import { Terrain } from './Terrain';
@@ -30,7 +30,7 @@ export const Scene = (props : any) => {
     const [mouseMiddlePressed, setMouseMiddlePressed] = useState(0)
     const [frontBlockArray, setFrontBlockArray] = useState([])
 
-    var mouseWheelPropTest = 0
+    // var mouseWheelPropTest = 0
 
     const [keyMap, setKeyMap] = useState({
         Escape: false,
@@ -134,6 +134,11 @@ export const Scene = (props : any) => {
             <TerrainBackground />
             <Terrain worldType={worldType}  />
             <TerrainBorder worldType={worldType}  />
+            {/* <PositionalAudio
+                url="resources/sounds/ogg/FrensLand_MenuTheme.ogg"
+                distance={1}
+                loop
+            /> */}
         </Canvas>
 
     </>

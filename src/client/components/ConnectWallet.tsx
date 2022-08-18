@@ -1,35 +1,35 @@
-import React, { useMemo } from "react";
-// import { useStarknet, useConnectors } from "@starknet-react/core";
-import { useStarknet, InjectedConnector } from "@starknet-react/core";
+import React from "react";
+import { useStarknet, useConnectors, InjectedConnector } from "@starknet-react/core";
 
 export function ConnectWallet() {
-  // const { account } = useStarknet();
-  // const { available, connect, disconnect } = useConnectors();
-  const { account, connect, connectors, disconnect } = useStarknet();
-  const injected = useMemo(() => new InjectedConnector(), []);
+  const { account } = useStarknet();
+  const { available, connect, disconnect, connectors } = useConnectors();
 
-  if (account) {
-    return (
-      <div>
-        {/* <p>Account: {account}</p>
-        <button onClick={() => disconnect()}>Disconnect</button> */}
-      </div>
-    );
-  }
+  const manualConnectors = [
+    new InjectedConnector({
+      options: { id: "argent-x" },
+    }),
+    new InjectedConnector({ options: { id: "braavos" } }),
+  ];
+
+
+  // if (account) {
+  //   return (
+  //     <div>
+  //       <p>Account: {account}</p>
+  //       <button onClick={() => disconnect()}>Disconnect</button>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div>
-      {/* {available.map((connector) => (
-        <button key={connector.id()} onClick={() => connect(connector)}>
-          {`Connect ${connector.name()}`}
+      <button key={0} onClick={() => connect(manualConnectors[0])} className="relative mx-auto btnPlay pixelated" style={{marginTop: '300px'}}>
+        </button>
+      {/* {manualConnectors.map((connector, index) => (
+        <button key={index} onClick={() => connect(connector)} className="relative mx-auto btnPlay pixelated" style={{marginTop: '300px'}}>
         </button>
       ))} */}
-      {connectors.map((connector) =>
-        connector.available() ? (
-          <button className="relative mx-auto btnPlay pixelated" style={{marginTop: '300px'}} key={connector.id()} onClick={() => connect(connector)}>
-          </button>
-        ) : null
-      )}
     </div>
   );
 }

@@ -171,23 +171,7 @@
     {
         "inputs": [
             {
-                "name": "m01_addr",
-                "type": "felt"
-            },
-            {
-                "name": "m02_addr",
-                "type": "felt"
-            },
-            {
-                "name": "erc1155_addr",
-                "type": "felt"
-            },
-            {
-                "name": "maps_addr",
-                "type": "felt"
-            },
-            {
-                "name": "gold_addr",
+                "name": "address_of_controller",
                 "type": "felt"
             }
         ],
@@ -546,6 +530,21 @@
             }
         ],
         "name": "update_building_claimed_data",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "tokenId",
+                "type": "Uint256"
+            },
+            {
+                "name": "caller",
+                "type": "felt"
+            }
+        ],
+        "name": "_reinitialize_buildings",
         "outputs": [],
         "type": "function"
     }

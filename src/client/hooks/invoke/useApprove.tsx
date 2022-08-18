@@ -12,7 +12,7 @@ export default function useApprove() {
 
   const { addTransaction } = useNotifTransactionManager()
 
-  return useCallback(async () => {
+  return useCallback(async (nonce: string) => {
     if (!contract || !account) {
       throw new Error('Missing Dependencies')
     }
@@ -36,6 +36,7 @@ export default function useApprove() {
       })
       .catch((e) => {
         console.error(e)
+        return (0)
       })
   }, [account, addTransaction, contract])
 }

@@ -55,6 +55,22 @@
                 "type": "felt"
             }
         ],
+        "name": "get_bushes",
+        "outputs": [
+            {
+                "name": "land",
+                "type": "felt"
+            }
+        ],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "idx",
+                "type": "felt"
+            }
+        ],
         "name": "get_rocks",
         "outputs": [
             {
@@ -113,38 +129,7 @@
     {
         "inputs": [
             {
-                "name": "admin_addr",
-                "type": "felt"
-            }
-        ],
-        "name": "constructor",
-        "outputs": [],
-        "type": "constructor"
-    },
-    {
-        "inputs": [
-            {
-                "name": "address_m3",
-                "type": "felt"
-            },
-            {
-                "name": "address_m2",
-                "type": "felt"
-            },
-            {
-                "name": "erc1155_address",
-                "type": "felt"
-            },
-            {
-                "name": "gold_erc20_address",
-                "type": "felt"
-            },
-            {
-                "name": "minter_addr",
-                "type": "felt"
-            },
-            {
-                "name": "maps_addr",
+                "name": "address_of_controller",
                 "type": "felt"
             }
         ],
@@ -166,6 +151,17 @@
             }
         ],
         "name": "start_game",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "tokenId",
+                "type": "Uint256"
+            }
+        ],
+        "name": "reinitialize_game",
         "outputs": [],
         "type": "function"
     },
