@@ -127,6 +127,7 @@ body {
     border-style: solid;
     border-width: 18px;
     /* border-image-slice: 31 fill; */
+    padding-right: 16px;
 }
 .parentNotifGame {
     z-index: 1;
