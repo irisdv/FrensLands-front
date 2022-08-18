@@ -265,7 +265,7 @@ export function MenuBar() {
           <div className="popUpNotifsAchievement pixelated fontHPxl-sm" style={{zIndex: 1, borderImage: `url(data:image/svg+xml;base64,${btoa(UI_Frames)}) 18 fill stretch` , textAlign: 'center'}}>
             <div className="closeAchievement" onClick={() => setPopUpInit(false)}></div>
             <p>Beware fren !!</p><br/>
-            <p>Are you sure you want to reinitialize your land ? You will loose the entirety of your progression (buildings & resources). This action is irreversible, there is no coming back.</p>
+            <p>Are you sure you want to reset your land ? You will loose the entirety of your progression (buildings & resources). This action is irreversible, there is no coming back.</p>
             <div className="btnInit pixelated" onClick={() => reinitializeLand()}></div>
           </div>
         </div>

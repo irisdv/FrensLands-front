@@ -201,7 +201,7 @@ export const allBuildings: Building[] = [
         id: 4,
         name: "House",
         category: "Housing",
-        description: "Houses bring new frens into your community.",
+        description: "Houses bring 2 new frens into your community.",
         level: 2,
         cost_update: [
             {
@@ -227,7 +227,7 @@ export const allBuildings: Building[] = [
         id: 5,
         name: "Appartment",
         category: "Housing",
-        description: "Appartments bring new frens into your community.",
+        description: "Appartments bring 6 new frens into your community.",
         level: 7,
         cost_update: [
             {
@@ -261,7 +261,7 @@ export const allBuildings: Building[] = [
         id: 6,
         name: "Hotel",
         category: "Housing",
-        description: "Hotels attracts new frens into your community.",
+        description: "Hotels attracts new frens into your community. It's also a good way to earn Frens coins.",
         level: 8,
         cost_update: [
             {
@@ -393,7 +393,7 @@ export const allBuildings: Building[] = [
         id: 8,
         name: "Grocery shop",
         category: "Shops",
-        description: "Everything you need is in the grocery shop.",
+        description: "Everything you need is in the grocery shop. You need to have 2 frens available to build a grocery shop.",
         level: 3,
         cost_update: [
             {
@@ -453,7 +453,7 @@ export const allBuildings: Building[] = [
         id: 9,
         name: "Restaurant",
         category: "Shops",
-        description: "A nice restaurant for your frens.",
+        description: "A nice restaurant for your frens. You need to have 4 frens available to build a restaurant.",
         level: 5,
         cost_update: [
             {
@@ -517,7 +517,7 @@ export const allBuildings: Building[] = [
         id: 10,
         name: "Mall",
         category: "Shops",
-        description: "Lorem ipsum dolor sit amet.",
+        description: "Your frens will spend their weekends shopping at the mall. You need 16 frens available to build a mall.",
         level: 8,
         cost_update: [
             {
@@ -589,7 +589,7 @@ export const allBuildings: Building[] = [
         id: 11,
         name: "Bar",
         category: "Entertainment",
-        description: "Lorem ipsum dolor sit amet.",
+        description: "It's happy hour all the time in Frens Lands ! You need 4 available frens to build a bar.",
         level: 5,
         cost_update: [
             {
@@ -653,7 +653,7 @@ export const allBuildings: Building[] = [
         id: 12,
         name: "Library",
         category: "Entertainment",
-        description: "Sundays can be spent peacefully at the library.",
+        description: "Sundays can be spent peacefully at the library. You need 8 frens available to build a library.",
         level: 7,
         cost_update: [
             {
@@ -729,7 +729,7 @@ export const allBuildings: Building[] = [
         id: 13,
         name: "Swimming Pool",
         category: "Entertainment",
-        description: "Sundays can be spent peacefully at the library.",
+        description: "Build a pool for your frens. You need to have 4 available frens to build a swimming pool.",
         level: 8,
         cost_update: [
             {
@@ -801,7 +801,7 @@ export const allBuildings: Building[] = [
         id: 14,
         name: "Cinema",
         category: "Entertainment",
-        description: "Lorem ipsum",
+        description: "Organize movie nights! You need 6 available frens to build a cinema.",
         level: 8,
         cost_update: [
             {
@@ -869,7 +869,7 @@ export const allBuildings: Building[] = [
         id: 15,
         name: "Market",
         category: "Shop",
-        description: "Lorem ipsum",
+        description: "All the resources can be found in the market. You need 12 available frens to build a market.",
         level: 7,
         cost_update: [
             {
@@ -945,7 +945,7 @@ export const allBuildings: Building[] = [
         id: 16,
         name: "Wheat Farm",
         category: "Agriculture",
-        description: "Lorem ipsum",
+        description: "Produce food with the wheat farm. You need 5 available frens to build a wheat farm.",
         level: 2,
         cost_update: [
             {
@@ -1001,7 +1001,7 @@ export const allBuildings: Building[] = [
         id: 17,
         name: "Vegetable Farm",
         category: "Agriculture",
-        description: "Lorem ipsum",
+        description: "Produce food with the vegetable farm. You need 7 available frens to build a vegetable farm.",
         level: 7,
         cost_update: [
             {
@@ -1061,7 +1061,7 @@ export const allBuildings: Building[] = [
         id: 18,
         name: "Cow Farm",
         category: "Agriculture",
-        description: "Lorem ipsum",
+        description: "Produce food with the cow farm. You need 5 available frens to build a wheat farm.",
         level: 4,
         cost_update: [
             {
@@ -1113,7 +1113,7 @@ export const allBuildings: Building[] = [
         id: 19,
         name: "Tree Farm",
         category: "Agriculture",
-        description: "Lorem ipsum",
+        description: "Produce wood with the tree farm. You need 9 available frens to build a tree farm.",
         level: 4,
         cost_update: [
             {
@@ -1185,7 +1185,7 @@ export const allBuildings: Building[] = [
         id: 20,
         name: "Mine",
         category: "Mining",
-        description: "Lorem ipsum",
+        description: "This mine can be harvested 3 times. It will bring you rocks, metal and coal. You need to have 3 frens available to harvest this mine.",
         level: 0,
         daily_cost: [
             {
@@ -1292,7 +1292,7 @@ export const allBuildings: Building[] = [
         id: 21,
         name: "Coal Plant",
         category: "Energy",
-        description: "Lorem ipsum",
+        description: "Coal plants are a good way to produce energy. You need 3 available frens to build a coal plant.",
         level: 3,
         cost_update: [
             {
@@ -1352,7 +1352,7 @@ export const allBuildings: Building[] = [
         id: 22,
         name: "Police Station",
         category: "Security",
-        description: "Lorem ipsum",
+        description: "Police station make your community more secure. You need to build a police station for every 20 buildings built in your community.",
         level: 6,
         cost_update: [
             {
@@ -1407,7 +1407,7 @@ export const allBuildings: Building[] = [
         id: 23,
         name: "Hospital",
         category: "Security",
-        description: "Lorem ipsum",
+        description: "Building a hospital increases the trust and well being of your community. You need 20 frens available to build a hospital.",
         level: 7,
         cost_update: [
             {
@@ -1483,7 +1483,7 @@ export const allBuildings: Building[] = [
         id: 24,
         name: "Lab",
         category: "Research",
-        description: "With the lab you can create even more energy. You need 15 frens free to work in your lab.",
+        description: "With the lab you can create even more energy. You need to have 15 frens available to work in your lab.",
         level: 8,
         cost_update: [
             {
