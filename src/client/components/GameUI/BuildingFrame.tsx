@@ -136,6 +136,7 @@ export function BuildingFrame(props: any) {
         console.log('res', res)
         if (res != 0) {
           updateNonce(nonceValue)
+          setHarvesting(pos_x, pos_y, 0)
         }
       })
     } else {
@@ -175,6 +176,7 @@ export function BuildingFrame(props: any) {
         console.log('res', res)
         if (res != 0) {
           updateNonce(nonceValue)
+          setHarvesting(pos_x, pos_y, 0)
         }
       })
     } else {
@@ -417,7 +419,8 @@ export function BuildingFrame(props: any) {
           </div>
         </div>
 
-        {/* <div className={"grid grid-cols-2 "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5) && frameData.unique_id ? "l1R" : "l1noR" }`}>
+        {frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5) && !frameData.unique_id ?
+        <div className="grid grid-cols-2 l1noR">
           <div className="relative flex justify-end items-center inline-block" style={{ width: "115px", marginTop: "-21px" }}>
             {frameData && frameData.id && dailyCosts && dailyCosts.length > 0 &&
               Object.keys(dailyCosts).map((elem : any) => {
@@ -425,7 +428,8 @@ export function BuildingFrame(props: any) {
               })
             }
           </div>
-        </div> */}
+        </div>
+        : <></>}
         <div className={"grid grid-cols-2 "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5) && frameData.unique_id ? "l2R" : "l2noR" }`}>
           <div className="relative flex justify-end items-center inline-block" style={{ width: "122px", marginTop: "-22px" }}>
 
