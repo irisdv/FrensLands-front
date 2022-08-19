@@ -136,6 +136,7 @@ export function BuildingFrame(props: any) {
         console.log('res', res)
         if (res != 0) {
           updateNonce(nonceValue)
+          setHarvesting(pos_x, pos_y, 0)
         }
       })
     } else {
@@ -175,6 +176,7 @@ export function BuildingFrame(props: any) {
         console.log('res', res)
         if (res != 0) {
           updateNonce(nonceValue)
+          setHarvesting(pos_x, pos_y, 0)
         }
       })
     } else {

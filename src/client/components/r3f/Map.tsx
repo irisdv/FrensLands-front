@@ -379,11 +379,13 @@ export const Map = (props : any)=> {
                                 frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1
                             }
                         } else if (tx.metadata.method == 'destroy_building') {
+                            setHarvesting(tx.metadata.posX, tx.metadata.posY, 1)
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] = 1
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][9] = 0
                         } else if (tx.metadata.method == 'upgrade') {
+                            setHarvesting(tx.metadata.posX, tx.metadata.posY, 1)
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] += 1
                         }
                     }
@@ -398,7 +400,7 @@ export const Map = (props : any)=> {
         if (rejectedTxList) {
             txList.map((tx) => {
                 // TX for upgrades 
-                if (tx.status == 'REJECTED' && (tx.metadata.method == 'upgrade' || tx.metadata.method == 'build' || tx.metadata.method == 'harvest')) {
+                if (tx.status == 'REJECTED') {
 
                     let _txExists : {} = {};
                     if (Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11]).length > 0) {
@@ -408,12 +410,22 @@ export const Map = (props : any)=> {
                     if (Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11]).length == 0 || !_txExists) {
                         frontBlockArray[tx.metadata.posY][tx.metadata.posX][11].push(tx.transactionHash)
 
-                        if (frontBlockArray[tx.metadata.posY][tx.metadata.posX] && frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] == 0 ) {
+                        if (tx.metadata.method == 'build') {
+                            if (frontBlockArray[tx.metadata.posY][tx.metadata.posX] && frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] == 0 ) {
+                                frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1
+                                frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0
+                                frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0
+                            }
+                        } else if (tx.metadata.method == 'harvest_resources') {
+                            setHarvesting(tx.metadata.posX, tx.metadata.posY, 1)
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1
-                            frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0
-                            frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0
+                        } else if (tx.metadata.method == 'destroy_building') {
+                            setHarvesting(tx.metadata.posX, tx.metadata.posY, 1)
+                            frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1
+                        } else if (tx.metadata.method == 'upgrade') {
+                            setHarvesting(tx.metadata.posX, tx.metadata.posY, 1)
+                            frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1
                         }
-
                     }
                 }
             })
@@ -455,7 +467,6 @@ export const Map = (props : any)=> {
                     rightBuildingType={rightBuildingType}
                     position={currBlockPosState}
                     worldType={worldType}
-                    harvestingArr={harvestingArr}
                 />
             }
 

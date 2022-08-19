@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import THREE, { Vector2 } from "three";
 
 import {useSelectContext} from '../../hooks/useSelectContext'
+import {useGameContext} from '../../hooks/useGameContext'
 
 interface IBlock {
     block: any
@@ -14,16 +15,19 @@ interface IBlock {
     textureSelected: any
     worldType: any
     level: number;
-    harvestingArr: any[];
+    clockTextureLoader: any;
 }
 
-export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType, position, frontBlockArray, textureLoader, textureSelected, worldType, level, harvestingArr}) : any => {
+export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType, position, frontBlockArray, textureLoader, textureSelected, worldType, level, clockTextureLoader}) : any => {
 
     const meshRef = useRef<any>()
+    const clockRef = useRef<any>()
     const [clicked, setClicked] = useState(false)
     const [localTexture, setLocalTexture] = useState<any>(null)
     const [localTextureSelected, setLocalTextureSelected] = useState<any>(null)
+    const [localTextureClock, setLocalTextureClock] = useState<any>(null)
     const {frameData, updateBuildingFrame} = useSelectContext();
+    const {harvestingArr} = useGameContext()
     const rockTextures = [[177, 171, 172], [180, 174, 175], [179, 171, 173]]
     const treeTextures = [
         [[15, 126, 128], [16, 119, 127], [30, 120, 127]],
@@ -39,6 +43,12 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
             return frameData
         }
     }, [clicked])
+
+    const harvestArrValue = useMemo(() => {
+        if (harvestingArr) {
+            return harvestingArr
+        }
+    }, [harvestingArr])
 
     const blockValue = useMemo(() => {
         if (block && block.length > 0) {
@@ -111,6 +121,39 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
         }
     }, [textureValue])
 
+    const clockTexture = useMemo(() => {
+        if (textureLoader) {
+            let textureType = findTextByID(241);
+            const localT = textureLoader.clone()
+            localT.needsUpdate = true
+            localT.offset.set(textureType.x, textureType.y);
+
+            return localT
+        }
+    }, [clockTextureLoader])
+
+    const clockTextureHovered = useMemo(() => {
+        if (textureLoader) {
+            let textureType = findTextByID(242);
+            const localT = textureLoader.clone()
+            localT.needsUpdate = true
+            localT.offset.set(textureType.x, textureType.y);
+
+            return localT
+        }
+    }, [clockTextureLoader])
+
+    const clockEmpty = useMemo(() => {
+        if (textureLoader) {
+            let textureType = findTextByID(196);
+            const localT = textureLoader.clone()
+            localT.needsUpdate = true
+            localT.offset.set(textureType.x, textureType.y);
+
+            return localT
+        }
+    }, [clockTextureLoader])
+
     function findTextByID(type : number)
     {
         var posText = new Vector2();
@@ -139,16 +182,73 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
         if (!meshRef || !meshRef.current) {
             return
         }
-        if (meshRef.current && blockValue && textureValue && textureValueSelected) {
-            if (blockValue && frontBlockArray[blockValue[1]][blockValue[0]][10] == 1 && ((blockValue[0] == position.x && blockValue[1] == position.y) || blockValue[0] == frameData?.posX && blockValue[1] == frameData?.posY)) {
-                // Selected not under construction
-                meshRef.current.material.map = localTextureSelected
-            } else if (blockValue && frontBlockArray[blockValue[1]][blockValue[0]][10] == 0 && ((blockValue[0] == position.x && blockValue[1] == position.y) || blockValue[0] == frameData?.posX && blockValue[1] == frameData?.posY)) {
-                // Selected under construction
-                meshRef.current.material.map = underConstructionSelect
-            } else if (blockValue && blockValue[0] && blockValue[1] && frontBlockArray && frontBlockArray[blockValue[1]][blockValue[0]][10] == 0 ){
-                // Under construction
-                meshRef.current.material.map = underConstruction
+        if (!clockRef || !clockRef.current) {
+            return
+        }
+        if (meshRef.current && clockRef.current && blockValue && textureValue && textureValueSelected) {
+
+            clockRef.current.material.map = clockEmpty
+
+            // Case resource
+            if (blockValue && blockValue[0] && blockValue[1]
+                && (blockValue[3] == 2 || blockValue[3] == 3 || blockValue[3] == 20 || blockValue[3] == 27)
+            ) {
+                // resource selected
+                if (((blockValue[0] == position.x && blockValue[1] == position.y) || blockValue[0] == frameData?.posX && blockValue[1] == frameData?.posY)) {
+                    
+                    meshRef.current.material.map = localTextureSelected
+
+                    if (harvestArrValue && harvestArrValue[blockValue[1]] && harvestArrValue[blockValue[1]][blockValue[0]] == 0) {
+                        clockRef.current.material.map = clockTextureHovered
+                    }
+
+                } else {
+                    meshRef.current.material.map = localTexture
+
+                    if (harvestArrValue && harvestArrValue[blockValue[1]] && harvestArrValue[blockValue[1]][blockValue[0]] == 0) {
+                        clockRef.current.material.map = clockTexture
+                    }
+
+                }
+
+            // Case building
+            } else if (blockValue && blockValue[0] && blockValue[1]
+                && (blockValue[3] != 2 && blockValue[3] != 3 && blockValue[3] != 20 && blockValue[3] != 27)
+            ) { 
+                // Building is selected / hovered
+                if ((blockValue[0] == position.x && blockValue[1] == position.y) || blockValue[0] == frameData?.posX && blockValue[1] == frameData?.posY) {
+
+                    // building under construction
+                    if (frontBlockArray[blockValue[1]][blockValue[0]][10] == 0) {
+                        meshRef.current.material.map = underConstructionSelect
+                    
+                    // building upgraded or destroyed
+                    } else if (frontBlockArray[blockValue[1]][blockValue[0]][10] == 1
+                        && harvestArrValue && harvestArrValue[blockValue[1]] 
+                        && harvestArrValue[blockValue[1]][blockValue[0]] == 0
+                    ) {
+                        meshRef.current.material.map = underConstructionSelect
+                    
+                    } else {
+                        meshRef.current.material.map = localTextureSelected
+                    }
+
+                // building is not selected hovered
+                } else {
+                    // building under construction
+                    if (frontBlockArray[blockValue[1]][blockValue[0]][10] == 0) {
+                        meshRef.current.material.map = underConstruction
+                    
+                    // building upgraded destroyed
+                    } else if (frontBlockArray[blockValue[1]][blockValue[0]][10] == 1
+                        && harvestArrValue && harvestArrValue[blockValue[1]] 
+                        && harvestArrValue[blockValue[1]][blockValue[0]] == 0
+                    ) {
+                        meshRef.current.material.map = underConstruction
+                    } else {
+                        meshRef.current.material.map = localTexture
+                    }
+                }
             } else {
                 meshRef.current.material.map = localTexture
             }
@@ -156,6 +256,10 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
     })
 
     if (!meshRef) {
+        return (<></>)
+    }
+
+    if (!clockRef) {
         return (<></>)
     }
 
@@ -176,6 +280,29 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
                 attach="material"
                 map={localTexture}
                 name={`${blockValue[4]}`.toString()+"_mat"}
+                transparent={true}
+                depthWrite={false}
+                depthTest={true}
+            />
+        </mesh>
+
+
+        {/* Clock texture resources being harvested */}
+        <mesh
+            ref={clockRef}
+            position={[blockValue[0] + 0.5, 0.2 + (blockValue[1] * 0.02), blockValue[1] - 0.7]}
+            name={`${blockValue[4]}`.toString()+"_clock"}
+            rotation={[-Math.PI * 0.5, 0, 0]}
+        >
+            <planeBufferGeometry
+                name={`${blockValue[4]}`.toString()+"_geom_clock"}
+                attach="geometry"
+                args={[3.5, 3.5, 1, 1]}
+            />
+            <meshStandardMaterial
+                attach="material"
+                map={clockTexture}
+                name={`${blockValue[4]}`.toString()+"_mat_clock"}
                 transparent={true}
                 depthWrite={false}
                 depthTest={true}

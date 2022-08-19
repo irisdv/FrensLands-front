@@ -724,14 +724,11 @@ export const AppStateProvider: React.FC<
   const setHarvesting = React.useCallback(async (posX: number, posY: number, status: number) => {
     if (posX && posY && state.harvestingArr && (status == 1 || status == 0) ) {
       let currArr = state.harvestingArr
-      if (currArr[posY]) {
-        if (currArr[posY][posX]) currArr[posY][posX] = status
-        else {
-          currArr[posY] = []
+      console.log('currArr', currArr)
+      if (currArr && currArr[posY] != undefined) {
           currArr[posY][posX] = status
-        }
       } else {
-        currArr[posY as number] = []
+        currArr[posY] = []
         currArr[posY][posX] = status
       }
       dispatch({
