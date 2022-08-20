@@ -603,17 +603,17 @@ export const AppStateProvider: React.FC<
             _energyLevel = await resources.call("get_energy_level", [
               uint256.bnToUint256(state.tokenId),
             ]);
-            // console.log('_energyLevel', _energyLevel)
+            // console.log('_energyLevel', toBN(_energyLevel[0]).toNumber())
             dispatch({
               type: "set_energy",
-              energy: uint256.uint256ToBN(_energyLevel[0]).toNumber()
+              energy: toBN(_energyLevel[0]).toNumber()
             });
           } catch (e) {
             console.warn("Error when retrieving get_energy_level in M02_Resources");
             console.warn(e);
           }
         }
-    }, [state.address]);
+    }, [state.address, state.tokenId]);
 
     const refreshBlockGame = React.useCallback(async (resources : any) => {
       let _lastestBlock : any;
@@ -648,7 +648,7 @@ export const AppStateProvider: React.FC<
         _lastestBuildingData = await building.call("get_all_buildings_data", [
           uint256.bnToUint256(state.tokenId)
         ]);
-        console.log('_lastestBuildingData', _lastestBuildingData[0])
+        // console.log('_lastestBuildingData', _lastestBuildingData[0])
 
         var maxLength = Object.keys(_lastestBuildingData[0]).length
         var i = 0;
@@ -672,9 +672,9 @@ export const AppStateProvider: React.FC<
           i += 5;
         }
 
-        console.log('inactive', inactiveBuildings)
-        console.log('active', activeBuildings)
-        console.log('total Buildings', maxLength / 5)
+        console.log('Inactive buildings', inactiveBuildings)
+        console.log('Active buildings', activeBuildings)
+        console.log('Total buildings', maxLength / 5)
 
         dispatch({
           type: "set_buildingData",
@@ -690,9 +690,8 @@ export const AppStateProvider: React.FC<
   }, [state.address, state.tokenId]);
 
   const updateNonce = React.useCallback(async (nonce: string) => {
-    console.log('state.nonce', nonce)
     if (nonce) {
-        console.log('updating nonce to', (parseInt(nonce, 16) + 1).toString(16))
+        console.log('Nonce', (parseInt(nonce, 16) + 1).toString(16))
         dispatch({
           type: "set_nonce",
           nonce: "0x" + (parseInt(nonce, 16) + 1).toString(16),
@@ -708,14 +707,13 @@ export const AppStateProvider: React.FC<
       try {
         _currNonce = await account.getNonce()
         console.log('_currNonce', _currNonce)
-        // console.log('nonce', "0x" + (parseInt(_currNonce, 16) + 1).toString(16))
         dispatch({
           type: "set_accountContract",
           accountContract: account,
           nonce: _currNonce
         });
       } catch (e) {
-        console.warn("Error when retrieving get nonce of account");
+        console.warn("Error when fetching view function getNonce() of player account");
         console.warn(e);
       }
     }
@@ -724,7 +722,6 @@ export const AppStateProvider: React.FC<
   const setHarvesting = React.useCallback(async (posX: number, posY: number, status: number) => {
     if (posX && posY && state.harvestingArr && (status == 1 || status == 0) ) {
       let currArr = state.harvestingArr
-      console.log('currArr', currArr)
       if (currArr && currArr[posY] != undefined) {
           currArr[posY][posX] = status
       } else {

@@ -193,6 +193,7 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
             if (blockValue && blockValue[0] && blockValue[1]
                 && (blockValue[3] == 2 || blockValue[3] == 3 || blockValue[3] == 20 || blockValue[3] == 27)
             ) {
+
                 // resource selected
                 if (((blockValue[0] == position.x && blockValue[1] == position.y) || blockValue[0] == frameData?.posX && blockValue[1] == frameData?.posY)) {
                     
