@@ -29,20 +29,23 @@ export function Achievements(props : any) {
 
   return (
     <>
-      {showAchievement ? 
-        <div className="btnShowTuto0 pixelated selectDisable" onClick={() => setShowAchievement(!showAchievement)}></div>
-      : 
-        <div className="btnShowTuto1 pixelated selectDisable" onClick={() => setShowAchievement(!showAchievement)}></div>
+      {lastLevel < 9 ? 
+        showAchievement ? 
+          <div className="btnShowTuto0 pixelated selectDisable" onClick={() => setShowAchievement(!showAchievement)}></div>
+        : 
+          <div className="btnShowTuto1 pixelated selectDisable" onClick={() => setShowAchievement(!showAchievement)}></div>
+        
+        : ""
       }
 
-      {!showGoal && showAchievement &&
+      {!showGoal && showAchievement && lastLevel < 9  &&
         <div 
           className="btnGoals absolute pixelated selectDisable"
           onClick={() => setShowGoal(!showGoal)}
         ></div>
 
       }
-      {showGoal && showAchievement &&
+      {showGoal && showAchievement && lastLevel < 9 &&
         <div className="absolute goalFrame pixelated selectDisable">
           {!showDesc && 
             <>
@@ -77,7 +80,7 @@ export function Achievements(props : any) {
                 {lastLevel && lastLevel == 1 ? <><p>GM frens !</p><br/></> : ""}
                 {lastAchievement && lastAchievement?.description &&  <p>{lastAchievement.description}</p> }
                 <br/>
-                {showAchievement ? 
+                {showAchievement && lastLevel < 9 ? 
                   <p><span>Next goal: </span>{lastAchievement.goal}</p>
                 : ""}
                 <br/>

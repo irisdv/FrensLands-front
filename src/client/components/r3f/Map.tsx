@@ -67,7 +67,7 @@ export const Map = (props : any)=> {
             if (populationBusy + populationFree > 35) {
                 max = 7
             } else {
-                max = parseInt(((2) / 5).toFixed(0)) + 1
+                max = parseInt(((populationBusy + populationFree) / 5).toFixed(0)) + 1
             }
         }
         var i = 0;

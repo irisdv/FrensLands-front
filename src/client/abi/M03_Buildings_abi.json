@@ -290,33 +290,6 @@
                 "type": "Uint256"
             },
             {
-                "name": "pos_start_len",
-                "type": "felt"
-            },
-            {
-                "name": "pos_start",
-                "type": "felt*"
-            },
-            {
-                "name": "nb_days_len",
-                "type": "felt"
-            },
-            {
-                "name": "nb_days",
-                "type": "felt*"
-            }
-        ],
-        "name": "recharge_building_multiple",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            },
-            {
                 "name": "pos_start",
                 "type": "felt"
             }
@@ -341,6 +314,17 @@
             }
         ],
         "name": "initialize_resources",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "new_ratio",
+                "type": "felt"
+            }
+        ],
+        "name": "update_ratio_security",
         "outputs": [],
         "type": "function"
     },
@@ -489,6 +473,18 @@
         "outputs": [
             {
                 "name": "res",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "get_ratio_security",
+        "outputs": [
+            {
+                "name": "ratio",
                 "type": "felt"
             }
         ],

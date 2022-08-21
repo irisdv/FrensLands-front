@@ -41,19 +41,6 @@ export default function Resources ({frontBlockArray, textArrRef, rightBuildingTy
         }
     }, [textArrRef])
 
-    const clockTextureLoader = useMemo(() => {
-        if (textArrRef && textArrRef.length > 0) {
-            let textObj;
-            textObj = new TextureLoader().load("resources/front/Matchbox_UI_MenuBuildings.png");
-            textObj.repeat = new Vector2(0.0625, 0.0625)
-            textObj.magFilter = NearestFilter;
-            textObj.wrapS = RepeatWrapping;
-            textObj.wrapT = RepeatWrapping;
-
-            return textObj
-        }
-    }, [textArrRef])
-
     function exists(path: String)
     {
       try
@@ -82,7 +69,6 @@ export default function Resources ({frontBlockArray, textArrRef, rightBuildingTy
                         textureSelected={textureLoaderSelected} 
                         position={position}
                         worldType={worldType}
-                        clockTextureLoader={clockTextureLoader}
                     />
         })
     )

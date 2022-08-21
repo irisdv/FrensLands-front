@@ -15,10 +15,9 @@ interface IBlock {
     textureSelected: any
     worldType: any
     level: number;
-    clockTextureLoader: any;
 }
 
-export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType, position, frontBlockArray, textureLoader, textureSelected, worldType, level, clockTextureLoader}) : any => {
+export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType, position, frontBlockArray, textureLoader, textureSelected, worldType, level}) : any => {
 
     const meshRef = useRef<any>()
     const clockRef = useRef<any>()
@@ -130,7 +129,7 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
 
             return localT
         }
-    }, [clockTextureLoader])
+    }, [textureLoader])
 
     const clockTextureHovered = useMemo(() => {
         if (textureLoader) {
@@ -141,7 +140,7 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
 
             return localT
         }
-    }, [clockTextureLoader])
+    }, [textureLoader])
 
     const clockEmpty = useMemo(() => {
         if (textureLoader) {
@@ -152,7 +151,7 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
 
             return localT
         }
-    }, [clockTextureLoader])
+    }, [textureLoader])
 
     function findTextByID(type : number)
     {
@@ -193,6 +192,7 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
             if (blockValue && blockValue[0] && blockValue[1]
                 && (blockValue[3] == 2 || blockValue[3] == 3 || blockValue[3] == 20 || blockValue[3] == 27)
             ) {
+
                 // resource selected
                 if (((blockValue[0] == position.x && blockValue[1] == position.y) || blockValue[0] == frameData?.posX && blockValue[1] == frameData?.posY)) {
                     
@@ -212,7 +212,7 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
                 }
 
             // Case building
-            } else if (blockValue && blockValue[0] && blockValue[1]
+            } else if (blockValue != undefined && blockValue[0] != undefined && blockValue[1] != undefined
                 && (blockValue[3] != 2 && blockValue[3] != 3 && blockValue[3] != 20 && blockValue[3] != 27)
             ) { 
                 // Building is selected / hovered

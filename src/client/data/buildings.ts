@@ -261,7 +261,7 @@ export const allBuildings: Building[] = [
         id: 6,
         name: "Hotel",
         category: "Housing",
-        description: "Hotels attracts new frens into your community. It's also a good way to earn Frens coins.",
+        description: "Hotels attracts new frens into your community.",
         level: 8,
         cost_update: [
             {

@@ -126,6 +126,13 @@ export default function Play() {
         if (counters[9] && counters[11] && counters[9] > 0 && counters[11] > 0) setLevel(6)
         if (counters[22] && counters[22] > 0) setLevel(7)
         if (counters[5] && counters[5] > 0) setLevel(8)
+        if (counters[4] > 0 && counters[5] > 0 && counters[6] > 0 && counters[7] > 0 
+              && counters[8] > 0 && counters[9] > 0 && counters[10] > 0 && counters[11] > 0 && counters[12] > 0 && counters[13] > 0 &&
+              counters[14] > 0 && counters[15] > 0 && counters[16] > 0 && counters[17] > 0 && counters[18] > 0 && counters[19] > 0 && 
+              counters[21] > 0 && counters[22] > 0 && counters[23] > 0 && counters[24] > 0 && counters[25] > 0 && counters[26] > 0)
+        {
+          setLevel(9)
+        }
 
         return { frontArray }
     }
