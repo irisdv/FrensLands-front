@@ -37,7 +37,7 @@ export function NotifItem(props: any) {
     } else {
       textNotif = "IN Testing..."
     }
-  } else if (status && status == "ACCEPTED_ON_L2" || status && status == "ACCEPTED_ON_L1") {
+  } else if (status && status == "ACCEPTED_ON_L2") {
     if (content.method == "get_map") {
       textNotif = "OUT You received your map. Now you can initialize your game."
     } else if (content.method  == "start_game") {
@@ -63,6 +63,10 @@ export function NotifItem(props: any) {
     }
   }  else if (status && status == "REJECTED") {
     textNotif = "OUT Your transaction " + content.method + "was rejected... Try again."
+  }
+
+  if (status && status == "ACCEPTED_ON_L1") {
+    return (<></>)
   }
 
   return (
