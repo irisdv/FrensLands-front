@@ -134,15 +134,6 @@ export const BuildingTemp = (props : any)=> {
             ref={buildTempRef}
             name={`${name}`.toString()}
             rotation={[-Math.PI * 0.5, 0, 0]}
-            // onClick={(event) => {
-            //     event.stopPropagation()
-            //     if(spaceValid) {
-            //         console.log('addingBuilding')
-            //         updateBuildingFrame(false, {"id": 0, "unique_id": 0, "posX": 0, "posY": 0, "selected": 0});
-            //         addBuilding(props.UBlockIDs + 1, {id: type, posX: currBlockPos.x, posY: currBlockPos.y, status: 0})
-            //     }
-            // }}
-
         >
             <planeGeometry
                 name={`${name}_geom`}

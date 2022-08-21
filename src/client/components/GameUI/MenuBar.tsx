@@ -226,7 +226,7 @@ export function MenuBar() {
                 {energy ? energy : 0}
               </div>
               <div className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"  style={{ marginTop: "-11px", marginLeft:'5px', color: '#55813E', fontSize: '16px' }}>
-                {claimableResources[11] ? "+"+claimableResources[11] : ''}
+                {claimableResources[11] ? "+"+ claimableResources[11] : ''}
               </div>
             </div>
             <div className="flex jutify-center relative pr-5" style={{ marginTop: "-13px" }}>

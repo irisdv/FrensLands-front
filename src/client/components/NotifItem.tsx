@@ -12,10 +12,6 @@ export function NotifItem(props: any) {
   var index = activeNotifications.map(function(e) { return e.transactionHash; }).indexOf(notifKey);
   const removeThisTransaction = useCallback(() => removeTransaction(notifKey), [notifKey, status])
 
-  console.log('transactions', transactions)
-
-  // content.building_type_id
-
   let textNotif = "";
   if (status && (status == "NOT_RECEIVED" || status == "PENDING" || status == "RECEIVED")) {
     if (content.method == "get_map") {
@@ -39,7 +35,7 @@ export function NotifItem(props: any) {
     } else if (content.method == "recharge_building") {
       textNotif = "IN Launched recharge production of " + allBuildings[content.type_id - 1].name + " on " + content.posX + " " + content.posY
     } else {
-      textNotif = "Testing..."
+      textNotif = "IN Testing..."
     }
   } else if (status && status == "ACCEPTED_ON_L2" || status && status == "ACCEPTED_ON_L1") {
     if (content.method == "get_map") {
@@ -63,10 +59,10 @@ export function NotifItem(props: any) {
     } else if (content.method == "recharge_building") {
       textNotif = "OUT Recharge production completed for " + allBuildings[content.type_id - 1].name + " on " + content.posX + " " + content.posY
     } else {
-      textNotif = "Test tx accepted."
+      textNotif = "OUT Test tx accepted."
     }
   }  else if (status && status == "REJECTED") {
-    textNotif = "Your transaction " + content.method + "was rejected... Try again."
+    textNotif = "OUT Your transaction " + content.method + "was rejected... Try again."
   }
 
   return (
