@@ -26,6 +26,7 @@ import useTest from "../hooks/invoke/useTest";
 export default function Home() {
   const { account } = useStarknet();
   const { available, connect, disconnect } = useConnectors();
+  const [hasWallet, setHasWallet] = useState(false);
 
   // START DEBUG
   const [testing, setTesting] = useState<any>(null)
@@ -315,8 +316,19 @@ export default function Home() {
             {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && GameStatusValue && GameStatusValue.gameStatus == 1 && !approved &&
               <button className="relative mx-auto pixelated btnApproval" onClick={() => approveM03()}></button>
             }
+            {hasWallet && !account ? <ConnectWallet close={() => setHasWallet(false)} /> : null}
             {!account && 
-              <ConnectWallet/>
+
+                <button 
+                  onClick={() =>
+                    available.length === 1
+                      ? connect(available[0])
+                      : 
+                      setHasWallet(true)
+                  }
+                  className="relative mx-auto btnPlay pixelated" 
+                  style={{marginTop: '300px'}}
+                ></button>
             }
             {account && canPlay && approved == true && 
               <div style={{height: '170px', pointerEvents: 'all'}}>
