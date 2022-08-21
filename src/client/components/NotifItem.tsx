@@ -25,7 +25,7 @@ export function NotifItem(props: any) {
     } else if (content.method == "build") {
       textNotif = "IN Launched build a " + allBuildings[content.type_id - 1].name + " on " + content.posX + " " + content.posY
     } else if (content.method == "approve") {
-      textNotif = "Aproving..."
+      textNotif = "IN Launched setting approval."
     } else if (content.method == "destroy_building") {
       textNotif = "IN Launched destroy " + allBuildings[content.type_id - 1].name + " on " + content.posX + " " + content.posY
     } else if (content.method == "upgrade") {
@@ -49,7 +49,7 @@ export function NotifItem(props: any) {
     } else if (content.method == "build") {
       textNotif = "OUT Build completed for " + allBuildings[content.type_id - 1].name + " " + content.posX + " " + content.posY
     } else if (content.method == "approve") {
-      textNotif = "All set, you can now start playing!"
+      textNotif = "OUT Set approval completed. You're all set, you can now start playing!"
     } else if (content.method == "destroy_building") {
       textNotif = "OUT Destroy completed for " + allBuildings[content.type_id - 1].name + " on " + content.posX + " " + content.posY
     } else if (content.method == "upgrade") {

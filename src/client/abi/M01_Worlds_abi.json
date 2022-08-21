@@ -138,12 +138,6 @@
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "get_map",
-        "outputs": [],
-        "type": "function"
-    },
-    {
         "inputs": [
             {
                 "name": "tokenId",
