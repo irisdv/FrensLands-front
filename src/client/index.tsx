@@ -8,16 +8,18 @@ import { NotifTransactionManagerProvider } from './providers/transactions'
 
 const container = document.getElementById("root");
 const root = createRoot(container!); // createRoot(container!) if you use TypeScript
-const connectors = getInstalledInjectedConnectors();
+// const connectors = getInstalledInjectedConnectors();
 
-console.log('DEBUG connectors', connectors)
+// console.log('DEBUG connectors', connectors)
 
-if (!connectors) {
+// if (!connectors) {
   const connectors = [
     new InjectedConnector({ options: { id: 'argent-x' } }),
     new InjectedConnector({ options: { id: 'braavos' } }),
   ]
-}
+// }
+
+console.log('CONNECTORS INDEX', connectors)
 
 root.render(
   <>

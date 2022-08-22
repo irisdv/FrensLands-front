@@ -56,10 +56,13 @@ function Icon(props: any) {
     const { account } = useStarknet();
     const { available, connect, disconnect, connectors } = useConnectors();
 
-    const manualConnectors = [
-      new InjectedConnector({ options: { id: "argent-x"} }),
-      new InjectedConnector({ options: { id: "braavos" } }),
-    ];
+    // const manualConnectors = [
+    //   new InjectedConnector({ options: { id: "argent-x"} }),
+    //   new InjectedConnector({ options: { id: "braavos" } }),
+    // ];
+
+    console.log('available', available)
+    console.log('connectors', connectors)
 
   // if (account) {
   //   return (
@@ -94,7 +97,7 @@ function Icon(props: any) {
         
         : 
             <>
-              <div className="mt-5 flex justify-center">
+              {/* <div className="mt-5 flex justify-center">
                   <button 
                     onClick={() => connect(manualConnectors[0])}
                     style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
@@ -112,7 +115,7 @@ function Icon(props: any) {
                     <Icon id={manualConnectors[1].id()} />
                     {`Connect Braavos`}
                   </button>
-              </div>
+              </div> */}
           </>
 
           }
