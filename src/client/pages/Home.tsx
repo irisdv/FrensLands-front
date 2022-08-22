@@ -321,9 +321,9 @@ export default function Home() {
 
                 <button 
                   onClick={() =>
-                    available.length === 1
-                      ? connect(available[0])
-                      : 
+                    // available.length === 1
+                    //   ? connect(available[0])
+                    //   : 
                       setHasWallet(true)
                   }
                   className="relative mx-auto btnPlay pixelated" 
