@@ -54,7 +54,7 @@ function Icon(props: any) {
   export function ConnectWallet(props : any) {
     const { close } = props
     const { account } = useStarknet();
-    const { available, connect, disconnect, connectors } = useConnectors();
+    const { available, connect, disconnect } = useConnectors();
 
     const manualConnectors = [
       new InjectedConnector({ options: { id: "argent-x"} }),
