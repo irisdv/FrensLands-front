@@ -79,7 +79,7 @@ function Icon(props: any) {
       <div >
           <p className="mb-3">You need a Starknet wallet</p>
 
-          {/* {available && available.length > 0 ? 
+          {available && available.length > 0 ? 
             available.map((connector) => (
               <div className="mt-5 flex justify-center" key={connector.id()}>
                 <button 
@@ -92,7 +92,7 @@ function Icon(props: any) {
               </div>
             ))
         
-        :  */}
+        : 
             <>
               <div className="mt-5 flex justify-center">
                   <button 
@@ -115,7 +115,7 @@ function Icon(props: any) {
               </div>
           </>
 
-          {/* } */}
+          }
         </div>
         
       </div>
