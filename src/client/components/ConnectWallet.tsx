@@ -61,7 +61,8 @@ function Icon(props: any) {
     //   new InjectedConnector({ options: { id: "braavos" } }),
     // ];
 
-    console.log('CONNECTORS COMPONENT', connectors)
+    console.log('available', available)
+    console.log('connectors', connectors)
 
   // if (account) {
   //   return (
@@ -81,7 +82,7 @@ function Icon(props: any) {
       <div >
           <p className="mb-3">You need a Starknet wallet</p>
 
-          {/* {available && available.length > 0 ? 
+          {available && available.length > 0 ? 
             available.map((connector) => (
               <div className="mt-5 flex justify-center" key={connector.id()}>
                 <button 
@@ -94,30 +95,30 @@ function Icon(props: any) {
               </div>
             ))
         
-        :  */}
+        : 
             <>
-              <div className="mt-5 flex justify-center">
+              {/* <div className="mt-5 flex justify-center">
                   <button 
-                    onClick={() => connect(connectors[0])}
+                    onClick={() => connect(manualConnectors[0])}
                     style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
                   >
-                    <Icon id={connectors[0].id()} />
+                    <Icon id={manualConnectors[0].id()} />
                     {`Connect Argent X`}
                   </button>
               </div>
 
               <div className="mt-5 flex justify-center">
                   <button 
-                    onClick={() => connect(connectors[1])}
+                    onClick={() => connect(manualConnectors[1])}
                     style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
                   >
-                    <Icon id={connectors[1].id()} />
+                    <Icon id={manualConnectors[1].id()} />
                     {`Connect Braavos`}
                   </button>
-              </div>
+              </div> */}
           </>
 
-          {/* } */}
+          }
         </div>
         
       </div>
