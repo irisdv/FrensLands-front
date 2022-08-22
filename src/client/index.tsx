@@ -19,6 +19,8 @@ const root = createRoot(container!); // createRoot(container!) if you use TypeSc
   ]
 // }
 
+console.log('CONNECTORS INDEX', connectors)
+
 root.render(
   <>
     <StarknetProvider connectors={connectors}>

@@ -54,12 +54,14 @@ function Icon(props: any) {
   export function ConnectWallet(props : any) {
     const { close } = props
     const { account } = useStarknet();
-    const { available, connect, disconnect } = useConnectors();
+    const { available, connect, disconnect, connectors } = useConnectors();
 
-    const manualConnectors = [
-      new InjectedConnector({ options: { id: "argent-x"} }),
-      new InjectedConnector({ options: { id: "braavos" } }),
-    ];
+    // const manualConnectors = [
+    //   new InjectedConnector({ options: { id: "argent-x"} }),
+    //   new InjectedConnector({ options: { id: "braavos" } }),
+    // ];
+
+    console.log('CONNECTORS COMPONENT', connectors)
 
   // if (account) {
   //   return (
@@ -96,20 +98,20 @@ function Icon(props: any) {
             <>
               <div className="mt-5 flex justify-center">
                   <button 
-                    onClick={() => connect(manualConnectors[0])}
+                    onClick={() => connect(connectors[0])}
                     style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
                   >
-                    <Icon id={manualConnectors[0].id()} />
+                    <Icon id={connectors[0].id()} />
                     {`Connect Argent X`}
                   </button>
               </div>
 
               <div className="mt-5 flex justify-center">
                   <button 
-                    onClick={() => connect(manualConnectors[1])}
+                    onClick={() => connect(connectors[1])}
                     style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
                   >
-                    <Icon id={manualConnectors[1].id()} />
+                    <Icon id={connectors[1].id()} />
                     {`Connect Braavos`}
                   </button>
               </div>
