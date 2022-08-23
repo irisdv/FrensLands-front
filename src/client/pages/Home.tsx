@@ -1,7 +1,7 @@
 import React, { useMemo, useEffect, useState, useRef } from "react";
 import { useStarknet, useStarknetCall, useConnectors, useStarknetExecute, useContract} from "@starknet-react/core";
 import { toBN } from "starknet/dist/utils/number";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { gsap } from 'gsap';
 import { Abi, uint256 } from "starknet";
 const starknet = require("starknet")
@@ -299,7 +299,7 @@ export default function Home() {
                 <div className="messageNotif fontHPxl-sm mx-auto text-center" style={{borderImage: `url(data:image/svg+xml;base64,${btoa(UI_Frames)}) 18 fill stretch` }}>
                   <p>You don't own a map... </p>
                   <br/>
-                  <p>Join the <a style={{color: "#964489"}} href="discord.gg/gehYZU9Trf">Frens Lands discord server</a> to take part in the next testing sessions.</p>
+                  <p>Join the <a className="cursor-pointer" style={{color: "#964489"}} href="https://discord.gg/gehYZU9Trf" target='_blank'>Frens Lands discord server</a> to take part in the next testing sessions.</p>
                 </div>
               </div>
             }
