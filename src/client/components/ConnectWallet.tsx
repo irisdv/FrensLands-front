@@ -56,14 +56,6 @@ function Icon(props: any) {
     const { account } = useStarknet();
     const { available, connect, disconnect, connectors } = useConnectors();
 
-    // const manualConnectors = [
-    //   new InjectedConnector({ options: { id: "argent-x"} }),
-    //   new InjectedConnector({ options: { id: "braavos" } }),
-    // ];
-
-    console.log('available', available)
-    console.log('connectors', connectors)
-
   // if (account) {
   //   return (
   //     <div>
