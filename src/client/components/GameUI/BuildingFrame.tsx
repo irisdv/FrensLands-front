@@ -23,31 +23,20 @@ export function BuildingFrame(props: any) {
   const { frontBlockArray } = props
   const { data: block } = useStarknetBlock()
   const { nonce, updateNonce } = useGameContext();
+  const [ canBuild, setCanBuild ] = useState(1)
+  const [msg, setMsg] = useState('')
+  const [showNotif, setShowNotif] = useState(false)
 
-  // Test
-  // const { contract: worlds } = useWorldsContract();
-  // const [watch, setWatch] = useState(true);
-  // end test
-
-  // const activeNotifications = useActiveNotifications()
   const harvestingInvoke = useHarvestResource()
-  // const [ harvesting, setHarvesting ] = useState<any>(null)
   const upgradingInvoke = useUpgrade()
-  // const [ upgrading, setUpgrading ] = useState<any>(null)
   const rechargingInvoke = useRecharge()
-  // const [ recharging, setRecharging ] = useState<any>(null)
   const detroyingInvoke = useDestroy()
-  // const [ destroying, setDestroying ] = useState<any>(null)
-  // const [ message, setMessage ] = useState("")
 
   const [ costUpdate, setCostUpdate ] = useState<any>(null)
   const [ dailyCosts, setDailyCosts ] = useState<any>(null)
   const [ dailyHarvest, setDailyHarvests ] = useState<any>(null)
   const [show, setShow] = useState(false)
   const [inputFuel, setInputFuel] = useState(1)
-  const [harvestTreeNb, setHarvestTreeNb] = useState(0)
-  const [harvestRockNb, setHarvestRockNb] = useState(0)
-  const [harvestMineNb, setHarvestMineNb] = useState(0)
 
   useEffect(() => {
     if (showFrame) {
@@ -67,27 +56,6 @@ export function BuildingFrame(props: any) {
     return harvestingArr
   }, [harvestingArr])
 
-  // Test
-  // const { data: fetchMapBlock } = useStarknetCall({
-  //   contract: worlds,
-  //   method: "get_map_block",
-  //   args: [uint256.bnToUint256(tokenId as number), 43],
-  //   options: { watch },
-  // });
-
-  // const MapBlockValue = useMemo(() => {
-  //   if (fetchMapBlock && fetchMapBlock.length > 0) {
-  //     // console.log('fetchMapBlock', fetchMapBlock[0])
-  //     var elem = toBN(fetchMapBlock[0]);
-  //     var val = elem.toNumber();
-
-  //     // console.log('val', val)
-
-  //     return { block: val };
-  //   }
-  // }, [fetchMapBlock]);
-  // end test
-
   useEffect(() => {
     if (account) {
       setAddress(account as string);
@@ -103,11 +71,8 @@ export function BuildingFrame(props: any) {
   const harvestingResources = (type_id : number, pos_x: number, pos_y: number, level : number) => {
     let pos_start = (pos_y - 1) * 40 + pos_x
     if (tokenId) {
-      if ((type_id == 2 && harvestRockNb <= 3) || (type_id == 3 && harvestTreeNb <= 3) || (type_id == 20 && harvestMineNb <= 3) || (type_id == 27)) {
+      if ((type_id == 2) || (type_id == 3) || (type_id == 20) || (type_id == 27)) {
         let tx_hash = harvestingInvoke(tokenId, pos_start, parseInt(frameData?.unique_id as string), type_id, level, pos_x, pos_y, nonceValue)
-        // if (type_id == 2) setHarvestRockNb(harvestRockNb+1)
-        // if (type_id == 3) setHarvestTreeNb(harvestTreeNb+1)
-        // if (type_id == 20) setHarvestMineNb(harvestMineNb+1)
 
         tx_hash.then((res) => {
           console.log('res', res)
@@ -151,7 +116,6 @@ export function BuildingFrame(props: any) {
       // tokenId : number, pos_start: number, nb_days: number, building_type_id: number, posX: number, posY: number, uniqueId: number
       let tx_hash = rechargingInvoke(tokenId, pos_start, nb_days, type_id, pos_x, pos_y, uniqueId, nonceValue)
       console.log('tx hash recharging', tx_hash)
-      // setUpgrading(tx_hash);
 
       tx_hash.then((res) => {
         console.log('res', res)
@@ -187,11 +151,28 @@ export function BuildingFrame(props: any) {
   useEffect(() => {
     if (frameData && frameData.id && frameData.level) {
       var newCost : any[] = [];
+      var _canBuild = 1
+      var _msg = ''
       if (allBuildings[frameData.id - 1].cost_update) {
         allBuildings[frameData.id - 1].cost_update?.[frameData.level - 1].resources.forEach((cost : any) => {
           newCost.push([cost.id, cost.qty])
+          if (resources[cost.id] < cost.qty) {
+            _canBuild = 0
+          }
         })
+        if (!_canBuild) _msg += 'Not enough resources. '
+        if (populationFree && allBuildings[frameData.id - 1].cost_update?.[frameData.level - 1].pop_min) {
+          // @ts-ignore
+          const pop_min : number = allBuildings[frameData.id - 1].cost_update?.[frameData.level - 1].pop_min
+          if (pop_min >= populationFree) {
+            _canBuild = 0
+            _msg += 'Not enough free frens.'
+          }
+        }
+
       }
+      setCanBuild(_canBuild)
+      setMsg(_msg)
       setCostUpdate(newCost)
     }
   }, [frameData])
@@ -219,34 +200,6 @@ export function BuildingFrame(props: any) {
       setDailyCosts(newDailyCost)
     }
   }, [frameData])
-
-  // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST  TEST TEST TEST TEST TEST TEST TEST TEST TEST
-  // const generateTest = useTest()
-  // const [testing, setTesting] = useState<any>(null)
-  // const testContract = async (unique_id : any, id : number, posX : number, posY : number) => {
-  //   console.log("invoking test", account);
-  //   let tx_hash = await generateTest(unique_id, id, posX, posY, frontBlockArray[posY][posX][7])
-  //   console.log('tx hash', tx_hash)
-  //   setTesting(tx_hash);
-  // };
-
-  // useEffect(() => {
-  //   if (testing) {
-  //     var data = activeNotifications.filter((transactions) => (transactions?.content.transactionHash as string) === testing as string)
-  //     console.log('data test', data )
-  //     console.log('state', testing)
-  //     if (data && data[0] && data[0].content) {
-  //       if (data[0].content.status == 'REJECTED') {
-  //         setMessage("Your transaction has failed... Try again.")
-  //       } else if (data[0].content.status == 'ACCEPTED_ON_L1' || data[0].content.status == 'ACCEPTED_ON_L2') {
-  //         setMessage("Your transaction was accepted. Now you can play!")
-  //         console.log('in data')
-  //         setTesting(true)
-  //       }
-  //     }
-  //   }
-  // }, [testing, activeNotifications])
-  // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST  TEST TEST TEST TEST TEST TEST TEST TEST TEST
 
   const showBuildingCursor = (id : any) => {
     updateBuildingFrame(false, {"id": id, "level": frameData?.level, "posX": 0, "posY": 0, "selected": 1});
@@ -385,12 +338,21 @@ export function BuildingFrame(props: any) {
                   <div className="btnUpgradeRed"></div>
                 </>
               }
-              {frameData && frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && !frameData.unique_id &&
-                <>
-                    <div className="btnBuild"
-                      onClick={() => showBuildingCursor(frameData.id as number)}
-                    ></div>
-                </>
+              {frameData && frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && !frameData.unique_id && canBuild ?
+                  <div className="btnBuild"
+                    onClick={() => showBuildingCursor(frameData.id as number)}
+                  ></div> : <></>
+              } 
+              {frameData && frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && !frameData.unique_id && !canBuild ?
+                  <>
+                    <div 
+                      className="btnBuildDisabled"
+                      onMouseOver={() => setShowNotif(true)}
+                      onMouseOut={() => setShowNotif(false)}
+                    ></div> 
+                    {showNotif && <div className="popUpBuild fontHPxl-sm pixelated">{msg}</div>}
+                  </>
+                : <></>
               } 
               {frameData && frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.unique_id &&
                 <>

@@ -10,16 +10,12 @@ const container = document.getElementById("root");
 const root = createRoot(container!); // createRoot(container!) if you use TypeScript
 // const connectors = getInstalledInjectedConnectors();
 
-// console.log('DEBUG connectors', connectors)
+const connectors = [
+  new InjectedConnector({ options: { id: 'argent-x' } }),
+  new InjectedConnector({ options: { id: 'braavos' } }),
+]
 
-// if (!connectors) {
-  const connectors = [
-    new InjectedConnector({ options: { id: 'argent-x' } }),
-    new InjectedConnector({ options: { id: 'braavos' } }),
-  ]
-// }
 
-console.log('CONNECTORS INDEX', connectors)
 
 root.render(
   <>
