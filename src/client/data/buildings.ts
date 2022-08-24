@@ -835,7 +835,7 @@ export const allBuildings: Building[] = [
                 level: 1,
                 resources: [
                     {
-                        id: 5,
+                        id: 3,
                         qty: 5
                     },
                     {
