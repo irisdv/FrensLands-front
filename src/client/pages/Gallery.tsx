@@ -6,24 +6,23 @@ import { useSelectContext } from "../hooks/useSelectContext";
 import { useBuildingsContract } from "../hooks/contracts/buildings";
 import { number, uint256 } from "starknet";
 import { toBN } from "starknet/dist/utils/number";
-import useTxGame from "../hooks/useTxGame";
+import GalleryList from "../components/Gallery/GalleryList";
+import { Outlet } from "react-router-dom"
 
-export default function Game() {
+export default function Gallery() {
   const { account } = useStarknet();
-  const { contract: building } = useBuildingsContract();
-  const [render, setRender] = useState(true);
+  // const { contract: building } = useBuildingsContract();
+  // const [render, setRender] = useState(true);
+
+  const gameArr = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+  console.log('TEST')
 
   return (
     <>
-      {render ? (
-        <>
-          <div className="relative">
-            <Scene {...useInGameContext()} {...useSelectContext()} {...useTxGame()} />
-          </div>
-        </>
-      ) : (
-        <p>Loading socket</p>
-      )}
+    <p>Gallery</p>
+      {gameArr.map((elem) => {
+        return <GalleryList elem={elem} key={elem} />
+      })}
     </>
   );
 }
