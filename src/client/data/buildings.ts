@@ -1327,7 +1327,7 @@ export const allBuildings: Building[] = [
                     },
                     {
                         id: 8,
-                        qty: 1
+                        qty: 2
                     }
                 ],
                 frensCoins: 0,
