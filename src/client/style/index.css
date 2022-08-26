@@ -209,12 +209,9 @@ body {
 
 .messageWalletParent {
     z-index: 1;
-    /* height: 128px;
-    width: 256px;
-    margin: auto; */
     transform: translate(-50%,-50%);
     left: 50%;
-    top: 50%;
+    top: 430px;
     align-self: center;
     position: absolute;
     max-width: 450px;
@@ -916,6 +913,27 @@ body {
     width:calc(64px * 2);
     background-position:calc(14 * 1 * 64px) calc(19 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
+}
+.btnBuildDisabled {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(12 * 1 * 64px) calc(19 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+}
+.popUpBuild {
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 2);
+    width:calc(64px * 2);
+    background-position:calc(19 * 1 * 64px) calc(2 * 1* 64px);
+    background-size:calc(1408px* 1) calc(768px * 1);
+    position: absolute;
+    top: -57px;
+    left: 110px;
+    padding-left: 23px;
+    padding-top: 20px;
+    padding-right: 15px;
 }
 
 .btnHarvest {
@@ -1620,17 +1638,7 @@ body {
 }
 
 
-/* .popUpClaim {
-    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
-    height:calc(64px * 2);
-    width:calc(64px * 2);
-    background-position:calc(19 * 1 * 64px) calc(2 * 1* 64px);
-    background-size:calc(1408px* 1) calc(768px * 1);
-    position: absolute;
-    top: 57px;
-    left: 18px;
-    padding: 23px;
-} */
+
 
 .btnCloseFrame {
     display:inline-block;
