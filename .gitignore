@@ -3,4 +3,5 @@ node_modules/
 .DS_Store
 src/client/hooks/notes.txt
 .vscode
-dist/client/
+dist/client/*
+!dist/client/resources
