@@ -11,7 +11,7 @@ const root = createRoot(container!); // createRoot(container!) if you use TypeSc
 // const connectors = getInstalledInjectedConnectors();
 
 const connectors = [
-  new InjectedConnector({ options: { id: 'argent-x' } }),
+  new InjectedConnector({ options: { id: 'argentX' } }),
   new InjectedConnector({ options: { id: 'braavos' } }),
 ]
 
