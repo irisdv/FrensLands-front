@@ -1990,3 +1990,7 @@ Lab = 24 */
     -o-user-select: none;
     user-select: none;
 }
+
+#bFrame {
+    pointer-events: all;
+}
