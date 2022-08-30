@@ -1380,27 +1380,6 @@ export const allBuildings: Building[] = [
                 pop_min: 3,
                 new_pop: 0
             }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 2
-                    },
-                    {
-                        id: 10,
-                        qty: 2
-                    },
-                    {
-                        id: 11,
-                        qty: 1
-                    }
-                ],
-                frensCoins: 2,
-                energy: 1,
-            }
         ]
     },
     {
