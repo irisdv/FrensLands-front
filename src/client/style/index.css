@@ -731,10 +731,27 @@ body {
     z-index: 1;
 }
 
+.harvestFrame {
+    background-image: url("resources/front/FrensLand_HarvestableFrame.png");
+    height:calc(640px * 1);
+    width:calc(640px * 1);
+    background-size:calc(640px * 1) calc(640px * 1);
+    padding-left: 150px;
+    padding-right: 135px;
+    padding-top: 155px;
+    padding-bottom: 150px;
+    pointer-events: none;
+    right: -113px;
+    bottom: 0;
+    height: 640px; 
+    width: 640px;
+    z-index: 1;
+}
 .l1R {
     height: 43px;
     margin-left: 205px;
     margin-top: 7px;
+    pointer-events: all;
 }
 .l1R:nth-child(1) {
     width: 60px;
@@ -743,6 +760,7 @@ body {
 .l1noR {
     height: 30px;
     margin-left: 219px;
+    pointer-events: all;
 }
 .l1noR:nth-child(1) {
     width: 60px;
@@ -753,22 +771,32 @@ body {
     height: 30px;
     margin-left: 205px;
     margin-top: 43px;
+    pointer-events: all;
 }
 .l2noR {
     height: 30px;
     margin-left: 218px;
+    pointer-events: all;
+}
+.l2H {
+    height: 30px;
+    margin-left: 218px;
+    pointer-events: all;
 }
 .l3R {
     height: 30px;
     margin-left: 205px;
+    pointer-events: all;
 }
 .l3noR {
     height: 30px;
     margin-left: 205px;
+    pointer-events: all;
 }
 .l4R {
     height: 30px;
     margin-left: 205px;
+    pointer-events: all;
 }
 
 .btnDestroy {
@@ -1989,8 +2017,4 @@ Lab = 24 */
     -moz-user-select: none;
     -o-user-select: none;
     user-select: none;
-}
-
-#bFrame {
-    pointer-events: all;
 }

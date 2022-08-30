@@ -262,11 +262,11 @@ export function BuildingFrame(props: any) {
   return (
     <>
       <div id="bFrame" 
-        className={"selectDisable absolute "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5) && frameData.unique_id ? "buildingFrameRecharged" : "buildingFrame" }`}
+        className={"selectDisable absolute "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5 && frameData.id != 22) && frameData.unique_id ? "buildingFrameRecharged" : (frameData?.id == 2 || frameData?.id == 3 || frameData?.id == 20 || frameData?.id == 27)  ? "harvestFrame" :  "buildingFrame" }`}
       >
         {frameData && frameData.unique_id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27) && <div className="btnDestroy absolute" onClick={() => destroyBuilding(frameData?.id as number, frameData?.posX, frameData?.posY)}></div>}
         <div className='btnCloseFrame' onClick={() => updateBuildingFrame(false, {"id": 0, "level": 0, "posX": 0, "posY": 0, "selected": 0})}></div>
-        <div className="grid grid-cols-2 inline-block" style={{ height: "20px" }}>
+        <div className="grid grid-cols-2 inline-block" style={{ height: "20px", pointerEvents: 'all' }}>
           <div className="font8BITWonder uppercase text-center" style={{ height: "20px" }} >
             { frameData && frameData.id ? allBuildings[frameData.id - 1].name : ""}
           </div>
@@ -293,7 +293,7 @@ export function BuildingFrame(props: any) {
                 }
           </div>
         </div>
-        <div className="relative flex jutify-center items-center inline-block" style={{ height: "85px" }}>
+        <div className="relative flex jutify-center items-center inline-block" style={{ height: "85px", pointerEvents: 'all' }}>
           <div className="flex flex-row justify-center inline-block relative">
             <div  className="font04B text-center mx-auto relative"  style={{width: "68px"}}>
               <div className={"building"+`${frameData?.id}`} style={{left: "-26px", top: "-39px", position: "absolute"}}></div>
@@ -312,7 +312,7 @@ export function BuildingFrame(props: any) {
             </div>
           </div>
         </div>
-        <div className="font04B" style={{   height: "109px",   fontSize: "13px",   paddingLeft: "9px",   paddingTop: "6px"}}>
+        <div className="font04B" style={{   height: "109px",   fontSize: "13px",   paddingLeft: "9px",   paddingTop: "6px", pointerEvents: 'all'}}>
           {frameData && frameData.id ? allBuildings[frameData.id - 1].description : ""}
         </div>
         <div className="relative flex jutify-center items-center inline-block" style={{ height: "45px", paddingTop: "8px", pointerEvents: "all" }}>
@@ -381,7 +381,7 @@ export function BuildingFrame(props: any) {
           </div>
         </div>
 
-        {frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5) && !frameData.unique_id ?
+        {frameData && frameData.id && (frameData.id != 1 && frameData.id != 4 && frameData.id != 5 && frameData.id != 22 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27) && !frameData.unique_id ?
         <div className="grid grid-cols-2 l1noR">
           <div className="relative flex justify-end items-center inline-block" style={{ width: "115px", marginTop: "-21px" }}>
             {frameData && frameData.id && dailyCosts && dailyCosts.length > 0 &&
@@ -392,7 +392,18 @@ export function BuildingFrame(props: any) {
           </div>
         </div>
         : <></>}
-        <div className={"grid grid-cols-2 "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5) && frameData.unique_id ? "l2R" : "l2noR" }`}>
+        {frameData && frameData.id && (frameData.id == 2 || frameData.id == 3 || frameData.id == 20 || frameData.id == 27 ) && frameData.unique_id ?
+        <div className="grid grid-cols-2 l1noR">
+          <div className="relative flex justify-end items-center inline-block" style={{ width: "115px", marginTop: "-21px" }}>
+            {frameData && frameData.id && dailyCosts && dailyCosts.length > 0 &&
+              Object.keys(dailyCosts).map((elem : any) => {
+                return <FrameItem key={elem} content={dailyCosts[elem]} option={1} />      
+              })
+            }
+          </div>
+        </div>
+        : <></>}
+        <div className={"grid grid-cols-2 "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 4 && frameData.id != 5 && frameData.id != 22 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27) && frameData.unique_id ? "l2R" : frameData && frameData.id && (frameData?.id == 2 ||  frameData?.id == 3 || frameData?.id == 20 || frameData?.id == 27) ? "l2H" : "l2noR" }`}>
           <div className="relative flex justify-end items-center inline-block" style={{ width: "122px", marginTop: "-22px" }}>
 
           {frameData && frameData.id && dailyHarvest && dailyHarvest.length > 0 &&
@@ -403,7 +414,7 @@ export function BuildingFrame(props: any) {
           </div>
         </div>
         {/* Pour les buildings qui sont rechargeables */}
-        {frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5) &&
+        {frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5 && frameData.id != 22) &&
           frameData.unique_id && 
           <>
             <div className="grid grid-cols-2" style={{ height: "28px", marginTop: '-10px', marginLeft: "190px" }}>
