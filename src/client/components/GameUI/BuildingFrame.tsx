@@ -171,6 +171,7 @@ export function BuildingFrame(props: any) {
         }
 
       }
+      console.log('_canBuild', _canBuild)
       setCanBuild(_canBuild)
       setMsg(_msg)
       console.log('message cost update', _msg)
@@ -353,10 +354,23 @@ export function BuildingFrame(props: any) {
                   }
                 </>
               }
-              {frameData && frameData.id == 1 && frameData.level == 1 &&
+              {frameData && frameData.id == 1 && frameData.level == 1 && canBuild ?
+                 <>
                   <div className="btnUpgrade"
-                  onClick={() => upgradeBuilding(frameData.id as number, frameData.posX, frameData.posY, frameData.level as number)}
-                ></div>
+                    onClick={() => upgradeBuilding(frameData.id as number, frameData.posX, frameData.posY, frameData.level as number)}
+                  ></div>
+                </> 
+                : frameData && frameData.id == 1 && frameData.level == 1 && !canBuild ? 
+                  <>
+                    <div 
+                      className="btnUpgradeRed"
+                      onMouseOver={() => setShowNotif(true)}
+                      onMouseOut={() => setShowNotif(false)}
+                    ></div>
+                    {showNotif && !canBuild && <div className="popUpBuild fontHPxl-sm pixelated">{msg}</div>}
+                  </>
+                :
+                <></>
               }
               {frameData && frameData.id == 1 && frameData.level == 2 &&
                 <>
