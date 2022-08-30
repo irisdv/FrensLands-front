@@ -48,6 +48,7 @@ export const allBuildings: Building[] = [
                 ],
                 frensCoins: 0,
                 energy: 0,
+                pop_min: 1
             },
             {
                 level: 2,
@@ -59,6 +60,7 @@ export const allBuildings: Building[] = [
                 ],
                 frensCoins: 0,
                 energy: 0,
+                pop_min: 1
             },
             {
                 level: 3,
@@ -70,6 +72,7 @@ export const allBuildings: Building[] = [
                 ],
                 frensCoins: 0,
                 energy: 0,
+                pop_min: 1
             }
         ],
         daily_harvest: [
@@ -131,6 +134,7 @@ export const allBuildings: Building[] = [
                 ],
                 frensCoins: 0,
                 energy: 0,
+                pop_min: 1
             },
             {
                 level: 2,
@@ -142,6 +146,7 @@ export const allBuildings: Building[] = [
                 ],
                 frensCoins: 0,
                 energy: 0,
+                pop_min: 1
             },
             {
                 level: 3,
@@ -153,6 +158,7 @@ export const allBuildings: Building[] = [
                 ],
                 frensCoins: 0,
                 energy: 0,
+                pop_min: 1
             }
         ],
         daily_harvest: [
@@ -1198,6 +1204,7 @@ export const allBuildings: Building[] = [
                 ],
                 frensCoins: 0,
                 energy: 0,
+                pop_min: 3
             },
             {
                 level: 2,
@@ -1209,6 +1216,7 @@ export const allBuildings: Building[] = [
                 ],
                 frensCoins: 0,
                 energy: 0,
+                pop_min: 3
             },
             {
                 level: 3,
@@ -1220,6 +1228,7 @@ export const allBuildings: Building[] = [
                 ],
                 frensCoins: 0,
                 energy: 0,
+                pop_min: 3
             }
         ],
         daily_harvest: [
@@ -1671,6 +1680,7 @@ export const allBuildings: Building[] = [
                 ],
                 frensCoins: 0,
                 energy: 0,
+                pop_min: 1
             },
             {
                 level: 2,
@@ -1682,6 +1692,7 @@ export const allBuildings: Building[] = [
                 ],
                 frensCoins: 0,
                 energy: 0,
+                pop_min: 1
             },
             {
                 level: 3,
@@ -1693,6 +1704,7 @@ export const allBuildings: Building[] = [
                 ],
                 frensCoins: 0,
                 energy: 0,
+                pop_min: 1
             }
         ],
         daily_harvest: [

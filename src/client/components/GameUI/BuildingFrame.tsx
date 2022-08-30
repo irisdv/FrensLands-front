@@ -173,6 +173,7 @@ export function BuildingFrame(props: any) {
       }
       setCanBuild(_canBuild)
       setMsg(_msg)
+      console.log('message cost update', _msg)
       setCostUpdate(newCost)
     }
   }, [frameData])
@@ -192,11 +193,29 @@ export function BuildingFrame(props: any) {
   useEffect(() => {
     if (frameData && frameData.id && frameData.level) {
       var newDailyCost : any[] = [];  
+      var _canPay = 1
+      var _msg = ''
       if (allBuildings[frameData.id - 1].daily_cost) {
         allBuildings[frameData.id - 1].daily_cost?.[frameData.level - 1].resources.forEach((cost : any) => {
           newDailyCost.push([cost.id, cost.qty])
+          if (resources[cost.id] < cost.qty) {
+            _canPay = 0
+          }
         })
+        if (!_canPay) _msg += 'Not enough resources. '
+        if (populationFree && allBuildings[frameData.id - 1].daily_cost?.[frameData.level - 1].pop_min) {
+          // @ts-ignore
+          const pop_min : number = allBuildings[frameData.id - 1].daily_cost?.[frameData.level - 1].pop_min
+          if (populationFree < pop_min) {
+            _canPay = 0
+            _msg += 'Not enough free frens.'
+          }
+        }
+
       }
+      setCanBuild(_canPay)
+      setMsg(_msg)
+      console.log('message daily cost', _msg)
       setDailyCosts(newDailyCost)
     }
   }, [frameData])
@@ -320,9 +339,15 @@ export function BuildingFrame(props: any) {
             <div style={{ width: "135px", paddingTop: "10px" }}>
               {frameData && (frameData.id == 2 || frameData.id == 3 || frameData.id == 20 || frameData.id == 27 ) &&
                 <>
-                  {harvestingArrValue && harvestingArrValue.length > 0 && harvestingArr[frameData.posY] && harvestingArr[frameData.posY][frameData.posX] == 0 ?
-                    <div className="btnHarvestDisabled"></div>
-
+                  {(harvestingArrValue && harvestingArrValue.length > 0 && harvestingArr[frameData.posY] && harvestingArr[frameData.posY][frameData.posX] == 0) || !canBuild ?
+                    <>
+                      <div 
+                        className="btnHarvestDisabled"
+                        onMouseOver={() => setShowNotif(true)}
+                        onMouseOut={() => setShowNotif(false)}
+                      ></div>
+                      {showNotif && !canBuild && <div className="popUpBuild fontHPxl-sm pixelated">{msg}</div>}
+                    </>
                   :
                     <div className="btnHarvest" onClick={() => harvestingResources(frameData.id as number, frameData.posX, frameData.posY, frameData.level as number)}></div>
                   }
