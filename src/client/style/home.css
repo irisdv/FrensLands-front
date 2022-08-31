@@ -249,9 +249,6 @@
 
 /* Page documentation */
 @media (min-width: 768px) {
-    .docsPage {
-        height: 100%;
-    }
     .documentationT {
         display:inline-block;
         background-image: url("resources/front/WebPageUIAssets2.png");
@@ -335,6 +332,10 @@
         background-size:calc(1280px * 1 / 2) calc(1600px * 1 / 2); 
     }
 }
+
+/* .docsPage {
+        height: 100%;
+} */
 .imgBanners {
     display:inline-block;
     background-image: url("resources/front/WebPageUIAssets2.png");

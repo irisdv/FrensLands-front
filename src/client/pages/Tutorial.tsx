@@ -70,7 +70,7 @@ export default function Team() {
             <p className="text-center fontHPxl text-white">For more details you can <a href="https://frenslands.notion.site/Documentation-223bb36338434bca9ee442048976d397" target="_blank" className="text-fl-blue">click here</a></p>
 
 
-            <p className="text-center fontHPxl-sm text-fl-light-blue md:w-1/2 mx-auto mt-10">Frens Lands is currently in pre-alpha on StarkNet testnet. This first version was built during the Matchbox hackathon beginning of July and polished through August. The contracts, costs of buildings are subject to changes during the upcoming testing sessions.</p>
+            <p className="text-center fontHPxl-sm text-fl-light-blue md:w-1/2 mx-auto mt-10 mb-5">Frens Lands is currently in pre-alpha on StarkNet testnet. This first version was built during the Matchbox hackathon beginning of July and polished through August. The contracts, costs of buildings are subject to changes during the upcoming testing sessions.</p>
           </div>
 
         </div>

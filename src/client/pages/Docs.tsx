@@ -5,7 +5,7 @@ export default function Docs() {
   return (
     <>
 
-      <div style={{overflowY: "scroll", overflowX: 'hidden', height: '100vh'}}>
+      <div style={{overflowY: "scroll", overflowX: 'hidden', height: '100vh', backgroundColor: "#151d28"}}>
         <div className="bg-home docsPage selectDisable">
           <div className='flex flex-col justify-center'>
 
