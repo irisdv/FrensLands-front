@@ -7,7 +7,7 @@ export default function Team() {
 
       <div style={{overflowY: "scroll", overflowX: 'hidden', height: '100vh'}}>
         <div className="bg-home selectDisable">
-          <div className='flex flex-col justify-center'>
+          <div className='flex flex-col justify-center xl:w-[1080px] mx-auto'>
 
             <div className="tuto-title my-5 text-center mx-auto pixelated"></div>
 
@@ -28,7 +28,7 @@ export default function Team() {
                     <div className="team-desc fontHPxl-sm text-fl-yellow mx-auto text-justify w-2/3">Create various buildings and unlock many more ! Each buildings will have a purpose in your lands.</div>
               </div>
               <div className="flex flex-col justify-center mb-10">
-                    <img src="resources/front/Tutorial_Harvest.gif" className="mx-auto text-center mb-2" style={{height: '214px', width: '214px'}} />
+                    <img src="resources/front/Tutorial_Harvest2.gif" className="mx-auto text-center mb-2" style={{height: '214px', width: '214px'}} />
                     <div className="claimT mx-auto text-center "></div>
                     <div className="team-desc fontHPxl-sm text-fl-yellow mx-auto text-justify w-2/3">You can claim the resources produced by your buildings to progress even more.</div>
               </div>

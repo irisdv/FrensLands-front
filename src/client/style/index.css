@@ -381,6 +381,9 @@ body {
         margin-top: 240px;
         height: 256px;
     }
+    .home-s1 {
+        background-size: contain;
+    }
 }
 
 #menuBar {

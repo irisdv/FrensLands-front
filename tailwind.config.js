@@ -24,7 +24,7 @@ module.exports = {
       'blue': '#4D7FAB',
       'fl-green': "#75A743",
       'fl-yellow': '#DE9E41',
-      'fl-blue': '#5E8DB6',
+      'fl-blue': '#4f8fba',
       'fl-light-blue': '#84BCD0',
       'fl-grey': '#859696'
     },
