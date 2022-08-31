@@ -67,6 +67,10 @@ html {
     font-family: 'Hpxl_JuicySmall', monospace;
     font-size: 11px;
 }
+.fontHpxl_JuicyXL {
+    font-family: 'Hpxl_JuicySmall', monospace;
+    font-size: 19px;
+}
 .fontRed {
     color: #cf573c;
 }
@@ -262,7 +266,7 @@ body {
 
 .home-s1 {
     background-color: #151d28;
-    height: 95vh;
+    height: 100%;
     background: url("resources/front/UI_MainScreen.png") no-repeat center top #151d28;
 }
 .home-s2 {
@@ -272,114 +276,9 @@ body {
     height: 1400px;
     background: url("resources/front/UI_MainScreen.png") repeat-y center top #151d28;
 }
-.roadmapT {
-    display:block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 1);
-    width:calc(64px * 6);
-    background-position:calc(10 * 1 * 64px) calc(3 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
 .home-s2 hr {
     border: 3px solid #73bed3;
     margin-top: 20px;
-}
-.lineG {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 3);
-    width:calc(64px * 2);
-    background-position:calc(10 * 1 * 64px) calc(6 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.lineWTop {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 3);
-    width:calc(64px * 2);
-    background-position:calc(8 * 1 * 64px) calc(6 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.lineWxs {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 1);
-    width:calc(64px * 2);
-    background-position:calc(8 * 1 * 64px) calc(4 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.hackT {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 1);
-    width:calc(64px * 5);
-    background-position:calc(10 * 1 * 64px) calc(9 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.lineSG {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 2);
-    width:calc(64px * 2);
-    background-position:calc(4 * 1 * 64px) calc(6 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-    /* transform: rotate(90deg); */
-}
-.currentB {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 1);
-    width:calc(64px * 5);
-    background-position:calc(5 * 1 * 64px) calc(9 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.lineWTopS {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 2);
-    width:calc(64px * 2);
-    background-position:calc(6 * 1 * 64px) calc(6 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.QAT {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 1);
-    width:calc(64px * 5);
-    background-position:calc(0 * 1 * 64px) calc(8 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.V01 {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 1);
-    width:calc(64px * 2);
-    background-position:calc(0 * 1 * 64px) calc(10 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.V02 {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 1);
-    width:calc(64px * 2);
-    background-position:calc(8 * 1 * 64px) calc(10 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.V03 {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 1);
-    width:calc(64px * 2);
-    background-position:calc(6 * 1 * 64px) calc(10 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.V04 {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 1);
-    width:calc(64px * 2);
-    background-position:calc(4 * 1 * 64px) calc(10 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
 }
 
 .roadmapGif {
@@ -399,9 +298,6 @@ body {
 }
 
 @media screen and (max-width: 320px) {
-    .home-s1 {
-        height: 97vh;
-    }
     .frensLandsWorld {
         margin-top: 160px;
     }
@@ -418,9 +314,6 @@ body {
 }
 
 @media screen and (min-width: 321px) and (max-width: 480px) {
-    .home-s1 {
-        height: 97vh;
-    }
     .frensLandsWorld {
         margin-top: 150px;
     }
@@ -474,9 +367,6 @@ body {
 }
 
 @media screen and (min-width: 1025px) {
-    .home-s1 {
-        height: 92vh;
-    }
     .frensLandsWorld {
         margin-top: 120px;
         height: auto;
