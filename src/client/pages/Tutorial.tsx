@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React from "react";
 import MenuHome from "../components/MenuHome";
 
 export default function Team() {
@@ -22,7 +22,7 @@ export default function Team() {
 
             <div className="grid md:grid-cols-3 my-5">
               <div className="flex flex-col justify-center mb-10">
-                  <img src="resources/front/Tutorial_Collect.gif" className="mx-auto text-center mb-2" style={{height: '214px', width: '214px'}} />
+                  <img src="resources/front/Tutorial_harvesting.gif" className="mx-auto text-center mb-2" style={{height: '214px', width: '214px'}} />
                   <div className="harvestT mx-auto text-center "></div>
                   <div className="team-desc fontHPxl-sm text-fl-yellow mx-auto text-justify w-2/3">Chop trees and break rocks to gather resources to build from.</div>
               </div>
@@ -50,8 +50,8 @@ export default function Team() {
 
             <div className="md:flex mx-auto justify-center">
                 <div className="mx-auto flex justify-center" style={{width: '256px'}}>
-                    <div className="argentXIcon" ></div>
-                    <div className="braavosIcon" ></div>
+                  <a href="https://www.argent.xyz/argent-x/" target='_blank'><div className="argentXIcon" ></div></a>
+                  <a href="https://braavos.app/" target='_blank'><div className="braavosIcon" ></div></a>
                 </div>
                 <p className="fontHPxl-sm text-white md:w-2/3 md:mr-10 md:mt-3 mx-2 text-justify"> 
                     - You will need a StarkNet wallet to play Frens Lands. You can use either ArgentX or Braavos.

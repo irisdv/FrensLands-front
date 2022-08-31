@@ -726,7 +726,7 @@
     background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .dashWhite {
-    display: inline-block;
+    /* display: inline-block; */
     background-image: url("resources/front/WebPageUIAssets2.png");
     height: calc(32px * 2);
     width: calc(32px * 2);
