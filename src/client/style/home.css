@@ -690,3 +690,162 @@
         margin-top: -5px;
     }
 }
+
+
+/* Page overview */
+
+@media (min-width: 768px) {
+    .overviewT {
+        display: inline-block;
+        background-image: url("resources/front/WebPageUIAssets2.png");
+        height: calc(32px * 2);
+        width: calc(32px * 12);
+        background-position: calc(25 * 1 * 32px) calc(32 * 1 * 32px);
+        background-size: calc(1280px * 1) calc(1600px * 1);
+    }
+}
+
+@media (max-width: 767px) {
+    .overviewT {
+        display: inline-block;
+        background-image: url("resources/front/WebPageUIAssets2.png");
+        height: calc(32px * 2 / 2);
+        width: calc(32px * 12 / 2);
+        background-position: calc(25 * 1 * 32px / 2) calc(32 * 1 * 32px / 2);
+        background-size: calc(1280px * 1 / 2) calc(1600px * 1 / 2);
+    }
+}
+
+/* Menu bar */
+.gameMenuWhite {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 3);
+    background-position: calc(40 * 1 * 32px) calc(40 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+}
+.dashWhite {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 2);
+    background-position: calc(37 * 1 * 32px) calc(40 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+}
+.tutorialMenuWhite {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 5);
+    background-position: calc(35 * 1 * 32px) calc(40 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+}
+.roadmapMenuWhite {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 5);
+    background-position: calc(30 * 1 * 32px) calc(40 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+}
+.aboutMenuWhite {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 5);
+    background-position: calc(25 * 1 * 32px) calc(40 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+}
+.docsMenuWhite {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 3);
+    background-position: calc(20 * 1 * 32px) calc(40 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+}
+
+.gameMenuActive {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 3);
+    background-position: calc(40 * 1 * 32px) calc(36 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+}
+.tutorialMenuActive {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 5);
+    background-position: calc(35 * 1 * 32px) calc(36 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+}
+.roadmapMenuActive {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 5);
+    background-position: calc(30 * 1 * 32px) calc(36 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+}
+.aboutMenuActive {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 5);
+    background-position: calc(25 * 1 * 32px) calc(36 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+}
+.docsMenuActive{
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 3);
+    background-position: calc(20 * 1 * 32px) calc(36 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+}
+
+
+
+.gameMenuWhite:hover {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 3);
+    background-position: calc(40 * 1 * 32px) calc(38 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+}
+.tutorialMenuWhite:hover{
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 5);
+    background-position: calc(35 * 1 * 32px) calc(38 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+}
+.roadmapMenuWhite:hover {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 5);
+    background-position: calc(30 * 1 * 32px) calc(38 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+}
+.aboutMenuWhite:hover {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 5);
+    background-position: calc(25 * 1 * 32px) calc(38 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+}
+.docsMenuWhite:hover{
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 3);
+    background-position: calc(20 * 1 * 32px) calc(38 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+}

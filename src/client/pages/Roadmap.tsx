@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
+import MenuHome from "../components/MenuHome";
 
 export default function Roadmap() {
 
@@ -7,13 +8,15 @@ export default function Roadmap() {
 
       <div style={{overflowY: "scroll", overflowX: 'hidden', height: '100vh'}}>
 
-        <div className="bg-home">
+        <div className="bg-home selectDisable">
 
-        {/* <div className="home-s2 py-5 selectDisable" id="roadmap"> */}
+        <MenuHome />
+
         <div className='flex flex-col justify-center'>
             
           <div className="pixelated mx-auto roadmapT my-5"></div>
-          <hr></hr>
+          {/* <hr></hr> */}
+          
           <div className="flex flex-row justify-center inline-block mx-auto mt-5">
             <img src="resources/front/Gif_Population.gif" className="mt-7 roadmapGif" />
             <div className="grid">

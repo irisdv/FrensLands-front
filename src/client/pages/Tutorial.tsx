@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
+import MenuHome from "../components/MenuHome";
 
 export default function Team() {
 
@@ -7,6 +8,9 @@ export default function Team() {
 
       <div style={{overflowY: "scroll", overflowX: 'hidden', height: '100vh'}}>
         <div className="bg-home selectDisable">
+
+        <MenuHome />
+        
           <div className='flex flex-col justify-center xl:w-[1080px] mx-auto'>
 
             <div className="tuto-title my-5 text-center mx-auto pixelated"></div>

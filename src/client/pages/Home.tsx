@@ -20,6 +20,7 @@ import { useResourcesContract } from "../hooks/contracts/resources";
 import { allMetadata } from "../data/metadata";
 
 import AccountAbi from "../abi/Account.json";
+import MenuHome from "../components/MenuHome";
 
 export default function Home() {
   const { account } = useStarknet();
@@ -210,6 +211,9 @@ export default function Home() {
     <>
       <div className="" style={{overflow: "hidden", height: "100vh"}}>
         <div className="home-s1">
+
+        <MenuHome />
+
           <div className="relative">
 
           <div className="notifContainer">

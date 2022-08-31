@@ -1,4 +1,5 @@
 import React from "react";
+import MenuHome from "../components/MenuHome";
 
 export default function Docs() {
 
@@ -7,6 +8,9 @@ export default function Docs() {
 
       <div style={{overflowY: "scroll", overflowX: 'hidden', height: '100vh', backgroundColor: "#151d28"}}>
         <div className="bg-home docsPage selectDisable">
+
+            <MenuHome />
+
           <div className='flex flex-col justify-center'>
 
             <div className="documentationT my-5 text-center mx-auto pixelated"></div>
