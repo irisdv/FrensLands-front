@@ -9,7 +9,7 @@ interface IConnect {
 function Icon(props: any) {
     const { id } = props
 
-    if (id === "argent-x")
+    if (id === "argentX")
       return (
         <svg
           fill="currentColor"
