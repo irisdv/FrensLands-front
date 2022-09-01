@@ -11,7 +11,6 @@ import Team from "./pages/Team";
 import Tutorial from "./pages/Tutorial";
 import Docs from "./pages/Docs";
 import Roadmap from "./pages/Roadmap";
-import Overview from "./pages/Overview";
 
 function App() {
   return (
@@ -23,7 +22,6 @@ function App() {
         <Route path="/tutorial" element={<Tutorial />} />
         <Route path="/docs" element={<Docs />} />
         <Route path="/roadmap" element={<Roadmap />} />
-        <Route path="/overview" element={<Overview />} />
         {/* <Route path="gallery" >
           <Route path=":id" element={<GalleryItem />} />
         </Route> */}

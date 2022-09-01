@@ -266,7 +266,8 @@ body {
 
 .home-s1 {
     background-color: #151d28;
-    height: 100%;
+    min-height: 700px;
+    height: 95vh;
     background: url("resources/front/UI_MainScreen.png") no-repeat center top #151d28;
 }
 .home-s2 {
@@ -289,6 +290,7 @@ body {
     pointer-events: all;
     height: auto;
     width: 100%;
+    z-index: 1;
 }
 .nftImg {
     margin-top: 300px;
@@ -298,6 +300,9 @@ body {
 }
 
 @media screen and (max-width: 320px) {
+    .home-s1 {
+        height: 97vh;
+    }
     .frensLandsWorld {
         margin-top: 160px;
     }
@@ -314,6 +319,9 @@ body {
 }
 
 @media screen and (min-width: 321px) and (max-width: 480px) {
+    .home-s1 {
+        height: 97vh;
+    }
     .frensLandsWorld {
         margin-top: 150px;
     }
@@ -367,13 +375,17 @@ body {
 }
 
 @media screen and (min-width: 1025px) {
+    .home-s1 {
+        height: 92vh;
+    }
     .frensLandsWorld {
-        margin-top: 120px;
+        margin-top: 80px;
+        /* transform: translate(-50%,-50%); */
         height: auto;
         width: 600px;
     }
     .frensLandsLogo {
-        margin-top: -100px;
+        margin-top: -150px;
         height: auto;
         width: 500px;
     }
