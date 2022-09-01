@@ -24,16 +24,19 @@ export default function Team() {
             <div className="grid md:grid-cols-3">
               <div className="flex flex-col justify-center">
                   <div className="img-iris mx-auto text-center"></div>
+                  <div className="team-desc fontHpxl_JuicyXL uppercase text-white mx-auto text-center mb-2" style={{marginTop: '-25px'}}>Dev cairo / front</div>
                   {/* <div className="team-desc fontHPxl-sm text-white mx-auto text-justify w-2/3">Lorem ipsum et dolor. Lorem ipsum et dolor. Lorem ipsum et dolor. Lorem ipsum et dolor.</div> */}
                   <a href="https://twitter.com/IrisdeVillars" target='_blank' className="mx-auto text-center"><div className="twitterIcon"></div></a>
               </div>
               <div className="flex flex-col justify-center">
                   <div className="img-thomas mx-auto text-center"></div>
+                  <div className="team-desc fontHpxl_JuicyXL uppercase text-white mx-auto text-center mb-2" style={{marginTop: '-25px'}}>Dev back</div>
                   {/* <div className="team-desc fontHPxl-sm text-white mx-auto text-justify w-2/3">Lorem ipsum et dolor. Lorem ipsum et dolor. Lorem ipsum et dolor. Lorem ipsum et dolor.</div> */}
                   <a href="https://twitter.com/Thomas7x7" target='_blank' className="mx-auto text-center"><div className="twitterIcon"></div></a>
               </div>
               <div className="flex flex-col justify-center">
                   <div className="img-hpmnk mx-auto text-center"></div>
+                  <div className="team-desc fontHpxl_JuicyXL uppercase text-white mx-auto text-center mb-2" style={{marginTop: '-25px'}}>Pixel art</div>
                   {/* <div className="team-desc fontHPxl-sm text-white mx-auto text-justify w-2/3">Lorem ipsum et dolor. Lorem ipsum et dolor. Lorem ipsum et dolor. Lorem ipsum et dolor.</div> */}
                   <a href="https://twitter.com/HPMNK_One" target='_blank' className="mx-auto text-center"><div className="twitterIcon"></div></a>
               </div>
