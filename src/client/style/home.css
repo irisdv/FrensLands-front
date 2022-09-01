@@ -732,6 +732,8 @@
     width: calc(32px * 2);
     background-position: calc(37 * 1 * 32px) calc(40 * 1 * 32px);
     background-size: calc(1280px * 1) calc(1600px * 1);
+    margin-left: -23px;
+    margin-right: -23px;
 }
 .tutorialMenuWhite {
     display: inline-block;
