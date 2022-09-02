@@ -1,7 +1,35 @@
 import React from "react";
 import MenuHome from "../components/MenuHome";
+import MapCarousel from "../components/MapCarousel";
 
 export default function Docs() {
+
+    const [showGallery, setShowGallery] = React.useState(false)
+
+    const ref = React.useRef()
+
+    function useOnClickOutside(ref : any, handler : any) {
+        React.useEffect(
+          () => {
+            const listener = (event : any) => {
+              if (!ref.current || ref.current.contains(event.target)) {
+                return;
+              }
+              handler(event);
+            };
+            document.addEventListener("mousedown", listener);
+            document.addEventListener("touchstart", listener);
+            return () => {
+              document.removeEventListener("mousedown", listener);
+              document.removeEventListener("touchstart", listener);
+            };
+          },
+          [ref, handler]
+        );
+      }
+
+      useOnClickOutside(ref, () => setShowGallery(false));
+    
 
   return (
     <>
@@ -43,10 +71,20 @@ export default function Docs() {
               <div className="flex flex-col text-white pressKitElem md:mb-1 mb-5">
                   <div className="imgMap mx-auto text-center"></div>
                   <p className="mx-auto text-center text-fl-grey fontHpxl_JuicyXL md:mb-3 mb-2">Screenshots</p>
-                  <a href="https://frenslands.notion.site/Frens-Lands-0e227f03fa8044638ebcfff414c6be1f" target="_blank" className="mx-auto text-center"><p className="fontHPxl-sm">Gallery</p></a>
+                  <p className="fontHPxl-sm mx-auto text-center cursor-pointer" onClick={() => setShowGallery(true)}>Gallery</p>
                   <p></p>
               </div>
             </div>
+
+            {showGallery ? 
+                <div 
+                    ref={ref as any}
+                    className="m-auto absolute"
+                >
+                    <div className="closeCarousel pixelated" onClick={() => setShowGallery(false)}></div>
+                        <MapCarousel />
+                </div>
+            : ""}
 
           </div>
 

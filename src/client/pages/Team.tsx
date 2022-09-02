@@ -14,7 +14,7 @@ export default function Team() {
           <div className='flex flex-col justify-center xl:w-[1080px] mx-auto'>
 
             <div className="aboutUs-title my-5 text-center mx-auto pixelated"></div>
-            <p className="text-center md:w-2/3 w-4/5 fontHPxl-sm text-white mx-auto">Frens Lands is currently in <span className='text-fl-pink'>pre-alpha on StarkNet testnet.</span> The first version was built during the Matchbox hackathon beginning of July 2022 and polished through August. The contracts, costs of buildings are subject to change during the upcoming testing sessions.</p>
+            <p className="text-justify md:w-2/3 w-4/5 fontHPxl-sm text-white mx-auto">Frens Lands is currently in <span className='text-fl-pink'>pre-alpha on StarkNet testnet.</span> The first version was built during the Matchbox hackathon beginning of July 2022 and polished through August. The contracts, costs of buildings are subject to change during the upcoming testing sessions.</p>
 
             <div className="aboutUs-img mt-5 text-center mx-auto pixelated"></div>
             <div className="aboutUs-line mb-5 text-center mx-auto pixelated"></div>

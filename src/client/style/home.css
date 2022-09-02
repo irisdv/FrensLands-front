@@ -851,3 +851,26 @@
     background-position: calc(20 * 1 * 32px) calc(38 * 1 * 32px);
     background-size: calc(1280px * 1) calc(1600px * 1);
 }
+
+.carousel {
+    display: inline-flex;
+    overflow-x: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  }
+
+
+  .closeCarousel {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(32px * 1);
+    width:calc(32px * 2);
+    background-position:calc(9 * 1 * 64px) calc(10 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+    position: absolute;
+    right: 0;
+    pointer-events: all;
+    z-index: 1;
+}

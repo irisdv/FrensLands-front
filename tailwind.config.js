@@ -26,7 +26,8 @@ module.exports = {
       'fl-yellow': '#DE9E41',
       'fl-blue': '#4f8fba',
       'fl-light-blue': '#84BCD0',
-      'fl-grey': '#859696'
+      'fl-grey': '#859696',
+      'fl-black': '#151d28'
     },
   },
   plugins: [
