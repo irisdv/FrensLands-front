@@ -15,7 +15,8 @@
   "dependencies": {
     "@react-three/drei": "^9.17.1",
     "@react-three/fiber": "^8.2.0",
-    "@starknet-react/core": "^0.13.2",
+    "@starknet-react/core": "^0.13.3",
+    "@starknet/burner": "file:../starknet-burner/burner/extension",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0"
