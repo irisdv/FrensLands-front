@@ -134,6 +134,7 @@ export function MenuBar() {
   return (
     <>
       <div className="btnBug pixelated selectDisable" onClick={() => window.open("https://forms.gle/87Ldvb1UTw53iUhH7", "_blank")}></div>
+      <div className="btnDoc pixelated selectDisable" onClick={() => window.open("https://frenslands.notion.site/Frens-Lands-0e227f03fa8044638ebcfff414c6be1f", "_blank")}></div>
       <div className="absolute selectDisable" style={{zIndex: "1"}}>
         <div className="flex flex-row justify-center inline-block">
           {/* {sound ? 
