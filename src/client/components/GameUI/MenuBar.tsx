@@ -82,9 +82,6 @@ export function MenuBar() {
     const blockClaimable = useMemo(() => {
       if (buildingData) {
         let _newBlockClaimable = 0;
-        // console.log('block', block?.block_number)
-        // console.log('gameBlock', blockGame)
-
         let _resources : any[] = []
 
         buildingData.active?.forEach((elem : any) => {
@@ -105,12 +102,11 @@ export function MenuBar() {
               if (block2Claim > 0) {
 
                 allBuildings[elem['type'] - 1].daily_harvest?.[0].resources.map((elem: any) => {
-                // DB.buildings[elem['type']].daily_harvest.level[0].resources.map((elem: any) => {
                   let _currValue = 0
                   if (_resources[elem.id] && _resources[elem.id] > 0) {
-                    _currValue =  _resources[elem.id] + (elem.quantity * block2Claim)
+                    _currValue =  _resources[elem.id] + (elem.qty * block2Claim)
                   } else {
-                    _currValue += (elem.quantity * block2Claim)
+                    _currValue += (elem.qty * block2Claim)
                   }
                   _resources[elem.id] = _currValue
                 })
@@ -119,7 +115,6 @@ export function MenuBar() {
           }
         })
         setClaimableResources(_resources)
-        console.log('_newBlockClaimable', _newBlockClaimable)
         return _newBlockClaimable
       }
     }, [buildingData])
