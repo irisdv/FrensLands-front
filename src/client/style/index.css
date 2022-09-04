@@ -400,8 +400,8 @@ body {
 
 #menuBar {
     background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
-    height:calc(64px * 1);
-    width:calc(64px * 21);
+    height:calc(32px * 2);
+    width:calc(32px * 41);
     background-position:calc(22 * 1 * 64px) calc(0 * 1* 64px);
     background-size:calc(1408px* 1) calc(768px * 1);
 }
