@@ -67,6 +67,10 @@ html {
     font-family: 'Hpxl_JuicySmall', monospace;
     font-size: 11px;
 }
+.fontHpxl_JuicyXL {
+    font-family: 'Hpxl_JuicySmall', monospace;
+    font-size: 19px;
+}
 .fontRed {
     color: #cf573c;
 }
@@ -262,6 +266,7 @@ body {
 
 .home-s1 {
     background-color: #151d28;
+    min-height: 700px;
     height: 95vh;
     background: url("resources/front/UI_MainScreen.png") no-repeat center top #151d28;
 }
@@ -272,114 +277,9 @@ body {
     height: 1400px;
     background: url("resources/front/UI_MainScreen.png") repeat-y center top #151d28;
 }
-.roadmapT {
-    display:block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 1);
-    width:calc(64px * 6);
-    background-position:calc(10 * 1 * 64px) calc(3 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
 .home-s2 hr {
     border: 3px solid #73bed3;
     margin-top: 20px;
-}
-.lineG {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 3);
-    width:calc(64px * 2);
-    background-position:calc(10 * 1 * 64px) calc(6 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.lineWTop {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 3);
-    width:calc(64px * 2);
-    background-position:calc(8 * 1 * 64px) calc(6 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.lineWxs {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 1);
-    width:calc(64px * 2);
-    background-position:calc(8 * 1 * 64px) calc(4 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.hackT {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 1);
-    width:calc(64px * 5);
-    background-position:calc(10 * 1 * 64px) calc(9 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.lineSG {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 2);
-    width:calc(64px * 2);
-    background-position:calc(4 * 1 * 64px) calc(6 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-    /* transform: rotate(90deg); */
-}
-.currentB {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 1);
-    width:calc(64px * 5);
-    background-position:calc(5 * 1 * 64px) calc(9 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.lineWTopS {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 2);
-    width:calc(64px * 2);
-    background-position:calc(6 * 1 * 64px) calc(6 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.QAT {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 1);
-    width:calc(64px * 5);
-    background-position:calc(0 * 1 * 64px) calc(8 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.V01 {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 1);
-    width:calc(64px * 2);
-    background-position:calc(0 * 1 * 64px) calc(10 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.V02 {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 1);
-    width:calc(64px * 2);
-    background-position:calc(8 * 1 * 64px) calc(10 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.V03 {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 1);
-    width:calc(64px * 2);
-    background-position:calc(6 * 1 * 64px) calc(10 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
-}
-.V04 {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets.png");
-    height:calc(64px * 1);
-    width:calc(64px * 2);
-    background-position:calc(4 * 1 * 64px) calc(10 * 1 * 64px);
-    background-size:calc(640px * 1) calc(640px * 1);
 }
 
 .roadmapGif {
@@ -390,6 +290,7 @@ body {
     pointer-events: all;
     height: auto;
     width: 100%;
+    z-index: 1;
 }
 .nftImg {
     margin-top: 300px;
@@ -478,18 +379,22 @@ body {
         height: 92vh;
     }
     .frensLandsWorld {
-        margin-top: 120px;
+        margin-top: 80px;
+        /* transform: translate(-50%,-50%); */
         height: auto;
         width: 600px;
     }
     .frensLandsLogo {
-        margin-top: -100px;
+        margin-top: -150px;
         height: auto;
         width: 500px;
     }
     .nftImg {
         margin-top: 240px;
         height: 256px;
+    }
+    .home-s1 {
+        background-size: contain;
     }
 }
 
@@ -731,10 +636,27 @@ body {
     z-index: 1;
 }
 
+.harvestFrame {
+    background-image: url("resources/front/FrensLand_HarvestableFrame.png");
+    height:calc(640px * 1);
+    width:calc(640px * 1);
+    background-size:calc(640px * 1) calc(640px * 1);
+    padding-left: 150px;
+    padding-right: 135px;
+    padding-top: 155px;
+    padding-bottom: 150px;
+    pointer-events: none;
+    right: -113px;
+    bottom: 0;
+    height: 640px; 
+    width: 640px;
+    z-index: 1;
+}
 .l1R {
     height: 43px;
     margin-left: 205px;
     margin-top: 7px;
+    pointer-events: all;
 }
 .l1R:nth-child(1) {
     width: 60px;
@@ -743,6 +665,7 @@ body {
 .l1noR {
     height: 30px;
     margin-left: 219px;
+    pointer-events: all;
 }
 .l1noR:nth-child(1) {
     width: 60px;
@@ -753,22 +676,32 @@ body {
     height: 30px;
     margin-left: 205px;
     margin-top: 43px;
+    pointer-events: all;
 }
 .l2noR {
     height: 30px;
     margin-left: 218px;
+    pointer-events: all;
+}
+.l2H {
+    height: 30px;
+    margin-left: 218px;
+    pointer-events: all;
 }
 .l3R {
     height: 30px;
     margin-left: 205px;
+    pointer-events: all;
 }
 .l3noR {
     height: 30px;
     margin-left: 205px;
+    pointer-events: all;
 }
 .l4R {
     height: 30px;
     margin-left: 205px;
+    pointer-events: all;
 }
 
 .btnDestroy {

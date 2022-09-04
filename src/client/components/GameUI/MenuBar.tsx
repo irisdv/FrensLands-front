@@ -100,6 +100,9 @@ export function MenuBar() {
                 block2Claim = check
               }
               _newBlockClaimable += block2Claim
+
+              console.log('block2Claim', block2Claim)
+              console.log('_newBlockClaimable', _newBlockClaimable)
               
               // Get resources to harvest for each claimable building
               if (block2Claim > 0) {
@@ -118,6 +121,7 @@ export function MenuBar() {
             }
           }
         })
+        console.log('resources', _resources)
         setClaimableResources(_resources)
         console.log('_newBlockClaimable', _newBlockClaimable)
         return _newBlockClaimable

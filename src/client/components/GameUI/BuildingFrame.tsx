@@ -171,8 +171,10 @@ export function BuildingFrame(props: any) {
         }
 
       }
+      console.log('_canBuild', _canBuild)
       setCanBuild(_canBuild)
       setMsg(_msg)
+      console.log('message cost update', _msg)
       setCostUpdate(newCost)
     }
   }, [frameData])
@@ -192,11 +194,29 @@ export function BuildingFrame(props: any) {
   useEffect(() => {
     if (frameData && frameData.id && frameData.level) {
       var newDailyCost : any[] = [];  
+      var _canPay = 1
+      var _msg = ''
       if (allBuildings[frameData.id - 1].daily_cost) {
         allBuildings[frameData.id - 1].daily_cost?.[frameData.level - 1].resources.forEach((cost : any) => {
           newDailyCost.push([cost.id, cost.qty])
+          if (resources[cost.id] < cost.qty) {
+            _canPay = 0
+          }
         })
+        if (!_canPay) _msg += 'Not enough resources. '
+        if (populationFree && allBuildings[frameData.id - 1].daily_cost?.[frameData.level - 1].pop_min) {
+          // @ts-ignore
+          const pop_min : number = allBuildings[frameData.id - 1].daily_cost?.[frameData.level - 1].pop_min
+          if (populationFree < pop_min) {
+            _canPay = 0
+            _msg += 'Not enough free frens.'
+          }
+        }
+
       }
+      setCanBuild(_canPay)
+      setMsg(_msg)
+      console.log('message daily cost', _msg)
       setDailyCosts(newDailyCost)
     }
   }, [frameData])
@@ -262,11 +282,11 @@ export function BuildingFrame(props: any) {
   return (
     <>
       <div id="bFrame" 
-        className={"selectDisable absolute "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5) && frameData.unique_id ? "buildingFrameRecharged" : "buildingFrame" }`}
+        className={"selectDisable absolute "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5 && frameData.id != 22) && frameData.unique_id ? "buildingFrameRecharged" : (frameData?.id == 2 || frameData?.id == 3 || frameData?.id == 20 || frameData?.id == 27)  ? "harvestFrame" :  "buildingFrame" }`}
       >
         {frameData && frameData.unique_id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27) && <div className="btnDestroy absolute" onClick={() => destroyBuilding(frameData?.id as number, frameData?.posX, frameData?.posY)}></div>}
         <div className='btnCloseFrame' onClick={() => updateBuildingFrame(false, {"id": 0, "level": 0, "posX": 0, "posY": 0, "selected": 0})}></div>
-        <div className="grid grid-cols-2 inline-block" style={{ height: "20px" }}>
+        <div className="grid grid-cols-2 inline-block" style={{ height: "20px", pointerEvents: 'all' }}>
           <div className="font8BITWonder uppercase text-center" style={{ height: "20px" }} >
             { frameData && frameData.id ? allBuildings[frameData.id - 1].name : ""}
           </div>
@@ -293,7 +313,7 @@ export function BuildingFrame(props: any) {
                 }
           </div>
         </div>
-        <div className="relative flex jutify-center items-center inline-block" style={{ height: "85px" }}>
+        <div className="relative flex jutify-center items-center inline-block" style={{ height: "85px", pointerEvents: 'all' }}>
           <div className="flex flex-row justify-center inline-block relative">
             <div  className="font04B text-center mx-auto relative"  style={{width: "68px"}}>
               <div className={"building"+`${frameData?.id}`} style={{left: "-26px", top: "-39px", position: "absolute"}}></div>
@@ -312,7 +332,7 @@ export function BuildingFrame(props: any) {
             </div>
           </div>
         </div>
-        <div className="font04B" style={{   height: "109px",   fontSize: "13px",   paddingLeft: "9px",   paddingTop: "6px"}}>
+        <div className="font04B" style={{   height: "109px",   fontSize: "13px",   paddingLeft: "9px",   paddingTop: "6px", pointerEvents: 'all'}}>
           {frameData && frameData.id ? allBuildings[frameData.id - 1].description : ""}
         </div>
         <div className="relative flex jutify-center items-center inline-block" style={{ height: "45px", paddingTop: "8px", pointerEvents: "all" }}>
@@ -320,18 +340,37 @@ export function BuildingFrame(props: any) {
             <div style={{ width: "135px", paddingTop: "10px" }}>
               {frameData && (frameData.id == 2 || frameData.id == 3 || frameData.id == 20 || frameData.id == 27 ) &&
                 <>
-                  {harvestingArrValue && harvestingArrValue.length > 0 && harvestingArr[frameData.posY] && harvestingArr[frameData.posY][frameData.posX] == 0 ?
-                    <div className="btnHarvestDisabled"></div>
-
+                  {(harvestingArrValue && harvestingArrValue.length > 0 && harvestingArr[frameData.posY] && harvestingArr[frameData.posY][frameData.posX] == 0) || !canBuild ?
+                    <>
+                      <div 
+                        className="btnHarvestDisabled"
+                        onMouseOver={() => setShowNotif(true)}
+                        onMouseOut={() => setShowNotif(false)}
+                      ></div>
+                      {showNotif && !canBuild && <div className="popUpBuild fontHPxl-sm pixelated">{msg}</div>}
+                    </>
                   :
                     <div className="btnHarvest" onClick={() => harvestingResources(frameData.id as number, frameData.posX, frameData.posY, frameData.level as number)}></div>
                   }
                 </>
               }
-              {frameData && frameData.id == 1 && frameData.level == 1 &&
+              {frameData && frameData.id == 1 && frameData.level == 1 && canBuild ?
+                 <>
                   <div className="btnUpgrade"
-                  onClick={() => upgradeBuilding(frameData.id as number, frameData.posX, frameData.posY, frameData.level as number)}
-                ></div>
+                    onClick={() => upgradeBuilding(frameData.id as number, frameData.posX, frameData.posY, frameData.level as number)}
+                  ></div>
+                </> 
+                : frameData && frameData.id == 1 && frameData.level == 1 && !canBuild ? 
+                  <>
+                    <div 
+                      className="btnUpgradeRed"
+                      onMouseOver={() => setShowNotif(true)}
+                      onMouseOut={() => setShowNotif(false)}
+                    ></div>
+                    {showNotif && !canBuild && <div className="popUpBuild fontHPxl-sm pixelated">{msg}</div>}
+                  </>
+                :
+                <></>
               }
               {frameData && frameData.id == 1 && frameData.level == 2 &&
                 <>
@@ -381,7 +420,7 @@ export function BuildingFrame(props: any) {
           </div>
         </div>
 
-        {frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5) && !frameData.unique_id ?
+        {frameData && frameData.id && (frameData.id != 1 && frameData.id != 4 && frameData.id != 5 && frameData.id != 22 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27) && !frameData.unique_id ?
         <div className="grid grid-cols-2 l1noR">
           <div className="relative flex justify-end items-center inline-block" style={{ width: "115px", marginTop: "-21px" }}>
             {frameData && frameData.id && dailyCosts && dailyCosts.length > 0 &&
@@ -392,7 +431,18 @@ export function BuildingFrame(props: any) {
           </div>
         </div>
         : <></>}
-        <div className={"grid grid-cols-2 "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5) && frameData.unique_id ? "l2R" : "l2noR" }`}>
+        {frameData && frameData.id && (frameData.id == 2 || frameData.id == 3 || frameData.id == 20 || frameData.id == 27 ) && frameData.unique_id ?
+        <div className="grid grid-cols-2 l1noR">
+          <div className="relative flex justify-end items-center inline-block" style={{ width: "115px", marginTop: "-21px" }}>
+            {frameData && frameData.id && dailyCosts && dailyCosts.length > 0 &&
+              Object.keys(dailyCosts).map((elem : any) => {
+                return <FrameItem key={elem} content={dailyCosts[elem]} option={1} />      
+              })
+            }
+          </div>
+        </div>
+        : <></>}
+        <div className={"grid grid-cols-2 "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 4 && frameData.id != 5 && frameData.id != 22 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27) && frameData.unique_id ? "l2R" : frameData && frameData.id && (frameData?.id == 2 ||  frameData?.id == 3 || frameData?.id == 20 || frameData?.id == 27) ? "l2H" : "l2noR" }`}>
           <div className="relative flex justify-end items-center inline-block" style={{ width: "122px", marginTop: "-22px" }}>
 
           {frameData && frameData.id && dailyHarvest && dailyHarvest.length > 0 &&
@@ -403,7 +453,7 @@ export function BuildingFrame(props: any) {
           </div>
         </div>
         {/* Pour les buildings qui sont rechargeables */}
-        {frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5) &&
+        {frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5 && frameData.id != 22) &&
           frameData.unique_id && 
           <>
             <div className="grid grid-cols-2" style={{ height: "28px", marginTop: '-10px', marginLeft: "190px" }}>

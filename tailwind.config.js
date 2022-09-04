@@ -19,9 +19,15 @@ module.exports = {
       'transparent': 'transparent',
       'black2': '#151515',
       'turquoise': '#7BDFD9',
-      'pink' : '#B696CC',
+      'fl-pink' : '#C65197',
       'orange': '#E39C42',
-      'blue': '#4D7FAB'
+      'blue': '#4D7FAB',
+      'fl-green': "#75A743",
+      'fl-yellow': '#DE9E41',
+      'fl-blue': '#4f8fba',
+      'fl-light-blue': '#84BCD0',
+      'fl-grey': '#859696',
+      'fl-black': '#151d28'
     },
   },
   plugins: [

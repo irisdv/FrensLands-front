@@ -20,24 +20,16 @@ import { useResourcesContract } from "../hooks/contracts/resources";
 import { allMetadata } from "../data/metadata";
 
 import AccountAbi from "../abi/Account.json";
-
-import useTest from "../hooks/invoke/useTest";
+import MenuHome from "../components/MenuHome";
 
 export default function Home() {
   const { account } = useStarknet();
   const { available, connect, disconnect } = useConnectors();
   const [hasWallet, setHasWallet] = useState(false);
-
-  // START DEBUG
-  const [testing, setTesting] = useState<any>(null)
-  const generateTest = useTest()
-  // END DEBUG 
-
   const navigate = useNavigate()
   const { setAddress, updateTokenId, tokenId, nonce, setAccountContract, accountContract, updateNonce } = useGameContext();
   const activeNotifications = useActiveNotifications()
   const [worldType, setWorldType] = useState<any>(null)
-
   const scrollRef = useRef<null | HTMLDivElement>(null); 
 
   // Call
@@ -136,26 +128,6 @@ export default function Home() {
     }
   }, [fetchGameStatus, tokenId]);
 
-  // Fetch tokenType
-  // const { data: fetchtokenType } = useStarknetCall({
-  //   contract: maps,
-  //   method: "tokenURI",
-  //   args: [uint256.bnToUint256(tokenId as number)],
-  //   options: { watch },
-  // });
-
-  // const tokenTypeValue = useMemo(() => {
-  //   if (fetchtokenType && fetchtokenType.length > 0) {
-  //     var elem = uint256.uint256ToBN(fetchtokenType[0]);
-  //     console.log("Token URI", fetchtokenType);
-  //     var balance = elem.toString();
-
-  //     fetchMapType(balance)
-
-  //     return { tokenType: balance };
-  //   }
-  // }, [fetchtokenType, account, tokenId]);
-
   // Check if is approved 
   const { data: fetchApprovalState } = useStarknetCall({
     contract: erc1155,
@@ -236,222 +208,132 @@ export default function Home() {
     }
   }, [settingUp, activeNotifications])
 
-
-  // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST  TEST TEST TEST TEST TEST TEST TEST TEST TEST 
-  // const testContract = async () => {
-  //   console.log("invoking test", account);
-  //   let tx_hash = await generateTest()
-  //   console.log('tx hash', tx_hash)
-  //   setTesting(tx_hash);
-  // };
-
-  // useEffect(() => {
-  //   if (testing) {
-  //     var data = activeNotifications.filter((transactions) => (transactions?.transactionHash as string) === testing as string)
-  //     console.log('data test', data )
-  //     console.log('state', testing)
-  //     if (data && data[0]) {
-  //       if (data[0].status == 'REJECTED') {
-  //         setMessage("Your transaction has failed... Try again.")
-  //       } else if (data[0].status == 'ACCEPTED_ON_L1' || data[0].status == 'ACCEPTED_ON_L2') {
-  //         setMessage("Your transaction was accepted. Now you can play!")
-  //         console.log('in data')
-  //         setTesting(true)
-  //         // navigate('/game')
-  //       }
-  //     }
-  //   }
-  // }, [testing, activeNotifications])
-  // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST  TEST TEST TEST TEST TEST TEST TEST TEST TEST 
-
   const executeScroll = () => {
     if (scrollRef.current) 
     scrollRef.current.scrollIntoView({behavior: 'smooth'})
-    // window.scrollTo(0, scrollRef.current.offsetTop);
-  }   
+  }  
 
   return (
     <>
-    <div className="" style={{overflowY: "scroll", overflowX: 'hidden', height: "100vh"}}>
-      <div className="home-s1">
-        <div className="relative">
+      <div className="" style={{overflowX: "hidden", overflowY: 'scroll', height: "100vh"}}>
+        <div className="home-s1">
 
-        <div className="notifContainer">
-          <div className="notifPanel">
-            <Notifications />
-          </div>
-        </div>
+        <MenuHome />
 
-          <div className="absolute" style={{width: "100vw", top: '0'}}>
-            <img src="resources/front/UI_MainScreenPlanet.svg" className="relative mx-auto pixelated frensLandsWorld selectDisable" />
-          </div>
+          <div className="relative">
 
-          <div className="absolute" style={{width: "100vw", top: '0'}}>
-            <img src="resources/front/UI_GameTitle.png" className="relative mx-auto pixelated frensLandsLogo selectDisable" />
+          <div className="notifContainer">
+            <div className="notifPanel">
+              <Notifications />
+            </div>
           </div>
 
-          <div className="absolute selectDisable" style={{width: "100vw", top: '0'}}>
-            {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && worldType >= 0 && worldType != null &&
-              <img className="relative mx-auto pixelated nftImg" src={`resources/maps/FrensLand_NFTs_${worldType}.png`} />
-            }
-            {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&
-              <div className="messageNotifParent">
-                <div className="messageNotif fontHPxl-sm mx-auto text-center" style={{borderImage: `url(data:image/svg+xml;base64,${btoa(UI_Frames)}) 18 fill stretch` }}>
-                  <p>You don't own a map... </p>
-                  <br/>
-                  <p>Join the <a className="cursor-pointer" style={{color: "#964489"}} href="https://discord.gg/gehYZU9Trf" target='_blank'>Frens Lands discord server</a> to take part in the next testing sessions.</p>
+            <div className="absolute" style={{width: "100vw", top: '0'}}>
+              <img src="resources/front/UI_MainScreenPlanet.svg" className="relative mx-auto pixelated frensLandsWorld selectDisable" />
+            </div>
+
+            <div className="absolute" style={{width: "100vw", top: '0'}}>
+              <img src="resources/front/UI_GameTitle.png" className="relative mx-auto pixelated frensLandsLogo selectDisable" />
+            </div>
+
+            <div className="absolute selectDisable" style={{width: "100vw", top: '0'}}>
+              {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && worldType >= 0 && worldType != null &&
+                <img className="relative mx-auto pixelated nftImg" src={`resources/maps/FrensLand_NFTs_${worldType}.png`} />
+              }
+              {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 0 &&
+                <div className="messageNotifParent">
+                  <div className="messageNotif fontHPxl-sm mx-auto text-center" style={{borderImage: `url(data:image/svg+xml;base64,${btoa(UI_Frames)}) 18 fill stretch` }}>
+                    <p>You don't own a map... </p>
+                    <br/>
+                    <p>Join the <a className="cursor-pointer" style={{color: "#964489"}} href="https://discord.gg/gehYZU9Trf" target='_blank'>Frens Lands discord server</a> to take part in the next testing sessions.</p>
+                  </div>
+                </div>
+              }
+              {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && GameStatusValue && GameStatusValue.gameStatus == 0 && !settingUp &&
+                <button className="relative mx-auto pixelated btnPlay" onClick={() => startGame()} style={{marginTop: '-65px'}}></button>
+              }
+              {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && GameStatusValue && GameStatusValue.gameStatus == 0 && settingUp ?
+                <div className="messageNotifParent">
+                <div className="messageNotifInit fontHPxl-sm mx-auto text-center" style={{borderImage: `url(data:image/svg+xml;base64,${btoa(UI_Frames)}) 18 fill stretch` }}>
+                  <p>Your land is initializing...</p>
                 </div>
               </div>
-            }
-            {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && GameStatusValue && GameStatusValue.gameStatus == 0 && !settingUp &&
-              <button className="relative mx-auto pixelated btnPlay" onClick={() => startGame()} style={{marginTop: '-65px'}}></button>
-            }
-            {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && GameStatusValue && GameStatusValue.gameStatus == 0 && settingUp ?
-              <div className="messageNotifParent">
-              <div className="messageNotifInit fontHPxl-sm mx-auto text-center" style={{borderImage: `url(data:image/svg+xml;base64,${btoa(UI_Frames)}) 18 fill stretch` }}>
-                <p>Your land is initializing...</p>
-              </div>
-            </div>
-            : ""}
-            {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && GameStatusValue && GameStatusValue.gameStatus == 1 && !approved &&
-              <button className="relative mx-auto pixelated btnApproval" onClick={() => approveM03()}></button>
-            }
-            {hasWallet && !account ? <ConnectWallet close={() => setHasWallet(false)} /> : null}
-            {!account && 
+              : ""}
+              {account && BalanceNFTValue && BalanceNFTValue.NFTbalance == 1 && GameStatusValue && GameStatusValue.gameStatus == 1 && !approved &&
+                <button className="relative mx-auto pixelated btnApproval" onClick={() => approveM03()}></button>
+              }
+              {hasWallet && !account ? <ConnectWallet close={() => setHasWallet(false)} /> : null}
+              {!account && 
 
-                <button 
-                  onClick={() =>
-                    // available.length === 1
-                    //   ? connect(available[0])
-                    //   : 
-                      setHasWallet(true)
-                  }
-                  className="relative mx-auto btnPlay pixelated" 
-                  style={{marginTop: '300px'}}
-                ></button>
-            }
-            {account && canPlay && approved == true && 
-              <div style={{height: '170px', pointerEvents: 'all'}}>
-                <button className="relative mx-auto pixelated btnPlay" onClick={() => navigate('/play')} style={{marginTop: '-65px'}}></button>
-              </div>
-              // <button className="relative mx-auto pixelated btnPlay" onClick={() => testContract()} style={{marginTop: '-65px'}}></button>
-            }              
+                  <button 
+                    onClick={() => setHasWallet(true)}
+                    className="relative mx-auto btnPlay pixelated" 
+                    style={{marginTop: '300px'}}
+                  ></button>
+              }
+              {account && canPlay && approved == true && 
+                <div style={{height: '170px', pointerEvents: 'all'}}>
+                  <button className="relative mx-auto pixelated btnPlay" onClick={() => navigate('/play')} style={{marginTop: '-65px'}}></button>
+                </div>
+              }              
+            </div>
           </div>
-        </div>
-      </div>
-      <img src="resources/front/Web_SplashScrollFooter.png" className="splashScroll selectDisable" onClick={() => executeScroll()} />
+        </div>  
+        <img src="resources/front/Web_SplashScrollFooter.png" className="splashScroll selectDisable" onClick={() => executeScroll()} />
 
-      <div className="home-s2 py-5 selectDisable" id="roadmap" ref={scrollRef}>
-        <div className="relative">
-            
-          <div className="pixelated mx-auto roadmapT"></div>
-          <hr></hr>
-          <div className="flex flex-row justify-center inline-block mx-auto mt-5">
-            <img src="resources/front/Gif_Population.gif" className="mt-7 roadmapGif" />
-            <div className="grid">
-              <div className="lineWTop">
-                  <div className="lineG pixelated"></div>
-              </div>
+        <div className="bg-home selectDisable">
+
+          <div className='flex flex-col justify-center xl:w-[1080px] mx-auto'>
+
+          <div className="overviewT my-5 text-center mx-auto pixelated"></div>
+          <p className="text-justify md:w-2/5 w-4/5 fontHPxl-sm text-white mx-auto">Frens Lands is currently in <span className='text-fl-green'>pre-alpha on StarkNet testnet.</span> The first version was built during the Matchbox hackathon in July 2022 and polished through August. The contracts, costs of buildings and harvesting are subject to change during the upcoming testing sessions.</p>
+
+          <div className="md:flex justify-center my-5 px-2">
+                  <div className="md:mx-2 mx-auto text-center md:my-0 my-3" style={{maxWidth: '400px', height: 'auto'}}><img src="resources/screens/1.png" /></div>
+                  <div className="md:mx-2 mx-auto text-center md:my-0 my-3"  style={{maxWidth: '400px', height: 'auto'}}><img src="resources/screens/2.png" /></div>
+          </div>
+
+          <div className="aboutUs-line mb-5 text-center mx-auto pixelated"></div>
+
+
+          <div className="grid md:grid-cols-3 my-3">
+            <div className="flex flex-col justify-center md:mx-10 mx-2 md:my-0 my-3">
+                  <img src="resources/front/Gif_Population.gif" style={{height: "214px", width: "214px"}} className="mx-auto text-center" />
+                  <p className="text-center fontHpxl_JuicyXL text-fl-yellow uppercase mb-3">An RTS/builder in a persistent world</p>
+                  <p className="mx-auto text-justify fontHPxl-sm text-white">Harvest resources to start building your own community. Manage buildings upgrades and repairs but beware Frens Lands is also a game where you’ll have to handle random events & diplomacy relationships.</p>
             </div>
-            <div className="" style={{marginLeft: '-20px'}}>
-              <div className="hackT pixelated mt-3"></div>
-              <div className="fontHPxl" style={{fontSize: '15px', color: "#a8b5b2", paddingLeft: '30px', marginTop:'-23px'}}>
-                <p>Creation of the prototype</p>
-                <ul style={{listStyle: 'disc', paddingLeft: '20px'}}>
-                  <li>20 buildings</li>
-                  <li>10 different resources</li>
-                  <li>5 different biomes</li>
-                </ul>
-              </div>
-              <div className="currentB pixelated"></div>
+            <div className="flex flex-col md:mx-16 mx-2 md:my-0 my-3">
+                  <p className="text-center fontHpxl_JuicyXL text-fl-blue uppercase mb-3">Building first</p>
+                  <p className="mx-auto text-justify fontHPxl-sm text-white">Our team is focused on building a fun and testable game. We use StarkNet testnet to take the time to build a balanced economy and we'll launch NFT mint and tokens as soon as they are fully understansable and usable by our community.</p>
+            </div>
+            <div className="flex flex-col justify-center md:mx-10 mx-2 md:my-0 my-3">
+                  <img src="resources/front/Gif_Commnity2-export.gif" style={{height: "214px", width: "214px"}} className="mx-auto text-center" />
+                  <p className="text-center fontHpxl_JuicyXL text-fl-yellow uppercase mb-3">A game built with the community</p>
+                  <p className="mx-auto text-justify fontHPxl-sm text-white">We’re very attached to community feedback that’s why we wanted to open testing sessions as soon as possible to inform our roadmap and next steps.</p>
             </div>
           </div>
 
-
-          <div className="flex flex-row justify-center inline-block mx-auto">
-            <img src="resources/front/Gif_Community.gif" className="mt-16 roadmapGif" />
-            <div className="grid">
-              <div className="lineWTopS" style={{'transform': 'rotate(180deg)', marginTop: '-27px'}}></div>
-              <div className="lineWxs" style={{'transform': 'rotate(180deg)'}}></div>
-              <div className="lineWTop" style={{'transform': 'rotate(180deg)'}}></div>
+          <div className="grid md:grid-cols-3 my-5">
+            <div className="flex flex-col md:mx-10 mx-2 md:my-0 my-3">
+                  <img src="resources/maps/FrensLand_NFTs_0.png" style={{height: "214px", width: "214px"}} className="mx-auto text-center" />
+                  <p className="text-center fontHpxl_JuicyXL text-fl-yellow uppercase mb-3">Buy the NFT when the game is playable</p>
+                  <p className="mx-auto text-justify fontHPxl-sm text-white">For now Frens Lands is running on StarkNet testnet and there are no tokens or NFTs that can be bought on StarkNet mainnet.</p>
             </div>
-
-            <div className="" style={{marginLeft: '-20px'}}>
-              <div className="QAT pixelated mt-7"></div>
-              <div className="fontHPxl" style={{fontSize: '15px', color: "#a8b5b2", paddingLeft: '30px', width: "320px", marginTop: '-15px'}}>
-                <p>Testing sessions of the game with early adopters. We gather feedback from our community and build our game features and economy accordingly.</p>
-              </div>
+            <div className="flex flex-col md:mx-10 mx-2 md:my-0 my-3">
+            <img src="resources/front/Gif_Commnity4.gif" style={{height: "214px", width: "214px"}} className="mx-auto text-center" />
+                  <p className="text-center fontHpxl_JuicyXL text-fl-yellow uppercase mb-3">Cross-usage <br/>and SBT</p>
+                  <p className="mx-auto text-justify fontHPxl-sm text-white">We’re exploring ways to bring your web3 assets into Frens Lands to truly customise your land. Imagine having a BAYC building or a statue of your Cryptopunk.</p>
             </div>
-
-          </div>
-
-          <div className="flex flex-row justify-center inline-block mx-auto">
-            <img src="resources/front/Gif_FrensEvents.gif" className="roadmapGif" style={{width: "190px", height: "190px", marginTop: '-37px'}} />
-
-            <div className="grid">
-              <div className="lineWxs" style={{'transform': 'rotate(180deg)', marginTop: '-11px'}}></div>
-              <div className="lineWTop" style={{'transform': 'rotate(180deg)'}}></div>
-            </div>
-
-            <div className="" style={{marginLeft: '-20px', marginTop: '-15px'}}>
-            <div className="V01 pixelated" style={{marginTop: '-50px'}}></div>
-              <div className="fontHPxl" style={{fontSize: '15px', color: "#a8b5b2", paddingLeft: '30px', width: "320px", marginTop: '-15px'}}>
-              <ul style={{listStyle: 'disc', paddingLeft: '20px'}}>
-                  <li>Cleaning of the hackathon code</li>
-                  <li>Level system</li>
-                  <li>Finish all buildings, frens & resources</li>
-                  <li>Buildings upgrades</li>
-                  <li>Add animations</li>
-                </ul>
-              </div>
+            <div className="flex flex-col md:mx-10 mx-2 md:my-0 my-3">
+                  <img src="resources/front/Gif_Commnity3.gif" style={{height: "214px", width: "214px"}} className="mx-auto text-center" />
+                  <p className="text-center fontHpxl_JuicyXL text-fl-yellow uppercase mb-3">Fully onchain <br/>day 1</p>
+                  <p className="mx-auto text-justify fontHPxl-sm text-white">Frens Lands first version was built onchain. We’re currently working on the new version with a complete set of features and we’re exploring ways to enhance gameplay while staying fully onchain.</p>
             </div>
           </div>
 
-          <div className="flex flex-row justify-center inline-block mx-auto">
-            <img src="resources/front/Gif_TradeRessource.gif" className="roadmapGif" style={{marginTop: '-37px'}} />
-            <div className="grid">
-              <div className="lineWxs" style={{'transform': 'rotate(180deg)', marginTop: '-11px'}}></div>
-              <div className="lineWTop" style={{'transform': 'rotate(180deg)'}}></div>
-            </div>
-
-            <div className="" style={{marginLeft: '-20px', marginTop: '-15px'}}>
-            <div className="V02 pixelated" style={{marginTop: '-50px'}}></div>
-              <div className="fontHPxl" style={{fontSize: '15px', color: "#a8b5b2", paddingLeft: '30px', width: "320px", marginTop: '-15px'}}>
-              <ul style={{listStyle: 'disc', paddingLeft: '20px'}}>
-                  <li>Event system (disease, weather...)</li>
-                  <li>Save worlds in NFT/land format</li>
-                  <li>Marketplace to sell resources</li>
-                  <li>Optimization</li>
-                  <li>More biomes!</li>
-                </ul>
-              </div>
-            </div>
           </div>
 
-          <div className="flex flex-row justify-center inline-block mx-auto">
-            <img src="resources/front/Gif_Combine.gif" className="roadmapGif" style={{marginTop: '-37px'}} />
-
-            <div className="grid">
-              <div className="lineWxs" style={{'transform': 'rotate(180deg)', marginTop: '-11px'}}></div>
-              <div className="lineWxs" style={{'transform': 'rotate(180deg)', marginTop: '-9px'}}></div>
-              <div className="lineWxs" style={{'transform': 'rotate(180deg)', marginTop: '-9px'}}></div>
-            </div>
-
-            <div className="" style={{marginLeft: '-20px', marginTop: '-15px'}}>
-              <div className="V03 pixelated" style={{marginTop: '-50px'}}></div>
-              <div className="fontHPxl" style={{fontSize: '15px', color: "#a8b5b2", paddingLeft: '30px', width: "320px", marginTop: '-15px'}}>
-              <ul style={{listStyle: 'disc', paddingLeft: '20px'}}>
-                  <li>Optimization to make lands bigger</li>
-                  <li>Combine / join your lands together</li>
-                  <li>Multiplayer suppport</li>
-                </ul>
-              </div>
-            </div>
           </div>
-
-
-        </div>
-      </div>
       </div>
     </>
   );
