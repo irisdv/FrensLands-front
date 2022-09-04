@@ -284,7 +284,8 @@ export function BuildingFrame(props: any) {
       <div id="bFrame" 
         className={"selectDisable absolute "+`${frameData && frameData.id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5 && frameData.id != 22) && frameData.unique_id ? "buildingFrameRecharged" : (frameData?.id == 2 || frameData?.id == 3 || frameData?.id == 20 || frameData?.id == 27)  ? "harvestFrame" :  "buildingFrame" }`}
       >
-        {frameData && frameData.unique_id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27) && <div className="btnDestroy absolute" onClick={() => destroyBuilding(frameData?.id as number, frameData?.posX, frameData?.posY)}></div>}
+        {frameData && frameData.unique_id && (frameData.id != 1 && frameData.id != 2 && frameData.id != 3 && frameData.id != 20 && frameData.id != 27 && frameData.id != 4 && frameData.id != 5 && frameData.id != 22) && <div className="btnDestroy absolute" onClick={() => destroyBuilding(frameData?.id as number, frameData?.posX, frameData?.posY)} style={{right: '135px', bottom: '280px'}}></div>}
+        {frameData && frameData.unique_id && (frameData.id == 4 || frameData.id == 5 || frameData.id == 22)  && <div className="btnDestroy absolute" onClick={() => destroyBuilding(frameData?.id as number, frameData?.posX, frameData?.posY)} style={{right: '135px', bottom: '207px'}}></div>}
         <div className='btnCloseFrame' onClick={() => updateBuildingFrame(false, {"id": 0, "level": 0, "posX": 0, "posY": 0, "selected": 0})}></div>
         <div className="grid grid-cols-2 inline-block" style={{ height: "20px", pointerEvents: 'all' }}>
           <div className="font8BITWonder uppercase text-center" style={{ height: "20px" }} >

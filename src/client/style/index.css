@@ -711,10 +711,9 @@ body {
     width:calc(64px * 1);
     background-position:calc(22 * 1 * 64px) calc(16 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
-    left: 90px;
-    top: 158px;
-    z-index: 0;
+    z-index: 1;
     pointer-events: all;
+    cursor: pointer;
 }
 
 
