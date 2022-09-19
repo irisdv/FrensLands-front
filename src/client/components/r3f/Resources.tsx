@@ -7,7 +7,7 @@ interface Imaps {
     compArray?: any[]
 }
 
-export default function Resources ({frontBlockArray, textArrRef, rightBuildingType, position, worldType, gallery} : any) : any{
+export default function Resources ({frontBlockArray, textArrRef, rightBuildingType, position, worldType, gallery, animIndex} : any) : any{
 
     const frontBlockArrayValue = useMemo(() => {
         if (frontBlockArray && Object.keys(frontBlockArray).length > 0) {
@@ -40,7 +40,7 @@ export default function Resources ({frontBlockArray, textArrRef, rightBuildingTy
             // } else {
                 textObj = new TextureLoader().load("resources/textures/Matchbox_Tiles_Objects_Outlined_nogrid_0.png");
             // }
-            
+
             textObj.repeat = new Vector2(0.0625, 0.0625)
             textObj.magFilter = NearestFilter;
             textObj.wrapS = RepeatWrapping;
@@ -65,19 +65,20 @@ export default function Resources ({frontBlockArray, textArrRef, rightBuildingTy
 
     return(
         textureLoader && textureLoaderSelected &&
-        textArrRef && textArrRef.length > 0 && 
-        frontBlockArrayValue && Object.keys(frontBlockArrayValue.frontBlockArray).length > 0 && 
+        textArrRef && textArrRef.length > 0 &&
+        frontBlockArrayValue && Object.keys(frontBlockArrayValue.frontBlockArray).length > 0 &&
         frontBlockArrayValue.frontBlockArray.map((line : any, key: any) => {
-            return <ResourceLine 
+            return <ResourceLine
                         frontBlockArray={frontBlockArray}
-                        key={key} 
-                        line={line} 
-                        textArrRef={textArrRef} 
-                        rightBuildingType={rightBuildingType} 
-                        textureLoader={textureLoader} 
-                        textureSelected={textureLoaderSelected} 
+                        key={key}
+                        line={line}
+                        textArrRef={textArrRef}
+                        rightBuildingType={rightBuildingType}
+                        textureLoader={textureLoader}
+                        textureSelected={textureLoaderSelected}
                         position={position}
                         worldType={worldType}
+                        animIndex={animIndex}
                     />
         })
     )

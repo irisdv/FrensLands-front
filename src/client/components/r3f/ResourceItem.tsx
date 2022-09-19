@@ -14,10 +14,11 @@ interface IBlock {
     textureLoader : any
     textureSelected: any
     worldType: any
-    level: number;
+    level: number
+    animIndex: any
 }
 
-export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType, position, frontBlockArray, textureLoader, textureSelected, worldType, level}) : any => {
+export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType, position, frontBlockArray, textureLoader, textureSelected, worldType, level, animIndex}) : any => {
 
     const meshRef = useRef<any>()
     const clockRef = useRef<any>()
@@ -29,6 +30,13 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
     const {harvestingArr} = useGameContext()
     const rockTextures = [[177, 171, 172], [180, 174, 175], [179, 171, 173]]
     const treeTextures = [
+        [[15, 126, 128], [16, 119, 127], [30, 120, 127]],
+        [[46, 206, 207], [47, 110, 111], [48, 222, 223]],
+        [[95, 124, 127], [96, 125, 128], [30, 120, 127]],
+        [[63, 121, 127], [64, 122, 128], [78, 123, 127]],
+        [[15, 126, 128], [16, 119, 127], [30, 120, 127]]
+    ]
+    const animArray = [
         [[15, 126, 128], [16, 119, 127], [30, 120, 127]],
         [[46, 206, 207], [47, 110, 111], [48, 222, 223]],
         [[95, 124, 127], [96, 125, 128], [30, 120, 127]],
@@ -153,6 +161,31 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
         }
     }, [textureLoader])
 
+
+
+    const animations = useMemo(() => {
+
+        //console.log("ANIM MEMO");
+
+        let textureType : Vector2 = new Vector2(0, 0);
+        //let treeType : number = treeTextures[worldType][block[9] - 1][0];
+
+        if (block[9] > 0) {
+            if (block[3] == 3) {
+                textureType = findTextByID(animArray[worldType][block[9] - 1][animIndex - 1])
+            }
+        } 
+        
+        const localT = textureSelected.clone()
+        localT.needsUpdate = true
+        localT.offset.set(textureType.x, textureType.y);
+        setLocalTextureSelected(localT)
+        return textureType
+
+    }, [animIndex])
+
+
+
     function findTextByID(type : number)
     {
         var posText = new Vector2();
@@ -177,7 +210,11 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
         return (new Vector2(0,0));
     }
 
+
     useFrame(() => {
+
+
+
         if (!meshRef || !meshRef.current) {
             return
         }
@@ -195,7 +232,7 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
 
                 // resource selected
                 if (((blockValue[0] == position.x && blockValue[1] == position.y) || blockValue[0] == frameData?.posX && blockValue[1] == frameData?.posY)) {
-                    
+
                     meshRef.current.material.map = localTextureSelected
 
                     if (harvestArrValue && harvestArrValue[blockValue[1]] && harvestArrValue[blockValue[1]][blockValue[0]] == 0) {
@@ -214,21 +251,21 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
             // Case building
             } else if (blockValue != undefined && blockValue[0] != undefined && blockValue[1] != undefined
                 && (blockValue[3] != 2 && blockValue[3] != 3 && blockValue[3] != 20 && blockValue[3] != 27)
-            ) { 
+            ) {
                 // Building is selected / hovered
                 if ((blockValue[0] == position.x && blockValue[1] == position.y) || blockValue[0] == frameData?.posX && blockValue[1] == frameData?.posY) {
 
                     // building under construction
                     if (frontBlockArray[blockValue[1]][blockValue[0]][10] == 0) {
                         meshRef.current.material.map = underConstructionSelect
-                    
+
                     // building upgraded or destroyed
                     } else if (frontBlockArray[blockValue[1]][blockValue[0]][10] == 1
-                        && harvestArrValue && harvestArrValue[blockValue[1]] 
+                        && harvestArrValue && harvestArrValue[blockValue[1]]
                         && harvestArrValue[blockValue[1]][blockValue[0]] == 0
                     ) {
                         meshRef.current.material.map = underConstructionSelect
-                    
+
                     } else {
                         meshRef.current.material.map = localTextureSelected
                     }
@@ -238,10 +275,10 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
                     // building under construction
                     if (frontBlockArray[blockValue[1]][blockValue[0]][10] == 0) {
                         meshRef.current.material.map = underConstruction
-                    
+
                     // building upgraded destroyed
                     } else if (frontBlockArray[blockValue[1]][blockValue[0]][10] == 1
-                        && harvestArrValue && harvestArrValue[blockValue[1]] 
+                        && harvestArrValue && harvestArrValue[blockValue[1]]
                         && harvestArrValue[blockValue[1]][blockValue[0]] == 0
                     ) {
                         meshRef.current.material.map = underConstruction
