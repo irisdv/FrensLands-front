@@ -43,6 +43,13 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
         [[63, 121, 127], [64, 122, 128], [78, 123, 127]],
         [[15, 126, 128], [16, 119, 127], [30, 120, 127]]
     ]
+    const animSelectedArray = [
+        [[15, 126, 128], [16, 119, 127], [30, 120, 127]],
+        [[46, 206, 207], [47, 110, 111], [48, 222, 223]],
+        [[95, 124, 127], [96, 125, 128], [30, 120, 127]],
+        [[63, 121, 127], [64, 122, 128], [78, 123, 127]],
+        [[15, 126, 128], [16, 119, 127], [30, 120, 127]]
+    ]
 
     const frameDataValue = useMemo(() => {
         if (frameData && clicked) {
@@ -165,10 +172,7 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
 
     const animations = useMemo(() => {
 
-        //console.log("ANIM MEMO");
-
         let textureType : Vector2 = new Vector2(0, 0);
-        //let treeType : number = treeTextures[worldType][block[9] - 1][0];
 
         if (block[9] > 0) {
             if (block[3] == 3) {
@@ -176,11 +180,32 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
 
                 const localT = textureLoader.clone()
                 localT.needsUpdate = true
-                localT.offset.set(textureType.x, textureType.y);
+                localT.offset.set(textureType.x, textureType.y)
                 setLocalTexture(localT)
                 return textureType
             }
         } 
+
+    }, [animIndex])
+
+
+    const selectAnimations = useMemo(() => {
+
+        let textureType : Vector2 = new Vector2(0, 0);
+
+        if (((blockValue[0] == position.x && blockValue[1] == position.y) || blockValue[0] == frameData?.posX && blockValue[1] == frameData?.posY)) {
+            if (block[9] > 0) {
+                if (block[3] == 3) {
+                    textureType = findTextByID(animSelectedArray[worldType][block[9] - 1][animIndex - 1])
+
+                    const localT = textureSelected.clone()
+                    localT.needsUpdate = true
+                    localT.offset.set(textureType.x, textureType.y)
+                    setLocalTextureSelected(localT)
+                    return textureType
+                }
+            }
+        }
 
     }, [animIndex])
 
