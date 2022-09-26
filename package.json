@@ -15,7 +15,7 @@
   "dependencies": {
     "@react-three/drei": "^9.17.1",
     "@react-three/fiber": "^8.2.0",
-    "@starknet-react/core": "^0.13.2",
+    "@starknet-react/core": "^0.13.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0"
@@ -33,7 +33,7 @@
     "postcss": "^8.4.14",
     "postcss-loader": "^7.0.0",
     "raw-loader": "^4.0.2",
-    "starknet": "^3.18.2",
+    "starknet": "3.18.2",
     "style-loader": "^3.3.1",
     "tailwindcss": "^3.1.5",
     "three": "^0.142.0",
