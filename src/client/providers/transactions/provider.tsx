@@ -4,7 +4,6 @@ import { useStarknet } from '@starknet-react/core'
 import { TransactionManagerContext } from './context'
 import { NotifItem, Transaction, TransactionSubmitted } from './model'
 import { transactionManagerReducer } from './reducer'
-import { nanoid } from 'nanoid'
 
 function shouldRefreshTransaction (
   transaction: Transaction,

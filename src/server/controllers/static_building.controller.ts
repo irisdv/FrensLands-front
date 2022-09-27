@@ -1,6 +1,6 @@
 export {};
-const db = require("../../models");
-const StaticBuilding = db.static_buildings;
+const models = require("../models");
+const StaticBuilding = models.static_buildings;
 
 // Retrieve static building information by id
 exports.findOne = (req, res) => {

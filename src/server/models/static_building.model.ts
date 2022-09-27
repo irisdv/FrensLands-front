@@ -47,14 +47,17 @@ module.exports = (sequelize, Sequelize) => {
     createCost: {
       type: Sequelize.STRING,
       field: "createCost",
+      defaultValue: null,
     },
     maintainCost: {
       type: Sequelize.STRING,
       field: "maintainCost",
+      defaultValue: null,
     },
     production: {
       type: Sequelize.STRING,
       field: "production",
+      defaultValue: null,
     },
   });
 

@@ -57,6 +57,22 @@ export const Scene = (props: any) => {
       })
   }
 
+  const getStaticBuildings = async () => {
+    await fetch(`http://localhost:3001/api/static_buildings`)
+      .then(async (response) => {
+        return await response.json()
+      })
+      .then((data) => {
+        console.log('data static building', data)
+        // if (data) initSettings(data.setting)
+        // return data.setting.zoom
+      })
+  }
+
+  useEffect(() => {
+    getStaticBuildings()
+  }, [])
+
   const zoomValue = useMemo(() => {
     if (!initZoomMode) {
       const zoomVal = getUserSettings()

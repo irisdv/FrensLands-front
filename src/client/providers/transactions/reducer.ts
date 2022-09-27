@@ -135,9 +135,9 @@ export function transactionManagerReducer (
       (tx) => tx.content.transactionHash !== content.transactionHash
     )
 
-    const myNotif = state.notifList.filter(
-      (tx) => tx.content.transactionHash == content.transactionHash
-    )
+    // const myNotif = state.notifList.filter(
+    //   (tx) => tx.content.transactionHash === content.transactionHash
+    // )
 
     const updatedNotifList = notifList.concat([
       {
@@ -154,7 +154,7 @@ export function transactionManagerReducer (
   } else if (action.type === 'remove_notification') {
     const notifList = state.notifList.filter((tx) => tx.key !== action.key)
 
-    const myNotif = state.notifList.filter((notif) => notif.key == action.key)
+    // const myNotif = state.notifList.filter((notif) => notif.key === action.key)
 
     const updatedNotifList = notifList.concat([
       {

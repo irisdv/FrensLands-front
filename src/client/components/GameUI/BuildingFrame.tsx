@@ -950,7 +950,7 @@ export function BuildingFrame (props: any) {
                 >
                   {/* {buildingData != null &&
                   buildingData.active != null &&
-                  buildingData.active[frameData.unique_id as any] && 
+                  buildingData.active[frameData.unique_id as any] &&
                   buildingData.active[frameData.unique_id as any].recharges
                     ? buildingData.active[frameData.unique_id as any].recharges
                     : 0} */}

@@ -36,7 +36,7 @@ var dbInitialized = false;
 
 require("./routes/auth.routes")(app);
 require("./routes/user.routes")(app);
-// require("./routes/user_setting.routes")(app);
+require("./routes/static_building.routes")(app);
 
 /** catch 404 and forward to error handler */
 app.use("*", (req, res) => {
@@ -49,64 +49,34 @@ app.use("*", (req, res) => {
 const server = http.createServer(app); // create http server
 server.listen(port); // Listen on provided port, on all network interfaces
 
-if (!dbInitialized) {
-  // Add fixed data from csv file
-  const db = require("./models");
-  const StaticBuilding = db.static_buildings;
-  const inputFile = path.resolve(__dirname, "./data/test.csv");
+// -------------- TEST : IMPORT CSV STATIC DATA INTO DB --------------
+// if (!dbInitialized) {
+//   // Add fixed data from csv file
+//   const db = require("./models");
+//   const StaticBuilding = db.static_buildings;
+//   const inputFile = path.resolve(__dirname, "./data/test.csv");
 
-  let buildingData = [];
+//   let buildingData = [];
 
-  fs.createReadStream(inputFile)
-    .pipe(csv.parse({ headers: true }))
-    .on("error", (error) => {
-      throw error.message;
-    })
-    .on("data", (row) => {
-      buildingData.push(row);
-    })
-    .on("end", () => {
-      StaticBuilding.bulkCreate(buildingData)
-        .then(() => {
-          console.log("success");
-        })
-        .catch((error) => {
-          console.log("error", error);
-        });
-    });
-
-  // let stream = fs.createReadStream(inputFile);
-  // let csvData = [];
-  // let csvStream = fastcsv
-  //   .parse()
-  //   .on("data", function(data) {
-  //     csvData.push(data);
-  //   })
-  //   .on("end", function() {
-  //     // remove the first line: header
-  //     csvData.shift();
-
-  //     console.log('csvData', csvData)
-
-  //     const query = "INSERT INTO static_buildings (spriteId, biomeId, name, locked, size, canDestroy, canMove, fertilityNeed, nbLevel, maintain, createCost, maintainCost, production) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)";
-
-  //     csvData.forEach(row => {
-  //         db.sequelize.query(query, row, (err, res) => {
-  //           if (err) {
-  //             console.log(err.stack);
-  //           } else {
-  //             console.log("inserted " + res.rowCount + " row:", row);
-  //           }
-  //         });
-  //       });
-
-  //     // connect to the PostgreSQL database
-  //     // save csvData
-  //   });
-
-  // stream.pipe(csvStream);
-  dbInitialized = true;
-}
+//   fs.createReadStream(inputFile)
+//     .pipe(csv.parse({ headers: true }))
+//     .on("error", (error) => {
+//       throw error.message; 
+//     })
+//     .on("data", (row) => {
+//       buildingData.push(row);
+//     })
+//     .on("end", () => {
+//       StaticBuilding.bulkCreate(buildingData)
+//         .then(() => {
+//           console.log("success");
+//         })
+//         .catch((error) => {
+//           console.log("error", error);
+//         });
+//     });
+//   dbInitialized = true;
+// }
 
 //  ------------ SOCKETS MANAGEMENT ------------
 const io = require("socket.io")(server);
