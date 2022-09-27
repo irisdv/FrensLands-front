@@ -110,15 +110,16 @@ export const Map = (props : any)=> {
 
 
     useFrame(({ mouse, raycaster }) => {
-        if ((Date.now() - curT) > 3)
+        if ((Date.now() - curT) > 150)
         {
-            if (animIndex < 4)
+            if (animIndex <= 3)
             {
                 setAnimIndex(animIndex + 1)
             }
-            else if (animIndex < 1 || animIndex > 3)
+            
+            if (animIndex == 3)
             {
-                setAnimIndex(1)
+                setAnimIndex(0)
             }
 
             //console.log("animIndex = ", animIndex)
