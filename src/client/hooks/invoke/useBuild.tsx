@@ -1,14 +1,14 @@
-import { useStarknet } from '@starknet-react/core'
-import { useCallback } from 'react'
-import { AddTransactionResponse, uint256 } from 'starknet'
-import { useNotifTransactionManager } from '../../providers/transactions'
-import { useBuildingsContract } from '../contracts/buildings'
+import { useStarknet } from "@starknet-react/core";
+import { useCallback } from "react";
+import { AddTransactionResponse, uint256 } from "starknet";
+import { useNotifTransactionManager } from "../../providers/transactions";
+import { useBuildingsContract } from "../contracts/buildings";
 
-export default function useBuild () {
-  const { account } = useStarknet()
-  const { contract } = useBuildingsContract()
+export default function useBuild() {
+  const { account } = useStarknet();
+  const { contract } = useBuildingsContract();
 
-  const { addTransaction } = useNotifTransactionManager()
+  const { addTransaction } = useNotifTransactionManager();
 
   return useCallback(
     async (
@@ -22,7 +22,7 @@ export default function useBuild () {
       nonce: string
     ) => {
       if (contract == null || !account) {
-        throw new Error('Missing Dependencies')
+        throw new Error("Missing Dependencies");
       }
 
       if (
@@ -32,39 +32,39 @@ export default function useBuild () {
         !building_type_id ||
         !level
       ) {
-        throw new Error('Missing Arguments')
+        throw new Error("Missing Arguments");
       }
 
       return await contract
         .invoke(
-          'build',
+          "build",
           [uint256.bnToUint256(tokenId), building_type_id, pos_start],
           { nonce }
         )
         .then((tx: AddTransactionResponse) => {
-          console.log('Transaction hash: ', tx.transaction_hash)
+          console.log("Transaction hash: ", tx.transaction_hash);
 
           addTransaction({
             status: tx.code,
             transactionHash: tx.transaction_hash,
             address: account,
             metadata: {
-              method: 'build',
-              message: 'Build',
+              method: "build",
+              message: "Build",
               posX,
               posY,
               uniqueId,
-              type_id: building_type_id
-            }
-          })
+              type_id: building_type_id,
+            },
+          });
 
-          return tx.transaction_hash
+          return tx.transaction_hash;
         })
         .catch((e) => {
-          console.error(e)
-          return 0
-        })
+          console.error(e);
+          return 0;
+        });
     },
     [account, addTransaction, contract]
-  )
+  );
 }

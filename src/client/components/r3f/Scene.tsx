@@ -1,24 +1,24 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Canvas } from '@react-three/fiber'
-import { PositionalAudio, useContextBridge } from '@react-three/drei'
-import * as THREE from 'three'
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Canvas } from "@react-three/fiber";
+import { PositionalAudio, useContextBridge } from "@react-three/drei";
+import * as THREE from "three";
 
-import { Terrain } from './Terrain'
-import { TerrainBorder } from './TerrainBorder'
-import { Camera } from './Camera'
-import { TerrainBackground } from './TerrainBackground'
-import { Map } from './Map'
-import { Vector2 } from 'three'
-import BuildingContext from '../../providers/BuildingContext'
-import SelectContext from '../../providers/SelectContext'
-import { TransactionManagerContext } from '../../providers/transactions/context'
-import { StarknetContext } from '@starknet-react/core/dist/providers/starknet'
-import StateContext from '../../providers/GameContext'
-import { useSelectContext } from '../../hooks/useSelectContext'
-import { useStarknet } from '@starknet-react/core'
+import { Terrain } from "./Terrain";
+import { TerrainBorder } from "./TerrainBorder";
+import { Camera } from "./Camera";
+import { TerrainBackground } from "./TerrainBackground";
+import { Map } from "./Map";
+import { Vector2 } from "three";
+import BuildingContext from "../../providers/BuildingContext";
+import SelectContext from "../../providers/SelectContext";
+import { TransactionManagerContext } from "../../providers/transactions/context";
+import { StarknetContext } from "@starknet-react/core/dist/providers/starknet";
+import StateContext from "../../providers/GameContext";
+import { useSelectContext } from "../../hooks/useSelectContext";
+import { useStarknet } from "@starknet-react/core";
 
-import socketService from '../../services/socketService'
-import gameService from '../../services/gameService'
+import socketService from "../../services/socketService";
+import gameService from "../../services/gameService";
 
 export const Scene = (props: any) => {
   const ContextBridge = useContextBridge(
@@ -27,108 +27,108 @@ export const Scene = (props: any) => {
     TransactionManagerContext,
     StarknetContext,
     StateContext
-  )
-  const refCanvas = useRef<any>()
+  );
+  const refCanvas = useRef<any>();
 
-  const { account } = useStarknet()
+  const { account } = useStarknet();
 
-  const { updateBuildingFrame, zoomMode, initSettings } = useSelectContext()
+  const { updateBuildingFrame, zoomMode, initSettings } = useSelectContext();
 
   const { mapArray, textArrRef, rightBuildingType, worldType, UBlockIDs } =
-    props
+    props;
 
-  const [mouseWheelProp, setMouseWheelProp] = useState(0)
-  const [mouseLeftPressed, setMouseLeftPressed] = useState(0)
-  const [mouseRightPressed, setMouseRightPressed] = useState(0)
-  const [mouseMiddlePressed, setMouseMiddlePressed] = useState(0)
-  const [frontBlockArray, setFrontBlockArray] = useState([])
-  const [initZoomMode, setInitZoomMode] = useState(0)
+  const [mouseWheelProp, setMouseWheelProp] = useState(0);
+  const [mouseLeftPressed, setMouseLeftPressed] = useState(0);
+  const [mouseRightPressed, setMouseRightPressed] = useState(0);
+  const [mouseMiddlePressed, setMouseMiddlePressed] = useState(0);
+  const [frontBlockArray, setFrontBlockArray] = useState([]);
+  const [initZoomMode, setInitZoomMode] = useState(0);
 
   const getUserSettings = async () => {
     await fetch(`http://localhost:3001/api/users/${account}`, {
-      headers: { 'x-access-token': localStorage.getItem('user') as string }
+      headers: { "x-access-token": localStorage.getItem("user") as string },
     })
       .then(async (response) => {
-        return await response.json()
+        return await response.json();
       })
       .then((data) => {
-        if (data) initSettings(data.setting)
-        return data.setting.zoom
-      })
-  }
+        if (data) initSettings(data.setting);
+        return data.setting.zoom;
+      });
+  };
 
   const getStaticBuildings = async () => {
     await fetch(`http://localhost:3001/api/static_buildings`)
       .then(async (response) => {
-        return await response.json()
+        return await response.json();
       })
       .then((data) => {
-        console.log('data static building', data)
+        console.log("data static building", data);
         // if (data) initSettings(data.setting)
         // return data.setting.zoom
-      })
-  }
+      });
+  };
 
   useEffect(() => {
-    getStaticBuildings()
-  }, [])
+    getStaticBuildings();
+  }, []);
 
   const zoomValue = useMemo(() => {
     if (!initZoomMode) {
-      const zoomVal = getUserSettings()
-      setInitZoomMode(1)
-      return zoomVal
+      const zoomVal = getUserSettings();
+      setInitZoomMode(1);
+      return zoomVal;
     } else {
-      return zoomMode
+      return zoomMode;
     }
-  }, [zoomMode])
+  }, [zoomMode]);
 
   const [keyMap, setKeyMap] = useState({
-    Escape: false
-  })
-  const [customMouse, setCustomMouse] = useState(new Vector2(0, 0))
+    Escape: false,
+  });
+  const [customMouse, setCustomMouse] = useState(new Vector2(0, 0));
 
-  const indexRef = useRef<any>()
-  const [index, setIndex] = useState(10)
-  indexRef.current = index
+  const indexRef = useRef<any>();
+  const [index, setIndex] = useState(10);
+  indexRef.current = index;
 
   useEffect(() => {
     const handleKeyDown = (event: any) => {
-      setKeyMap((m) => ({ ...m, [event.code]: true }))
-    }
+      setKeyMap((m) => ({ ...m, [event.code]: true }));
+    };
     const handleKeyUp = (event: any) => {
-      setKeyMap((m) => ({ ...m, [event.code]: false }))
-    }
+      setKeyMap((m) => ({ ...m, [event.code]: false }));
+    };
     const handleMouseWheelProp = (event: any) => {
       if (zoomValue) {
         if (event.deltaY > 0 && indexRef.current > 4) {
-          setIndex(() => indexRef.current - 1)
+          setIndex(() => indexRef.current - 1);
         } else if (event.deltaY < 0 && indexRef.current < 20) {
-          setIndex(() => indexRef.current + 1)
+          setIndex(() => indexRef.current + 1);
         }
       } else {
         if (event.deltaY > 0 && indexRef.current < 20) {
-          setIndex(() => indexRef.current + 1)
+          setIndex(() => indexRef.current + 1);
         } else if (event.deltaY < 0 && indexRef.current > 4) {
-          setIndex(() => indexRef.current - 1)
+          setIndex(() => indexRef.current - 1);
         }
       }
-    }
-    document.addEventListener('keydown', handleKeyDown)
-    document.addEventListener('keyup', handleKeyUp)
-    const passiveObject: any = { passive: true }
-    document.addEventListener('wheel', handleMouseWheelProp, passiveObject)
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
+    const passiveObject: any = { passive: true };
+    document.addEventListener("wheel", handleMouseWheelProp, passiveObject);
     return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-      document.removeEventListener('keyup', handleKeyUp)
-      const passiveObject: any = { passive: true }
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keyup", handleKeyUp);
+      const passiveObject: any = { passive: true };
       document.removeEventListener(
-        'wheel',
+        "wheel",
         handleMouseWheelProp,
         passiveObject
-      )
-    }
-  }, [zoomValue, zoomMode])
+      );
+    };
+  }, [zoomValue, zoomMode]);
 
   useEffect(() => {
     if (keyMap && keyMap.Escape) {
@@ -137,10 +137,10 @@ export const Scene = (props: any) => {
         unique_id: 0,
         posX: 0,
         posY: 0,
-        selected: 0
-      })
+        selected: 0,
+      });
     }
-  }, [keyMap])
+  }, [keyMap]);
 
   return (
     <>
@@ -150,29 +150,29 @@ export const Scene = (props: any) => {
         linear
         ref={refCanvas}
         onCreated={() => {
-          setFrontBlockArray(mapArray)
+          setFrontBlockArray(mapArray);
         }}
         onMouseDown={(event) => {
           if (event.button == 2) {
-            setMouseRightPressed(1)
+            setMouseRightPressed(1);
           }
           if (event.button == 0) {
-            setMouseLeftPressed(1)
+            setMouseLeftPressed(1);
           }
           if (event.button == 1) {
-            setMouseMiddlePressed(1)
+            setMouseMiddlePressed(1);
           }
         }}
         onMouseUp={(event) => {
-          event.stopPropagation()
+          event.stopPropagation();
           if (event.button == 2) {
-            setMouseRightPressed(0)
+            setMouseRightPressed(0);
           }
           if (event.button == 0) {
-            setMouseLeftPressed(0)
+            setMouseLeftPressed(0);
           }
           if (event.button == 1) {
-            setMouseMiddlePressed(0)
+            setMouseMiddlePressed(0);
           }
         }}
         onMouseMove={(event) => {
@@ -181,10 +181,10 @@ export const Scene = (props: any) => {
               (event.clientX / window.innerWidth) * 2 - 1,
               -(event.clientY / window.innerHeight) * 2 + 1
             )
-          )
+          );
         }}
         onContextMenu={(event) => {
-          event.preventDefault()
+          event.preventDefault();
         }}
       >
         <ambientLight color={0xffffff} intensity={0.9} />
@@ -223,5 +223,5 @@ export const Scene = (props: any) => {
             /> */}
       </Canvas>
     </>
-  )
-}
+  );
+};

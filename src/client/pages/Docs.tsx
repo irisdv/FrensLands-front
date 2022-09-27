@@ -1,39 +1,39 @@
-import React from 'react'
-import MenuHome from '../components/MenuHome'
-import MapCarousel from '../components/MapCarousel'
+import React from "react";
+import MenuHome from "../components/MenuHome";
+import MapCarousel from "../components/MapCarousel";
 
-export default function Docs () {
-  const [showGallery, setShowGallery] = React.useState(false)
+export default function Docs() {
+  const [showGallery, setShowGallery] = React.useState(false);
 
-  const ref = React.useRef()
+  const ref = React.useRef();
 
-  function useOnClickOutside (ref: any, handler: any) {
+  function useOnClickOutside(ref: any, handler: any) {
     React.useEffect(() => {
       const listener = (event: any) => {
         if (!ref.current || ref.current.contains(event.target)) {
-          return
+          return;
         }
-        handler(event)
-      }
-      document.addEventListener('mousedown', listener)
-      document.addEventListener('touchstart', listener)
+        handler(event);
+      };
+      document.addEventListener("mousedown", listener);
+      document.addEventListener("touchstart", listener);
       return () => {
-        document.removeEventListener('mousedown', listener)
-        document.removeEventListener('touchstart', listener)
-      }
-    }, [ref, handler])
+        document.removeEventListener("mousedown", listener);
+        document.removeEventListener("touchstart", listener);
+      };
+    }, [ref, handler]);
   }
 
-  useOnClickOutside(ref, () => setShowGallery(false))
+  useOnClickOutside(ref, () => setShowGallery(false));
 
   return (
     <>
       <div
         style={{
-          overflowY: 'scroll',
-          overflowX: 'hidden',
-          height: '100vh',
-          backgroundColor: '#151d28'
+          overflowY: "scroll",
+          overflowX: "hidden",
+          height: "100vh",
+          backgroundColor: "#151d28",
         }}
       >
         <div className="bg-home docsPage selectDisable">
@@ -70,7 +70,7 @@ export default function Docs () {
               <div className="flex flex-col justify-center text-white pressKitElem md:mb-1 mb-5">
                 <div
                   className="mx-auto text-center flex items-center justify-center h-screen"
-                  style={{ height: '128px' }}
+                  style={{ height: "128px" }}
                 >
                   <div className="imgBanners"></div>
                 </div>
@@ -133,8 +133,7 @@ export default function Docs () {
               </div>
             </div>
 
-            {showGallery
-              ? (
+            {showGallery ? (
               <div ref={ref as any} className="m-auto absolute">
                 <div
                   className="closeCarousel pixelated"
@@ -142,13 +141,12 @@ export default function Docs () {
                 ></div>
                 <MapCarousel />
               </div>
-                )
-              : (
-                  ''
-                )}
+            ) : (
+              ""
+            )}
           </div>
         </div>
       </div>
     </>
-  )
+  );
 }

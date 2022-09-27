@@ -1,7 +1,7 @@
-import { useMemo } from 'react'
-import { useGameContext } from './useGameContext'
+import { useMemo } from "react";
+import { useGameContext } from "./useGameContext";
 
-export default function useResourcesContext () {
+export default function useResourcesContext() {
   const {
     energy,
     frensCoins,
@@ -13,8 +13,8 @@ export default function useResourcesContext () {
     populationFree,
     meat,
     cereal,
-    resources
-  } = useGameContext()
+    resources,
+  } = useGameContext();
 
   return useMemo(() => {
     return {
@@ -28,8 +28,8 @@ export default function useResourcesContext () {
       populationFree,
       meat,
       cereal,
-      resources
-    }
+      resources,
+    };
   }, [
     energy,
     frensCoins,
@@ -40,6 +40,6 @@ export default function useResourcesContext () {
     populationBusy,
     populationFree,
     meat,
-    cereal
-  ])
+    cereal,
+  ]);
 }

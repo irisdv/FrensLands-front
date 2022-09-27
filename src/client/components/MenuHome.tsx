@@ -1,8 +1,8 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
+import React from "react";
+import { NavLink } from "react-router-dom";
 
-export default function MenuHome () {
-  const [navbarOpen, setNavbarOpen] = React.useState(false)
+export default function MenuHome() {
+  const [navbarOpen, setNavbarOpen] = React.useState(false);
 
   return (
     <>
@@ -41,8 +41,8 @@ export default function MenuHome () {
           </div>
           <div
             className={
-              'lg:flex flex-grow items-center' +
-              (navbarOpen ? ' flex' : ' hidden')
+              "lg:flex flex-grow items-center" +
+              (navbarOpen ? " flex" : " hidden")
             }
             id="example-navbar-danger"
           >
@@ -50,7 +50,7 @@ export default function MenuHome () {
               <li className="nav-item">
                 <NavLink
                   className={(navData) =>
-                    navData.isActive ? 'gameMenuActive' : 'gameMenuWhite'
+                    navData.isActive ? "gameMenuActive" : "gameMenuWhite"
                   }
                   to="/"
                 ></NavLink>
@@ -60,8 +60,8 @@ export default function MenuHome () {
                 <NavLink
                   className={(navData) =>
                     navData.isActive
-                      ? 'tutorialMenuActive'
-                      : 'tutorialMenuWhite'
+                      ? "tutorialMenuActive"
+                      : "tutorialMenuWhite"
                   }
                   to="/tutorial"
                 ></NavLink>
@@ -70,7 +70,7 @@ export default function MenuHome () {
               <li className="nav-item">
                 <NavLink
                   className={(navData) =>
-                    navData.isActive ? 'roadmapMenuActive' : 'roadmapMenuWhite'
+                    navData.isActive ? "roadmapMenuActive" : "roadmapMenuWhite"
                   }
                   to="/roadmap"
                 ></NavLink>
@@ -79,7 +79,7 @@ export default function MenuHome () {
               <li className="nav-item">
                 <NavLink
                   className={(navData) =>
-                    navData.isActive ? 'aboutMenuActive' : 'aboutMenuWhite'
+                    navData.isActive ? "aboutMenuActive" : "aboutMenuWhite"
                   }
                   to="/about"
                 ></NavLink>
@@ -88,7 +88,7 @@ export default function MenuHome () {
               <li className="nav-item">
                 <NavLink
                   className={(navData) =>
-                    navData.isActive ? 'docsMenuActive' : 'docsMenuWhite'
+                    navData.isActive ? "docsMenuActive" : "docsMenuWhite"
                   }
                   to="/docs"
                 ></NavLink>
@@ -98,5 +98,5 @@ export default function MenuHome () {
         </div>
       </nav>
     </>
-  )
+  );
 }

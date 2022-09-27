@@ -1,10 +1,10 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { Link } from "react-router-dom";
 
-export default function GalleryList (props: any) {
-  const { elem } = props
+export default function GalleryList(props: any) {
+  const { elem } = props;
 
-  console.log('elem', elem)
+  console.log("elem", elem);
 
   return (
     <>
@@ -15,5 +15,5 @@ export default function GalleryList (props: any) {
         </Link>
       </div>
     </>
-  )
+  );
 }

@@ -1,9 +1,9 @@
-import React from 'react'
-import useActiveNotifications from '../hooks/useNotifications'
-import { NotifItem } from './NotifItem'
+import React from "react";
+import useActiveNotifications from "../hooks/useNotifications";
+import { NotifItem } from "./NotifItem";
 
-export default function Notifications () {
-  const activeNotifications = useActiveNotifications()
+export default function Notifications() {
+  const activeNotifications = useActiveNotifications();
 
   return (
     <>
@@ -16,5 +16,5 @@ export default function Notifications () {
         />
       ))}
     </>
-  )
+  );
 }

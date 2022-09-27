@@ -1,61 +1,61 @@
-import React from 'react'
+import React from "react";
 
 const images = [
-  'resources/screens/1.png',
-  'resources/screens/2.png',
-  'resources/screens/3.png'
-]
+  "resources/screens/1.png",
+  "resources/screens/2.png",
+  "resources/screens/3.png",
+];
 
-export default function MapCarousel () {
-  const [currentImage, setCurrentImage] = React.useState(0)
+export default function MapCarousel() {
+  const [currentImage, setCurrentImage] = React.useState(0);
 
   const refs: any = images.reduce((acc: any, val, i) => {
-    acc[i] = React.createRef()
-    return acc
-  }, {})
+    acc[i] = React.createRef();
+    return acc;
+  }, {});
 
   const scrollToImage = (i: any) => {
-    setCurrentImage(i)
+    setCurrentImage(i);
     refs[i].current.scrollIntoView({
-      behavior: 'smooth',
-      block: 'nearest',
-      inline: 'start'
-    })
-  }
+      behavior: "smooth",
+      block: "nearest",
+      inline: "start",
+    });
+  };
 
-  const totalImages = images.length
+  const totalImages = images.length;
 
   const nextImage = () => {
     if (currentImage >= totalImages - 1) {
-      scrollToImage(0)
+      scrollToImage(0);
     } else {
-      scrollToImage(currentImage + 1)
+      scrollToImage(currentImage + 1);
     }
-  }
+  };
 
   const previousImage = () => {
     if (currentImage === 0) {
-      scrollToImage(totalImages - 1)
+      scrollToImage(totalImages - 1);
     } else {
-      scrollToImage(currentImage - 1)
+      scrollToImage(currentImage - 1);
     }
-  }
+  };
 
   const arrowStyle =
-    'absolute text-white text-2xl z-10 bg-black h-10 w-10 rounded-full opacity-75 flex items-center justify-center'
+    "absolute text-white text-2xl z-10 bg-black h-10 w-10 rounded-full opacity-75 flex items-center justify-center";
 
   const sliderControl = (isLeft: any) => (
     <button
       type="button"
       onClick={isLeft ? previousImage : nextImage}
-      className={`${arrowStyle} ${isLeft ? 'left-2' : 'right-2'}`}
-      style={{ top: '40%' }}
+      className={`${arrowStyle} ${isLeft ? "left-2" : "right-2"}`}
+      style={{ top: "40%" }}
     >
-      <span role="img" aria-label={`Arrow ${isLeft ? 'left' : 'right'}`}>
-        {isLeft ? '◀' : '▶'}
+      <span role="img" aria-label={`Arrow ${isLeft ? "left" : "right"}`}>
+        {isLeft ? "◀" : "▶"}
       </span>
     </button>
-  )
+  );
 
   return (
     <>
@@ -75,5 +75,5 @@ export default function MapCarousel () {
         </div>
       </div>
     </>
-  )
+  );
 }

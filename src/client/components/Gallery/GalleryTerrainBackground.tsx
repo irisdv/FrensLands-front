@@ -1,26 +1,26 @@
-import React, { useEffect, useMemo, useRef } from 'react'
-import { Canvas, useThree, useFrame, useLoader } from '@react-three/fiber'
-import { PerspectiveCamera } from '@react-three/drei'
+import React, { useEffect, useMemo, useRef } from "react";
+import { Canvas, useThree, useFrame, useLoader } from "@react-three/fiber";
+import { PerspectiveCamera } from "@react-three/drei";
 import {
   TextureLoader,
   RepeatWrapping,
   NearestFilter,
-  PlaneGeometry
-} from 'three'
+  PlaneGeometry,
+} from "three";
 
-import useInGameContext from '../../hooks/useInGameContext'
+import useInGameContext from "../../hooks/useInGameContext";
 
 export const GalleryTerrainBackground = (props: any) => {
   const textureLoader = useMemo(() => {
     const textObj = new TextureLoader().load(
-      '../resources/textures/Water_Tile.png'
-    )
-    textObj.repeat.set(1, 1)
-    textObj.wrapS = textObj.wrapT = RepeatWrapping
-    textObj.magFilter = NearestFilter
+      "../resources/textures/Water_Tile.png"
+    );
+    textObj.repeat.set(1, 1);
+    textObj.wrapS = textObj.wrapT = RepeatWrapping;
+    textObj.magFilter = NearestFilter;
 
-    return textObj
-  }, [])
+    return textObj;
+  }, []);
 
   return (
     <>
@@ -43,5 +43,5 @@ export const GalleryTerrainBackground = (props: any) => {
         />
       </mesh>
     </>
-  )
-}
+  );
+};

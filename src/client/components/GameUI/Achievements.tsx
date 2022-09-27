@@ -1,58 +1,54 @@
-import { useStarknet } from '@starknet-react/core'
-import React, { useMemo, useState, useRef, useEffect } from 'react'
-import { allAchievements } from '../../data/achievements'
-import { useSelectContext } from '../../hooks/useSelectContext'
-import { Achievement } from '../../model/achievement'
-import UI_Frames from '../../style/resources/front/Ui_Frames3.svg'
+import { useStarknet } from "@starknet-react/core";
+import React, { useMemo, useState, useRef, useEffect } from "react";
+import { allAchievements } from "../../data/achievements";
+import { useSelectContext } from "../../hooks/useSelectContext";
+import { Achievement } from "../../model/achievement";
+import UI_Frames from "../../style/resources/front/Ui_Frames3.svg";
 
-export function Achievements (props: any) {
-  const { account } = useStarknet()
-  const { tutoMode, updateTuto } = useSelectContext()
-  const [lastAchievement, setLastAchievement] = useState<Achievement>()
-  const [showGoal, setShowGoal] = useState(false)
-  const [showDesc, setShowDesc] = useState(false)
-  const [showInfo, setShowInfo] = useState(true)
-  const [lastLevel, setLastLevel] = useState(0)
+export function Achievements(props: any) {
+  const { account } = useStarknet();
+  const { tutoMode, updateTuto } = useSelectContext();
+  const [lastAchievement, setLastAchievement] = useState<Achievement>();
+  const [showGoal, setShowGoal] = useState(false);
+  const [showDesc, setShowDesc] = useState(false);
+  const [showInfo, setShowInfo] = useState(true);
+  const [lastLevel, setLastLevel] = useState(0);
 
   const currAchievement = useMemo(() => {
     if (props.level != lastLevel) {
-      setLastLevel(props.level)
+      setLastLevel(props.level);
 
       allAchievements.map((achievement: Achievement) => {
         if (achievement.level == props.level) {
-          setLastAchievement(achievement)
-          setShowInfo(true)
-          return achievement
+          setLastAchievement(achievement);
+          setShowInfo(true);
+          return achievement;
         }
-      })
+      });
     }
-  }, [props])
+  }, [props]);
 
   const showTutorial = useMemo(() => {
-    return tutoMode
-  }, [tutoMode])
+    return tutoMode;
+  }, [tutoMode]);
 
   return (
     <>
-      {lastLevel < 9
-        ? (
-            showTutorial
-              ? (
+      {lastLevel < 9 ? (
+        showTutorial ? (
           <div
             className="btnShowTuto0 pixelated selectDisable"
             onClick={() => updateTuto(!showTutorial, account as string)}
           ></div>
-                )
-              : (
+        ) : (
           <div
             className="btnShowTuto1 pixelated selectDisable"
             onClick={() => updateTuto(!showTutorial, account as string)}
           ></div>
-                )
-          )
-        : (
-            ''
-          )}
+        )
+      ) : (
+        ""
+      )}
 
       {!showGoal && showTutorial && lastLevel < 9 && (
         <div
@@ -76,8 +72,8 @@ export function Achievements (props: any) {
           <div
             className="GoalArrowRight pixelated selectDisable"
             onClick={() => {
-              setShowGoal(!showGoal)
-              setShowDesc(!showDesc)
+              setShowGoal(!showGoal);
+              setShowDesc(!showDesc);
             }}
           ></div>
 
@@ -109,8 +105,7 @@ export function Achievements (props: any) {
         </div>
       )}
 
-      {showInfo && lastAchievement != null && lastLevel > 0
-        ? (
+      {showInfo && lastAchievement != null && lastLevel > 0 ? (
         <div className="flex justify-center selectDisable">
           <div className="parentNotif">
             <div
@@ -119,7 +114,7 @@ export function Achievements (props: any) {
                 zIndex: 1,
                 borderImage: `url(data:image/svg+xml;base64,${btoa(
                   UI_Frames
-                )}) 18 fill stretch`
+                )}) 18 fill stretch`,
               }}
             >
               <div
@@ -127,30 +122,26 @@ export function Achievements (props: any) {
                 onClick={() => setShowInfo(false)}
               ></div>
               <div className="achievementText">
-                {lastLevel && lastLevel == 1
-                  ? (
+                {lastLevel && lastLevel == 1 ? (
                   <>
                     <p>GM frens !</p>
                     <br />
                   </>
-                    )
-                  : (
-                      ''
-                    )}
+                ) : (
+                  ""
+                )}
                 {lastAchievement && lastAchievement?.description && (
                   <p>{lastAchievement.description}</p>
                 )}
                 <br />
-                {showTutorial && lastLevel < 9
-                  ? (
+                {showTutorial && lastLevel < 9 ? (
                   <p>
                     <span>Next goal: </span>
                     {lastAchievement.goal}
                   </p>
-                    )
-                  : (
-                      ''
-                    )}
+                ) : (
+                  ""
+                )}
                 <br />
                 {lastAchievement && lastAchievement.unlock.length > 0 && (
                   <p>You just unlocked : </p>
@@ -162,27 +153,26 @@ export function Achievements (props: any) {
                         <div
                           key={building}
                           style={{
-                            width: '64px',
-                            height: '64px',
-                            position: 'relative'
+                            width: "64px",
+                            height: "64px",
+                            position: "relative",
                           }}
                         >
                           <div
-                            className={'building' + `${building}`}
-                            style={{ marginLeft: '-32px', marginTop: '-32px' }}
+                            className={"building" + `${building}`}
+                            style={{ marginLeft: "-32px", marginTop: "-32px" }}
                           ></div>
                         </div>
-                      )
+                      );
                     })}
                 </div>
               </div>
             </div>
           </div>
         </div>
-          )
-        : (
-            ''
-          )}
+      ) : (
+        ""
+      )}
     </>
-  )
+  );
 }

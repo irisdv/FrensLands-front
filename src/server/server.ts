@@ -1,4 +1,3 @@
-// import express from 'express'
 import path from "path";
 import http from "http";
 import https from "https";
@@ -37,6 +36,7 @@ var dbInitialized = false;
 require("./routes/auth.routes")(app);
 require("./routes/user.routes")(app);
 require("./routes/static_building.routes")(app);
+require("./routes/static_resources_spawned.routes")(app);
 
 /** catch 404 and forward to error handler */
 app.use("*", (req, res) => {
@@ -51,23 +51,45 @@ server.listen(port); // Listen on provided port, on all network interfaces
 
 // -------------- TEST : IMPORT CSV STATIC DATA INTO DB --------------
 // if (!dbInitialized) {
-//   // Add fixed data from csv file
-//   const db = require("./models");
-//   const StaticBuilding = db.static_buildings;
-//   const inputFile = path.resolve(__dirname, "./data/test.csv");
+//     // Add fixed data from csv file
+//     const db = require("./models");
 
-//   let buildingData = [];
+//     const StaticBuilding = db.static_buildings;
+//     const inputFile = path.resolve(__dirname, "./data/buildings.csv");
+//     let buildingData = [];
+
+//     const StaticRS = db.static_resources;
+//     const rsFile = path.resolve(__dirname, "./data/rs.csv");
+//     let rsData = [];
 
 //   fs.createReadStream(inputFile)
 //     .pipe(csv.parse({ headers: true }))
 //     .on("error", (error) => {
-//       throw error.message; 
+//       throw error.message;
 //     })
 //     .on("data", (row) => {
 //       buildingData.push(row);
 //     })
 //     .on("end", () => {
 //       StaticBuilding.bulkCreate(buildingData)
+//         .then(() => {
+//           console.log("success");
+//         })
+//         .catch((error) => {
+//           console.log("error", error);
+//         });
+//     });
+
+//   fs.createReadStream(rsFile)
+//     .pipe(csv.parse({ headers: true }))
+//     .on("error", (error) => {
+//       throw error.message;
+//     })
+//     .on("data", (row) => {
+//       rsData.push(row);
+//     })
+//     .on("end", () => {
+//       StaticRS.bulkCreate(rsData)
 //         .then(() => {
 //           console.log("success");
 //         })

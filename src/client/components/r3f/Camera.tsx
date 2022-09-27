@@ -3,90 +3,90 @@ import React, {
   useLayoutEffect,
   useRef,
   useState,
-  useMemo
-} from 'react'
-import { Canvas, useThree, useFrame, useLoader } from '@react-three/fiber'
-import { PerspectiveCamera } from '@react-three/drei'
-import { Vector2 } from 'three'
+  useMemo,
+} from "react";
+import { Canvas, useThree, useFrame, useLoader } from "@react-three/fiber";
+import { PerspectiveCamera } from "@react-three/drei";
+import { Vector2 } from "three";
 
 export const Camera = (props: any) => {
-  const cameraRef = useRef<THREE.PerspectiveCamera>()
-  const set = useThree(({ set }) => set)
-  const size = useThree(({ size }) => size)
+  const cameraRef = useRef<THREE.PerspectiveCamera>();
+  const set = useThree(({ set }) => set);
+  const size = useThree(({ size }) => size);
 
-  const { mouseRightPressed, mouseWheelProp } = props
-  const [tempMousePos, setTempMousePos] = useState(new Vector2(0, 0))
-  const [cameraPositionX, setCameraPositionX] = useState(21)
-  const [cameraPositionY, setCameraPositionY] = useState(150)
-  const [cameraPositionZ, setCameraPositionZ] = useState(9)
-  const [zoom, setZoom] = useState(0)
+  const { mouseRightPressed, mouseWheelProp } = props;
+  const [tempMousePos, setTempMousePos] = useState(new Vector2(0, 0));
+  const [cameraPositionX, setCameraPositionX] = useState(21);
+  const [cameraPositionY, setCameraPositionY] = useState(150);
+  const [cameraPositionZ, setCameraPositionZ] = useState(9);
+  const [zoom, setZoom] = useState(0);
 
   const mouseWheelValue = useMemo(() => {
-    console.log(mouseWheelProp)
+    console.log(mouseWheelProp);
     if (mouseWheelProp != null) {
-      setZoom(1)
-      console.log('mouseWheelProp', mouseWheelProp)
-      return mouseWheelProp
+      setZoom(1);
+      console.log("mouseWheelProp", mouseWheelProp);
+      return mouseWheelProp;
     }
-  }, [mouseWheelProp])
+  }, [mouseWheelProp]);
 
   useFrame(({ mouse }) => {
     if (cameraRef.current != null) {
-      setCameraPositionY(15 * props.index)
+      setCameraPositionY(15 * props.index);
 
       if (mouseRightPressed == 1) {
-        const posX = cameraPositionX
-        const posZ = cameraPositionZ
+        const posX = cameraPositionX;
+        const posZ = cameraPositionZ;
 
-        const mouseMove = new Vector2(0, 0)
-        let difX = (tempMousePos.x - mouse.x) * 100
-        let difY = (tempMousePos.y - mouse.y) * 100
+        const mouseMove = new Vector2(0, 0);
+        let difX = (tempMousePos.x - mouse.x) * 100;
+        let difY = (tempMousePos.y - mouse.y) * 100;
 
-        if (difX < 0) difX = difX * -1
-        if (difY < 0) difY = difY * -1
+        if (difX < 0) difX = difX * -1;
+        if (difY < 0) difY = difY * -1;
 
         if (tempMousePos.x < mouse.x) {
           if (cameraPositionX > 0) {
-            mouseMove.x = 0.1 * difX
-            setCameraPositionX(cameraPositionX - mouseMove.x)
+            mouseMove.x = 0.1 * difX;
+            setCameraPositionX(cameraPositionX - mouseMove.x);
           }
         } else if (tempMousePos.x > mouse.x) {
           if (cameraPositionX < 40) {
-            mouseMove.x = 0.1 * difX
-            setCameraPositionX(cameraPositionX + mouseMove.x)
+            mouseMove.x = 0.1 * difX;
+            setCameraPositionX(cameraPositionX + mouseMove.x);
           }
         } else if (tempMousePos.x == mouse.x) {
-          mouseMove.x = 0
+          mouseMove.x = 0;
         }
         if (tempMousePos.y < mouse.y) {
           if (cameraPositionZ < 16) {
-            mouseMove.y = 0.1 * difY
-            setCameraPositionZ(cameraPositionZ + mouseMove.y)
+            mouseMove.y = 0.1 * difY;
+            setCameraPositionZ(cameraPositionZ + mouseMove.y);
           }
         } else if (tempMousePos.y > mouse.y) {
           if (cameraPositionZ > 0) {
-            mouseMove.y = 0.1 * difY
-            setCameraPositionZ(cameraPositionZ - mouseMove.y)
+            mouseMove.y = 0.1 * difY;
+            setCameraPositionZ(cameraPositionZ - mouseMove.y);
           }
         } else if (tempMousePos.y == mouse.y) {
-          mouseMove.y = 0
+          mouseMove.y = 0;
         }
       }
-      setTempMousePos(new Vector2(mouse.x, mouse.y))
+      setTempMousePos(new Vector2(mouse.x, mouse.y));
 
-      cameraRef.current.aspect = size.width / size.height
+      cameraRef.current.aspect = size.width / size.height;
       cameraRef.current.position.set(
         cameraPositionX,
         cameraPositionY,
         cameraPositionZ
-      )
-      cameraRef.current.updateProjectionMatrix()
+      );
+      cameraRef.current.updateProjectionMatrix();
     }
-  })
+  });
 
   useLayoutEffect(() => {
-    set({ camera: cameraRef.current as THREE.PerspectiveCamera })
-  }, [])
+    set({ camera: cameraRef.current as THREE.PerspectiveCamera });
+  }, []);
 
   return (
     <>
@@ -100,5 +100,5 @@ export const Camera = (props: any) => {
         {...props}
       />
     </>
-  )
-}
+  );
+};

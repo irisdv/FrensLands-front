@@ -1,53 +1,53 @@
-import { GetTransactionResponse } from 'starknet'
-import { List } from 'immutable'
+import { GetTransactionResponse } from "starknet";
+import { List } from "immutable";
 import {
   NotifContent,
   NotifItem,
   Transaction,
-  TransactionSubmitted
-} from './model'
-import { nanoid } from 'nanoid'
+  TransactionSubmitted,
+} from "./model";
+import { nanoid } from "nanoid";
 
 export interface TransactionManagerState {
-  transactions: List<Transaction>
-  notifList: List<NotifItem>
+  transactions: List<Transaction>;
+  notifList: List<NotifItem>;
 }
 
 interface AddTransaction {
-  type: 'add_transaction'
-  transaction: TransactionSubmitted
+  type: "add_transaction";
+  transaction: TransactionSubmitted;
 }
 
 interface RemoveTransaction {
-  type: 'remove_transaction'
-  transactionResponse: GetTransactionResponse
-  lastUpdatedAt: number
-  show: boolean
-  transactionHash: string
+  type: "remove_transaction";
+  transactionResponse: GetTransactionResponse;
+  lastUpdatedAt: number;
+  show: boolean;
+  transactionHash: string;
 }
 
 interface UpdateTransaction {
-  type: 'update_transaction'
-  transactionResponse: GetTransactionResponse
-  lastUpdatedAt: number
-  show: boolean
-  transactionHash: string
+  type: "update_transaction";
+  transactionResponse: GetTransactionResponse;
+  lastUpdatedAt: number;
+  show: boolean;
+  transactionHash: string;
 }
 
 interface AddNotification {
-  type: 'add_notification'
+  type: "add_notification";
   notifItem: {
-    key?: string
-    content: NotifContent
-    show?: boolean
-    old_status?: string
-  }
+    key?: string;
+    content: NotifContent;
+    show?: boolean;
+    old_status?: string;
+  };
 }
 
 interface RemoveNotification {
-  type: 'remove_notification'
-  key: string
-  content: any
+  type: "remove_notification";
+  key: string;
+  content: any;
 }
 
 export type Action =
@@ -55,29 +55,29 @@ export type Action =
   | RemoveTransaction
   | UpdateTransaction
   | AddNotification
-  | RemoveNotification
+  | RemoveNotification;
 
-export function transactionManagerReducer (
+export function transactionManagerReducer(
   state: TransactionManagerState,
   action: Action
 ): TransactionManagerState {
-  if (action.type === 'add_transaction') {
-    console.log('add tx', action.transaction)
+  if (action.type === "add_transaction") {
+    console.log("add tx", action.transaction);
     return {
       ...state,
-      transactions: state.transactions.push(action.transaction)
-    }
-  } else if (action.type === 'remove_transaction') {
+      transactions: state.transactions.push(action.transaction),
+    };
+  } else if (action.type === "remove_transaction") {
     const entry = state.transactions.findEntry(
       (tx) => tx.transactionHash === action.transactionHash
-    )
+    );
 
     if (entry == null) {
-      return state
+      return state;
     }
 
-    const [transactionIndex, transaction] = entry
-    const description = transaction.metadata
+    const [transactionIndex, transaction] = entry;
+    const description = transaction.metadata;
 
     const newTransaction: Transaction = {
       status: action.transactionResponse.status,
@@ -85,13 +85,13 @@ export function transactionManagerReducer (
       transactionHash: action.transactionHash,
       lastUpdatedAt: action.lastUpdatedAt,
       show: action.show,
-      metadata: description
-    }
+      metadata: description,
+    };
 
     return {
       ...state,
-      transactions: state.transactions.set(transactionIndex, newTransaction)
-    }
+      transactions: state.transactions.set(transactionIndex, newTransaction),
+    };
 
     // return {
     //   ...state,
@@ -99,21 +99,21 @@ export function transactionManagerReducer (
     //     (tx) => tx.transactionHash !== action.transactionHash
     //   ),
     // }
-  } else if (action.type === 'update_transaction') {
-    if (action.transactionResponse.status === 'NOT_RECEIVED') {
-      return state
+  } else if (action.type === "update_transaction") {
+    if (action.transactionResponse.status === "NOT_RECEIVED") {
+      return state;
     }
 
     const entry = state.transactions.findEntry(
       (tx) => tx.transactionHash === action.transactionHash
-    )
+    );
 
     if (entry == null) {
-      return state
+      return state;
     }
 
-    const [transactionIndex, transaction] = entry
-    const description = transaction.metadata
+    const [transactionIndex, transaction] = entry;
+    const description = transaction.metadata;
 
     const newTransaction: Transaction = {
       status: action.transactionResponse.status,
@@ -121,19 +121,19 @@ export function transactionManagerReducer (
       transactionHash: action.transactionHash,
       lastUpdatedAt: action.lastUpdatedAt,
       show: action.show,
-      metadata: description
-    }
+      metadata: description,
+    };
 
     return {
       ...state,
-      transactions: state.transactions.set(transactionIndex, newTransaction)
-    }
-  } else if (action.type === 'add_notification') {
-    const { key, content } = action.notifItem
+      transactions: state.transactions.set(transactionIndex, newTransaction),
+    };
+  } else if (action.type === "add_notification") {
+    const { key, content } = action.notifItem;
 
     const notifList = state.notifList.filter(
       (tx) => tx.content.transactionHash !== content.transactionHash
-    )
+    );
 
     // const myNotif = state.notifList.filter(
     //   (tx) => tx.content.transactionHash === content.transactionHash
@@ -143,16 +143,16 @@ export function transactionManagerReducer (
       {
         key: key || nanoid(),
         show: true,
-        content
-      }
-    ])
+        content,
+      },
+    ]);
 
     return {
       ...state,
-      notifList: updatedNotifList
-    }
-  } else if (action.type === 'remove_notification') {
-    const notifList = state.notifList.filter((tx) => tx.key !== action.key)
+      notifList: updatedNotifList,
+    };
+  } else if (action.type === "remove_notification") {
+    const notifList = state.notifList.filter((tx) => tx.key !== action.key);
 
     // const myNotif = state.notifList.filter((notif) => notif.key === action.key)
 
@@ -161,14 +161,14 @@ export function transactionManagerReducer (
         key: action.key,
         show: false,
         old_status: action.content.status,
-        content: action.content
-      }
-    ])
+        content: action.content,
+      },
+    ]);
 
     return {
       ...state,
-      notifList: updatedNotifList
-    }
+      notifList: updatedNotifList,
+    };
 
     // return {
     //   ...state,
@@ -176,5 +176,5 @@ export function transactionManagerReducer (
     // }
   }
 
-  return state
+  return state;
 }

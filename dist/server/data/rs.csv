@@ -1,0 +1,5 @@
+spriteId,biomeId,name,locked,size,nbHarvest,fertilityNeed,nbLevels,harvestCost,production
+1:15/126/128|16/119/127|30/120/127]2:46/206/207|47/110/111|48/222/223,1|2|3|4|5,Tree,FALSE,1,3,1,3,3:1|15:1,1:2
+177/171/172|180/174/175|179/171/173,1|2|3|4|5,Rock,FALSE,1,3,1,3,3:1|15:1,2:2
+20,1|2|3|4|5,Mine,FALSE,1,3,1,3,3:3|15:3,4:2|5:2
+183,1|2|3|4|5,Bush,FALSE,1,3,1,3,15:1,3:2

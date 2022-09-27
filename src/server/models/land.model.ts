@@ -9,11 +9,11 @@ module.exports = (sequelize, Sequelize) => {
       field: "fullMap",
     },
     nbResourceSpawned: {
-      type: Sequelize.STRING,
+      type: Sequelize.SMALLINT,
       field: "nbResourceSpawned",
     },
     nbResourceLeft: {
-      type: Sequelize.STRING,
+      type: Sequelize.SMALLINT,
       field: "nbResourceLeft",
     },
     nbBuilding: {

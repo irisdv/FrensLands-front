@@ -1,11 +1,11 @@
-import React from 'react'
-import MenuHome from '../components/MenuHome'
+import React from "react";
+import MenuHome from "../components/MenuHome";
 
-export default function Team () {
+export default function Team() {
   return (
     <>
       <div
-        style={{ overflowY: 'scroll', overflowX: 'hidden', height: '100vh' }}
+        style={{ overflowY: "scroll", overflowX: "hidden", height: "100vh" }}
       >
         <div className="bg-home selectDisable">
           <MenuHome />
@@ -14,10 +14,10 @@ export default function Team () {
             <div className="tuto-title my-5 text-center mx-auto pixelated"></div>
 
             <p className="text-justify fontHPxl-sm text-white md:w-2/3 mx-2 md:mx-auto mb-7 mt-3">
-              Frens Lands is a fully onchain world builder{' '}
+              Frens Lands is a fully onchain world builder{" "}
               <span className="text-fl-yellow">idle RTS game </span> built on
-              StarkNet. <span className="text-fl-yellow">Harvest</span>{' '}
-              resources and{' '}
+              StarkNet. <span className="text-fl-yellow">Harvest</span>{" "}
+              resources and{" "}
               <span className="text-fl-yellow">
                 create your dream community
               </span>
@@ -25,13 +25,13 @@ export default function Team () {
             </p>
             <p className="text-justify fontHPxl-sm text-white md:w-2/3 mx-2 md:mx-auto">
               Your <span className="text-fl-yellow">start alone</span>, but if
-              you give some love to your lands{' '}
+              you give some love to your lands{" "}
               <span className="text-fl-yellow">
                 more frens might choose to join you
-              </span>{' '}
+              </span>{" "}
               and grow your community. The more your lands have access to
               ressources, entertainment, health and security, the more frens
-              will choose to join you and work for it to make it better.{' '}
+              will choose to join you and work for it to make it better.{" "}
             </p>
 
             <div className="grid md:grid-cols-3 my-5">
@@ -39,7 +39,7 @@ export default function Team () {
                 <img
                   src="resources/front/Tutorial_harvesting.gif"
                   className="mx-auto text-center mb-2"
-                  style={{ height: '214px', width: '214px' }}
+                  style={{ height: "214px", width: "214px" }}
                 />
                 <div className="harvestT mx-auto text-center "></div>
                 <div className="team-desc fontHPxl-sm text-fl-yellow mx-auto text-justify w-2/3">
@@ -50,7 +50,7 @@ export default function Team () {
                 <img
                   src="resources/front/Tutorial_Build.gif"
                   className="mx-auto text-center mb-2"
-                  style={{ height: '214px', width: '214px' }}
+                  style={{ height: "214px", width: "214px" }}
                 />
                 <div className="buildT mx-auto text-center "></div>
                 <div className="team-desc fontHPxl-sm text-fl-yellow mx-auto text-justify w-2/3">
@@ -62,7 +62,7 @@ export default function Team () {
                 <img
                   src="resources/front/Tutorial_Harvest2.gif"
                   className="mx-auto text-center mb-2"
-                  style={{ height: '214px', width: '214px' }}
+                  style={{ height: "214px", width: "214px" }}
                 />
                 <div className="claimT mx-auto text-center "></div>
                 <div className="team-desc fontHPxl-sm text-fl-yellow mx-auto text-justify w-2/3">
@@ -78,7 +78,7 @@ export default function Team () {
             <div className="md:flex mx-auto justify-center">
               <div
                 className="mx-auto text-center md:text-right"
-                style={{ width: '256px' }}
+                style={{ width: "256px" }}
               >
                 <a
                   href="https://discord.gg/gehYZU9Trf"
@@ -89,7 +89,7 @@ export default function Team () {
                 </a>
               </div>
               <p className="fontHPxl-sm text-white md:w-2/3 md:mt-3 md:mr-10 mx-2 text-justify">
-                {' '}
+                {" "}
                 - Join our discord server by clicking the icon on the left. We
                 will regularly accept more playtests as the development
                 progress. The earlier you join, the more chances you have to get
@@ -102,7 +102,7 @@ export default function Team () {
             <div className="md:flex mx-auto justify-center">
               <div
                 className="mx-auto flex justify-center"
-                style={{ width: '256px' }}
+                style={{ width: "256px" }}
               >
                 <a
                   href="https://www.argent.xyz/argent-x/"
@@ -119,7 +119,7 @@ export default function Team () {
                 - You will need a StarkNet wallet to play Frens Lands. You can
                 use either ArgentX or Braavos.
                 <br />- The first version of the game runs on StarkNet testnet.
-                You will need to get some goerli ETH by{' '}
+                You will need to get some goerli ETH by{" "}
                 <a
                   href="https://faucet.goerli.starknet.io/"
                   target="_blank"
@@ -136,7 +136,7 @@ export default function Team () {
             <div className="md:flex mx-auto justify-center">
               <div
                 className="mx-auto text-center md:text-right"
-                style={{ width: '256px' }}
+                style={{ width: "256px" }}
               >
                 <div className="nftmaps"></div>
               </div>
@@ -151,7 +151,7 @@ export default function Team () {
             <div className="aboutUs-line mb-5 text-center mx-auto pixelated"></div>
 
             <p className="text-center fontHPxl text-white">
-              For more details you can{' '}
+              For more details you can{" "}
               <a
                 href="https://frenslands.notion.site/Documentation-223bb36338434bca9ee442048976d397"
                 target="_blank"
@@ -173,5 +173,5 @@ export default function Team () {
         </div>
       </div>
     </>
-  )
+  );
 }

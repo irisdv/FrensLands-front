@@ -1,20 +1,20 @@
-import { useStarknet, useStarknetBlock } from '@starknet-react/core'
-import React, { useMemo, useState, useEffect } from 'react'
-import { toBN } from 'starknet/dist/utils/number'
-import { useGameContext } from '../../hooks/useGameContext'
-import useClaim from '../../hooks/invoke/useClaim'
-import useActiveNotifications from '../../hooks/useNotifications'
-import Notifications from '../Notifications'
-import { allBuildings } from '../../data/buildings'
-import UI_Frames from '../../style/resources/front/Ui_Frames3.svg'
+import { useStarknet, useStarknetBlock } from "@starknet-react/core";
+import React, { useMemo, useState, useEffect } from "react";
+import { toBN } from "starknet/dist/utils/number";
+import { useGameContext } from "../../hooks/useGameContext";
+import useClaim from "../../hooks/invoke/useClaim";
+import useActiveNotifications from "../../hooks/useNotifications";
+import Notifications from "../Notifications";
+import { allBuildings } from "../../data/buildings";
+import UI_Frames from "../../style/resources/front/Ui_Frames3.svg";
 
-import useResourcesContext from '../../hooks/useResourcesContext'
-import { useSelectContext } from '../../hooks/useSelectContext'
-import useReinitialize from '../../hooks/invoke/useReinitialize'
+import useResourcesContext from "../../hooks/useResourcesContext";
+import { useSelectContext } from "../../hooks/useSelectContext";
+import useReinitialize from "../../hooks/invoke/useReinitialize";
 
-export function MenuBar () {
-  const { account } = useStarknet()
-  const { data: block } = useStarknetBlock()
+export function MenuBar() {
+  const { account } = useStarknet();
+  const { data: block } = useStarknetBlock();
 
   const {
     tokenId,
@@ -24,8 +24,8 @@ export function MenuBar () {
     buildingData,
     nonce,
     updateNonce,
-    counterResources
-  } = useGameContext()
+    counterResources,
+  } = useGameContext();
   const {
     energy,
     frensCoins,
@@ -36,73 +36,73 @@ export function MenuBar () {
     populationBusy,
     populationFree,
     meat,
-    cereal
-  } = useResourcesContext()
-  const { zoomMode, updateZoom } = useSelectContext()
+    cereal,
+  } = useResourcesContext();
+  const { zoomMode, updateZoom } = useSelectContext();
 
-  const claimingInvoke = useClaim()
-  const activeNotifications = useActiveNotifications()
+  const claimingInvoke = useClaim();
+  const activeNotifications = useActiveNotifications();
 
-  const reinitializeInvoke = useReinitialize()
+  const reinitializeInvoke = useReinitialize();
 
-  const [claiming, setClaiming] = useState<any>(null)
-  const [btnClaim, setBtnClaim] = useState(false)
-  const [popUpInit, setPopUpInit] = useState(false)
+  const [claiming, setClaiming] = useState<any>(null);
+  const [btnClaim, setBtnClaim] = useState(false);
+  const [popUpInit, setPopUpInit] = useState(false);
 
-  const [claimableResources, setClaimableResources] = useState<any[]>([])
+  const [claimableResources, setClaimableResources] = useState<any[]>([]);
 
   useEffect(() => {
-    if (account) setAddress(account)
-  }, [account])
+    if (account) setAddress(account);
+  }, [account]);
 
   useEffect(() => {
     if (account && !tokenId) {
-      updateTokenId(account)
+      updateTokenId(account);
     }
-  }, [account, tokenId])
+  }, [account, tokenId]);
 
   // Invoke claim resources
   const claimResources = () => {
     if (tokenId) {
-      const tx_hash = claimingInvoke(tokenId, nonceValue)
-      setClaiming(tx_hash)
+      const tx_hash = claimingInvoke(tokenId, nonceValue);
+      setClaiming(tx_hash);
 
       tx_hash.then((res) => {
-        console.log('res', res)
+        console.log("res", res);
         if (res != 0) {
-          updateNonce(nonceValue)
+          updateNonce(nonceValue);
         }
-      })
+      });
     } else {
-      console.log('Missing tokenId')
+      console.log("Missing tokenId");
     }
-    setClaiming(true)
-  }
+    setClaiming(true);
+  };
 
   const nonceValue = useMemo(() => {
-    console.log('new nonce value', nonce)
-    return nonce
-  }, [nonce])
+    console.log("new nonce value", nonce);
+    return nonce;
+  }, [nonce]);
 
   const reinitializeLand = () => {
     if (tokenId) {
-      const tx_hash = reinitializeInvoke(tokenId, nonceValue)
+      const tx_hash = reinitializeInvoke(tokenId, nonceValue);
 
       tx_hash.then((res) => {
-        console.log('res', res)
+        console.log("res", res);
         if (res != 0) {
-          updateNonce(nonceValue)
+          updateNonce(nonceValue);
         }
-      })
+      });
     } else {
-      console.log('Missing tokenId')
+      console.log("Missing tokenId");
     }
-  }
+  };
 
   const blockClaimable = useMemo(() => {
     if (buildingData != null) {
-      let _newBlockClaimable = 0
-      const _resources: any[] = []
+      let _newBlockClaimable = 0;
+      const _resources: any[] = [];
 
       buildingData.active?.forEach((elem: any) => {
         if (elem.recharges) {
@@ -110,72 +110,72 @@ export function MenuBar () {
           // current block - last_claim block > then add recharges
           if (block?.block_number) {
             const check =
-              toBN(block?.block_number).toNumber() - elem.last_claim
-            let block2Claim = 0
+              toBN(block?.block_number).toNumber() - elem.last_claim;
+            let block2Claim = 0;
             if (check > elem.recharges) {
-              block2Claim = elem.recharges
+              block2Claim = elem.recharges;
             } else {
-              block2Claim = check
+              block2Claim = check;
             }
-            _newBlockClaimable += block2Claim
+            _newBlockClaimable += block2Claim;
 
             // Get resources to harvest for each claimable building
             if (block2Claim > 0) {
               allBuildings[elem.type - 1].daily_harvest?.[0].resources.map(
                 (elem: any) => {
-                  let _currValue = 0
+                  let _currValue = 0;
                   if (_resources[elem.id] && _resources[elem.id] > 0) {
-                    _currValue = _resources[elem.id] + elem.qty * block2Claim
+                    _currValue = _resources[elem.id] + elem.qty * block2Claim;
                   } else {
-                    _currValue += elem.qty * block2Claim
+                    _currValue += elem.qty * block2Claim;
                   }
-                  _resources[elem.id] = _currValue
+                  _resources[elem.id] = _currValue;
                 }
-              )
+              );
             }
           }
         }
-      })
-      setClaimableResources(_resources)
-      return _newBlockClaimable
+      });
+      setClaimableResources(_resources);
+      return _newBlockClaimable;
     }
-  }, [buildingData])
+  }, [buildingData]);
 
   // Btn Claim
   useEffect(() => {
     if (block != null && blockGame) {
-      const current_block = toBN(block?.block_number).toNumber()
+      const current_block = toBN(block?.block_number).toNumber();
       if (current_block >= blockGame) {
-        setBtnClaim(true)
+        setBtnClaim(true);
       } else {
-        setBtnClaim(false)
+        setBtnClaim(false);
       }
     }
-  }, [block?.block_number, blockGame, claiming])
+  }, [block?.block_number, blockGame, claiming]);
 
   const zoomValue = useMemo(() => {
-    console.log('menu bar zoom value', zoomMode)
-    return zoomMode
-  }, [zoomMode])
+    console.log("menu bar zoom value", zoomMode);
+    return zoomMode;
+  }, [zoomMode]);
 
   return (
     <>
       <div
         className="btnBug pixelated selectDisable"
         onClick={() =>
-          window.open('https://forms.gle/87Ldvb1UTw53iUhH7', '_blank')
+          window.open("https://forms.gle/87Ldvb1UTw53iUhH7", "_blank")
         }
       ></div>
       <div
         className="btnDoc pixelated selectDisable"
         onClick={() =>
           window.open(
-            'https://frenslands.notion.site/Frens-Lands-0e227f03fa8044638ebcfff414c6be1f',
-            '_blank'
+            "https://frenslands.notion.site/Frens-Lands-0e227f03fa8044638ebcfff414c6be1f",
+            "_blank"
           )
         }
       ></div>
-      <div className="absolute selectDisable" style={{ zIndex: '1' }}>
+      <div className="absolute selectDisable" style={{ zIndex: "1" }}>
         <div className="flex flex-row justify-center inline-block">
           {/* {sound ?
             <div
@@ -194,211 +194,209 @@ export function MenuBar () {
           <div
             id="menuBar"
             className="relative flex jutify-center items-center inline-block pixelated"
-            style={{ fontSize: '16px' }}
+            style={{ fontSize: "16px" }}
           >
             <div
               className="flex jutify-center relative mx-auto"
-              style={{ marginTop: '-13px', marginLeft: '35px' }}
+              style={{ marginTop: "-13px", marginLeft: "35px" }}
             >
               <div id="menuGold" className="pixelated"></div>
               <div
                 className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
-                style={{ marginTop: '-2px', marginLeft: '-10px' }}
+                style={{ marginTop: "-2px", marginLeft: "-10px" }}
               >
                 {frensCoins || 0}
               </div>
               <div
                 className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
                 style={{
-                  marginTop: '-11px',
-                  marginLeft: '3px',
-                  color: '#55813E',
-                  fontSize: '16px'
+                  marginTop: "-11px",
+                  marginLeft: "3px",
+                  color: "#55813E",
+                  fontSize: "16px",
                 }}
               >
-                {claimableResources[10] ? '+' + claimableResources[10] : ''}
+                {claimableResources[10] ? "+" + claimableResources[10] : ""}
               </div>
             </div>
             <div
               className="flex jutify-center relative mx-auto"
-              style={{ marginTop: '-13px' }}
+              style={{ marginTop: "-13px" }}
             >
               <div id="menuWood" className="pixelated"></div>
               <div
                 className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
-                style={{ marginTop: '-2px', marginLeft: '-10px' }}
+                style={{ marginTop: "-2px", marginLeft: "-10px" }}
               >
                 {wood || 0}
               </div>
               <div
                 className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
                 style={{
-                  marginTop: '-11px',
-                  marginLeft: '3px',
-                  color: '#55813E',
-                  fontSize: '16px'
+                  marginTop: "-11px",
+                  marginLeft: "3px",
+                  color: "#55813E",
+                  fontSize: "16px",
                 }}
               >
-                {claimableResources[1] ? '+' + claimableResources[1] : ''}
+                {claimableResources[1] ? "+" + claimableResources[1] : ""}
               </div>
             </div>
             <div
               className="flex jutify-center relative mx-auto"
-              style={{ marginTop: '-13px' }}
+              style={{ marginTop: "-13px" }}
             >
               <div id="menuRock" className="pixelated"></div>
               <div
                 className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
-                style={{ marginTop: '-2px', marginLeft: '-10px' }}
+                style={{ marginTop: "-2px", marginLeft: "-10px" }}
               >
                 {rock || 0}
               </div>
               <div
                 className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
                 style={{
-                  marginTop: '-11px',
-                  marginLeft: '3px',
-                  color: '#55813E',
-                  fontSize: '16px'
+                  marginTop: "-11px",
+                  marginLeft: "3px",
+                  color: "#55813E",
+                  fontSize: "16px",
                 }}
               >
-                {claimableResources[2] ? '+' + claimableResources[2] : ''}
+                {claimableResources[2] ? "+" + claimableResources[2] : ""}
               </div>
             </div>
             <div
               className="flex jutify-center relative mx-auto"
-              style={{ marginTop: '-13px' }}
+              style={{ marginTop: "-13px" }}
             >
               <div id="menuMetal" className="pixelated"></div>
               <div
                 className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
-                style={{ marginTop: '-2px', marginLeft: '-10px' }}
+                style={{ marginTop: "-2px", marginLeft: "-10px" }}
               >
                 {metal || 0}
               </div>
               <div
                 className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
                 style={{
-                  marginTop: '-11px',
-                  marginLeft: '3px',
-                  color: '#55813E',
-                  fontSize: '16px'
+                  marginTop: "-11px",
+                  marginLeft: "3px",
+                  color: "#55813E",
+                  fontSize: "16px",
                 }}
               >
-                {claimableResources[6] ? '+' + claimableResources[6] : ''}
+                {claimableResources[6] ? "+" + claimableResources[6] : ""}
               </div>
             </div>
             <div
               className="flex jutify-center relative mx-auto"
-              style={{ marginTop: '-13px' }}
+              style={{ marginTop: "-13px" }}
             >
               <div id="menuCoal" className="pixelated"></div>
               <div
                 className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
-                style={{ marginTop: '-2px', marginLeft: '-10px' }}
+                style={{ marginTop: "-2px", marginLeft: "-10px" }}
               >
                 {coal || 0}
               </div>
               <div
                 className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
                 style={{
-                  marginTop: '-11px',
-                  marginLeft: '3px',
-                  color: '#55813E',
-                  fontSize: '16px'
+                  marginTop: "-11px",
+                  marginLeft: "3px",
+                  color: "#55813E",
+                  fontSize: "16px",
                 }}
               >
-                {claimableResources[8] ? '+' + claimableResources[8] : ''}
+                {claimableResources[8] ? "+" + claimableResources[8] : ""}
               </div>
             </div>
             <div
               className="flex jutify-center relative mx-auto"
-              style={{ marginTop: '-13px' }}
+              style={{ marginTop: "-13px" }}
             >
               <div id="menuPop" className="pixelated"></div>
               <div
                 className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
-                style={{ marginTop: '-2px', marginLeft: '-10px' }}
+                style={{ marginTop: "-2px", marginLeft: "-10px" }}
               >
                 {populationBusy || 0}
               </div>
             </div>
             <div
               className="flex jutify-center relative mx-auto"
-              style={{ marginTop: '-13px' }}
+              style={{ marginTop: "-13px" }}
             >
               <div id="menuPopFree" className="pixelated"></div>
               <div
                 className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
-                style={{ marginTop: '-2px', marginLeft: '-10px' }}
+                style={{ marginTop: "-2px", marginLeft: "-10px" }}
               >
                 {populationFree || 0}
               </div>
             </div>
             <div
               className="flex jutify-center relative mx-auto"
-              style={{ marginTop: '-13px' }}
+              style={{ marginTop: "-13px" }}
             >
               <div id="menuMeat" className="pixelated"></div>
               <div
                 className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
-                style={{ marginTop: '-2px', marginLeft: '-10px' }}
+                style={{ marginTop: "-2px", marginLeft: "-10px" }}
               >
                 {meat || 0}
               </div>
               <div
                 className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
                 style={{
-                  marginTop: '-11px',
-                  marginLeft: '3px',
-                  color: '#55813E',
-                  fontSize: '16px'
+                  marginTop: "-11px",
+                  marginLeft: "3px",
+                  color: "#55813E",
+                  fontSize: "16px",
                 }}
               >
-                {claimableResources[3] ? '+' + claimableResources[3] : ''}
+                {claimableResources[3] ? "+" + claimableResources[3] : ""}
               </div>
             </div>
             <div
               className="flex jutify-center relative mx-auto"
-              style={{ marginTop: '-13px' }}
+              style={{ marginTop: "-13px" }}
             >
               <div id="menuEnergy" className="pixelated"></div>
               <div
                 className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
-                style={{ marginTop: '-2px', marginLeft: '-10px' }}
+                style={{ marginTop: "-2px", marginLeft: "-10px" }}
               >
                 {energy || 0}
               </div>
               <div
                 className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
                 style={{
-                  marginTop: '-11px',
-                  marginLeft: '3px',
-                  color: '#55813E',
-                  fontSize: '16px'
+                  marginTop: "-11px",
+                  marginLeft: "3px",
+                  color: "#55813E",
+                  fontSize: "16px",
                 }}
               >
-                {claimableResources[11] ? '+' + claimableResources[11] : ''}
+                {claimableResources[11] ? "+" + claimableResources[11] : ""}
               </div>
             </div>
             <div
               className="flex jutify-center relative mx-auto"
-              style={{ marginTop: '-13px' }}
+              style={{ marginTop: "-13px" }}
             >
-              {tokenId && blockClaimable && blockClaimable > 0
-                ? (
+              {tokenId && blockClaimable && blockClaimable > 0 ? (
                 <div
                   className="btnClaim pixelated"
                   onClick={() => claimResources()}
                 ></div>
-                  )
-                : (
+              ) : (
                 <div className="btnClaimDisabled pixelated"></div>
-                  )}
+              )}
             </div>
             <div
               className="flex jutify-center relative mx-auto"
-              style={{ marginTop: '-13px' }}
+              style={{ marginTop: "-13px" }}
             >
               {tokenId && (
                 <div
@@ -417,23 +415,21 @@ export function MenuBar () {
         </div>
       </div>
       <div onClick={() => updateZoom(!zoomValue, account as string)}>
-        {zoomValue
-          ? (
+        {zoomValue ? (
           <div className="checkZoom1 pixelated"></div>
-            )
-          : (
+        ) : (
           <div className="checkZoom0 pixelated"></div>
-            )}
+        )}
         <div className="btnZoom pixelated"></div>
       </div>
       <div
         className="absolute selectDisable"
-        style={{ zIndex: '1', pointerEvents: 'none' }}
+        style={{ zIndex: "1", pointerEvents: "none" }}
       >
         <div className="subBar">
           <div
             className="fontHpxl_JuicySmall absolute"
-            style={{ marginTop: '16px', marginLeft: '268px' }}
+            style={{ marginTop: "16px", marginLeft: "268px" }}
           >
             {buildingData != null &&
             buildingData.total &&
@@ -443,19 +439,19 @@ export function MenuBar () {
           </div>
           <div
             className="fontHpxl_JuicySmall absolute"
-            style={{ marginTop: '16px', marginLeft: '452px' }}
+            style={{ marginTop: "16px", marginLeft: "452px" }}
           >
             {counterResources && counterResources[3] ? counterResources[3] : 0}
           </div>
           <div
             className="fontHpxl_JuicySmall absolute"
-            style={{ marginTop: '16px', marginLeft: '570px' }}
+            style={{ marginTop: "16px", marginLeft: "570px" }}
           >
             {counterResources && counterResources[2] ? counterResources[2] : 0}
           </div>
           <div
             className="fontHpxl_JuicySmall absolute"
-            style={{ marginTop: '16px', marginLeft: '700px' }}
+            style={{ marginTop: "16px", marginLeft: "700px" }}
           >
             {counterResources && counterResources[27]
               ? counterResources[27]
@@ -463,7 +459,7 @@ export function MenuBar () {
           </div>
           <div
             className="fontHpxl_JuicySmall absolute"
-            style={{ marginTop: '16px', marginLeft: '898px' }}
+            style={{ marginTop: "16px", marginLeft: "898px" }}
           >
             {buildingData != null && buildingData.inactive != null
               ? Object.keys(buildingData.inactive).length
@@ -471,7 +467,7 @@ export function MenuBar () {
           </div>
           <div
             className="fontHpxl_JuicySmall absolute"
-            style={{ marginTop: '16px', marginLeft: '1078px' }}
+            style={{ marginTop: "16px", marginLeft: "1078px" }}
           >
             {buildingData != null && buildingData.active != null
               ? Object.keys(buildingData.active).length
@@ -479,7 +475,7 @@ export function MenuBar () {
           </div>
           <div
             className="fontHpxl_JuicySmall absolute"
-            style={{ marginTop: '16px', marginLeft: '1261px' }}
+            style={{ marginTop: "16px", marginLeft: "1261px" }}
           >
             {blockClaimable}
           </div>
@@ -498,7 +494,7 @@ export function MenuBar () {
                 borderImage: `url(data:image/svg+xml;base64,${btoa(
                   UI_Frames
                 )}) 18 fill stretch`,
-                textAlign: 'center'
+                textAlign: "center",
               }}
             >
               <div
@@ -521,5 +517,5 @@ export function MenuBar () {
         </div>
       )}
     </>
-  )
+  );
 }

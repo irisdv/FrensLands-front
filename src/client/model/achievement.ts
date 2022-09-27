@@ -1,7 +1,7 @@
 export interface Achievement {
-  level: number
-  goal: string
-  goalDesc?: string
-  description: string
-  unlock: number[]
+  level: number;
+  goal: string;
+  goalDesc?: string;
+  description: string;
+  unlock: number[];
 }

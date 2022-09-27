@@ -14,15 +14,12 @@ module.exports = (app) => {
 
   // https://www.bezkoder.com/node-express-sequelize-postgresql/#Test_the_APIs
 
-  // Create a new user
-  // router.post('/', users.create);
-  // app.post("/api/users", users.create)
-
-  // Retrieve a single User from address with resources
-  // router.get("/:account", [authJwt.verifyToken], users.findOne);
+  // Retrieve a single User from address
   app.get("/api/users/:account", [authJwt.verifyToken], users.findOne);
 
   app.post("/api/users/settings", [authJwt.verifyToken], users.updateSettings);
+
+  app.post("/api/users/init", [authJwt.verifyToken], users.initGame);
 
   // Update a User from address
   // router.put("/:wallet_address", users.update);

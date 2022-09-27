@@ -1,18 +1,18 @@
-import React from 'react'
+import React from "react";
 // import logo from './logo.svg';
-import './style/index.css'
-import './style/home.css'
-import { Routes, Route, Link } from 'react-router-dom'
-import Home from './pages/Home'
-import Gallery from './pages/Gallery'
-import Play from './pages/Play'
-import GalleryItem from './pages/GalleryItem'
-import Team from './pages/Team'
-import Tutorial from './pages/Tutorial'
-import Docs from './pages/Docs'
-import Roadmap from './pages/Roadmap'
+import "./style/index.css";
+import "./style/home.css";
+import { Routes, Route, Link } from "react-router-dom";
+import Home from "./pages/Home";
+import Gallery from "./pages/Gallery";
+import Play from "./pages/Play";
+import GalleryItem from "./pages/GalleryItem";
+import Team from "./pages/Team";
+import Tutorial from "./pages/Tutorial";
+import Docs from "./pages/Docs";
+import Roadmap from "./pages/Roadmap";
 
-function App () {
+function App() {
   return (
     <div className="App">
       <Routes>
@@ -27,7 +27,7 @@ function App () {
         </Route> */}
       </Routes>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

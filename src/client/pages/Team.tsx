@@ -1,11 +1,11 @@
-import React from 'react'
-import MenuHome from '../components/MenuHome'
+import React from "react";
+import MenuHome from "../components/MenuHome";
 
-export default function Team () {
+export default function Team() {
   return (
     <>
       <div
-        style={{ overflowY: 'scroll', overflowX: 'hidden', height: '100vh' }}
+        style={{ overflowY: "scroll", overflowX: "hidden", height: "100vh" }}
       >
         <div className="bg-home selectDisable">
           <MenuHome />
@@ -13,10 +13,10 @@ export default function Team () {
           <div className="flex flex-col justify-center xl:w-[1080px] mx-auto">
             <div className="aboutUs-title my-5 text-center mx-auto pixelated"></div>
             <p className="text-justify md:w-2/3 w-4/5 fontHPxl-sm text-white mx-auto">
-              Frens Lands is currently in{' '}
+              Frens Lands is currently in{" "}
               <span className="text-fl-pink">
                 pre-alpha on StarkNet testnet.
-              </span>{' '}
+              </span>{" "}
               The first version was built during the Matchbox hackathon
               beginning of July 2022 and polished through August. The contracts,
               costs of buildings are subject to change during the upcoming
@@ -33,7 +33,7 @@ export default function Team () {
                 <div className="img-iris mx-auto text-center"></div>
                 <div
                   className="team-desc fontHpxl_JuicyXL uppercase text-white mx-auto text-center mb-2"
-                  style={{ marginTop: '-25px' }}
+                  style={{ marginTop: "-25px" }}
                 >
                   Dev cairo / front
                 </div>
@@ -51,7 +51,7 @@ export default function Team () {
                 <div className="img-thomas mx-auto text-center"></div>
                 <div
                   className="team-desc fontHpxl_JuicyXL uppercase text-white mx-auto text-center mb-2"
-                  style={{ marginTop: '-25px' }}
+                  style={{ marginTop: "-25px" }}
                 >
                   Game dev
                 </div>
@@ -69,7 +69,7 @@ export default function Team () {
                 <div className="img-hpmnk mx-auto text-center"></div>
                 <div
                   className="team-desc fontHpxl_JuicyXL uppercase text-white mx-auto text-center mb-2"
-                  style={{ marginTop: '-25px' }}
+                  style={{ marginTop: "-25px" }}
                 >
                   Pixel art
                 </div>
@@ -112,5 +112,5 @@ export default function Team () {
         </div>
       </div>
     </>
-  )
+  );
 }

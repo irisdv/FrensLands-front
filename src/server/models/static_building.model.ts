@@ -1,11 +1,11 @@
 module.exports = (sequelize, Sequelize) => {
   const StaticBuilding = sequelize.define("static_building", {
     spriteId: {
-      type: Sequelize.SMALLINT,
+      type: Sequelize.STRING,
       field: "spriteId",
     },
     biomeId: {
-      type: Sequelize.SMALLINT,
+      type: Sequelize.STRING,
       field: "biomeId",
     },
     name: {

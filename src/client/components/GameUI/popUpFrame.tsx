@@ -1,11 +1,11 @@
-import { useStarknet, useStarknetCall } from '@starknet-react/core'
-import React, { useMemo, useState, useRef, useEffect } from 'react'
-import { useBuildingsContract } from '../../hooks/contracts/buildings'
-import { number, uint256 } from 'starknet'
-import { toBN } from 'starknet/dist/utils/number'
-import { useGameContext } from '../../hooks/useGameContext'
+import { useStarknet, useStarknetCall } from "@starknet-react/core";
+import React, { useMemo, useState, useRef, useEffect } from "react";
+import { useBuildingsContract } from "../../hooks/contracts/buildings";
+import { number, uint256 } from "starknet";
+import { toBN } from "starknet/dist/utils/number";
+import { useGameContext } from "../../hooks/useGameContext";
 
-export function PopUpFrame () {
+export function PopUpFrame() {
   //   const { showFrame, frameData } = useGameContext();
   //   console.log("showFrame", showFrame);
   //   console.log("frameData", frameData);
@@ -23,53 +23,53 @@ export function PopUpFrame () {
       >
         <div
           className="grid grid-cols-2 inline-block"
-          style={{ height: '20px' }}
+          style={{ height: "20px" }}
         >
           <div
             className="font8BITWonder uppercase text-center"
-            style={{ height: '20px' }}
+            style={{ height: "20px" }}
           >
             {/* {frameData && frameData.name ? frameData.name : ""} */}
           </div>
           <div
             className="relative flex jutify-center items-center inline-block"
-            style={{ paddingLeft: '8px' }}
+            style={{ paddingLeft: "8px" }}
           >
             {/* TODO: dynamic choice of className for icons + dynamic data */}
             <div className="flex flex-row justify-center inline-block relative">
               <div
                 className="fontHPxl-sm"
-                style={{ position: 'absolute', top: '-9px', left: '20px' }}
+                style={{ position: "absolute", top: "-9px", left: "20px" }}
               >
                 <span id="GoldFrame">320</span>
               </div>
               <div
                 className="smallGold mb-3"
-                style={{ position: 'absolute', top: '-34px', left: '23px' }}
+                style={{ position: "absolute", top: "-34px", left: "23px" }}
               ></div>
             </div>
             <div className="flex flex-row justify-center inline-block relative">
               <div
                 className="fontHPxl-sm"
-                style={{ position: 'absolute', top: '-9px', left: '68px' }}
+                style={{ position: "absolute", top: "-9px", left: "68px" }}
               >
                 320
               </div>
               <div
                 className="smallGold mb-3"
-                style={{ position: 'absolute', top: '-34px', left: '70px' }}
+                style={{ position: "absolute", top: "-34px", left: "70px" }}
               ></div>
             </div>
             <div className="flex flex-row justify-center inline-block relative">
               <div
                 className="fontHPxl-sm"
-                style={{ position: 'absolute', top: '-9px', left: '117px' }}
+                style={{ position: "absolute", top: "-9px", left: "117px" }}
               >
                 320
               </div>
               <div
                 className="smallGold mb-3"
-                style={{ position: 'absolute', top: '-34px', left: '119px' }}
+                style={{ position: "absolute", top: "-34px", left: "119px" }}
               ></div>
             </div>
           </div>
@@ -77,13 +77,13 @@ export function PopUpFrame () {
         {/* Add dynamic data */}
         <div
           className="relative flex jutify-center items-center inline-block"
-          style={{ height: '85px' }}
+          style={{ height: "85px" }}
         >
           <div className="flex flex-row justify-center inline-block relative">
             <div
               className="font04B text-center mx-auto"
               style={{
-                width: '68px'
+                width: "68px",
               }}
             >
               Image
@@ -91,9 +91,9 @@ export function PopUpFrame () {
             <div
               className="font04B text-center mx-auto"
               style={{
-                fontSize: '12px',
-                paddingTop: '34px',
-                width: '85px'
+                fontSize: "12px",
+                paddingTop: "34px",
+                width: "85px",
               }}
             >
               Security
@@ -101,9 +101,9 @@ export function PopUpFrame () {
             <div
               className="font04B mx-auto text-center"
               style={{
-                fontSize: '12px',
-                paddingTop: '34px',
-                width: '67px'
+                fontSize: "12px",
+                paddingTop: "34px",
+                width: "67px",
               }}
             >
               1{/* level */}
@@ -111,9 +111,9 @@ export function PopUpFrame () {
             <div
               className="font04B text-center mx-auto relative"
               style={{
-                fontSize: '12px',
-                paddingTop: '34px',
-                width: '65px'
+                fontSize: "12px",
+                paddingTop: "34px",
+                width: "65px",
               }}
             >
               2 x 2
@@ -121,9 +121,9 @@ export function PopUpFrame () {
             <div
               className="font04B text-center mx-auto relative"
               style={{
-                fontSize: '12px',
-                paddingTop: '34px',
-                width: '64px'
+                fontSize: "12px",
+                paddingTop: "34px",
+                width: "64px",
               }}
             >
               34,37
@@ -134,10 +134,10 @@ export function PopUpFrame () {
         <div
           className="font04B"
           style={{
-            height: '109px',
-            fontSize: '13px',
-            paddingLeft: '9px',
-            paddingTop: '6px'
+            height: "109px",
+            fontSize: "13px",
+            paddingLeft: "9px",
+            paddingTop: "6px",
           }}
         >
           description
@@ -147,53 +147,53 @@ export function PopUpFrame () {
           */}
         <div
           className="relative flex jutify-center items-center inline-block"
-          style={{ height: '45px', paddingTop: '8px' }}
+          style={{ height: "45px", paddingTop: "8px" }}
         >
           <div className="flex flex-row justify-center inline-block">
             {/* Case button  */}
-            <div style={{ width: '206px', paddingTop: '10px' }}>
+            <div style={{ width: "206px", paddingTop: "10px" }}>
               <a>
                 <div className="btnUpgrade"></div>
               </a>
             </div>
             <div
               className="relative flex jutify-center items-center inline-block"
-              style={{ width: '60px', height: '80px', paddingTop: '10px' }}
+              style={{ width: "60px", height: "80px", paddingTop: "10px" }}
             >
               <div className="flex flex-row justify-center inline-block relative">
                 <div
                   className="fontHPxl-sm"
-                  style={{ position: 'absolute', top: '-15px', left: '0px' }}
+                  style={{ position: "absolute", top: "-15px", left: "0px" }}
                 >
                   320
                 </div>
                 <div
                   className="smallGold mb-3"
-                  style={{ position: 'absolute', top: '-39px', left: '3px' }}
+                  style={{ position: "absolute", top: "-39px", left: "3px" }}
                 ></div>
               </div>
               <div className="flex flex-row justify-center inline-block relative">
                 <div
                   className="fontHPxl-sm"
-                  style={{ position: 'absolute', top: '-15px', left: '50px' }}
+                  style={{ position: "absolute", top: "-15px", left: "50px" }}
                 >
                   320
                 </div>
                 <div
                   className="smallGold mb-3"
-                  style={{ position: 'absolute', top: '-39px', left: '52px' }}
+                  style={{ position: "absolute", top: "-39px", left: "52px" }}
                 ></div>
               </div>
               <div className="flex flex-row justify-center inline-block relative">
                 <div
                   className="fontHPxl-sm"
-                  style={{ position: 'absolute', top: '-15px', left: '95px' }}
+                  style={{ position: "absolute", top: "-15px", left: "95px" }}
                 >
                   320
                 </div>
                 <div
                   className="smallGold mb-3"
-                  style={{ position: 'absolute', top: '-39px', left: '97px' }}
+                  style={{ position: "absolute", top: "-39px", left: "97px" }}
                 ></div>
               </div>
             </div>
@@ -201,97 +201,97 @@ export function PopUpFrame () {
         </div>
         <div
           className="grid grid-cols-2"
-          style={{ height: '30px', marginLeft: '205px' }}
+          style={{ height: "30px", marginLeft: "205px" }}
         >
           <div
             className="relative flex jutify-center items-center inline-block"
-            style={{ width: '60px', paddingTop: '10px' }}
+            style={{ width: "60px", paddingTop: "10px" }}
           >
             <div className="flex flex-row justify-center inline-block relative">
               <div
                 className="fontHPxl-sm"
-                style={{ position: 'absolute', top: '-15px', left: '0px' }}
+                style={{ position: "absolute", top: "-15px", left: "0px" }}
               >
                 320
               </div>
               <div
                 className="smallGold mb-3"
-                style={{ position: 'absolute', top: '-39px', left: '3px' }}
+                style={{ position: "absolute", top: "-39px", left: "3px" }}
               ></div>
             </div>
             <div className="flex flex-row justify-center inline-block relative">
               <div
                 className="fontHPxl-sm"
-                style={{ position: 'absolute', top: '-15px', left: '50px' }}
+                style={{ position: "absolute", top: "-15px", left: "50px" }}
               >
                 320
               </div>
               <div
                 className="smallGold mb-3"
-                style={{ position: 'absolute', top: '-39px', left: '52px' }}
+                style={{ position: "absolute", top: "-39px", left: "52px" }}
               ></div>
             </div>
             <div className="flex flex-row justify-center inline-block relative">
               <div
                 className="fontHPxl-sm"
-                style={{ position: 'absolute', top: '-15px', left: '95px' }}
+                style={{ position: "absolute", top: "-15px", left: "95px" }}
               >
                 320
               </div>
               <div
                 className="smallGold mb-3"
-                style={{ position: 'absolute', top: '-39px', left: '97px' }}
+                style={{ position: "absolute", top: "-39px", left: "97px" }}
               ></div>
             </div>
           </div>
         </div>
         <div
           className="grid grid-cols-2"
-          style={{ height: '30px', marginLeft: '205px' }}
+          style={{ height: "30px", marginLeft: "205px" }}
         >
           <div
             className="relative flex jutify-center items-center inline-block"
-            style={{ width: '60px', paddingTop: '10px' }}
+            style={{ width: "60px", paddingTop: "10px" }}
           >
             <div className="flex flex-row justify-center inline-block relative">
               <div
                 className="fontHPxl-sm"
-                style={{ position: 'absolute', top: '-15px', left: '0px' }}
+                style={{ position: "absolute", top: "-15px", left: "0px" }}
               >
                 320
               </div>
               <div
                 className="smallGold mb-3"
-                style={{ position: 'absolute', top: '-39px', left: '3px' }}
+                style={{ position: "absolute", top: "-39px", left: "3px" }}
               ></div>
             </div>
             <div className="flex flex-row justify-center inline-block relative">
               <div
                 className="fontHPxl-sm"
-                style={{ position: 'absolute', top: '-15px', left: '50px' }}
+                style={{ position: "absolute", top: "-15px", left: "50px" }}
               >
                 320
               </div>
               <div
                 className="smallGold mb-3"
-                style={{ position: 'absolute', top: '-39px', left: '52px' }}
+                style={{ position: "absolute", top: "-39px", left: "52px" }}
               ></div>
             </div>
             <div className="flex flex-row justify-center inline-block relative">
               <div
                 className="fontHPxl-sm"
-                style={{ position: 'absolute', top: '-15px', left: '95px' }}
+                style={{ position: "absolute", top: "-15px", left: "95px" }}
               >
                 320
               </div>
               <div
                 className="smallGold mb-3"
-                style={{ position: 'absolute', top: '-39px', left: '97px' }}
+                style={{ position: "absolute", top: "-39px", left: "97px" }}
               ></div>
             </div>
           </div>
         </div>
       </div>
     </>
-  )
+  );
 }

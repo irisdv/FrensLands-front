@@ -5,83 +5,83 @@ import React, {
   useCallback,
   useContext,
   Fragment,
-  ReactFragment
-} from 'react'
-import * as starknet from 'starknet'
-import { defaultProvider, number, uint256, GetBlockResponse } from 'starknet'
-import { toBN } from 'starknet/dist/utils/number'
-import { bnToUint256, uint256ToBN } from 'starknet/dist/utils/uint256'
-import { BuildingFrame } from '../components/GameUI/BuildingFrame'
+  ReactFragment,
+} from "react";
+import * as starknet from "starknet";
+import { defaultProvider, number, uint256, GetBlockResponse } from "starknet";
+import { toBN } from "starknet/dist/utils/number";
+import { bnToUint256, uint256ToBN } from "starknet/dist/utils/uint256";
+import { BuildingFrame } from "../components/GameUI/BuildingFrame";
 
-import { useBuildingsContract } from '../hooks/contracts/buildings'
-import { useWorldsContract } from '../hooks/contracts/worlds'
-import { useResourcesContract } from '../hooks/contracts/resources'
-import { useFrensCoinsContract } from '../hooks/contracts/frenscoins'
-import { useMapsContract } from '../hooks/contracts/maps'
-import { useERC1155Contract } from '../hooks/contracts/erc1155'
-import { useStarknet } from '@starknet-react/core'
-import { List } from 'immutable'
+import { useBuildingsContract } from "../hooks/contracts/buildings";
+import { useWorldsContract } from "../hooks/contracts/worlds";
+import { useResourcesContract } from "../hooks/contracts/resources";
+import { useFrensCoinsContract } from "../hooks/contracts/frenscoins";
+import { useMapsContract } from "../hooks/contracts/maps";
+import { useERC1155Contract } from "../hooks/contracts/erc1155";
+import { useStarknet } from "@starknet-react/core";
+import { List } from "immutable";
 
 export interface BuildingManagerState {
-  buildings: List<IBuilding>
+  buildings: List<IBuilding>;
 }
 
 export interface IBuilding {
-  id?: number
-  unique_id?: number
-  type_id?: string
-  posX?: any
-  posY?: any
-  status?: any // en cours, construit
+  id?: number;
+  unique_id?: number;
+  type_id?: string;
+  posX?: any;
+  posY?: any;
+  status?: any; // en cours, construit
 }
 
 export interface IBuildingState {
-  buildingList?: IBuilding[]
-  addBuilding: (data: {}) => void
+  buildingList?: IBuilding[];
+  addBuilding: (data: {}) => void;
 }
 
 export const BuildingState: IBuildingState = {
   buildingList: [],
-  addBuilding: (data) => {}
-}
+  addBuilding: (data) => {},
+};
 
-const BuildingContext = React.createContext(BuildingState)
+const BuildingContext = React.createContext(BuildingState);
 
 interface SetError {
-  type: 'set_error'
-  error: Error
+  type: "set_error";
+  error: Error;
 }
 
 interface AddBuilding {
-  type: 'add_building'
-  buildingItem: { data: IBuilding }
+  type: "add_building";
+  buildingItem: { data: IBuilding };
 }
 
-type Action = AddBuilding | SetError
+type Action = AddBuilding | SetError;
 
-function reducer (
+function reducer(
   state: BuildingManagerState,
   action: Action
 ): BuildingManagerState {
   switch (action.type) {
-    case 'add_building': {
-      const { data } = action.buildingItem
+    case "add_building": {
+      const { data } = action.buildingItem;
       return {
         ...state,
-        buildings: state.buildings?.push(data)
-      }
+        buildings: state.buildings?.push(data),
+      };
     }
-    case 'set_error': {
-      throw new Error(`Unhandled action type: ${action.type}`)
+    case "set_error": {
+      throw new Error(`Unhandled action type: ${action.type}`);
     }
     default: {
-      return state
+      return state;
     }
   }
 }
 
 export const BuildingStateProvider: React.FC<
-React.PropsWithChildren<{ children: any }>
+  React.PropsWithChildren<{ children: any }>
 > = (props: React.PropsWithChildren<{ children: any }>): React.ReactElement => {
   // const [timer, setTimer] = useState(Date.now());
   // const { contract: building } = useBuildingsContract();
@@ -93,8 +93,8 @@ React.PropsWithChildren<{ children: any }>
 
   // const [state, dispatch] = useReducer(reducer, BuildingState);
   const [state, dispatch] = useReducer(reducer, {
-    buildings: List<IBuilding>()
-  })
+    buildings: List<IBuilding>(),
+  });
   // const value = React.useMemo(() => [state, dispatch], [state])
 
   // const buildEvent = React.useCallback((type : number) => {
@@ -113,23 +113,23 @@ React.PropsWithChildren<{ children: any }>
   // }, []);
 
   const addBuilding = React.useCallback((data: IBuilding) => {
-    console.log('in dispatch building', data)
+    console.log("in dispatch building", data);
     dispatch({
-      type: 'add_building',
-      buildingItem: { data }
-    })
-  }, [])
+      type: "add_building",
+      buildingItem: { data },
+    });
+  }, []);
 
   return (
     <BuildingContext.Provider
       value={{
         buildingList: state.buildings.toArray(),
-        addBuilding
+        addBuilding,
       }}
     >
       {props.children}
     </BuildingContext.Provider>
-  )
-}
+  );
+};
 
-export default BuildingContext
+export default BuildingContext;

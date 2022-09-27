@@ -92,6 +92,15 @@ db.player_buildings.belongsTo(db.lands, {
   targetKey: "id",
 });
 
+db.static_buildings.hasMany(db.player_buildings, {
+  foreignKey: "fk_buildingid",
+  targetKey: "id",
+});
+db.player_buildings.belongsTo(db.static_buildings, {
+  foreignKey: "fk_buildingid",
+  targetKey: "id",
+});
+
 // Relationship player_resources_spawned
 db.users.hasMany(db.player_resources_spawned, {
   foreignKey: "fk_userid",

@@ -1,11 +1,11 @@
 module.exports = (sequelize, Sequelize) => {
   const StaticDecoration = sequelize.define("static_decoration", {
     spriteId: {
-      type: Sequelize.SMALLINT,
+      type: Sequelize.STRING,
       field: "spriteId",
     },
     biomeId: {
-      type: Sequelize.SMALLINT,
+      type: Sequelize.STRING,
       field: "biomeId",
     },
     name: {

@@ -1,238 +1,238 @@
-import * as THREE from 'three'
-import Stats from 'three/examples/jsm/libs/stats.module'
-import * as fs from 'fs'
-const { promises: Fs } = require('fs')
+import * as THREE from "three";
+import Stats from "three/examples/jsm/libs/stats.module";
+import * as fs from "fs";
+const { promises: Fs } = require("fs");
 // import Fs from "fs";
 
 export default class ViewGL {
-  private readonly scene: THREE.Scene
-  private readonly renderer: THREE.WebGLRenderer
+  private readonly scene: THREE.Scene;
+  private readonly renderer: THREE.WebGLRenderer;
 
   // Camera
-  private camera: THREE.PerspectiveCamera
-  private readonly camX: number
-  private readonly camY: number
-  private readonly camZ: number
+  private camera: THREE.PerspectiveCamera;
+  private readonly camX: number;
+  private readonly camY: number;
+  private readonly camZ: number;
 
-  private readonly clock: THREE.Clock
-  private readonly controls: any
-  private readonly stats: any
+  private readonly clock: THREE.Clock;
+  private readonly controls: any;
+  private readonly stats: any;
 
-  private terrain = new THREE.Mesh()
-  private terrainBorder = new THREE.Mesh()
-  private terrainBackground = new THREE.Mesh()
-  private readonly textArrRef: any[]
-  private tempBuildMesh = new THREE.Mesh()
-  private tempBuildMeshSize: number = 0
-  private tempBuildMeshType: number = 0
-  private tempBuildMeshProgress: number = 0
-  private tempBuildMeshName: number = 0
-  private tempBuildMeshTextName = ''
-  private tempBuildMeshUpdate: number = 0
-  private placementActive: number = 0
+  private terrain = new THREE.Mesh();
+  private terrainBorder = new THREE.Mesh();
+  private terrainBackground = new THREE.Mesh();
+  private readonly textArrRef: any[];
+  private tempBuildMesh = new THREE.Mesh();
+  private tempBuildMeshSize: number = 0;
+  private tempBuildMeshType: number = 0;
+  private tempBuildMeshProgress: number = 0;
+  private tempBuildMeshName: number = 0;
+  private tempBuildMeshTextName = "";
+  private tempBuildMeshUpdate: number = 0;
+  private placementActive: number = 0;
 
-  private mouse: THREE.Vector2
-  private mouseRightPressed: number
-  private mouseLeftPressed: number
-  private mouseMiddlePressed: number
-  private mouseMove: THREE.Vector2
-  private tempMousePos: THREE.Vector2
-  private mouseWheel: number
+  private mouse: THREE.Vector2;
+  private mouseRightPressed: number;
+  private mouseLeftPressed: number;
+  private mouseMiddlePressed: number;
+  private mouseMove: THREE.Vector2;
+  private tempMousePos: THREE.Vector2;
+  private mouseWheel: number;
 
-  private readonly raycaster = new THREE.Raycaster()
-  private readonly currRayPos = new THREE.Vector3()
-  private currBlockPos = new THREE.Vector2()
-  private selectedObj = new THREE.Vector2()
-  private selectedObjData: any = []
-  private objectSelected: number = 0
-  private objectPopupOpen: number = 0
+  private readonly raycaster = new THREE.Raycaster();
+  private readonly currRayPos = new THREE.Vector3();
+  private currBlockPos = new THREE.Vector2();
+  private selectedObj = new THREE.Vector2();
+  private selectedObjData: any = [];
+  private objectSelected: number = 0;
+  private objectPopupOpen: number = 0;
 
-  private readonly worldType: number = 1
+  private readonly worldType: number = 1;
 
-  private readonly greenText = 'Matchbox_Tiles_Objects_GreenVersion'
-  private readonly redText = 'Matchbox_Tiles_Objects_RedVersion'
-  private readonly normalText = 'Matchbox_Tiles_Objects'
-  private readonly outlinedText = 'Matchbox_Tiles_Objects_Outlined'
+  private readonly greenText = "Matchbox_Tiles_Objects_GreenVersion";
+  private readonly redText = "Matchbox_Tiles_Objects_RedVersion";
+  private readonly normalText = "Matchbox_Tiles_Objects";
+  private readonly outlinedText = "Matchbox_Tiles_Objects_Outlined";
 
-  private compArray: any[]
-  private frontBlockArray: any[]
-  private validatedBlockArray: any[]
-  private rightBuildingType: any[]
+  private compArray: any[];
+  private frontBlockArray: any[];
+  private validatedBlockArray: any[];
+  private rightBuildingType: any[];
 
-  private firstLoad: number
+  private firstLoad: number;
 
-  private keyMap: any = []
+  private keyMap: any = [];
 
-  private UBlockIDs: number = 0
-  private buildingToCreate = 0
+  private UBlockIDs: number = 0;
+  private buildingToCreate = 0;
 
-  private readonly frensBuilding = new THREE.Vector2()
-  private frenIDArr: any[] = []
+  private readonly frensBuilding = new THREE.Vector2();
+  private frenIDArr: any[] = [];
 
-  private timeClick = 1
-  private tempTime = Date.now()
-  private readonly tempTime2 = Date.now()
+  private timeClick = 1;
+  private tempTime = Date.now();
+  private readonly tempTime2 = Date.now();
 
-  private rawData: any = {}
-  private chainEvent: number = 0
-  private chainDataAdded: number = 0
+  private rawData: any = {};
+  private chainEvent: number = 0;
+  private chainDataAdded: number = 0;
 
-  private readyToLoop: number = 0
-  private initDone: number = 0
-
-  // *********************** DEBUG/TEST *********************** //
-
-  private debugMode = 0
-  private typeTest = 1
-  private frenTest = 0
-  private readonly stopData = 0
+  private readyToLoop: number = 0;
+  private initDone: number = 0;
 
   // *********************** DEBUG/TEST *********************** //
 
-  constructor (canvasRef: any) {
+  private debugMode = 0;
+  private typeTest = 1;
+  private frenTest = 0;
+  private readonly stopData = 0;
+
+  // *********************** DEBUG/TEST *********************** //
+
+  constructor(canvasRef: any) {
     // CREATE SCENE AND RENDERER
-    this.scene = new THREE.Scene()
-    this.scene.name = 'theScene'
-    this.mouse = new THREE.Vector2()
-    this.mouseRightPressed = 0
-    this.mouseLeftPressed = 0
-    this.mouseMiddlePressed = 0
-    this.mouseWheel = 0
-    this.mouseMove = new THREE.Vector2()
-    this.tempMousePos = new THREE.Vector2()
-    this.firstLoad = 1
+    this.scene = new THREE.Scene();
+    this.scene.name = "theScene";
+    this.mouse = new THREE.Vector2();
+    this.mouseRightPressed = 0;
+    this.mouseLeftPressed = 0;
+    this.mouseMiddlePressed = 0;
+    this.mouseWheel = 0;
+    this.mouseMove = new THREE.Vector2();
+    this.tempMousePos = new THREE.Vector2();
+    this.firstLoad = 1;
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: canvasRef,
-      antialias: true
-    })
+      antialias: true,
+    });
 
-    this.renderer.setSize(window.innerWidth, window.innerHeight)
-    this.clock = new THREE.Clock()
-    const skyColor = 0x73bed3
-    this.scene.background = new THREE.Color(0x73bed3)
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.clock = new THREE.Clock();
+    const skyColor = 0x73bed3;
+    this.scene.background = new THREE.Color(0x73bed3);
 
     // ADD LIGHT & FOG
-    this.scene.add(new THREE.AmbientLight(0xffffff, 0.9))
-    const light = new THREE.DirectionalLight(0xffffff, 0.35)
-    light.position.set(12, 12, 8)
-    this.scene.add(light)
+    this.scene.add(new THREE.AmbientLight(0xffffff, 0.9));
+    const light = new THREE.DirectionalLight(0xffffff, 0.35);
+    light.position.set(12, 12, 8);
+    this.scene.add(light);
 
     // CAMERA
-    this.camX = 21
-    this.camY = 150
-    this.camZ = 9
+    this.camX = 21;
+    this.camY = 150;
+    this.camZ = 9;
     this.camera = new THREE.PerspectiveCamera(
       5,
       window.innerWidth / window.innerHeight,
       1,
       1000
-    )
-    this.camera.position.x = this.camX
-    this.camera.position.y = this.camY
-    this.camera.position.z = this.camZ
-    this.camera.rotateX(-Math.PI * 0.5)
+    );
+    this.camera.position.x = this.camX;
+    this.camera.position.y = this.camY;
+    this.camera.position.z = this.camZ;
+    this.camera.rotateX(-Math.PI * 0.5);
 
     // ******************* INIT ARRAYS ************************//
 
     // INIT ARRAYS
-    this.rightBuildingType = []
-    this.textArrRef = []
-    this.frontBlockArray = []
-    this.validatedBlockArray = []
-    this.compArray = []
+    this.rightBuildingType = [];
+    this.textArrRef = [];
+    this.frontBlockArray = [];
+    this.validatedBlockArray = [];
+    this.compArray = [];
 
     // INIT TEXTUES ARRAY
-    let x = 0
-    let y = 15
-    let value = 1
+    let x = 0;
+    let y = 15;
+    let value = 1;
 
     while (y >= 0) {
-      this.textArrRef[y] = []
+      this.textArrRef[y] = [];
       while (x < 16) {
-        this.textArrRef[y][x] = value
-        this.debugPrint(2, 'textArrRef')
-        this.debugPrint(2, 'y = ', y)
-        this.debugPrint(2, 'x = ', x)
-        this.debugPrint(2, 'value = ', this.textArrRef[y][x])
-        x++
-        value++
+        this.textArrRef[y][x] = value;
+        this.debugPrint(2, "textArrRef");
+        this.debugPrint(2, "y = ", y);
+        this.debugPrint(2, "x = ", x);
+        this.debugPrint(2, "value = ", this.textArrRef[y][x]);
+        x++;
+        value++;
       }
-      x = 0
-      y--
+      x = 0;
+      y--;
     }
 
     // ******************* GET WORLD READY *******************//
 
     // CALL ANIMATION LOOP
-    this.update()
+    this.update();
   }
 
   // ****************** FUNCTIONS OUT OF CONSTRUCTOR ********************** //
 
   // DECOMPOSE THE ARRAY OF DATA PER ELEMENT
   decompose = (elem: any) => {
-    const tempDecomp: any[] = []
+    const tempDecomp: any[] = [];
 
-    this.debugPrint(1, 'elemToDecomp = ', elem)
-    this.debugPrint(1, 'elem.lenght', elem.length)
+    this.debugPrint(1, "elemToDecomp = ", elem);
+    this.debugPrint(1, "elem.lenght", elem.length);
 
     if (elem.length < 16) {
-      this.debugPrint(1, 'Adapted Decomp')
-      tempDecomp[0] = parseInt(elem[0]) // [pos:x]
-      tempDecomp[1] = parseInt(elem[1] + elem[2]) // [pos:y]
-      tempDecomp[2] = parseInt(elem[3]) // [mat type]
-      tempDecomp[3] = parseInt(elem[4] + elem[5]) // [ress or bat type]
-      tempDecomp[4] = parseInt(elem[6] + elem[7] + elem[8]) // [UNIQUE ID]
-      tempDecomp[5] = parseInt(elem[9] + elem[10]) // [health]
-      tempDecomp[6] = parseInt(elem[11] + elem[12]) // [quantity ress or pop]
-      tempDecomp[7] = parseInt(elem[13]) // [current level]
-      tempDecomp[8] = parseInt(elem[14]) // [activity index or number of days active]
-      tempDecomp[9] = 0 // [random ID]
+      this.debugPrint(1, "Adapted Decomp");
+      tempDecomp[0] = parseInt(elem[0]); // [pos:x]
+      tempDecomp[1] = parseInt(elem[1] + elem[2]); // [pos:y]
+      tempDecomp[2] = parseInt(elem[3]); // [mat type]
+      tempDecomp[3] = parseInt(elem[4] + elem[5]); // [ress or bat type]
+      tempDecomp[4] = parseInt(elem[6] + elem[7] + elem[8]); // [UNIQUE ID]
+      tempDecomp[5] = parseInt(elem[9] + elem[10]); // [health]
+      tempDecomp[6] = parseInt(elem[11] + elem[12]); // [quantity ress or pop]
+      tempDecomp[7] = parseInt(elem[13]); // [current level]
+      tempDecomp[8] = parseInt(elem[14]); // [activity index or number of days active]
+      tempDecomp[9] = 0; // [random ID]
     } else {
-      this.debugPrint(1, 'Classic Decomp')
-      tempDecomp[0] = parseInt(elem[0] + elem[1]) // [pos:x]
-      tempDecomp[1] = parseInt(elem[2] + elem[3]) // [pos:y]
-      tempDecomp[2] = parseInt(elem[4]) // [mat type]
-      tempDecomp[3] = parseInt(elem[5] + elem[6]) // [ress or bat type]
-      tempDecomp[4] = parseInt(elem[7] + elem[8] + elem[9]) // [UNIQUE ID]
-      tempDecomp[5] = parseInt(elem[10] + elem[11]) // [health]
-      tempDecomp[6] = parseInt(elem[12] + elem[13]) // [quantity ress or pop]
-      tempDecomp[7] = parseInt(elem[14]) // [current level]
-      tempDecomp[8] = parseInt(elem[15]) // [activity index or number of days active]
-      tempDecomp[9] = 0 // [random ID]
+      this.debugPrint(1, "Classic Decomp");
+      tempDecomp[0] = parseInt(elem[0] + elem[1]); // [pos:x]
+      tempDecomp[1] = parseInt(elem[2] + elem[3]); // [pos:y]
+      tempDecomp[2] = parseInt(elem[4]); // [mat type]
+      tempDecomp[3] = parseInt(elem[5] + elem[6]); // [ress or bat type]
+      tempDecomp[4] = parseInt(elem[7] + elem[8] + elem[9]); // [UNIQUE ID]
+      tempDecomp[5] = parseInt(elem[10] + elem[11]); // [health]
+      tempDecomp[6] = parseInt(elem[12] + elem[13]); // [quantity ress or pop]
+      tempDecomp[7] = parseInt(elem[14]); // [current level]
+      tempDecomp[8] = parseInt(elem[15]); // [activity index or number of days active]
+      tempDecomp[9] = 0; // [random ID]
     }
-    this.debugPrint(2, 'tempDecomp', tempDecomp)
+    this.debugPrint(2, "tempDecomp", tempDecomp);
 
-    return tempDecomp
-  }
+    return tempDecomp;
+  };
 
   getTypeFromCompArr = () => {
-    this.rightBuildingType[0] = 0
-    this.rightBuildingType[1] = 1
-    this.rightBuildingType[2] = 179 // [161,163,165,177,178,179,180,181,182];
-    this.rightBuildingType[3] = 15 // [15,14,30,31];
-    this.rightBuildingType[4] = 3
-    this.rightBuildingType[5] = 10
-    this.rightBuildingType[6] = 5
-    this.rightBuildingType[7] = 8
-    this.rightBuildingType[8] = 7
-    this.rightBuildingType[9] = 6
-    this.rightBuildingType[10] = 59
-    this.rightBuildingType[11] = 11
-    this.rightBuildingType[12] = 9
-    this.rightBuildingType[13] = 12
-    this.rightBuildingType[14] = 13
-    this.rightBuildingType[15] = 60
-    this.rightBuildingType[16] = 52
-    this.rightBuildingType[17] = 58
-    this.rightBuildingType[18] = 61
-    this.rightBuildingType[19] = 4
-    this.rightBuildingType[20] = 20
-    this.rightBuildingType[21] = 14
-    this.rightBuildingType[22] = 49
-    this.rightBuildingType[23] = 57
-    this.rightBuildingType[24] = 100
+    this.rightBuildingType[0] = 0;
+    this.rightBuildingType[1] = 1;
+    this.rightBuildingType[2] = 179; // [161,163,165,177,178,179,180,181,182];
+    this.rightBuildingType[3] = 15; // [15,14,30,31];
+    this.rightBuildingType[4] = 3;
+    this.rightBuildingType[5] = 10;
+    this.rightBuildingType[6] = 5;
+    this.rightBuildingType[7] = 8;
+    this.rightBuildingType[8] = 7;
+    this.rightBuildingType[9] = 6;
+    this.rightBuildingType[10] = 59;
+    this.rightBuildingType[11] = 11;
+    this.rightBuildingType[12] = 9;
+    this.rightBuildingType[13] = 12;
+    this.rightBuildingType[14] = 13;
+    this.rightBuildingType[15] = 60;
+    this.rightBuildingType[16] = 52;
+    this.rightBuildingType[17] = 58;
+    this.rightBuildingType[18] = 61;
+    this.rightBuildingType[19] = 4;
+    this.rightBuildingType[20] = 20;
+    this.rightBuildingType[21] = 14;
+    this.rightBuildingType[22] = 49;
+    this.rightBuildingType[23] = 57;
+    this.rightBuildingType[24] = 100;
 
     /*
 
@@ -297,43 +297,43 @@ export default class ViewGL {
     Hospital = 23
     Lab = 24
     */
-  }
+  };
 
   generateRessources = () => {
     // DECOMPOSE ARRAY OF DATA [RECEIVED FROM BC]
 
-    let indexI = 1
-    let indexJ = 1
-    let i = 0
+    let indexI = 1;
+    let indexJ = 1;
+    let i = 0;
 
     while (indexI < 17) {
-      this.validatedBlockArray[indexI] = []
-      this.frontBlockArray[indexI] = []
+      this.validatedBlockArray[indexI] = [];
+      this.frontBlockArray[indexI] = [];
 
       while (indexJ < 41) {
         this.validatedBlockArray[indexI][indexJ] = this.decompose(
           this.compArray[i]
-        )
+        );
 
         if (this.firstLoad == 1) {
           this.frontBlockArray[indexI][indexJ] = this.decompose(
             this.compArray[i]
-          )
-          this.frontBlockArray[indexI][indexJ][4] = i
+          );
+          this.frontBlockArray[indexI][indexJ][4] = i;
         }
-        indexJ++
-        i++
+        indexJ++;
+        i++;
       }
-      indexJ = 1
-      indexI++
+      indexJ = 1;
+      indexI++;
     }
-    console.log('this.frontBlockArray', this.frontBlockArray)
+    console.log("this.frontBlockArray", this.frontBlockArray);
 
-    this.firstLoad = 0
+    this.firstLoad = 0;
 
-    i = 0
-    indexI = 1
-    indexJ = 1
+    i = 0;
+    indexI = 1;
+    indexJ = 1;
 
     while (indexI < 17) {
       while (indexJ < 41) {
@@ -344,9 +344,9 @@ export default class ViewGL {
           this.frontBlockArray[indexI][indexJ][4] != 0
         ) {
           // DEBUG CONDITION "ANTI 0"
-          const pos = new THREE.Vector2()
-          pos.x = this.frontBlockArray[indexI][indexJ][0] // + 0.5;
-          pos.y = this.frontBlockArray[indexI][indexJ][1] // + 0.5;
+          const pos = new THREE.Vector2();
+          pos.x = this.frontBlockArray[indexI][indexJ][0]; // + 0.5;
+          pos.y = this.frontBlockArray[indexI][indexJ][1]; // + 0.5;
 
           /* if (pos.x > 39 || pos.y < 1 || pos.x < 1 || pos.y > 15)
           {
@@ -367,7 +367,7 @@ export default class ViewGL {
             this.frontBlockArray[indexI][indexJ][9] = (
               Math.random() * (3 - 1) +
               1
-            ).toFixed(0)
+            ).toFixed(0);
           }
 
           // this.createObjectFomChain(pos, 1, this.frontBlockArray[indexI][indexJ][4],
@@ -379,194 +379,194 @@ export default class ViewGL {
             this.frontBlockArray[indexI][indexJ][3],
             1,
             this.normalText
-          )
+          );
 
-          this.UBlockIDs++
+          this.UBlockIDs++;
           this.debugPrint(
             1,
-            'GENTYPE',
+            "GENTYPE",
             this.frontBlockArray[indexI][indexJ][3]
-          )
+          );
         }
 
         if (this.frontBlockArray[indexI][indexJ][4] == 0) {
           // DEBUG CONDITION WITH "ANTI 0"
-          this.frontBlockArray[indexI][indexJ][3] = 0
+          this.frontBlockArray[indexI][indexJ][3] = 0;
         }
 
-        indexJ++
+        indexJ++;
       }
-      indexJ = 1
-      indexI++
+      indexJ = 1;
+      indexI++;
     }
-  }
+  };
 
   debugPrint = (type: number, string: String, varToPrint?: any) => {
     if (this.debugMode == 2) {
       if (type == 2 || type == 1) {
         if (varToPrint != null) {
-          console.log(string, varToPrint)
+          console.log(string, varToPrint);
         } else {
-          console.log(string)
+          console.log(string);
         }
       }
     } else if (this.debugMode == 1) {
       if (type == 1) {
         if (varToPrint != null) {
-          console.log(string, varToPrint)
+          console.log(string, varToPrint);
         } else {
-          console.log(string)
+          console.log(string);
         }
       }
     }
-  }
+  };
 
   // CREATE THE TERRAIN
   terrainCreate = () => {
-    const terrainPlane = new THREE.PlaneGeometry(40, 16, 1, 1)
-    terrainPlane.name = 'terrainGeometry'
-    terrainPlane.rotateX(-Math.PI * 0.5)
+    const terrainPlane = new THREE.PlaneGeometry(40, 16, 1, 1);
+    terrainPlane.name = "terrainGeometry";
+    terrainPlane.rotateX(-Math.PI * 0.5);
     const texture = new THREE.TextureLoader().load(
-      'resources/textures/World_Background_' +
+      "resources/textures/World_Background_" +
         this.worldType.toString() +
-        '.png'
-    )
+        ".png"
+    );
 
     const mat = new THREE.MeshStandardMaterial({
       map: texture,
       transparent: true,
       depthWrite: false,
-      depthTest: true
+      depthTest: true,
       // shading: 2
-    })
+    });
 
     if (mat.map != null) {
-      mat.map.repeat = new THREE.Vector2(1, 1) // TEXTURE TILLING
-      mat.map.wrapS = THREE.RepeatWrapping // REPEAT X
-      mat.map.wrapT = THREE.RepeatWrapping // REPEAT Y
-      mat.map.magFilter = THREE.NearestFilter // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+      mat.map.repeat = new THREE.Vector2(1, 1); // TEXTURE TILLING
+      mat.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+      mat.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+      mat.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
     }
 
-    this.terrain = new THREE.Mesh(terrainPlane, mat)
-    this.terrain.name = 'terrainMesh'
-    this.terrain.position.x = 21
-    this.terrain.position.z = 9
-    this.terrain.position.y = 0
-    this.scene.add(this.terrain)
-  }
+    this.terrain = new THREE.Mesh(terrainPlane, mat);
+    this.terrain.name = "terrainMesh";
+    this.terrain.position.x = 21;
+    this.terrain.position.z = 9;
+    this.terrain.position.y = 0;
+    this.scene.add(this.terrain);
+  };
 
   terrainBorderCreate = () => {
-    const terrainBorderPlane = new THREE.PlaneGeometry(43.9, 21, 1, 1)
-    terrainBorderPlane.name = 'terrainBorderGeometry'
-    terrainBorderPlane.rotateX(-Math.PI * 0.5)
+    const terrainBorderPlane = new THREE.PlaneGeometry(43.9, 21, 1, 1);
+    terrainBorderPlane.name = "terrainBorderGeometry";
+    terrainBorderPlane.rotateX(-Math.PI * 0.5);
     const texture = new THREE.TextureLoader().load(
-      'resources/textures/World_Boundaries_' +
+      "resources/textures/World_Boundaries_" +
         this.worldType.toString() +
-        '.png'
-    )
+        ".png"
+    );
 
     const mat = new THREE.MeshStandardMaterial({
       map: texture,
       transparent: true,
       depthWrite: false,
-      depthTest: true
+      depthTest: true,
       // shading: 2
-    })
+    });
 
     if (mat.map != null) {
-      mat.map.repeat = new THREE.Vector2(1, 1) // TEXTURE TILLING
-      mat.map.wrapS = THREE.RepeatWrapping // REPEAT X
-      mat.map.wrapT = THREE.RepeatWrapping // REPEAT Y
-      mat.map.magFilter = THREE.NearestFilter // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+      mat.map.repeat = new THREE.Vector2(1, 1); // TEXTURE TILLING
+      mat.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+      mat.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+      mat.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
     }
 
-    this.terrainBorder = new THREE.Mesh(terrainBorderPlane, mat)
-    this.terrainBorder.name = 'terrainBorderMesh'
-    this.terrainBorder.position.x = 20.94
-    this.terrainBorder.position.z = 9
-    this.terrainBorder.position.y = -0.1
-    this.scene.add(this.terrainBorder)
-  }
+    this.terrainBorder = new THREE.Mesh(terrainBorderPlane, mat);
+    this.terrainBorder.name = "terrainBorderMesh";
+    this.terrainBorder.position.x = 20.94;
+    this.terrainBorder.position.z = 9;
+    this.terrainBorder.position.y = -0.1;
+    this.scene.add(this.terrainBorder);
+  };
 
   terrainBackgroundCreate = () => {
-    const terrainBackgroundPlane = new THREE.PlaneGeometry(150, 150, 1, 1)
-    terrainBackgroundPlane.name = 'terrainBackgroundGeometry'
-    terrainBackgroundPlane.rotateX(-Math.PI * 0.5)
+    const terrainBackgroundPlane = new THREE.PlaneGeometry(150, 150, 1, 1);
+    terrainBackgroundPlane.name = "terrainBackgroundGeometry";
+    terrainBackgroundPlane.rotateX(-Math.PI * 0.5);
     const texture = new THREE.TextureLoader().load(
-      'resources/textures/Water_Tile.png'
-    )
+      "resources/textures/Water_Tile.png"
+    );
 
     const mat = new THREE.MeshStandardMaterial({
       map: texture,
       transparent: true,
       depthWrite: false,
-      depthTest: true
+      depthTest: true,
       // shading: 2
-    })
+    });
 
     if (mat.map != null) {
-      mat.map.repeat = new THREE.Vector2(1, 1) // TEXTURE TILLING
-      mat.map.wrapS = THREE.RepeatWrapping // REPEAT X
-      mat.map.wrapT = THREE.RepeatWrapping // REPEAT Y
-      mat.map.magFilter = THREE.NearestFilter // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+      mat.map.repeat = new THREE.Vector2(1, 1); // TEXTURE TILLING
+      mat.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+      mat.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+      mat.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
     }
 
-    this.terrainBackground = new THREE.Mesh(terrainBackgroundPlane, mat)
-    this.terrainBackground.name = 'terrainBackgroundMesh'
-    this.terrainBackground.position.x = 21
-    this.terrainBackground.position.z = 9
-    this.terrainBackground.position.y = -0.2
-    this.scene.add(this.terrainBackground)
-  }
+    this.terrainBackground = new THREE.Mesh(terrainBackgroundPlane, mat);
+    this.terrainBackground.name = "terrainBackgroundMesh";
+    this.terrainBackground.position.x = 21;
+    this.terrainBackground.position.z = 9;
+    this.terrainBackground.position.y = -0.2;
+    this.scene.add(this.terrainBackground);
+  };
 
   // CAMERA MOUSE CONTROL
   mouseControls = () => {
     if (this.mouseRightPressed == 1) {
-      this.mouseMove.x = 0
-      this.mouseMove.y = 0
+      this.mouseMove.x = 0;
+      this.mouseMove.y = 0;
 
-      let difX = (this.tempMousePos.x - this.mouse.x) * 100
-      let difY = (this.tempMousePos.y - this.mouse.y) * 100
+      let difX = (this.tempMousePos.x - this.mouse.x) * 100;
+      let difY = (this.tempMousePos.y - this.mouse.y) * 100;
 
       if (difX < 0) {
-        difX = difX * -1
+        difX = difX * -1;
       }
       if (difY < 0) {
-        difY = difY * -1
+        difY = difY * -1;
       }
 
       if (this.tempMousePos.x < this.mouse.x) {
         if (this.camera.position.x > 0) {
-          this.mouseMove.x = 0.1 * difX
-          this.camera.position.x -= this.mouseMove.x
+          this.mouseMove.x = 0.1 * difX;
+          this.camera.position.x -= this.mouseMove.x;
         }
       } else if (this.tempMousePos.x > this.mouse.x) {
         if (this.camera.position.x < 40) {
-          this.mouseMove.x = 0.1 * difX
-          this.camera.position.x += this.mouseMove.x
+          this.mouseMove.x = 0.1 * difX;
+          this.camera.position.x += this.mouseMove.x;
         }
       } else if (this.tempMousePos.x == this.mouse.x) {
-        this.mouseMove.x = 0
+        this.mouseMove.x = 0;
       }
 
       if (this.tempMousePos.y < this.mouse.y) {
         if (this.camera.position.z < 16) {
-          this.mouseMove.y = 0.1 * difY
-          this.camera.position.z += this.mouseMove.y
+          this.mouseMove.y = 0.1 * difY;
+          this.camera.position.z += this.mouseMove.y;
         }
       } else if (this.tempMousePos.y > this.mouse.y) {
         if (this.camera.position.z > 0) {
-          this.mouseMove.y = 0.1 * difY
-          this.camera.position.z -= this.mouseMove.y
+          this.mouseMove.y = 0.1 * difY;
+          this.camera.position.z -= this.mouseMove.y;
         }
       } else if (this.tempMousePos.y == this.mouse.y) {
-        this.mouseMove.y = 0
+        this.mouseMove.y = 0;
       }
     }
 
-    this.tempMousePos.x = this.mouse.x
-    this.tempMousePos.y = this.mouse.y
-  }
+    this.tempMousePos.x = this.mouse.x;
+    this.tempMousePos.y = this.mouse.y;
+  };
 
   // RAYCASTING
   rayCast = () => {
@@ -574,18 +574,18 @@ export default class ViewGL {
     // var objects = [];
     // objects[0] = this.terrain;
 
-    this.raycaster.setFromCamera(this.mouse, this.camera)
+    this.raycaster.setFromCamera(this.mouse, this.camera);
     const intersects = this.raycaster.intersectObjects(
       this.scene.children,
       true
-    ) // RAYCAST ALL SCENE
+    ); // RAYCAST ALL SCENE
     // const intersects = this.raycaster.intersectObjects(objects, true); // RAYCAST ONLY TERRAIN
-    let tempRayPos = new THREE.Vector3()
-    const tempInter: any[] = []
-    const tempInterY: any[] = []
-    let i = 0
-    let k = 0
-    let j = 0
+    let tempRayPos = new THREE.Vector3();
+    const tempInter: any[] = [];
+    const tempInterY: any[] = [];
+    let i = 0;
+    let k = 0;
+    let j = 0;
 
     while (i < intersects.length) {
       if (
@@ -594,16 +594,16 @@ export default class ViewGL {
         intersects[i].point.z > 1
       ) {
         // this.debugPrint(1, "intersects", intersects[i].object);
-        tempInter[k] = intersects[i].point
-        tempInterY[k] = intersects[i].point.y
-        k++
+        tempInter[k] = intersects[i].point;
+        tempInterY[k] = intersects[i].point.y;
+        k++;
       }
-      i++
+      i++;
     }
 
     tempInterY.sort(function (a, b) {
-      return a - b
-    })
+      return a - b;
+    });
 
     while (j < k) {
       if (
@@ -611,38 +611,38 @@ export default class ViewGL {
         tempInterY != null &&
         tempInterY[0] == tempInter[j].y
       ) {
-        tempRayPos = tempInter[j]
-        break
+        tempRayPos = tempInter[j];
+        break;
       }
-      j++
+      j++;
     }
     if (tempRayPos != null) {
-      const rayX = parseInt(tempRayPos.x.toFixed(2))
-      const rayY = parseInt(tempRayPos.z.toFixed(2))
+      const rayX = parseInt(tempRayPos.x.toFixed(2));
+      const rayY = parseInt(tempRayPos.z.toFixed(2));
 
       if (rayX < 40 && rayX > 0 && rayY < 16 && rayY > 0) {
-        this.debugPrint(1, 'VALID RAYCAST')
-        this.currBlockPos.x = rayX
-        this.currBlockPos.y = rayY
+        this.debugPrint(1, "VALID RAYCAST");
+        this.currBlockPos.x = rayX;
+        this.currBlockPos.y = rayY;
         // this.currRayPos = tempRayPos;
       } else {
-        this.debugPrint(1, 'INVALID RAYCAST')
-        this.currBlockPos.x = 0
-        this.currBlockPos.y = 0
+        this.debugPrint(1, "INVALID RAYCAST");
+        this.currBlockPos.x = 0;
+        this.currBlockPos.y = 0;
         //  this.currRayPos = tempRayPos;
       }
       // this.debugPrint(2, "rayX", rayX);
       // this.debugPrint(2, "rayY", rayY);
-      this.debugPrint(1, 'rayX', rayX)
-      this.debugPrint(1, 'rayY', rayY)
+      this.debugPrint(1, "rayX", rayX);
+      this.debugPrint(1, "rayY", rayY);
       this.debugPrint(
         1,
-        'blockChain-Elem = ',
+        "blockChain-Elem = ",
         (16 - (rayY - 1)) * 40 + rayX + 1
-      )
+      );
       // this.debugPrint(2, "currBlockPos", this.currBlockPos);
     }
-  }
+  };
 
   // OBJECT MOUSE SELECTION
   selectObject = () => {
@@ -661,11 +661,11 @@ export default class ViewGL {
           null &&
         this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != 0
       ) {
-        var pos: THREE.Vector2 = new THREE.Vector2()
-        pos.x = this.currBlockPos.x
-        pos.y = this.currBlockPos.y
+        var pos: THREE.Vector2 = new THREE.Vector2();
+        pos.x = this.currBlockPos.x;
+        pos.y = this.currBlockPos.y;
 
-        this.objectSelected = 1
+        this.objectSelected = 1;
 
         this.replaceObject(
           pos,
@@ -675,15 +675,15 @@ export default class ViewGL {
           1,
           this.outlinedText,
           this.frontBlockArray[pos.y][pos.x][4]
-        )
+        );
 
-        this.selectedObj = pos
-        this.selectedObjData[0] = this.frontBlockArray[pos.y][pos.x][0] // PosX
-        this.selectedObjData[1] = this.frontBlockArray[pos.y][pos.x][1] // PosY
-        this.selectedObjData[3] = this.frontBlockArray[pos.y][pos.x][3] // build/Ress Type
-        this.selectedObjData[4] = this.frontBlockArray[pos.y][pos.x][4] // id/name
+        this.selectedObj = pos;
+        this.selectedObjData[0] = this.frontBlockArray[pos.y][pos.x][0]; // PosX
+        this.selectedObjData[1] = this.frontBlockArray[pos.y][pos.x][1]; // PosY
+        this.selectedObjData[3] = this.frontBlockArray[pos.y][pos.x][3]; // build/Ress Type
+        this.selectedObjData[4] = this.frontBlockArray[pos.y][pos.x][4]; // id/name
 
-        this.debugPrint(1, 'OBJECT SELECTED', this.selectedObjData[4])
+        this.debugPrint(1, "OBJECT SELECTED", this.selectedObjData[4]);
       }
     }
 
@@ -696,12 +696,12 @@ export default class ViewGL {
         // this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x] != null &&
         // this.frontBlockArray[this.currBlockPos.y][this.currBlockPos.x][3] != 0
       ) {
-        var pos: THREE.Vector2 = new THREE.Vector2()
-        pos.x = this.selectedObj.x
-        pos.y = this.selectedObj.y
+        var pos: THREE.Vector2 = new THREE.Vector2();
+        pos.x = this.selectedObj.x;
+        pos.y = this.selectedObj.y;
 
-        this.debugPrint(1, 'OBJECT UNSELECTED', this.selectedObjData[4])
-        this.objectSelected = 0
+        this.debugPrint(1, "OBJECT UNSELECTED", this.selectedObjData[4]);
+        this.objectSelected = 0;
 
         this.replaceObject(
           pos,
@@ -711,23 +711,23 @@ export default class ViewGL {
           1,
           this.normalText,
           this.frontBlockArray[this.selectedObj.y][this.selectedObj.x][4]
-        )
+        );
 
-        this.selectedObj = new THREE.Vector2(0, 0)
+        this.selectedObj = new THREE.Vector2(0, 0);
 
-        this.selectedObjData[0] = 0 // PosX
-        this.selectedObjData[1] = 0 // PosY
-        this.selectedObjData[3] = 0 // build/Ress Type
-        this.selectedObjData[4] = 0 // id/name
+        this.selectedObjData[0] = 0; // PosX
+        this.selectedObjData[1] = 0; // PosY
+        this.selectedObjData[3] = 0; // build/Ress Type
+        this.selectedObjData[4] = 0; // id/name
 
-        this.debugPrint(1, 'UNSELECTED OBJECT IS', this.selectedObjData[4])
+        this.debugPrint(1, "UNSELECTED OBJECT IS", this.selectedObjData[4]);
       }
     }
 
     if (this.objectSelected == 1 && this.mouseLeftPressed == 1) {
-      this.debugPrint(1, 'OBJECT POPUP OPEN')
+      this.debugPrint(1, "OBJECT POPUP OPEN");
       // To open popup
-      this.objectPopupOpen = 1
+      this.objectPopupOpen = 1;
 
       // this.selectedObjData[0] ;//PosX
       // this.selectedObjData[1] ;//PosY
@@ -737,13 +737,13 @@ export default class ViewGL {
         id: this.selectedObjData[3],
         unique_id: this.selectedObjData[4],
         posX: this.selectedObjData[0] + 0.5,
-        posY: this.selectedObjData[1]
-      })
+        posY: this.selectedObjData[1],
+      });
 
       // To close popup
       // this.rawData.updateBuildingFrame(false, {});
     }
-  }
+  };
 
   // CHECK IF BLOCKS ARE FREE BASED ON BUILDING SIZE
   checkFree = (pos: THREE.Vector2, numB: number) => {
@@ -753,8 +753,8 @@ export default class ViewGL {
           this.frontBlockArray[pos.y][pos.x][3] != null &&
           this.frontBlockArray[pos.y][pos.x][3] == 0
         ) {
-          this.debugPrint(2, 'A')
-          return 1
+          this.debugPrint(2, "A");
+          return 1;
         }
       } else if (numB == 2) {
         if (
@@ -763,8 +763,8 @@ export default class ViewGL {
           this.frontBlockArray[pos.y][pos.x + 1] != null &&
           this.frontBlockArray[pos.y][pos.x + 1][3] == 0
         ) {
-          this.debugPrint(2, 'B')
-          return 1
+          this.debugPrint(2, "B");
+          return 1;
         }
       } else if (pos.y - 1 != 0 && numB == 4) {
         if (
@@ -777,48 +777,48 @@ export default class ViewGL {
           this.frontBlockArray[pos.y - 1][pos.x + 1] != null &&
           this.frontBlockArray[pos.y - 1][pos.x + 1][3] == 0
         ) {
-          this.debugPrint(2, 'C')
-          return 1
+          this.debugPrint(2, "C");
+          return 1;
         }
       }
     }
-    this.debugPrint(2, 'D')
-    return 0
-  }
+    this.debugPrint(2, "D");
+    return 0;
+  };
 
   // FIND TEXTURE POSITION WITH BUILDING TYPE NUMBER
   findTextByID = (type: number) => {
-    const posText = new THREE.Vector2()
-    let x = 0
-    let y = 15
+    const posText = new THREE.Vector2();
+    let x = 0;
+    let y = 15;
 
     while (y >= 0) {
       while (x < 16) {
         // this.debugPrint(2, "type", type);
         // this.debugPrint(2, "this.textArrRef[y][x]", this.textArrRef[y][x]);
         if (type == this.textArrRef[y][x]) {
-          posText.x = x * (1 / 16)
-          posText.y = y * (1 / 16)
-          this.debugPrint(1, 'posText Found')
-          return posText
+          posText.x = x * (1 / 16);
+          posText.y = y * (1 / 16);
+          this.debugPrint(1, "posText Found");
+          return posText;
         }
-        x++
+        x++;
       }
-      x = 0
-      y--
+      x = 0;
+      y--;
     }
-    this.debugPrint(1, 'posText Not Found')
-    return 0
-  }
+    this.debugPrint(1, "posText Not Found");
+    return 0;
+  };
 
   exists = (path: String) => {
     try {
-      Fs.access(path)
-      return true
+      Fs.access(path);
+      return true;
     } catch {
-      return false
+      return false;
     }
-  }
+  };
 
   // CREATE TEMPORARY BUILDING THAT FOLLOWS CURSOR AND CHANGES COLOR BASED ON POSSIBLE
   // SPACE OR NOT + GETS DELETE IF SPACE FOUND AND ACTIVATED OR CREATION CANCELED
@@ -829,7 +829,7 @@ export default class ViewGL {
     progress: number,
     nameText: String
   ) => {
-    let newObject = new THREE.PlaneGeometry()
+    let newObject = new THREE.PlaneGeometry();
     /* if (size == 1)
     {
       newObject = new THREE.PlaneGeometry(1, 1, 1, 1);
@@ -840,114 +840,114 @@ export default class ViewGL {
     }
     else if (size == 4)
     { */
-    newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1)
+    newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1);
     // }
-    newObject.name = name + '_geom'
-    newObject.rotateX(-Math.PI * 0.5)
+    newObject.name = name + "_geom";
+    newObject.rotateX(-Math.PI * 0.5);
 
-    let textObj
+    let textObj;
     if (
       this.exists(
-        'resources/textures/' +
+        "resources/textures/" +
           nameText +
-          '_nogrid_' +
+          "_nogrid_" +
           this.worldType.toString() +
-          '.png'
+          ".png"
       )
     ) {
       textObj = new THREE.TextureLoader().load(
         // "resources/textures/"+ nameText +".png"
-        'resources/textures/' +
+        "resources/textures/" +
           nameText +
-          '_nogrid_' +
+          "_nogrid_" +
           this.worldType.toString() +
-          '.png'
-      )
+          ".png"
+      );
     } else {
       textObj = new THREE.TextureLoader().load(
         // "resources/textures/"+ nameText +".png"
-        'resources/textures/' + nameText + '_nogrid_0.png'
-      )
+        "resources/textures/" + nameText + "_nogrid_0.png"
+      );
     }
 
     const matObj = new THREE.MeshStandardMaterial({
       map: textObj,
       transparent: true,
       depthWrite: false,
-      depthTest: true
+      depthTest: true,
       // shading: 2
-    })
+    });
 
-    let textureType: any = new THREE.Vector2()
-    textureType = this.findTextByID(this.rightBuildingType[type])
+    let textureType: any = new THREE.Vector2();
+    textureType = this.findTextByID(this.rightBuildingType[type]);
 
     if (matObj.map != null) {
-      matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625) // TEXTURE TILLING ADAPTED TO BUILDING TILES
+      matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625); // TEXTURE TILLING ADAPTED TO BUILDING TILES
       // matObj.map.offset.set((0 * (1 / 16)), (6 * (1 / 16))); // X/Y
-      matObj.map.offset.set(textureType.x, textureType.y)
-      matObj.map.wrapS = THREE.RepeatWrapping // REPEAT X
-      matObj.map.wrapT = THREE.RepeatWrapping // REPEAT Y
-      matObj.map.magFilter = THREE.NearestFilter // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+      matObj.map.offset.set(textureType.x, textureType.y);
+      matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+      matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+      matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
     }
 
     // NEED TO STORE DATE WHEN TEMP BUILDING IS DELETED TO CHANGE TEXTURE
-    this.tempBuildMeshType = type
-    this.tempBuildMeshProgress = progress
-    this.tempBuildMeshTextName = nameText.toString()
-    this.tempBuildMeshSize = size
-    this.tempBuildMeshName = name
+    this.tempBuildMeshType = type;
+    this.tempBuildMeshProgress = progress;
+    this.tempBuildMeshTextName = nameText.toString();
+    this.tempBuildMeshSize = size;
+    this.tempBuildMeshName = name;
     // this.tempBuildMesh = null;
-    this.tempBuildMeshUpdate = 1
-    this.debugPrint(1, 'E_CREATE_TEMPFINDSPACE_FUNC')
+    this.tempBuildMeshUpdate = 1;
+    this.debugPrint(1, "E_CREATE_TEMPFINDSPACE_FUNC");
 
-    this.tempBuildMesh = new THREE.Mesh(newObject, matObj)
-    this.tempBuildMesh.name = name.toString()
-    this.tempBuildMesh.position.x = this.currBlockPos.x + 0.5
-    this.tempBuildMesh.position.y = 0.2 + this.mouse.y * 0.02 // Make sure the objects are higher at the bottom
-    this.tempBuildMesh.position.z = this.currBlockPos.y
-    this.scene.add(this.tempBuildMesh)
-  }
+    this.tempBuildMesh = new THREE.Mesh(newObject, matObj);
+    this.tempBuildMesh.name = name.toString();
+    this.tempBuildMesh.position.x = this.currBlockPos.x + 0.5;
+    this.tempBuildMesh.position.y = 0.2 + this.mouse.y * 0.02; // Make sure the objects are higher at the bottom
+    this.tempBuildMesh.position.z = this.currBlockPos.y;
+    this.scene.add(this.tempBuildMesh);
+  };
 
   // UPDATE THE MESH THAT FOLLOWS THE CURSOR WHEN PLACING OBJECT
   // AND CHANGE TEXTURE IF SPACE FREE OR NOT
   updateTempBuildMesh = () => {
     if (this.tempBuildMeshUpdate == 1) {
-      let spaceValid = 0
+      let spaceValid = 0;
 
-      this.tempBuildMesh.position.x = this.currBlockPos.x + 0.5 // + 0.5 = CENTER OF BLOCK
-      this.tempBuildMesh.position.z = this.currBlockPos.y // + 0.5;
-      const blockRightPos = new THREE.Vector2()
-      blockRightPos.x = this.currBlockPos.x
-      blockRightPos.y = this.currBlockPos.y
+      this.tempBuildMesh.position.x = this.currBlockPos.x + 0.5; // + 0.5 = CENTER OF BLOCK
+      this.tempBuildMesh.position.z = this.currBlockPos.y; // + 0.5;
+      const blockRightPos = new THREE.Vector2();
+      blockRightPos.x = this.currBlockPos.x;
+      blockRightPos.y = this.currBlockPos.y;
 
-      this.debugPrint(2, 'blockRightPos', blockRightPos)
+      this.debugPrint(2, "blockRightPos", blockRightPos);
 
       if (this.checkFree(blockRightPos, this.tempBuildMeshSize) == 1) {
-        spaceValid = 1
-        this.debugPrint(2, 'F_GREEN1')
+        spaceValid = 1;
+        this.debugPrint(2, "F_GREEN1");
         if (this.tempBuildMeshTextName != this.greenText) {
-          this.debugPrint(2, 'F_GREEN2')
-          this.deleteObject(this.tempBuildMeshName)
+          this.debugPrint(2, "F_GREEN2");
+          this.deleteObject(this.tempBuildMeshName);
           this.createObject_FindSpace(
             this.tempBuildMeshSize,
             this.tempBuildMeshName,
             this.tempBuildMeshType,
             this.tempBuildMeshProgress,
             this.greenText
-          )
+          );
         }
       } else if (this.checkFree(blockRightPos, this.tempBuildMeshSize) == 0) {
-        this.debugPrint(2, 'G_RED1')
+        this.debugPrint(2, "G_RED1");
         if (this.tempBuildMeshTextName != this.redText) {
-          this.debugPrint(2, 'G_RED2')
-          this.deleteObject(this.tempBuildMeshName)
+          this.debugPrint(2, "G_RED2");
+          this.deleteObject(this.tempBuildMeshName);
           this.createObject_FindSpace(
             this.tempBuildMeshSize,
             this.tempBuildMeshName,
             this.tempBuildMeshType,
             this.tempBuildMeshProgress,
             this.redText
-          )
+          );
         }
       }
 
@@ -957,13 +957,13 @@ export default class ViewGL {
         this.placementActive == 1
       ) {
         // NEED TO DO IT WITH RIGHT CLICK
-        const pos = new THREE.Vector2()
-        pos.x = this.tempBuildMesh.position.x
-        pos.y = this.tempBuildMesh.position.z
+        const pos = new THREE.Vector2();
+        pos.x = this.tempBuildMesh.position.x;
+        pos.y = this.tempBuildMesh.position.z;
 
-        this.tempBuildMeshUpdate = 0
+        this.tempBuildMeshUpdate = 0;
 
-        this.debugPrint(2, 'H_ClickLeft')
+        this.debugPrint(2, "H_ClickLeft");
         this.createObjectPlayer(
           pos,
           this.tempBuildMeshSize,
@@ -971,19 +971,19 @@ export default class ViewGL {
           this.tempBuildMeshType,
           this.tempBuildMeshProgress,
           this.normalText
-        )
-        this.deleteObject(this.tempBuildMeshName)
-        this.placementActive = 0
+        );
+        this.deleteObject(this.tempBuildMeshName);
+        this.placementActive = 0;
       }
       if (this.mouseMiddlePressed == 1 && this.placementActive == 1) {
         // NEED TO TEST THE KEY
-        this.debugPrint(2, 'I_ClickMiddle')
-        this.tempBuildMeshUpdate = 0
-        this.deleteObject(this.tempBuildMeshName)
-        this.placementActive = 0
+        this.debugPrint(2, "I_ClickMiddle");
+        this.tempBuildMeshUpdate = 0;
+        this.deleteObject(this.tempBuildMeshName);
+        this.placementActive = 0;
       }
     }
-  }
+  };
 
   // CREATE GEOMETRY AND MESH ON TERRAIN
   createObject = (
@@ -994,7 +994,7 @@ export default class ViewGL {
     progress: number,
     nameText: String
   ) => {
-    let newObject = new THREE.PlaneGeometry()
+    let newObject = new THREE.PlaneGeometry();
     /* if (size == 1)
     {
       newObject = new THREE.PlaneGeometry(1, 1, 1, 1);
@@ -1005,96 +1005,96 @@ export default class ViewGL {
     }
     else if (size == 4)
     { */
-    newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1)
+    newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1);
     // }
-    newObject.name = name + '_geom'
-    newObject.rotateX(-Math.PI * 0.5)
+    newObject.name = name + "_geom";
+    newObject.rotateX(-Math.PI * 0.5);
 
-    let textObj
+    let textObj;
     if (
       this.exists(
-        'resources/textures/' +
+        "resources/textures/" +
           nameText +
-          '_nogrid_' +
+          "_nogrid_" +
           this.worldType.toString() +
-          '.png'
+          ".png"
       )
     ) {
       textObj = new THREE.TextureLoader().load(
         // "resources/textures/"+ nameText +".png"
-        'resources/textures/' +
+        "resources/textures/" +
           nameText +
-          '_nogrid_' +
+          "_nogrid_" +
           this.worldType.toString() +
-          '.png'
-      )
+          ".png"
+      );
     } else {
       textObj = new THREE.TextureLoader().load(
         // "resources/textures/"+ nameText +".png"
-        'resources/textures/' + nameText + '_nogrid_0.png'
-      )
+        "resources/textures/" + nameText + "_nogrid_0.png"
+      );
     }
 
     const matObj = new THREE.MeshStandardMaterial({
       map: textObj,
       transparent: true,
       depthWrite: false,
-      depthTest: true
+      depthTest: true,
       // shading: 2
-    })
+    });
 
-    let textureType: any = new THREE.Vector2()
+    let textureType: any = new THREE.Vector2();
 
     if (this.frontBlockArray[pos.y][pos.x][9] > 0) {
       if (this.frontBlockArray[pos.y][pos.x][3] == 2) {
         if (this.frontBlockArray[pos.y][pos.x][9] == 1) {
-          textureType = this.findTextByID(177)
-          this.debugPrint(1, 'IN RANDOM CONDITION')
+          textureType = this.findTextByID(177);
+          this.debugPrint(1, "IN RANDOM CONDITION");
         } else if (this.frontBlockArray[pos.y][pos.x][9] == 2) {
-          textureType = this.findTextByID(180)
+          textureType = this.findTextByID(180);
         } else if (this.frontBlockArray[pos.y][pos.x][9] == 3) {
-          textureType = this.findTextByID(179)
+          textureType = this.findTextByID(179);
         }
       } // Rock = 161,163,165,177,178,179,180,181,182   Tree = 15,14,30,31
       else {
         if (this.frontBlockArray[pos.y][pos.x][9] == 1) {
-          textureType = this.findTextByID(15)
+          textureType = this.findTextByID(15);
         } else if (this.frontBlockArray[pos.y][pos.x][9] == 2) {
-          textureType = this.findTextByID(16)
+          textureType = this.findTextByID(16);
         } else if (this.frontBlockArray[pos.y][pos.x][9] == 3) {
-          textureType = this.findTextByID(30)
+          textureType = this.findTextByID(30);
         }
       }
     } else {
-      textureType = this.findTextByID(this.rightBuildingType[type])
+      textureType = this.findTextByID(this.rightBuildingType[type]);
     }
 
     if (matObj.map != null) {
-      matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625) // TEXTURE TILLING ADAPTED TO BUILDING TILES
+      matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625); // TEXTURE TILLING ADAPTED TO BUILDING TILES
       // matObj.map.offset.set((4 * (1 / 16)), (4 * (1 / 16))); //TEMPORARY
-      matObj.map.offset.set(textureType.x, textureType.y)
-      matObj.map.wrapS = THREE.RepeatWrapping // REPEAT X
-      matObj.map.wrapT = THREE.RepeatWrapping // REPEAT Y
-      matObj.map.magFilter = THREE.NearestFilter // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+      matObj.map.offset.set(textureType.x, textureType.y);
+      matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+      matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+      matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
     }
-    this.debugPrint(1, 'G_CREATEOBJ_FUNC')
+    this.debugPrint(1, "G_CREATEOBJ_FUNC");
 
-    const newObjectMesh = new THREE.Mesh(newObject, matObj)
-    newObjectMesh.name = name.toString()
-    newObjectMesh.position.x = pos.x + 0.5 // + 0.5;
-    newObjectMesh.position.y = 0.2 + pos.y * 0.02 // Make sure the objects are higher at the bottom
-    newObjectMesh.position.z = pos.y // + 0.5;
-    this.scene.add(newObjectMesh)
-    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][3] = type
-    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][0] = pos.x + 0.5 // - 0.5;
-    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][1] = pos.y // - 0.5;
-    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][4] = name
-    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][7] = size
-  }
+    const newObjectMesh = new THREE.Mesh(newObject, matObj);
+    newObjectMesh.name = name.toString();
+    newObjectMesh.position.x = pos.x + 0.5; // + 0.5;
+    newObjectMesh.position.y = 0.2 + pos.y * 0.02; // Make sure the objects are higher at the bottom
+    newObjectMesh.position.z = pos.y; // + 0.5;
+    this.scene.add(newObjectMesh);
+    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][3] = type;
+    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][0] = pos.x + 0.5; // - 0.5;
+    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][1] = pos.y; // - 0.5;
+    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][4] = name;
+    this.frontBlockArray[pos.y - 0.5][pos.x - 0.5][7] = size;
+  };
 
   buildingTransaction = (pos: THREE.Vector2, type: number, name: number) => {
     // CREATE THE TRANSACTION
-  }
+  };
 
   // PLAYER CREATES GEOMETRY AND MESH ON TERRAIN ON CLICK
   createObjectPlayer = (
@@ -1105,7 +1105,7 @@ export default class ViewGL {
     progress: number,
     nameText: String
   ) => {
-    let newObject = new THREE.PlaneGeometry()
+    let newObject = new THREE.PlaneGeometry();
     /* if (size == 1)
     {
       newObject = new THREE.PlaneGeometry(1, 1, 1, 1);
@@ -1116,103 +1116,103 @@ export default class ViewGL {
     }
     else if (size == 4)
     { */
-    newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1)
+    newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1);
     // }
-    newObject.name = name + '_geom'
-    newObject.rotateX(-Math.PI * 0.5)
+    newObject.name = name + "_geom";
+    newObject.rotateX(-Math.PI * 0.5);
 
-    let textObj
+    let textObj;
     if (
       this.exists(
-        'resources/textures/' +
+        "resources/textures/" +
           nameText +
-          '_nogrid_' +
+          "_nogrid_" +
           this.worldType.toString() +
-          '.png'
+          ".png"
       )
     ) {
       textObj = new THREE.TextureLoader().load(
         // "resources/textures/"+ nameText +".png"
-        'resources/textures/' +
+        "resources/textures/" +
           nameText +
-          '_nogrid_' +
+          "_nogrid_" +
           this.worldType.toString() +
-          '.png'
-      )
+          ".png"
+      );
     } else {
       textObj = new THREE.TextureLoader().load(
         // "resources/textures/"+ nameText +".png"
-        'resources/textures/' + nameText + '_nogrid_0.png'
-      )
+        "resources/textures/" + nameText + "_nogrid_0.png"
+      );
     }
 
     const matObj = new THREE.MeshStandardMaterial({
       map: textObj,
       transparent: true,
       depthWrite: false,
-      depthTest: true
+      depthTest: true,
       // shading: 2
-    })
+    });
 
-    let textureType: any = new THREE.Vector2()
+    let textureType: any = new THREE.Vector2();
 
     if (this.frontBlockArray[pos.y][pos.x - 0.5][9] > 0) {
       if (this.frontBlockArray[pos.y][pos.x - 0.5][3] == 2) {
         if (this.frontBlockArray[pos.y][pos.x - 0.5][9] == 1) {
-          textureType = this.findTextByID(177)
-          this.debugPrint(1, 'IN RANDOM CONDITION')
+          textureType = this.findTextByID(177);
+          this.debugPrint(1, "IN RANDOM CONDITION");
         } else if (this.frontBlockArray[pos.y][pos.x - 0.5][9] == 2) {
-          textureType = this.findTextByID(180)
+          textureType = this.findTextByID(180);
         } else if (this.frontBlockArray[pos.y][pos.x - 0.5][9] == 3) {
-          textureType = this.findTextByID(179)
+          textureType = this.findTextByID(179);
         }
       } // Rock = 161,163,165,177,178,179,180,181,182   Tree = 15,14,30,31
       else {
         if (this.frontBlockArray[pos.y][pos.x - 0.5][9] == 1) {
-          textureType = this.findTextByID(15)
+          textureType = this.findTextByID(15);
         } else if (this.frontBlockArray[pos.y][pos.x - 0.5][9] == 2) {
-          textureType = this.findTextByID(16)
+          textureType = this.findTextByID(16);
         } else if (this.frontBlockArray[pos.y][pos.x - 0.5][9] == 3) {
-          textureType = this.findTextByID(30)
+          textureType = this.findTextByID(30);
         }
       }
     } else {
-      textureType = this.findTextByID(this.rightBuildingType[type])
+      textureType = this.findTextByID(this.rightBuildingType[type]);
     }
 
     if (matObj.map != null) {
-      matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625) // TEXTURE TILLING ADAPTED TO BUILDING TILES
+      matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625); // TEXTURE TILLING ADAPTED TO BUILDING TILES
       // matObj.map.offset.set((4 * (1 / 16)), (4 * (1 / 16))); //TEMPORARY
-      matObj.map.offset.set(textureType.x, textureType.y)
-      matObj.map.wrapS = THREE.RepeatWrapping // REPEAT X
-      matObj.map.wrapT = THREE.RepeatWrapping // REPEAT Y
-      matObj.map.magFilter = THREE.NearestFilter // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+      matObj.map.offset.set(textureType.x, textureType.y);
+      matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+      matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+      matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
     }
-    this.debugPrint(1, 'G_CREATEOBJ_FUNC')
+    this.debugPrint(1, "G_CREATEOBJ_FUNC");
 
-    const newObjectMesh = new THREE.Mesh(newObject, matObj)
-    newObjectMesh.name = name.toString()
-    newObjectMesh.position.x = pos.x + 0.5 // + 0.5;
-    newObjectMesh.position.y = 0.2 + pos.y * 0.02 // Make sure the objects are higher at the bottom
-    newObjectMesh.position.z = pos.y // + 0.5;
-    this.scene.add(newObjectMesh)
-    this.frontBlockArray[pos.y][pos.x - 0.5][3] = type
-    this.frontBlockArray[pos.y][pos.x - 0.5][0] = pos.x + 0.5 // - 0.5;
-    this.frontBlockArray[pos.y][pos.x - 0.5][1] = pos.y // - 0.5;
-    this.frontBlockArray[pos.y][pos.x - 0.5][4] = name
-    this.frontBlockArray[pos.y][pos.x - 0.5][7] = size
+    const newObjectMesh = new THREE.Mesh(newObject, matObj);
+    newObjectMesh.name = name.toString();
+    newObjectMesh.position.x = pos.x + 0.5; // + 0.5;
+    newObjectMesh.position.y = 0.2 + pos.y * 0.02; // Make sure the objects are higher at the bottom
+    newObjectMesh.position.z = pos.y; // + 0.5;
+    this.scene.add(newObjectMesh);
+    this.frontBlockArray[pos.y][pos.x - 0.5][3] = type;
+    this.frontBlockArray[pos.y][pos.x - 0.5][0] = pos.x + 0.5; // - 0.5;
+    this.frontBlockArray[pos.y][pos.x - 0.5][1] = pos.y; // - 0.5;
+    this.frontBlockArray[pos.y][pos.x - 0.5][4] = name;
+    this.frontBlockArray[pos.y][pos.x - 0.5][7] = size;
 
-    const posTrans = new THREE.Vector2()
-    posTrans.x = pos.x - 0.5
-    posTrans.y = pos.y
+    const posTrans = new THREE.Vector2();
+    posTrans.x = pos.x - 0.5;
+    posTrans.y = pos.y;
 
     // DO THE BUILDING CREATION TRANSACTION
     this.buildingTransaction(
       pos,
       this.frontBlockArray[pos.y][pos.x - 0.5][3],
       this.frontBlockArray[pos.y][pos.x - 0.5][4]
-    )
-  }
+    );
+  };
 
   // CREATE GEOMETRY AND MESH ON TERRAIN FROM CHAIN DATA
   createObjectFomChain = (
@@ -1223,7 +1223,7 @@ export default class ViewGL {
     progress: number,
     nameText: String
   ) => {
-    let newObject = new THREE.PlaneGeometry()
+    let newObject = new THREE.PlaneGeometry();
     /* if (size == 1)
     {
       newObject = new THREE.PlaneGeometry(1, 1, 1, 1);
@@ -1234,92 +1234,92 @@ export default class ViewGL {
     }
     else if (size == 4)
     { */
-    newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1)
+    newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1);
     // }
-    newObject.name = name + '_geom'
-    newObject.rotateX(-Math.PI * 0.5)
+    newObject.name = name + "_geom";
+    newObject.rotateX(-Math.PI * 0.5);
 
-    let textObj
+    let textObj;
     if (
       this.exists(
-        'resources/textures/' +
+        "resources/textures/" +
           nameText +
-          '_nogrid_' +
+          "_nogrid_" +
           this.worldType.toString() +
-          '.png'
+          ".png"
       )
     ) {
       textObj = new THREE.TextureLoader().load(
         // "resources/textures/"+ nameText +".png"
-        'resources/textures/' +
+        "resources/textures/" +
           nameText +
-          '_nogrid_' +
+          "_nogrid_" +
           this.worldType.toString() +
-          '.png'
-      )
+          ".png"
+      );
     } else {
       textObj = new THREE.TextureLoader().load(
         // "resources/textures/"+ nameText +".png"
-        'resources/textures/' + nameText + '_nogrid_0.png'
-      )
+        "resources/textures/" + nameText + "_nogrid_0.png"
+      );
     }
 
     const matObj = new THREE.MeshStandardMaterial({
       map: textObj,
       transparent: true,
       depthWrite: false,
-      depthTest: true
+      depthTest: true,
       // shading: 2
-    })
+    });
 
-    let textureType: any = new THREE.Vector2()
+    let textureType: any = new THREE.Vector2();
 
     if (this.frontBlockArray[pos.y][pos.x][9] > 0) {
       if (this.frontBlockArray[pos.y][pos.x][3] == 2) {
         if (this.frontBlockArray[pos.y][pos.x][9] == 1) {
-          textureType = this.findTextByID(177)
-          this.debugPrint(1, 'IN RANDOM CONDITION')
+          textureType = this.findTextByID(177);
+          this.debugPrint(1, "IN RANDOM CONDITION");
         } else if (this.frontBlockArray[pos.y][pos.x][9] == 2) {
-          textureType = this.findTextByID(180)
+          textureType = this.findTextByID(180);
         } else if (this.frontBlockArray[pos.y][pos.x][9] == 3) {
-          textureType = this.findTextByID(179)
+          textureType = this.findTextByID(179);
         }
       } // Rock = 161,163,165,177,178,179,180,181,182   Tree = 15,14,30,31
       else {
         if (this.frontBlockArray[pos.y][pos.x][9] == 1) {
-          textureType = this.findTextByID(15)
+          textureType = this.findTextByID(15);
         } else if (this.frontBlockArray[pos.y][pos.x][9] == 2) {
-          textureType = this.findTextByID(16)
+          textureType = this.findTextByID(16);
         } else if (this.frontBlockArray[pos.y][pos.x][9] == 3) {
-          textureType = this.findTextByID(30)
+          textureType = this.findTextByID(30);
         }
       }
     } else {
-      textureType = this.findTextByID(this.rightBuildingType[type])
+      textureType = this.findTextByID(this.rightBuildingType[type]);
     }
 
     if (matObj.map != null) {
-      matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625) // TEXTURE TILLING ADAPTED TO BUILDING TILES
+      matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625); // TEXTURE TILLING ADAPTED TO BUILDING TILES
       // matObj.map.offset.set((4 * (1 / 16)), (4 * (1 / 16))); //TEMPORARY
-      matObj.map.offset.set(textureType.x, textureType.y)
-      matObj.map.wrapS = THREE.RepeatWrapping // REPEAT X
-      matObj.map.wrapT = THREE.RepeatWrapping // REPEAT Y
-      matObj.map.magFilter = THREE.NearestFilter // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+      matObj.map.offset.set(textureType.x, textureType.y);
+      matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+      matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+      matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
     }
-    this.debugPrint(1, 'G_CREATEOBJ_FUNC_FROM_CHAIN')
+    this.debugPrint(1, "G_CREATEOBJ_FUNC_FROM_CHAIN");
 
-    const newObjectMesh = new THREE.Mesh(newObject, matObj)
-    newObjectMesh.name = name.toString()
-    newObjectMesh.position.x = pos.x + 0.5 // + 0.5;
-    newObjectMesh.position.y = 0.2 + pos.y * 0.02 // Make sure the objects are higher at the bottom
-    newObjectMesh.position.z = pos.y // + 0.5;
-    this.scene.add(newObjectMesh)
+    const newObjectMesh = new THREE.Mesh(newObject, matObj);
+    newObjectMesh.name = name.toString();
+    newObjectMesh.position.x = pos.x + 0.5; // + 0.5;
+    newObjectMesh.position.y = 0.2 + pos.y * 0.02; // Make sure the objects are higher at the bottom
+    newObjectMesh.position.z = pos.y; // + 0.5;
+    this.scene.add(newObjectMesh);
     /* this.frontBlockArray[pos.y][pos.x][3] = type;
     this.frontBlockArray[pos.y][pos.x][0] = pos.x;// - 0.5;
     this.frontBlockArray[pos.y][pos.x][1] = pos.y;// - 0.5;
     this.frontBlockArray[pos.y][pos.x][4] = name;
     this.frontBlockArray[pos.y][pos.x][7] = size; */
-  }
+  };
 
   // REPLACE GEOMETRY AND MESH ON TERRAIN
   replaceObject = (
@@ -1331,7 +1331,7 @@ export default class ViewGL {
     nameText: String,
     nameToDelete: number
   ) => {
-    let newObject = new THREE.PlaneGeometry()
+    let newObject = new THREE.PlaneGeometry();
     /* if (size == 1)
     {
       newObject = new THREE.PlaneGeometry(1, 1, 1, 1);
@@ -1342,104 +1342,104 @@ export default class ViewGL {
     }
     else if (size == 4)
     { */
-    newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1)
+    newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1);
     // }
-    newObject.name = name + '_geom'
-    newObject.rotateX(-Math.PI * 0.5)
+    newObject.name = name + "_geom";
+    newObject.rotateX(-Math.PI * 0.5);
 
-    let textObj
+    let textObj;
     if (
       this.exists(
-        'resources/textures/' +
+        "resources/textures/" +
           nameText +
-          '_nogrid_' +
+          "_nogrid_" +
           this.worldType.toString() +
-          '.png'
+          ".png"
       )
     ) {
       textObj = new THREE.TextureLoader().load(
         // "resources/textures/"+ nameText +".png"
-        'resources/textures/' +
+        "resources/textures/" +
           nameText +
-          '_nogrid_' +
+          "_nogrid_" +
           this.worldType.toString() +
-          '.png'
-      )
+          ".png"
+      );
     } else {
       textObj = new THREE.TextureLoader().load(
         // "resources/textures/"+ nameText +".png"
-        'resources/textures/' + nameText + '_nogrid_0.png'
-      )
+        "resources/textures/" + nameText + "_nogrid_0.png"
+      );
     }
 
     const matObj = new THREE.MeshStandardMaterial({
       map: textObj,
       transparent: true,
       depthWrite: false,
-      depthTest: true
+      depthTest: true,
       // shading: 2
-    })
+    });
 
-    let textureType: any = new THREE.Vector2()
+    let textureType: any = new THREE.Vector2();
 
     if (this.frontBlockArray[pos.y][pos.x][9] > 0) {
       if (this.frontBlockArray[pos.y][pos.x][3] == 2) {
         if (this.frontBlockArray[pos.y][pos.x][9] == 1) {
-          textureType = this.findTextByID(177)
-          this.debugPrint(1, 'IN RANDOM CONDITION')
+          textureType = this.findTextByID(177);
+          this.debugPrint(1, "IN RANDOM CONDITION");
         } else if (this.frontBlockArray[pos.y][pos.x][9] == 2) {
-          textureType = this.findTextByID(180)
+          textureType = this.findTextByID(180);
         } else if (this.frontBlockArray[pos.y][pos.x][9] == 3) {
-          textureType = this.findTextByID(179)
+          textureType = this.findTextByID(179);
         }
       } // Rock = 161,163,165,177,178,179,180,181,182   Tree = 15,14,30,31
       else {
         if (this.frontBlockArray[pos.y][pos.x][9] == 1) {
-          textureType = this.findTextByID(15)
+          textureType = this.findTextByID(15);
         } else if (this.frontBlockArray[pos.y][pos.x][9] == 2) {
-          textureType = this.findTextByID(16)
+          textureType = this.findTextByID(16);
         } else if (this.frontBlockArray[pos.y][pos.x][9] == 3) {
-          textureType = this.findTextByID(30)
+          textureType = this.findTextByID(30);
         }
       }
     } else {
-      textureType = this.findTextByID(this.rightBuildingType[type])
+      textureType = this.findTextByID(this.rightBuildingType[type]);
     }
 
     if (matObj.map != null) {
-      matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625) // TEXTURE TILLING ADAPTED TO BUILDING TILES
+      matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625); // TEXTURE TILLING ADAPTED TO BUILDING TILES
       // matObj.map.offset.set((4 * (1 / 16)), (4 * (1 / 16))); //TEMPORARY
-      matObj.map.offset.set(textureType.x, textureType.y)
-      matObj.map.wrapS = THREE.RepeatWrapping // REPEAT X
-      matObj.map.wrapT = THREE.RepeatWrapping // REPEAT Y
-      matObj.map.magFilter = THREE.NearestFilter // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+      matObj.map.offset.set(textureType.x, textureType.y);
+      matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+      matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+      matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
     }
-    this.debugPrint(1, 'G_REPLACEOBJ_FUNC')
+    this.debugPrint(1, "G_REPLACEOBJ_FUNC");
 
-    const newObjectMesh = new THREE.Mesh(newObject, matObj)
-    newObjectMesh.name = name.toString()
-    newObjectMesh.position.x = pos.x + 0.5 // + 0.5;
-    newObjectMesh.position.y = 0.2 + pos.y * 0.02 // Make sure the objects are higher at the bottom
-    newObjectMesh.position.z = pos.y // + 0.5;
+    const newObjectMesh = new THREE.Mesh(newObject, matObj);
+    newObjectMesh.name = name.toString();
+    newObjectMesh.position.x = pos.x + 0.5; // + 0.5;
+    newObjectMesh.position.y = 0.2 + pos.y * 0.02; // Make sure the objects are higher at the bottom
+    newObjectMesh.position.z = pos.y; // + 0.5;
 
     // call delete function
-    this.deleteObject(nameToDelete)
-    this.scene.add(newObjectMesh)
+    this.deleteObject(nameToDelete);
+    this.scene.add(newObjectMesh);
 
-    this.frontBlockArray[pos.y][pos.x][3] = type
-    this.frontBlockArray[pos.y][pos.x][0] = pos.x + 0.5
-    this.frontBlockArray[pos.y][pos.x][1] = pos.y // - 0.5;
-    this.frontBlockArray[pos.y][pos.x][4] = name
-    this.frontBlockArray[pos.y][pos.x][7] = size
-  }
+    this.frontBlockArray[pos.y][pos.x][3] = type;
+    this.frontBlockArray[pos.y][pos.x][0] = pos.x + 0.5;
+    this.frontBlockArray[pos.y][pos.x][1] = pos.y; // - 0.5;
+    this.frontBlockArray[pos.y][pos.x][4] = name;
+    this.frontBlockArray[pos.y][pos.x][7] = size;
+  };
 
   // DELETE FORMER OBJECT IN SCENE USING NAME OR POS
   deleteObject = (name: number) => {
     this.scene.remove(
       this.scene.getObjectByName(name.toString()) as THREE.Group
-    )
-    this.debugPrint(1, 'This object has been deleted : ', name)
-  }
+    );
+    this.debugPrint(1, "This object has been deleted : ", name);
+  };
 
   // CREATE FRENS
   frensCreate = (
@@ -1448,209 +1448,209 @@ export default class ViewGL {
     targetPos: THREE.Vector2
   ) => {
     if (this.frenIDArr[frenID] == null) {
-      let newObject = new THREE.PlaneGeometry()
-      newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1)
-      newObject.name = frenID + '_geom'
-      newObject.rotateX(-Math.PI * 0.5)
+      let newObject = new THREE.PlaneGeometry();
+      newObject = new THREE.PlaneGeometry(3.5, 3.5, 1, 1);
+      newObject.name = frenID + "_geom";
+      newObject.rotateX(-Math.PI * 0.5);
 
-      let textObj
+      let textObj;
       if (
         this.exists(
-          'resources/textures/Matchbox_Tiles_Objects_nogrid_' +
+          "resources/textures/Matchbox_Tiles_Objects_nogrid_" +
             this.worldType.toString() +
-            '.png'
+            ".png"
         )
       ) {
         textObj = new THREE.TextureLoader().load(
-          'resources/textures/Matchbox_Tiles_Objects_nogrid_' +
+          "resources/textures/Matchbox_Tiles_Objects_nogrid_" +
             this.worldType.toString() +
-            '.png'
-        )
+            ".png"
+        );
       } else {
         textObj = new THREE.TextureLoader().load(
-          'resources/textures/Matchbox_Tiles_Objects_nogrid_0.png'
-        )
+          "resources/textures/Matchbox_Tiles_Objects_nogrid_0.png"
+        );
       }
 
       const matObj = new THREE.MeshStandardMaterial({
         map: textObj,
         transparent: true,
         depthWrite: false,
-        depthTest: true
-      })
+        depthTest: true,
+      });
 
-      let textureType: any = new THREE.Vector2()
-      textureType = this.findTextByID(193)
+      let textureType: any = new THREE.Vector2();
+      textureType = this.findTextByID(193);
 
       if (matObj.map != null) {
-        matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625) // TEXTURE TILLING ADAPTED TO BUILDING TILES
-        matObj.map.offset.set(textureType.x, textureType.y)
-        matObj.map.wrapS = THREE.RepeatWrapping // REPEAT X
-        matObj.map.wrapT = THREE.RepeatWrapping // REPEAT Y
-        matObj.map.magFilter = THREE.NearestFilter // NEAREST/LINEAR FILTER LinearFilter NearestFilter
+        matObj.map.repeat = new THREE.Vector2(0.0625, 0.0625); // TEXTURE TILLING ADAPTED TO BUILDING TILES
+        matObj.map.offset.set(textureType.x, textureType.y);
+        matObj.map.wrapS = THREE.RepeatWrapping; // REPEAT X
+        matObj.map.wrapT = THREE.RepeatWrapping; // REPEAT Y
+        matObj.map.magFilter = THREE.NearestFilter; // NEAREST/LINEAR FILTER LinearFilter NearestFilter
       }
-      this.debugPrint(1, 'NEW FREN CREATED')
+      this.debugPrint(1, "NEW FREN CREATED");
 
-      const newObjectMesh = new THREE.Mesh(newObject, matObj)
-      newObjectMesh.name = frenID.toString()
-      newObjectMesh.position.x = currFrenPos.x
-      newObjectMesh.position.y = 0.3 + currFrenPos.y * 0.02 // Make sure the objects are higher at the bottom
-      newObjectMesh.position.z = currFrenPos.y
+      const newObjectMesh = new THREE.Mesh(newObject, matObj);
+      newObjectMesh.name = frenID.toString();
+      newObjectMesh.position.x = currFrenPos.x;
+      newObjectMesh.position.y = 0.3 + currFrenPos.y * 0.02; // Make sure the objects are higher at the bottom
+      newObjectMesh.position.z = currFrenPos.y;
 
-      this.scene.add(newObjectMesh)
+      this.scene.add(newObjectMesh);
 
-      this.frenIDArr[frenID] = []
-      this.frenIDArr[frenID][0] = frenID
-      this.frenIDArr[frenID][1] = currFrenPos
-      this.frenIDArr[frenID][2] = targetPos
+      this.frenIDArr[frenID] = [];
+      this.frenIDArr[frenID][0] = frenID;
+      this.frenIDArr[frenID][1] = currFrenPos;
+      this.frenIDArr[frenID][2] = targetPos;
     }
-  }
+  };
 
   frensGoing = () => {
-    let i = 0
+    let i = 0;
 
     while (i < this.frenIDArr.length) {
-      const id = this.frenIDArr[i]
-      let tempValX = 0
-      let tempValY = 0
+      const id = this.frenIDArr[i];
+      let tempValX = 0;
+      let tempValY = 0;
 
       if (id != null && id[0] != 0) {
         if (parseInt(id[1].x.toFixed(1)) == id[2].x) {
-          tempValX = 1
+          tempValX = 1;
         } else if (id[1].x > id[2].x) {
-          id[1].x -= 0.01
+          id[1].x -= 0.01;
           // id[1].x = id[1].x - ((id[1].x -
           // id[2].x) / ((id[1].x - id[2].x) / 1000));
         } else {
-          id[1].x += 0.01
+          id[1].x += 0.01;
           // id[1].x = id[1].x + ((id[2].x -
           // id[1].x) / ((id[2].x - id[1].x) / 1000));
         }
 
         if (parseInt(id[1].y.toFixed(1)) == id[2].y) {
-          tempValY = 1
+          tempValY = 1;
         } else if (id[1].y > id[2].y) {
-          id[1].y -= 0.01
+          id[1].y -= 0.01;
           // id[1].y = id[1].y - ((id[1].y -
           // id[2].y) / ((id[1].y - id[2].y) / 1000));
         } else {
-          id[1].y += 0.01
+          id[1].y += 0.01;
           // id[1].y = id[1].y - ((id[2].y -
           // id[1].y) / ((id[2].y - id[1].y) / 1000));
         }
 
         if (tempValX == 1 && tempValY == 1) {
-          this.debugPrint(1, 'LET S GO AGAIN')
-          this.frenIDArr[id[0]][1].x = id[1].x
-          this.frenIDArr[id[0]][1].y = id[1].y
+          this.debugPrint(1, "LET S GO AGAIN");
+          this.frenIDArr[id[0]][1].x = id[1].x;
+          this.frenIDArr[id[0]][1].y = id[1].y;
           this.frenIDArr[id[0]][2].x = parseInt(
             (Math.random() * (39 - 1) + 1).toFixed(0)
-          )
+          );
           this.frenIDArr[id[0]][2].y = parseInt(
             (Math.random() * (15 - 1) + 1).toFixed(0)
-          )
+          );
           // id[2].x = parseInt((Math.random() * (39 - 1) + 1).toFixed(0));
           // id[2].y = parseInt((Math.random() * (15 - 1) + 1).toFixed(0));
         }
 
         if (this.scene.getObjectByName(id[0].toString()) != null) {
-          const temp = id[0].toString()
-          this.debugPrint(1, 'ID', id[0])
-          this.debugPrint(1, 'ID', id[1].x)
+          const temp = id[0].toString();
+          this.debugPrint(1, "ID", id[0]);
+          this.debugPrint(1, "ID", id[1].x);
           // @ts-expect-error
-          this.scene.getObjectByName(temp).position.x = id[1].x
+          this.scene.getObjectByName(temp).position.x = id[1].x;
           // @ts-expect-error
-          this.scene.getObjectByName(temp).position.z = id[1].y
+          this.scene.getObjectByName(temp).position.z = id[1].y;
         }
       }
-      i++
+      i++;
     }
-  }
+  };
 
   // ******************* PUBLIC EVENTS ******************* //
 
   onWindowResize = (vpW: number, vpH: number) => {
-    this.camera.aspect = vpW / vpH
-    this.camera.updateProjectionMatrix()
-    this.renderer.setSize(vpW, vpH)
-  }
+    this.camera.aspect = vpW / vpH;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(vpW, vpH);
+  };
 
   onDocumentMouseDown = (event: any) => {
     if (event.button == 2) {
-      this.debugPrint(1, 'mouseRightPressed', true)
-      this.mouseRightPressed = 1
+      this.debugPrint(1, "mouseRightPressed", true);
+      this.mouseRightPressed = 1;
     }
     if (event.button == 0) {
-      this.debugPrint(1, 'mouseLeftPressed', true)
-      this.mouseLeftPressed = 1
+      this.debugPrint(1, "mouseLeftPressed", true);
+      this.mouseLeftPressed = 1;
     }
     if (event.button == 1) {
-      this.debugPrint(1, 'mouseMiddlePressed', true)
-      this.mouseMiddlePressed = 1
+      this.debugPrint(1, "mouseMiddlePressed", true);
+      this.mouseMiddlePressed = 1;
     }
-  }
+  };
 
   onDocumentMouseUp = (event: any) => {
     if (event.button == 2) {
-      this.debugPrint(1, 'mouseRightPressed', false)
-      this.mouseRightPressed = 0
+      this.debugPrint(1, "mouseRightPressed", false);
+      this.mouseRightPressed = 0;
     }
     if (event.button == 0) {
-      this.debugPrint(1, 'mouseLeftPressed', false)
-      this.mouseLeftPressed = 0
+      this.debugPrint(1, "mouseLeftPressed", false);
+      this.mouseLeftPressed = 0;
     }
     if (event.button == 1) {
-      this.debugPrint(1, 'mouseMiddlePressed', false)
-      this.mouseMiddlePressed = 0
+      this.debugPrint(1, "mouseMiddlePressed", false);
+      this.mouseMiddlePressed = 0;
     }
-  }
+  };
 
   onMouseWheel = (event: any) => {
     if (event.deltaY > 0) {
-      this.mouseWheel = -1
+      this.mouseWheel = -1;
       if (this.camera.position.y > 45) {
-        this.camera.position.y -= 15
+        this.camera.position.y -= 15;
       }
     } else if (event.deltaY < 0) {
-      this.mouseWheel = 1
+      this.mouseWheel = 1;
       if (this.camera.position.y < 300) {
-        this.camera.position.y += 15
+        this.camera.position.y += 15;
       }
     } else {
-      this.mouseWheel = 0
+      this.mouseWheel = 0;
     }
-    this.debugPrint(1, 'eventWheel', this.mouseWheel)
-  }
+    this.debugPrint(1, "eventWheel", this.mouseWheel);
+  };
 
   onDocumentKeyDown = (event: any) => {
-    event.preventDefault()
-    event.stopPropagation()
-    const keyCode = event.code
-    this.keyMap[keyCode] = true
-  }
+    event.preventDefault();
+    event.stopPropagation();
+    const keyCode = event.code;
+    this.keyMap[keyCode] = true;
+  };
 
   onDocumentKeyUp = (event: any) => {
-    const keyCode = event.code
-    this.keyMap[keyCode] = false
-  }
+    const keyCode = event.code;
+    this.keyMap[keyCode] = false;
+  };
 
   onDocumentMouseMove = (event: any) => {
-    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1
-    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
-  }
+    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  };
 
   onReceivedUpdatedData = (data: any) => {
     // Store once all the data receive so we can access callback functions
 
     if (this.stopData == 0) {
-      this.chainEvent = 1
+      this.chainEvent = 1;
 
       if (Object.keys(this.rawData).length == 0) {
-        this.rawData = data
+        this.rawData = data;
       }
       if (Object.keys(data.mapArray).length > 1) {
-        this.compArray = data.mapArray
-        this.chainDataAdded = 1
+        this.compArray = data.mapArray;
+        this.chainDataAdded = 1;
       }
 
       if (
@@ -1658,48 +1658,48 @@ export default class ViewGL {
         data.frameData.selected == 1 &&
         data.frameData.id > 0
       ) {
-        this.debugPrint(1, 'buildingSelected', data.frameData.id)
-        this.buildingToCreate = data.frameData.id
+        this.debugPrint(1, "buildingSelected", data.frameData.id);
+        this.buildingToCreate = data.frameData.id;
         if (this.placementActive == 0) {
-          this.placementActive = 1
+          this.placementActive = 1;
           this.createObject_FindSpace(
             1,
             9898,
             this.buildingToCreate,
             1,
             this.redText
-          )
+          );
 
           // SEND CLOSE POPUP TO CONTEXT
         }
       }
     }
-  }
+  };
 
   // ******************* RENDER LOOP ******************* //
 
   update = (t?: any) => {
     if (this.chainDataAdded == 1 && this.initDone == 0) {
-      this.debugPrint(1, 'INIT')
-      this.getTypeFromCompArr()
-      this.generateRessources()
+      this.debugPrint(1, "INIT");
+      this.getTypeFromCompArr();
+      this.generateRessources();
 
       // CREATE TERRAIN
-      this.terrainCreate()
-      this.terrainBorderCreate()
-      this.terrainBackgroundCreate()
+      this.terrainCreate();
+      this.terrainBorderCreate();
+      this.terrainBackgroundCreate();
 
-      this.readyToLoop = 1
-      this.initDone = 1
+      this.readyToLoop = 1;
+      this.initDone = 1;
       // this.stopData = 1;
     }
 
     if (this.readyToLoop == 1) {
-      const time = Date.now()
+      const time = Date.now();
 
       if (time - this.tempTime > 50) {
-        this.timeClick = 1
-        this.tempTime = Date.now()
+        this.timeClick = 1;
+        this.tempTime = Date.now();
       }
 
       if (
@@ -1708,58 +1708,58 @@ export default class ViewGL {
         this.placementActive == 0
       ) {
         // DEBUG TEST KEY
-        this.placementActive = 1
-        this.createObject_FindSpace(1, 9898, this.typeTest, 1, this.redText)
-        this.typeTest++
+        this.placementActive = 1;
+        this.createObject_FindSpace(1, 9898, this.typeTest, 1, this.redText);
+        this.typeTest++;
       }
 
       while (this.frenTest < 7) {
-        const curPos = new THREE.Vector2()
-        const targetPos = new THREE.Vector2()
+        const curPos = new THREE.Vector2();
+        const targetPos = new THREE.Vector2();
 
-        curPos.x = parseInt((Math.random() * (39 - 1) + 1).toFixed(0))
-        curPos.y = parseInt((Math.random() * (15 - 1) + 1).toFixed(0))
-        targetPos.x = parseInt((Math.random() * (39 - 1) + 1).toFixed(0))
-        targetPos.y = parseInt((Math.random() * (15 - 1) + 1).toFixed(0))
+        curPos.x = parseInt((Math.random() * (39 - 1) + 1).toFixed(0));
+        curPos.y = parseInt((Math.random() * (15 - 1) + 1).toFixed(0));
+        targetPos.x = parseInt((Math.random() * (39 - 1) + 1).toFixed(0));
+        targetPos.y = parseInt((Math.random() * (15 - 1) + 1).toFixed(0));
 
-        this.frenTest++
+        this.frenTest++;
 
-        this.frensCreate(this.frenTest, curPos, targetPos)
-        this.debugPrint(1, 'FRENS FRENS FRENS')
+        this.frensCreate(this.frenTest, curPos, targetPos);
+        this.debugPrint(1, "FRENS FRENS FRENS");
         // his.placementActive = 1;
         // this.createObject_FindSpace(1, 9898, this.typeTest, 1, this.redText);
         // this.typeTest++;
       }
 
-      this.frensGoing()
+      this.frensGoing();
 
       if (this.keyMap.KeyD == true && this.timeClick == 1) {
         // NOT WORKING !
         if (this.debugMode < 2) {
-          this.debugMode = this.debugMode + 1
-          this.debugPrint(1, 'DEBUG MODE CHANGED TO ', this.debugMode)
+          this.debugMode = this.debugMode + 1;
+          this.debugPrint(1, "DEBUG MODE CHANGED TO ", this.debugMode);
         } else {
-          this.debugPrint(1, 'DEBUG MODE CHANGED TO 0')
-          this.debugMode = 0
+          this.debugPrint(1, "DEBUG MODE CHANGED TO 0");
+          this.debugMode = 0;
         }
       }
 
-      this.mouseControls()
+      this.mouseControls();
 
-      this.rayCast()
+      this.rayCast();
 
-      this.updateTempBuildMesh()
+      this.updateTempBuildMesh();
 
       if (this.placementActive == 0) {
         // && time - this.tempTime2 > 10)
-        this.selectObject()
+        this.selectObject();
         // this.tempTime2 = Date.now();
       }
       // this.stats.update();
-      this.renderer.render(this.scene, this.camera)
+      this.renderer.render(this.scene, this.camera);
 
-      this.timeClick = 0
+      this.timeClick = 0;
     }
-    requestAnimationFrame(this.update.bind(this))
-  }
+    requestAnimationFrame(this.update.bind(this));
+  };
 }

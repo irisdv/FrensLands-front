@@ -5,24 +5,24 @@ import React, {
   useLayoutEffect,
   useMemo,
   useRef,
-  useState
-} from 'react'
-import { Canvas, useThree, useFrame, useLoader } from '@react-three/fiber'
-import { PerspectiveCamera } from '@react-three/drei'
+  useState,
+} from "react";
+import { Canvas, useThree, useFrame, useLoader } from "@react-three/fiber";
+import { PerspectiveCamera } from "@react-three/drei";
 import {
   TextureLoader,
   RepeatWrapping,
   NearestFilter,
   PlaneGeometry,
-  Vector2
-} from 'three'
+  Vector2,
+} from "three";
 
-import useInGameContext from '../../hooks/useInGameContext'
-import { useGameContext } from '../../hooks/useGameContext'
-import { ResourceItem } from './ResourceItem'
+import useInGameContext from "../../hooks/useInGameContext";
+import { useGameContext } from "../../hooks/useGameContext";
+import { ResourceItem } from "./ResourceItem";
 
 interface Imaps {
-  compArray?: any[]
+  compArray?: any[];
 }
 
 export const ResourceLine = (props: any) => {
@@ -34,12 +34,12 @@ export const ResourceLine = (props: any) => {
     position,
     frontBlockArray,
     textureSelected,
-    worldType
-  } = props
+    worldType,
+  } = props;
 
   const lineValue = useMemo(() => {
-    if (line) return line
-  }, [line])
+    if (line) return line;
+  }, [line]);
 
   return (
     lineValue &&
@@ -58,8 +58,8 @@ export const ResourceLine = (props: any) => {
             worldType={worldType}
             level={elem[7]}
           />
-        )
+        );
       }
     })
-  )
-}
+  );
+};

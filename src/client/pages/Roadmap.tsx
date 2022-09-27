@@ -1,11 +1,11 @@
-import React from 'react'
-import MenuHome from '../components/MenuHome'
+import React from "react";
+import MenuHome from "../components/MenuHome";
 
-export default function Roadmap () {
+export default function Roadmap() {
   return (
     <>
       <div
-        style={{ overflowY: 'scroll', overflowX: 'hidden', height: '100vh' }}
+        style={{ overflowY: "scroll", overflowX: "hidden", height: "100vh" }}
       >
         <div className="bg-home selectDisable">
           <MenuHome />
@@ -28,7 +28,7 @@ export default function Roadmap () {
                 <div className="hackT pixelated md:mt-3 mt-0"></div>
                 <div className="fontHPxl HBText">
                   <p>Creation of the prototype</p>
-                  <ul style={{ listStyle: 'disc', paddingLeft: '20px' }}>
+                  <ul style={{ listStyle: "disc", paddingLeft: "20px" }}>
                     <li>20 buildings</li>
                     <li>10 different resources</li>
                     <li>5 different biomes</li>
@@ -46,15 +46,15 @@ export default function Roadmap () {
               <div className="grid">
                 <div
                   className="lineWTopS"
-                  style={{ transform: 'rotate(180deg)', marginTop: '-27px' }}
+                  style={{ transform: "rotate(180deg)", marginTop: "-27px" }}
                 ></div>
                 <div
                   className="lineWxs"
-                  style={{ transform: 'rotate(180deg)' }}
+                  style={{ transform: "rotate(180deg)" }}
                 ></div>
                 <div
                   className="lineWTop"
-                  style={{ transform: 'rotate(180deg)' }}
+                  style={{ transform: "rotate(180deg)" }}
                 ></div>
               </div>
 
@@ -74,27 +74,27 @@ export default function Roadmap () {
               <img
                 src="resources/front/Gif_FrensEvents.gif"
                 className="roadmapGif"
-                style={{ width: '190px', height: '190px', marginTop: '-37px' }}
+                style={{ width: "190px", height: "190px", marginTop: "-37px" }}
               />
 
               <div className="grid">
                 <div
                   className="lineWxs lineMargin"
-                  style={{ transform: 'rotate(180deg)' }}
+                  style={{ transform: "rotate(180deg)" }}
                 ></div>
                 <div
                   className="lineWTop"
-                  style={{ transform: 'rotate(180deg)' }}
+                  style={{ transform: "rotate(180deg)" }}
                 ></div>
               </div>
 
               <div
                 className=""
-                style={{ marginLeft: '-20px', marginTop: '-15px' }}
+                style={{ marginLeft: "-20px", marginTop: "-15px" }}
               >
                 <div
                   className="V01 pixelated"
-                  style={{ marginTop: '-50px' }}
+                  style={{ marginTop: "-50px" }}
                 ></div>
                 <div className="fontHPxl V01Text">
                   <ul>
@@ -112,26 +112,26 @@ export default function Roadmap () {
               <img
                 src="resources/front/Gif_TradeRessource.gif"
                 className="roadmapGif"
-                style={{ marginTop: '-37px' }}
+                style={{ marginTop: "-37px" }}
               />
               <div className="grid">
                 <div
                   className="lineWxs lineMargin"
-                  style={{ transform: 'rotate(180deg)' }}
+                  style={{ transform: "rotate(180deg)" }}
                 ></div>
                 <div
                   className="lineWTop"
-                  style={{ transform: 'rotate(180deg)' }}
+                  style={{ transform: "rotate(180deg)" }}
                 ></div>
               </div>
 
               <div
                 className=""
-                style={{ marginLeft: '-20px', marginTop: '-15px' }}
+                style={{ marginLeft: "-20px", marginTop: "-15px" }}
               >
                 <div
                   className="V02 pixelated"
-                  style={{ marginTop: '-50px' }}
+                  style={{ marginTop: "-50px" }}
                 ></div>
                 <div className="fontHPxl V02Text">
                   <ul>
@@ -149,31 +149,31 @@ export default function Roadmap () {
               <img
                 src="resources/front/Gif_Combine.gif"
                 className="roadmapGif"
-                style={{ marginTop: '-37px' }}
+                style={{ marginTop: "-37px" }}
               />
 
               <div className="grid">
                 <div
                   className="lineWxs lineMargin"
-                  style={{ transform: 'rotate(180deg)' }}
+                  style={{ transform: "rotate(180deg)" }}
                 ></div>
                 <div
                   className="lineWxs"
-                  style={{ transform: 'rotate(180deg)', marginTop: '-9px' }}
+                  style={{ transform: "rotate(180deg)", marginTop: "-9px" }}
                 ></div>
                 <div
                   className="lineWxs"
-                  style={{ transform: 'rotate(180deg)', marginTop: '-9px' }}
+                  style={{ transform: "rotate(180deg)", marginTop: "-9px" }}
                 ></div>
               </div>
 
               <div
                 className=""
-                style={{ marginLeft: '-20px', marginTop: '-15px' }}
+                style={{ marginLeft: "-20px", marginTop: "-15px" }}
               >
                 <div
                   className="V03 pixelated"
-                  style={{ marginTop: '-50px' }}
+                  style={{ marginTop: "-50px" }}
                 ></div>
                 <div className="fontHPxl V03Text">
                   <ul>
@@ -190,5 +190,5 @@ export default function Roadmap () {
         {/* </div> */}
       </div>
     </>
-  )
+  );
 }

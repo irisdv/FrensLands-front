@@ -1,87 +1,87 @@
 import {
   useStarknet,
   useStarknetCall,
-  useStarknetInvoke
-} from '@starknet-react/core'
-import React, { useMemo, useState, useRef, useEffect } from 'react'
-import { useTestContract } from '../hooks/test'
-import { number, uint256 } from 'starknet'
-import { toBN } from 'starknet/dist/utils/number'
+  useStarknetInvoke,
+} from "@starknet-react/core";
+import React, { useMemo, useState, useRef, useEffect } from "react";
+import { useTestContract } from "../hooks/test";
+import { number, uint256 } from "starknet";
+import { toBN } from "starknet/dist/utils/number";
 
-export function TestGenMap () {
-  const { account } = useStarknet()
-  const [watch, setWatch] = useState(true)
-  const [generating, setGenerating] = useState(true)
-  const [ground, setGround] = useState<Number[]>([])
-  const table: any[] = []
+export function TestGenMap() {
+  const { account } = useStarknet();
+  const [watch, setWatch] = useState(true);
+  const [generating, setGenerating] = useState(true);
+  const [ground, setGround] = useState<Number[]>([]);
+  const table: any[] = [];
 
-  const { contract: test } = useTestContract()
+  const { contract: test } = useTestContract();
 
   const {
     data: dataTest,
     loading: loadingTest,
-    invoke: fillGroundInvoke
+    invoke: fillGroundInvoke,
   } = useStarknetInvoke({
     contract: test,
-    method: 'fill_all_ground'
-  })
+    method: "fill_all_ground",
+  });
 
   const genTableGround = () => {
     // Build array
-    let i = 0
-    let j = 0
-    let w = 0
+    let i = 0;
+    let j = 0;
+    let w = 0;
     while (i < 40) {
-      j = 0
+      j = 0;
       while (j < 16) {
-        table[w] = Math.floor(Math.random() * 3 + 1)
-        j++
-        w++
+        table[w] = Math.floor(Math.random() * 3 + 1);
+        j++;
+        w++;
       }
-      i++
+      i++;
     }
-    console.log('table', table)
-  }
+    console.log("table", table);
+  };
 
   const fillGround = () => {
-    console.log('invoking GenGround', Date.now())
+    console.log("invoking GenGround", Date.now());
     fillGroundInvoke({
       args: [uint256.bnToUint256(1), table],
-      metadata: { method: 'fill_all_ground', message: 'Gen Map' }
-    })
-    setGenerating(true)
-  }
+      metadata: { method: "fill_all_ground", message: "Gen Map" },
+    });
+    setGenerating(true);
+  };
 
   const { data: testResult } = useStarknetCall({
     contract: test,
-    method: 'get_all_ground',
+    method: "get_all_ground",
     args: [uint256.bnToUint256(1)],
-    options: { watch }
-  })
+    options: { watch },
+  });
 
   const testValue = useMemo(() => {
-    console.log('testResult', testResult)
+    console.log("testResult", testResult);
     if (testResult != null && testResult.length > 0) {
       if (ground.length == 0) {
-        console.log('testResult', testResult)
-        console.log('timestamp change block', Date.now())
+        console.log("testResult", testResult);
+        console.log("timestamp change block", Date.now());
 
         // Fill array with values fetched
-        const new_table: Number[] = []
+        const new_table: Number[] = [];
         testResult[0].forEach((element: any) => {
-          const elem_toNumber = toBN(element)
-          new_table.push(elem_toNumber.toNumber())
-        })
-        console.log('new_table filled', new_table)
-        setGround(new_table)
-        return { ground: new_table }
+          const elem_toNumber = toBN(element);
+          new_table.push(elem_toNumber.toNumber());
+        });
+        console.log("new_table filled", new_table);
+        setGround(new_table);
+        return { ground: new_table };
       } else {
-        console.log('ground', ground)
+        console.log("ground", ground);
       }
 
-      return { ground }
+      return { ground };
     }
-  }, [testResult])
+  }, [testResult]);
 
   //   useEffect(() => {
   //     if (dataTest) console.log("dataDice", dataTest);
@@ -89,7 +89,7 @@ export function TestGenMap () {
   //   }, [dataTest, loadingTest]);
 
   if (!account) {
-    return null
+    return null;
   }
 
   return (
@@ -101,5 +101,5 @@ export function TestGenMap () {
         <button onClick={() => fillGround()}>Fill ground onchain</button>
       </div>
     </>
-  )
+  );
 }

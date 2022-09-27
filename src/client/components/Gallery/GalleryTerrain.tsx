@@ -1,19 +1,19 @@
-import React, { useEffect, useMemo, useRef } from 'react'
-import { TextureLoader, RepeatWrapping, NearestFilter } from 'three'
+import React, { useEffect, useMemo, useRef } from "react";
+import { TextureLoader, RepeatWrapping, NearestFilter } from "three";
 
 export const GalleryTerrain = (props: any) => {
-  const { worldType } = props
+  const { worldType } = props;
 
   const textureLoader = useMemo(() => {
     const textObj = new TextureLoader().load(
-      '../resources/textures/World_Background_' + worldType.toString() + '.png'
-    )
-    textObj.repeat.set(1, 1)
-    textObj.wrapS = textObj.wrapT = RepeatWrapping
-    textObj.magFilter = NearestFilter
+      "../resources/textures/World_Background_" + worldType.toString() + ".png"
+    );
+    textObj.repeat.set(1, 1);
+    textObj.wrapS = textObj.wrapT = RepeatWrapping;
+    textObj.magFilter = NearestFilter;
 
-    return textObj
-  }, [])
+    return textObj;
+  }, []);
 
   return (
     <>
@@ -36,5 +36,5 @@ export const GalleryTerrain = (props: any) => {
         />
       </mesh>
     </>
-  )
-}
+  );
+};

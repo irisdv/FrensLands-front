@@ -11,10 +11,5 @@ module.exports = (app) => {
   //   next();
   // });
 
-  // Create a new user
-  // router.post('/api/userSettings/:address', user_settings.create);
-
   app.post("/api/userSettings/:address", user_settings.create);
-
-  // app.use('/api/userSettings', router);
 };

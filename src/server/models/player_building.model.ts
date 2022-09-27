@@ -18,11 +18,11 @@ module.exports = (sequelize, Sequelize) => {
     },
     blockX: {
       type: Sequelize.SMALLINT,
-      field: "locked",
+      field: "blockX",
     },
     blockY: {
       type: Sequelize.SMALLINT,
-      field: "locked",
+      field: "blockY",
     },
     unitTimeCreatedAt: {
       type: Sequelize.INTEGER,

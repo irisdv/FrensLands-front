@@ -20,7 +20,7 @@ const verifyToken = (request: any, response: Response, next: NextFunction) => {
         message: "Unauthorized!",
       });
     }
-    // console.log('request', request.body)
+    console.log("request", request.body);
     request.userData = request.body;
     next();
   });
