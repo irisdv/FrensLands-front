@@ -1,0 +1,2 @@
+spriteId,biomeId,name,locked,size,canDestroy,canMove,fertilityNeed,nbLevel,maintain,createCost,maintainCost,production
+1,1,Cabin,TRUE,1,FALSE,FALSE,1,2,FALSE,null,null,102

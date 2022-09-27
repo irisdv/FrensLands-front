@@ -5,6 +5,7 @@ import { getInstalledInjectedConnectors, InjectedConnector, StarknetProvider } f
 import { BrowserRouter } from "react-router-dom";
 import { AppStateProvider } from "./providers/GameContext";
 import { NotifTransactionManagerProvider } from './providers/transactions'
+import { SelectStateProvider } from "./providers/SelectContext";
 
 const container = document.getElementById("root");
 const root = createRoot(container!); // createRoot(container!) if you use TypeScript
@@ -23,7 +24,9 @@ root.render(
       <NotifTransactionManagerProvider>
         <BrowserRouter>
           <AppStateProvider>
+            <SelectStateProvider>
               <App />
+            </SelectStateProvider>
           </AppStateProvider>
         </BrowserRouter>
       </NotifTransactionManagerProvider>

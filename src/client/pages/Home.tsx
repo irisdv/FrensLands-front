@@ -22,6 +22,12 @@ import { allMetadata } from "../data/metadata";
 import AccountAbi from "../abi/Account.json";
 import MenuHome from "../components/MenuHome";
 
+import socketService from "../services/socketService";
+
+import { io } from 'socket.io-client';
+import { useSelectContext } from "../hooks/useSelectContext";
+let socket: any;
+
 export default function Home() {
   const { account } = useStarknet();
   const { available, connect, disconnect } = useConnectors();
@@ -48,8 +54,51 @@ export default function Home() {
   const [message, setMessage] = useState<any>(null)
   const [approved, setApproved] = useState<any>(null)
 
+  // Connection to FL
+  const [connected, setConnected] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
+  // const sdk = require('api')('@aspect/v0.1-testnet#13qgon3yl4dk4egj');
+
+
+  const connectSocket = async (account : string) => {
+    const socket = socketService
+      .connect("http://localhost:8008/", account)
+      .then((result) => {
+        setConnected(true);
+      })
+      .catch((err) => {
+        console.log("Error", err);
+      });
+  };
+
+  useEffect(() => {
+    if (!connected && account) {
+      connectSocket(account);
+    }
+  });
+
+  // Connexion du user 
+  const getUserInfo = async () => {
+    fetch(`http://localhost:3001/api/auth/signin`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ account: account }),
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      console.log('userData', data);
+      if (data && data.token) localStorage.setItem("user", data.token)
+      setSignedIn(true)
+    });
+  };
+
   useEffect(() => {
     if (account) {
+      console.log('account exists', account)
       setAddress(account as string);
     }
   }, [account])
@@ -64,6 +113,7 @@ export default function Home() {
     if (account && tokenId) {
       let _metadata = allMetadata.filter(res => res.id == tokenId as number )
       setWorldType(_metadata[0].biome)
+      getUserInfo();
     }
   }, [account, tokenId])
 
@@ -271,7 +321,7 @@ export default function Home() {
                     style={{marginTop: '300px'}}
                   ></button>
               }
-              {account && canPlay && approved == true && 
+              {account && canPlay && approved == true && signedIn && 
                 <div style={{height: '170px', pointerEvents: 'all'}}>
                   <button className="relative mx-auto pixelated btnPlay" onClick={() => navigate('/play')} style={{marginTop: '-65px'}}></button>
                 </div>

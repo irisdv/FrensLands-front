@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "target": "ES2019",
+        "module": "commonjs",
+        "outDir": "../../dist/server",
+        "esModuleInterop": true,
+        "noEmitOnError": false,
+        "noEmit": false,
+        "forceConsistentCasingInFileNames": true,
+        "allowJs": true,
+    },
+    "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.csv"]
+}

@@ -5,8 +5,6 @@ import { NotifItem } from "./NotifItem";
 export default function Notifications() {
   const activeNotifications = useActiveNotifications()
 
-  if (activeNotifications) console.log('Transactions', activeNotifications)
-
   return (
     <>
     {activeNotifications.map((item) => (

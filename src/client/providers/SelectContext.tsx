@@ -1,27 +1,6 @@
 import React, {
     useReducer,
-    useEffect,
-    useState,
-    useCallback,
-    useContext,
-    Fragment,
-    ReactFragment,
   } from "react";
-  import * as starknet from "starknet";
-  import { defaultProvider, number, uint256 } from "starknet";
-  import { toBN } from "starknet/dist/utils/number";
-  import { bnToUint256, uint256ToBN } from 'starknet/dist/utils/uint256'
-  import { BuildingFrame } from "../components/GameUI/BuildingFrame";
-  
-  import { useBuildingsContract } from "../hooks/contracts/buildings";
-  import { useWorldsContract } from "../hooks/contracts/worlds";
-  import { useResourcesContract } from "../hooks/contracts/resources";
-  import { useFrensCoinsContract } from "../hooks/contracts/frenscoins";
-  import { useMapsContract } from "../hooks/contracts/maps";
-  import { useERC1155Contract } from "../hooks/contracts/erc1155";
-  import { useStarknet } from "@starknet-react/core";
-  import { GetBlockResponse } from 'starknet'
-  
   
   export interface IFrame {
     id?: number;
@@ -46,7 +25,13 @@ import React, {
     frameData?: IFrame;
     updateBuildingFrame: (show: boolean, data: {}) => void;
     sound?: boolean
-    updateSound: (val : boolean) => void;
+    // updateSound: (val : boolean) => void;
+    updateZoom: (val : boolean, account : string) => void;
+    // initZoom: (val : boolean) => void;
+    zoomMode?: boolean
+    tutoMode?: boolean
+    updateTuto: (val : boolean, account : string) => void;
+    initSettings: (val : any) => void;
   }
   
   export const SelectState: ISelectState = {
@@ -54,7 +39,13 @@ import React, {
     frameData: undefined,
     updateBuildingFrame: (show, data) => {},
     sound: true,
-    updateSound: (val) => {},
+    // updateSound: (val) => {},
+    zoomMode: true,
+    updateZoom: (val, account) => {},
+    // initZoom: (val) => {},
+    tutoMode: undefined,
+    updateTuto: (val, account) => {},
+    initSettings: (val) => {},
   };
   
   const SelectContext = React.createContext(SelectState);
@@ -70,18 +61,31 @@ import React, {
     frameData?: IFrame;
     buildingSelected?: number;
   }
-
-  interface SetSound {
-    type: "set_sound";
+  interface SetZoom {
+    type: "set_zoom";
+    zoomMode?: boolean
+  }
+  interface SetTuto {
+    type: "set_tuto";
+    tutoMode?: boolean
+  }
+  interface SetSettings {
+    type: "set_settings";
+    zoomMode?: boolean
+    tutoMode?: boolean
     sound?: boolean
   }
   
   type Action =
     | SetShowFrame
-    | SetSound
+    // | SetSound
+    | SetZoom
+    | SetTuto
+    | SetSettings
     | SetError;
   
   function reducer(state: ISelectState, action: Action): ISelectState {
+    console.log('action type', action)
     switch (action.type) {
       case "set_showFrame": {
         return { ...state, 
@@ -89,9 +93,21 @@ import React, {
           frameData: action.frameData,
         };
       }
-      case "set_sound": {
+      case "set_zoom": {
         return { ...state, 
-          sound: action.sound
+          zoomMode: action.zoomMode
+        };
+      }
+      case "set_tuto": {
+        return { ...state, 
+          tutoMode: action.tutoMode
+        };
+      }
+      case "set_settings": {
+        return { ...state, 
+          zoomMode: action.zoomMode,
+          tutoMode: action.tutoMode,
+          sound: action.sound,
         };
       }
       case "set_error": {
@@ -119,14 +135,57 @@ import React, {
       []
     );
 
-    const updateSound = React.useCallback((val: boolean) => {
+  const initSettings = React.useCallback((val: any) => {
+    // {zoom: val, tutorial: val, sound: val}
+    dispatch({
+      type: "set_settings",
+      zoomMode: val.zoom as boolean,
+      tutoMode: val.tutorial as boolean,
+      sound: val.sound as boolean
+    });
+  }, []);
+
+  const updateZoom = React.useCallback((val: boolean, account : string) => {
+    fetch(`http://localhost:3001/api/users/settings`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        'x-access-token' : localStorage.getItem('user') as string
+      },
+      body: JSON.stringify({ account: account, setting: {zoom: val} }),
+    })
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      console.log('Updated user settings successfully');
       dispatch({
-        type: "set_sound",
-        sound: val,
+        type: "set_zoom",
+        zoomMode: val
       });
-    },
-    []
-  );
+    });
+  }, []);
+
+  const updateTuto = React.useCallback((val: boolean, account : string) => {
+    fetch(`http://localhost:3001/api/users/settings`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        'x-access-token' : localStorage.getItem('user') as string
+      },
+      body: JSON.stringify({ account: account, setting: {tutorial: val} }),
+    })
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      console.log('Updated user settings successfully');
+      dispatch({
+        type: "set_tuto",
+        tutoMode: val
+      });
+    });
+  }, []);
 
 
     return (
@@ -136,7 +195,13 @@ import React, {
           showFrame: state.showFrame,
           updateBuildingFrame,
           sound: state.sound,
-          updateSound
+          // updateSound,
+          zoomMode: state.zoomMode,
+          updateZoom,
+          // initZoom,
+          tutoMode : state.tutoMode,
+          updateTuto,
+          initSettings
         }}
       >
         {props.children}

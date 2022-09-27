@@ -18,7 +18,7 @@ export function MenuBar() {
 
   const {tokenId, updateTokenId, setAddress, blockGame, buildingData, nonce, updateNonce, counterResources } = useGameContext();
   const {energy, frensCoins, wood, rock, coal, metal, populationBusy, populationFree, meat, cereal} = useResourcesContext();
-  const { updateSound, sound } = useSelectContext()
+  const { zoomMode, updateZoom } = useSelectContext()
 
   const claimingInvoke = useClaim()
   const activeNotifications = useActiveNotifications()
@@ -131,6 +131,11 @@ export function MenuBar() {
     }
   }, [block?.block_number, blockGame, claiming])
 
+  const zoomValue = useMemo(() => {
+    console.log('menu bar zoom value', zoomMode)
+    return zoomMode
+  }, [zoomMode])
+
   return (
     <>
       <div className="btnBug pixelated selectDisable" onClick={() => window.open("https://forms.gle/87Ldvb1UTw53iUhH7", "_blank")}></div>
@@ -241,6 +246,14 @@ export function MenuBar() {
               <div className="menuSettings pixelated"></div>
             </div> */}
         </div>
+      </div>
+      <div onClick={() => updateZoom(!zoomValue as boolean, account as string)}>
+        {zoomValue ? 
+          <div className="checkZoom1 pixelated"></div>
+          :
+          <div className="checkZoom0 pixelated"></div>
+        } 
+        <div className="btnZoom pixelated"></div>
       </div>
       <div className="absolute selectDisable" style={{zIndex: "1", pointerEvents: "none"}}>
         <div className="subBar">

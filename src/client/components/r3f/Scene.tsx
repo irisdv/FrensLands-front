@@ -15,12 +15,18 @@ import { TransactionManagerContext } from '../../providers/transactions/context'
 import { StarknetContext } from '@starknet-react/core/dist/providers/starknet';
 import StateContext from '../../providers/GameContext'
 import { useSelectContext } from '../../hooks/useSelectContext';
+import { useStarknet } from '@starknet-react/core';
+
+import socketService from "../../services/socketService";
+import gameService from "../../services/gameService";
 
 export const Scene = (props : any) => {
     const ContextBridge = useContextBridge(SelectContext, BuildingContext, TransactionManagerContext, StarknetContext, StateContext)
     const refCanvas = useRef<any>()
 
-    const { updateBuildingFrame } = useSelectContext()
+    const { account } = useStarknet();
+
+    const { updateBuildingFrame, zoomMode, initSettings } = useSelectContext()
 
     const { mapArray, textArrRef, rightBuildingType, worldType, UBlockIDs } = props
 
@@ -29,8 +35,30 @@ export const Scene = (props : any) => {
     const [mouseRightPressed, setMouseRightPressed] = useState(0)
     const [mouseMiddlePressed, setMouseMiddlePressed] = useState(0)
     const [frontBlockArray, setFrontBlockArray] = useState([])
+    const [initZoomMode, setInitZoomMode] = useState(0)
 
-    // var mouseWheelPropTest = 0
+    const getUserSettings = async () => {
+        await fetch(`http://localhost:3001/api/users/${account}`, 
+          { headers: {'x-access-token' : localStorage.getItem('user') as string}}
+        )
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          if (data) initSettings(data.setting)
+          return data.setting.zoom
+        });
+    };
+
+    const zoomValue = useMemo(() => {
+        if (!initZoomMode) {
+            let zoomVal = getUserSettings();
+            setInitZoomMode(1);
+            return zoomVal
+        } else {
+            return zoomMode
+        }
+    }, [zoomMode])
 
     const [keyMap, setKeyMap] = useState({
         Escape: false,
@@ -49,11 +77,19 @@ export const Scene = (props : any) => {
             setKeyMap((m) => ({ ...m, [event.code]: false }))
         }
         const handleMouseWheelProp = (event : any) => {
-          if (event.deltaY > 0 && indexRef.current > 4) {
-              setIndex(() => indexRef.current - 1);
-          } else if (event.deltaY < 0 && indexRef.current < 20)  {
-              setIndex(() => indexRef.current + 1);
-          }
+            if (zoomValue) {
+                if (event.deltaY > 0 && indexRef.current > 4) {
+                    setIndex(() => indexRef.current - 1);
+                } else if (event.deltaY < 0 && indexRef.current < 20)  {
+                    setIndex(() => indexRef.current + 1);
+                }
+            } else {
+                if (event.deltaY > 0 && indexRef.current < 20) {
+                    setIndex(() => indexRef.current + 1);
+                } else if (event.deltaY < 0 && indexRef.current  > 4)  {
+                    setIndex(() => indexRef.current - 1);
+                }
+            }
         }
         document.addEventListener('keydown', handleKeyDown)
         document.addEventListener('keyup', handleKeyUp)
@@ -65,7 +101,7 @@ export const Scene = (props : any) => {
           let passiveObject: any = { passive: true }
           document.removeEventListener("wheel", handleMouseWheelProp, passiveObject);
         }
-      }, [])
+      }, [zoomValue, zoomMode])
 
       useEffect(() => {
         if (keyMap && keyMap['Escape'] == true) {

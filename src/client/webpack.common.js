@@ -20,6 +20,10 @@ module.exports = {
                 test: /\.svg$/i,
                 use: 'raw-loader',
             },
+            {
+                test: /\.csv$/i,
+                use:  'raw-loader',
+            },
         ],
     },
     resolve: {
@@ -28,13 +32,10 @@ module.exports = {
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, '../../dist/client'),
-        // publicPath: '/'
     },
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/client/index.html'
         }),
     ],
-    // node: { fs: 'empty' },
-    // target: 'web', // Make web variables accessible to webpack, e.g. window
 }
