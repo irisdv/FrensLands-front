@@ -6,19 +6,19 @@ const Sequelize = require("sequelize");
 const pg = require("pg");
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
-    host: dbConfig.HOST,
-    dialect: dbConfig.dialect,
-    dialectModule: pg,
-    operatorsAliases: false,
-    pool: {
-      max: dbConfig.pool.max,
-      min: dbConfig.pool.min,
-      acquire: dbConfig.pool.acquire,
-      idle: dbConfig.pool.idle,
-    },
+  host: dbConfig.HOST,
+  dialect: dbConfig.dialect,
+  dialectModule: pg,
+  operatorsAliases: false,
+  pool: {
+    max: dbConfig.pool.max,
+    min: dbConfig.pool.min,
+    acquire: dbConfig.pool.acquire,
+    idle: dbConfig.pool.idle,
+  },
 });
 
-const db : any = {};
+const db: any = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
@@ -28,12 +28,18 @@ db.settings = require("./setting.model")(sequelize, Sequelize);
 // Static data
 db.static_buildings = require("./static_building.model")(sequelize, Sequelize);
 db.static_resources = require("./static_resource.model")(sequelize, Sequelize);
-db.static_decorations = require("./static_decoration.model")(sequelize, Sequelize);
+db.static_decorations = require("./static_decoration.model")(
+  sequelize,
+  Sequelize
+);
 
 db.inventories = require("./inventory.model")(sequelize, Sequelize);
 db.lands = require("./land.model")(sequelize, Sequelize);
 db.player_buildings = require("./player_building.model")(sequelize, Sequelize);
-db.player_resources_spawned = require("./player_resources_spawned.model")(sequelize, Sequelize);
+db.player_resources_spawned = require("./player_resources_spawned.model")(
+  sequelize,
+  Sequelize
+);
 db.player_actions = require("./player_action.model")(sequelize, Sequelize);
 db.player_busyPops = require("./player_busyPop.model")(sequelize, Sequelize);
 
@@ -66,7 +72,6 @@ db.lands.belongsTo(db.users, {
   foreignKey: "fk_userid",
   targetKey: "id",
 });
-
 
 // Relationship between users / lands and player_building table in DB
 db.users.hasMany(db.player_buildings, {

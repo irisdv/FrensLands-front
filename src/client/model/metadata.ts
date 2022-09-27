@@ -1,4 +1,4 @@
 export interface Metadata {
-    id: number;
-    biome: number;
+  id: number
+  biome: number
 }

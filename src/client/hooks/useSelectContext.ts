@@ -1,8 +1,8 @@
-import { useContext } from "react";
-import SelectContext from "../providers/SelectContext";
+import { useContext } from 'react'
+import SelectContext from '../providers/SelectContext'
 
 export const useSelectContext = () => {
-  const context = useContext(SelectContext);
+  const context = useContext(SelectContext)
 
-  return context;
-};
+  return context
+}

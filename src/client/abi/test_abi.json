@@ -1,57 +1,57 @@
 [
-    {
-        "inputs": [
-            {
-                "name": "test",
-                "type": "felt"
-            }
-        ],
-        "name": "initializer",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "test",
-                "type": "felt"
-            }
-        ],
-        "name": "upgrade",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "test",
-                "type": "felt"
-            }
-        ],
-        "name": "harvest",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "test",
-                "type": "felt"
-            }
-        ],
-        "name": "recharge",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "test",
-                "type": "felt"
-            }
-        ],
-        "name": "claim_resources",
-        "outputs": [],
-        "type": "function"
-    }
+  {
+    "inputs": [
+      {
+        "name": "test",
+        "type": "felt"
+      }
+    ],
+    "name": "initializer",
+    "outputs": [],
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "name": "test",
+        "type": "felt"
+      }
+    ],
+    "name": "upgrade",
+    "outputs": [],
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "name": "test",
+        "type": "felt"
+      }
+    ],
+    "name": "harvest",
+    "outputs": [],
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "name": "test",
+        "type": "felt"
+      }
+    ],
+    "name": "recharge",
+    "outputs": [],
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "name": "test",
+        "type": "felt"
+      }
+    ],
+    "name": "claim_resources",
+    "outputs": [],
+    "type": "function"
+  }
 ]

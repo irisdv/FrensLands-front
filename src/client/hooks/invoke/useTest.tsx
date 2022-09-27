@@ -4,18 +4,18 @@ import { AddTransactionResponse, uint256 } from 'starknet'
 import { useNotifTransactionManager } from '../../providers/transactions'
 import { useTestContract } from '../test'
 
-export default function useTest() {
+export default function useTest () {
   const { account } = useStarknet()
   const { contract } = useTestContract()
 
   const { addTransaction } = useNotifTransactionManager()
 
   return useCallback(async () => {
-    if (!contract || !account) {
+    if (contract == null || !account) {
       throw new Error('Missing Dependencies')
     }
 
-    return contract
+    return await contract
       .invoke('harvest', [1])
       .then((tx: AddTransactionResponse) => {
         console.log('Transaction hash: ', tx.transaction_hash)
@@ -25,8 +25,8 @@ export default function useTest() {
           transactionHash: tx.transaction_hash,
           address: account,
           metadata: {
-            method: "harvest",
-            message: "Mint Frens Lands map"
+            method: 'harvest',
+            message: 'Mint Frens Lands map'
           }
         })
 

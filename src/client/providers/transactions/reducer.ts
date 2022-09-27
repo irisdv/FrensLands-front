@@ -1,10 +1,15 @@
 import { GetTransactionResponse } from 'starknet'
 import { List } from 'immutable'
-import { NotifContent, NotifItem, Transaction, TransactionSubmitted } from './model'
+import {
+  NotifContent,
+  NotifItem,
+  Transaction,
+  TransactionSubmitted
+} from './model'
 import { nanoid } from 'nanoid'
 
 export interface TransactionManagerState {
-  transactions: List<Transaction>,
+  transactions: List<Transaction>
   notifList: List<NotifItem>
 }
 
@@ -31,7 +36,12 @@ interface UpdateTransaction {
 
 interface AddNotification {
   type: 'add_notification'
-  notifItem: { key?: string; content: NotifContent, show?: boolean, old_status?: string }
+  notifItem: {
+    key?: string
+    content: NotifContent
+    show?: boolean
+    old_status?: string
+  }
 }
 
 interface RemoveNotification {
@@ -40,9 +50,14 @@ interface RemoveNotification {
   content: any
 }
 
-export type Action = AddTransaction | RemoveTransaction | UpdateTransaction | AddNotification | RemoveNotification
+export type Action =
+  | AddTransaction
+  | RemoveTransaction
+  | UpdateTransaction
+  | AddNotification
+  | RemoveNotification
 
-export function transactionManagerReducer(
+export function transactionManagerReducer (
   state: TransactionManagerState,
   action: Action
 ): TransactionManagerState {
@@ -50,15 +65,14 @@ export function transactionManagerReducer(
     console.log('add tx', action.transaction)
     return {
       ...state,
-      transactions: state.transactions.push(action.transaction),
+      transactions: state.transactions.push(action.transaction)
     }
   } else if (action.type === 'remove_transaction') {
-
     const entry = state.transactions.findEntry(
       (tx) => tx.transactionHash === action.transactionHash
     )
 
-    if (!entry) {
+    if (entry == null) {
       return state
     }
 
@@ -71,12 +85,12 @@ export function transactionManagerReducer(
       transactionHash: action.transactionHash,
       lastUpdatedAt: action.lastUpdatedAt,
       show: action.show,
-      metadata: description,
+      metadata: description
     }
 
     return {
       ...state,
-      transactions: state.transactions.set(transactionIndex, newTransaction),
+      transactions: state.transactions.set(transactionIndex, newTransaction)
     }
 
     // return {
@@ -94,7 +108,7 @@ export function transactionManagerReducer(
       (tx) => tx.transactionHash === action.transactionHash
     )
 
-    if (!entry) {
+    if (entry == null) {
       return state
     }
 
@@ -107,15 +121,14 @@ export function transactionManagerReducer(
       transactionHash: action.transactionHash,
       lastUpdatedAt: action.lastUpdatedAt,
       show: action.show,
-      metadata: description,
+      metadata: description
     }
 
     return {
       ...state,
-      transactions: state.transactions.set(transactionIndex, newTransaction),
+      transactions: state.transactions.set(transactionIndex, newTransaction)
     }
   } else if (action.type === 'add_notification') {
-
     const { key, content } = action.notifItem
 
     const notifList = state.notifList.filter(
@@ -125,13 +138,13 @@ export function transactionManagerReducer(
     const myNotif = state.notifList.filter(
       (tx) => tx.content.transactionHash == content.transactionHash
     )
-    
+
     const updatedNotifList = notifList.concat([
       {
         key: key || nanoid(),
         show: true,
-        content: content
-      },
+        content
+      }
     ])
 
     return {
@@ -139,10 +152,7 @@ export function transactionManagerReducer(
       notifList: updatedNotifList
     }
   } else if (action.type === 'remove_notification') {
-
-    const notifList = state.notifList.filter(
-      (tx) => tx.key !== action.key
-    )
+    const notifList = state.notifList.filter((tx) => tx.key !== action.key)
 
     const myNotif = state.notifList.filter((notif) => notif.key == action.key)
 
@@ -152,7 +162,7 @@ export function transactionManagerReducer(
         show: false,
         old_status: action.content.status,
         content: action.content
-      },
+      }
     ])
 
     return {

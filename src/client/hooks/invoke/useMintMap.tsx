@@ -4,18 +4,18 @@ import { AddTransactionResponse } from 'starknet'
 import { useNotifTransactionManager } from '../../providers/transactions'
 import { useWorldsContract } from '../contracts/worlds'
 
-export default function useMintMap() {
+export default function useMintMap () {
   const { account } = useStarknet()
   const { contract } = useWorldsContract()
 
   const { addTransaction } = useNotifTransactionManager()
 
   return useCallback(async () => {
-    if (!contract || !account) {
+    if (contract == null || !account) {
       throw new Error('Missing Dependencies')
     }
 
-    return contract
+    return await contract
       .invoke('get_map', [])
       .then((tx: AddTransactionResponse) => {
         console.log('Transaction hash: ', tx.transaction_hash)
@@ -25,8 +25,8 @@ export default function useMintMap() {
           transactionHash: tx.transaction_hash,
           address: account,
           metadata: {
-            method: "get_map",
-            message: "Mint Frens Lands map",
+            method: 'get_map',
+            message: 'Mint Frens Lands map'
           }
         })
 

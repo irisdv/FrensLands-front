@@ -1,102 +1,108 @@
-import React, { useReducer, useEffect, useState, useCallback } from "react";
-import * as starknet from "starknet";
-import { uint256, Account, defaultProvider, stark, KeyPair } from "starknet";
-import { toBN } from "starknet/dist/utils/number";
-import { useBuildingsContract } from "../hooks/contracts/buildings";
-import { useWorldsContract } from "../hooks/contracts/worlds";
-import { useResourcesContract } from "../hooks/contracts/resources";
-import { useFrensCoinsContract } from "../hooks/contracts/frenscoins";
-import { useMapsContract } from "../hooks/contracts/maps";
-import { useERC1155Contract } from "../hooks/contracts/erc1155";
-import { useStarknet } from "@starknet-react/core";
-import { GetBlockResponse } from 'starknet'
+import React, { useReducer, useEffect, useState, useCallback } from 'react'
+import * as starknet from 'starknet'
+import {
+  uint256,
+  Account,
+  defaultProvider,
+  stark,
+  KeyPair,
+  GetBlockResponse
+} from 'starknet'
+import { toBN } from 'starknet/dist/utils/number'
+import { useBuildingsContract } from '../hooks/contracts/buildings'
+import { useWorldsContract } from '../hooks/contracts/worlds'
+import { useResourcesContract } from '../hooks/contracts/resources'
+import { useFrensCoinsContract } from '../hooks/contracts/frenscoins'
+import { useMapsContract } from '../hooks/contracts/maps'
+import { useERC1155Contract } from '../hooks/contracts/erc1155'
+import { useStarknet } from '@starknet-react/core'
 
 export interface IFrame {
-  id?: number;
-  unique_id?: string;
-  level?: number;
-  posX?: any;
-  posY?: any;
-  selected?: any;
+  id?: number
+  unique_id?: string
+  level?: number
+  posX?: any
+  posY?: any
+  selected?: any
 }
 
 export interface Ibuild {
-  id?: number;
-  pos_start?: number;
-  pop?: number;
-  status?: number;
+  id?: number
+  pos_start?: number
+  pop?: number
+  status?: number
 }
 
 export interface IPopUp {
-  id?: number; // id of bat_type
-  unique_id?: string;
-  type?: number;
-  posX?: any;
-  posY?: any;
-  pop?: number;
+  id?: number // id of bat_type
+  unique_id?: string
+  type?: number
+  posX?: any
+  posY?: any
+  pop?: number
 }
 
 export interface IBuildingData {
-  active?: [],
-  inactive?: [],
-  total?: number,
+  active?: []
+  inactive?: []
+  total?: number
 }
 
 export interface IResources {
-  wood?: number;
-  rock?: number;
-  meat?: number;
-  metal?: number;
-  coal?: number;
-  frensCoins?: number;
-  energy?: number;
-  populationBusy?: number;
-  populationFree?: number;
+  wood?: number
+  rock?: number
+  meat?: number
+  metal?: number
+  coal?: number
+  frensCoins?: number
+  energy?: number
+  populationBusy?: number
+  populationFree?: number
 }
 
 export interface IGameState {
-  lastUpdated: string;
-  currentBlock: number;
-  blockGame?: number;
-  loading: boolean;
-  address?: string | undefined;
-  tokenId?: number;
-  mapType?: string;
-  buildingCount?: number;
-  mapArray?: any[];
-  energy?: number;
-  frensCoins?: number;
-  wood?: number;
-  rock?: number;
-  meat?: number;
-  cereal?: number;
-  metal?: number;
-  populationBusy?: number;
-  populationFree?: number;
-  coal?: number;
-  counterResources: any[];
-  resources: number[];
-  updateBuildings: (t: number) => void;
-  setAddress: (addr: string) => void;
-  updateTokenId: (id: string) => void;
-  fetchMapType: (id: string) => void;
-  buildingData?: IBuildingData;
-  nonce: string;
-  updateNonce: (nonce : string) => void;
-  setAccountContract: (account : any) => void;
-  accountContract: any;
-  harvestingArr: any[];
-  setHarvesting: (posX : number, posY: number, status : number) => void;
+  lastUpdated: string
+  currentBlock: number
+  blockGame?: number
+  loading: boolean
+  address?: string | undefined
+  tokenId?: number
+  mapType?: string
+  buildingCount?: number
+  mapArray?: any[]
+  energy?: number
+  frensCoins?: number
+  wood?: number
+  rock?: number
+  meat?: number
+  cereal?: number
+  metal?: number
+  populationBusy?: number
+  populationFree?: number
+  coal?: number
+  counterResources: any[]
+  resources: number[]
+  updateBuildings: (t: number) => void
+  setAddress: (addr: string) => void
+  updateTokenId: (id: string) => void
+  fetchMapType: (id: string) => void
+  buildingData?: IBuildingData
+  nonce: string
+  updateNonce: (nonce: string) => void
+  setAccountContract: (account: any) => void
+  accountContract: any
+  harvestingArr: any[]
+  setHarvesting: (posX: number, posY: number, status: number) => void
 }
 
 export const GameState: IGameState = {
-  lastUpdated: "",
+  lastUpdated: '',
   currentBlock: 0,
   blockGame: 0,
   loading: false,
   address: undefined,
   tokenId: 0,
-  mapType: "",
+  mapType: '',
   buildingCount: undefined,
   mapArray: [],
   energy: 0,
@@ -109,115 +115,115 @@ export const GameState: IGameState = {
   coal: 0,
   populationBusy: 0,
   populationFree: 0,
-  resources : [],
+  resources: [],
   counterResources: [],
   updateBuildings: () => {},
   setAddress: () => {},
   updateTokenId: () => {},
   fetchMapType: (id) => {},
-  buildingData: {"active": [], "inactive": []},
+  buildingData: { active: [], inactive: [] },
   nonce: '',
   updateNonce: (nonce) => {},
   setAccountContract: (account) => {},
   accountContract: null,
-  harvestingArr : [],
-  setHarvesting : (posX, posY, status) => {}
-};
+  harvestingArr: [],
+  setHarvesting: (posX, posY, status) => {}
+}
 
-const StateContext = React.createContext(GameState);
-const DispatchContext = React.createContext({});
+const StateContext = React.createContext(GameState)
+const DispatchContext = React.createContext({})
 
 interface SetLastUpdatedAt {
-  type: 'set_last_updated_at';
-  blockHash: string;
+  type: 'set_last_updated_at'
+  blockHash: string
   currentBlock: number
 }
 
 interface SetAccount {
-  type: "set_account";
-  address?: string | undefined;
+  type: 'set_account'
+  address?: string | undefined
 }
 
 interface SetTokenId {
-  type: "set_tokenId";
-  tokenId?: number;
+  type: 'set_tokenId'
+  tokenId?: number
 }
 
 interface SetBuildingCount {
-  type: "set_buildingCount";
-  buildingCount?: number;
+  type: 'set_buildingCount'
+  buildingCount?: number
 }
 
 interface SetMapArray {
-  type: "set_mapArray";
-  mapArray?: any[];
-  counters: any[];
+  type: 'set_mapArray'
+  mapArray?: any[]
+  counters: any[]
 }
 
 interface SetError {
-  type: "set_error";
-  error: Error;
+  type: 'set_error'
+  error: Error
 }
 
 interface SetShowFrame {
-  type: "set_showFrame";
-  showFrame?: boolean;
-  frameData?: IFrame;
-  buildingSelected?: number;
+  type: 'set_showFrame'
+  showFrame?: boolean
+  frameData?: IFrame
+  buildingSelected?: number
 }
 
 interface SetEnergy {
-  type: "set_energy";
-  energy?: number;
+  type: 'set_energy'
+  energy?: number
 }
 interface SetFrensCoins {
-  type: "set_frensCoins";
-  frensCoins?: number;
+  type: 'set_frensCoins'
+  frensCoins?: number
 }
 
 interface SetERC1155Resources {
-  type: "set_erc1155Res";
-  wood?: number;
-  rock?: number;
-  meat?: number,
-  cereal?: number,
-  metal?: number,
-  coal?: number,
+  type: 'set_erc1155Res'
+  wood?: number
+  rock?: number
+  meat?: number
+  cereal?: number
+  metal?: number
+  coal?: number
 }
 
 interface SetLastBlock {
-  type: "set_lastBlock";
-  blockGame?: number;
+  type: 'set_lastBlock'
+  blockGame?: number
 }
 
 interface SetPopulation {
-  type: "set_population";
-  populationBusy?: number;
+  type: 'set_population'
+  populationBusy?: number
   populationFree?: number
 }
 
 interface SetMapType {
-  type: "set_mapType";
-  mapType?: string;
+  type: 'set_mapType'
+  mapType?: string
 }
 interface SetBuildingData {
-  type: "set_buildingData";
-  inactive?: [];
-  active?: [];
-  total?: number;
+  type: 'set_buildingData'
+  inactive?: []
+  active?: []
+  total?: number
 }
 interface SetNonce {
-  type: "set_nonce";
-  nonce: string;
+  type: 'set_nonce'
+  nonce: string
 }
 interface SetAccountContract {
-  type : "set_accountContract";
-  accountContract?: any;
-  nonce?: string;
+  type: 'set_accountContract'
+  accountContract?: any
+  nonce?: string
 }
 interface SetHarvestingArr {
-  type : "set_harvestingArr";
-  harvestingArr: any[];
+  type: 'set_harvestingArr'
+  harvestingArr: any[]
 }
 
 type Action =
@@ -237,123 +243,134 @@ type Action =
   | SetNonce
   | SetAccountContract
   | SetHarvestingArr
-  | SetError;
+  | SetError
 
-function reducer(state: IGameState, action: Action): IGameState {
+function reducer (state: IGameState, action: Action): IGameState {
   switch (action.type) {
-    case "set_account": {
-      return { ...state, address: action.address };
+    case 'set_account': {
+      return { ...state, address: action.address }
     }
-    case "set_tokenId": {
-      return { ...state, tokenId: action.tokenId };
+    case 'set_tokenId': {
+      return { ...state, tokenId: action.tokenId }
     }
-    case "set_buildingCount": {
-      return { ...state, buildingCount: action.buildingCount };
+    case 'set_buildingCount': {
+      return { ...state, buildingCount: action.buildingCount }
     }
-    case "set_mapArray": {
-      return { ...state, 
+    case 'set_mapArray': {
+      return {
+        ...state,
         mapArray: action.mapArray,
-        counterResources : action.counters
-      };
+        counterResources: action.counters
+      }
     }
-    case "set_buildingData": {
-      return { ...state, 
+    case 'set_buildingData': {
+      return {
+        ...state,
         buildingData: {
-          "active" : action.active,
-          "inactive": action.inactive,
-          "total": action.total
+          active: action.active,
+          inactive: action.inactive,
+          total: action.total
         }
-      };
+      }
     }
-    case "set_energy": {
-      let _resources = state.resources
+    case 'set_energy': {
+      const _resources = state.resources
       console.log('state.resources energy', state.resources)
       if (_resources) _resources[11] = action.energy as number
-      return { ...state, 
+      return {
+        ...state,
         energy: action.energy,
-        resources : _resources
-      };
+        resources: _resources
+      }
     }
-    case "set_frensCoins": {
-      let _resources = state.resources
+    case 'set_frensCoins': {
+      const _resources = state.resources
       if (_resources) _resources[10] = action.frensCoins as number
-      return { ...state, frensCoins: action.frensCoins, resources : _resources };
+      return { ...state, frensCoins: action.frensCoins, resources: _resources }
     }
-    case "set_population": {
-      return { ...state,
+    case 'set_population': {
+      return {
+        ...state,
         populationBusy: action.populationBusy,
         populationFree: action.populationFree
-      };
+      }
     }
-    case "set_erc1155Res": {
-      return { ...state,
-          wood: action.wood,
-          rock: action.rock,
-          meat: action.meat,
-          cereal: action.cereal,
-          metal: action.metal,
-          coal: action.coal,
-          resources: [
-              0, 
-              action.wood as number, 
-              action.rock as number,
-              action.meat as number,
-              0,
-              action.cereal as number,
-              action.metal as number,
-              0,
-              action.coal as number
-          ]
-        };
+    case 'set_erc1155Res': {
+      return {
+        ...state,
+        wood: action.wood,
+        rock: action.rock,
+        meat: action.meat,
+        cereal: action.cereal,
+        metal: action.metal,
+        coal: action.coal,
+        resources: [
+          0,
+          action.wood as number,
+          action.rock as number,
+          action.meat as number,
+          0,
+          action.cereal as number,
+          action.metal as number,
+          0,
+          action.coal as number
+        ]
+      }
     }
-    case "set_lastBlock": {
-      return { ...state, blockGame: action.blockGame };
+    case 'set_lastBlock': {
+      return { ...state, blockGame: action.blockGame }
     }
-    case "set_last_updated_at": {
-      return {...state, loading: false, lastUpdated: action.blockHash, currentBlock: state.currentBlock}
+    case 'set_last_updated_at': {
+      return {
+        ...state,
+        loading: false,
+        lastUpdated: action.blockHash,
+        currentBlock: state.currentBlock
+      }
     }
-    case "set_mapType": {
-      return {...state, mapType: state.mapType}
+    case 'set_mapType': {
+      return { ...state, mapType: state.mapType }
     }
-    case "set_nonce": {
+    case 'set_nonce': {
       console.log('set_nonce', action.nonce)
-      return {...state, nonce: action.nonce as string}
+      return { ...state, nonce: action.nonce }
     }
-    case "set_accountContract": {
-      return {...state, 
+    case 'set_accountContract': {
+      return {
+        ...state,
         accountContract: action.accountContract,
         nonce: action.nonce as string
       }
     }
-    case "set_harvestingArr": {
-      return {...state, harvestingArr: action.harvestingArr}
+    case 'set_harvestingArr': {
+      return { ...state, harvestingArr: action.harvestingArr }
     }
-    case "set_error": {
-      throw new Error(`Unhandled action type: ${action.type}`);
+    case 'set_error': {
+      throw new Error(`Unhandled action type: ${action.type}`)
     }
     default: {
-      return state;
+      return state
     }
   }
 }
 
 export const AppStateProvider: React.FC<
-  React.PropsWithChildren<{ children: any }>
+React.PropsWithChildren<{ children: any }>
 > = (props: React.PropsWithChildren<{ children: any }>): React.ReactElement => {
-  const [timer, setTimer] = useState(Date.now());
-  const { contract: building } = useBuildingsContract();
-  const { contract: worlds } = useWorldsContract();
-  const { contract: resources } = useResourcesContract();
-  const { contract: erc1155 } = useERC1155Contract();
-  const { contract: coins } = useFrensCoinsContract();
-  const { contract: maps } = useMapsContract();
+  const [timer, setTimer] = useState(Date.now())
+  const { contract: building } = useBuildingsContract()
+  const { contract: worlds } = useWorldsContract()
+  const { contract: resources } = useResourcesContract()
+  const { contract: erc1155 } = useERC1155Contract()
+  const { contract: coins } = useFrensCoinsContract()
+  const { contract: maps } = useMapsContract()
 
   const { library } = useStarknet()
   const [block, setBlock] = useState<GetBlockResponse | undefined>(undefined)
   const [loading, setLoading] = useState<boolean | undefined>(undefined)
   const [error, setError] = useState<string | undefined>(undefined)
 
-  const [state, dispatch] = useReducer(reducer, GameState);
+  const [state, dispatch] = useReducer(reducer, GameState)
   const value = React.useMemo(() => [state, dispatch], [state])
 
   const fetchBlock = useCallback(() => {
@@ -405,7 +422,11 @@ export const AppStateProvider: React.FC<
       refreshEnergyLevel(resources)
       refreshBlockGame(resources)
       refreshBuildingData(building)
-      dispatch({ type: 'set_last_updated_at', blockHash: block.block_hash, currentBlock: block.block_number })
+      dispatch({
+        type: 'set_last_updated_at',
+        blockHash: block.block_hash,
+        currentBlock: block.block_number
+      })
     }
   }, [block?.block_hash, state.lastUpdated])
 
@@ -444,63 +465,74 @@ export const AppStateProvider: React.FC<
 
   const updateBuildings = React.useCallback((t: number) => {
     dispatch({
-      type: "set_buildingCount",
-      buildingCount: t,
-    });
-  }, []);
+      type: 'set_buildingCount',
+      buildingCount: t
+    })
+  }, [])
 
   const setAddress = React.useCallback((addr: string) => {
     dispatch({
-      type: "set_account",
-      address: addr,
-    });
-  }, []);
+      type: 'set_account',
+      address: addr
+    })
+  }, [])
 
-  const updateTokenId = React.useCallback(async (account: any) => {
-    let _token_id;
-    if (maps && account && state.address) {
-      try {
-        _token_id = await maps.call("tokenOfOwnerByIndex", [
-            state.address, uint256.bnToUint256(0)
-        ]);
-      console.log('tokenOfOwnerByIndex result', uint256.uint256ToBN(_token_id[0]).toString())
-      dispatch({
-        type: "set_tokenId",
-        tokenId: uint256.uint256ToBN(_token_id[0]).toNumber(),
-      });
-      refreshPopulation(resources)
-      } catch (e) {
-        console.warn("Error when retrieving tokenOwner by Index ");
-        console.warn(e);
-      }
-    }
-  }, [state.address]);
-
-  const refreshPopulation = React.useCallback(async (resources : any) => {
-    let _newPopulation : any;
-    if (resources && state.address && state.tokenId) {
-      try {
-        _newPopulation = await resources.call("get_population", [
-          uint256.bnToUint256(state.tokenId)
-        ]);
-        // console.log("_newPopulation", _newPopulation)
-        dispatch({
-          type: "set_population",
-          populationBusy: toBN(_newPopulation[0][1]).toNumber(),
-          populationFree: toBN(_newPopulation[0][0]).toNumber()
-        });
-        } catch (e) {
-          console.warn("Error when retrieving get_population in M02_Resources");
-          console.warn(e);
-        }
-    }
-  }, [state.address, state.tokenId]);
-
-  const refreshResources = React.useCallback(async (erc1155 : any) => {
-    let _erc1155Balance : any;
-    if (state.address) {
+  const updateTokenId = React.useCallback(
+    async (account: any) => {
+      let _token_id
+      if (maps != null && account && state.address) {
         try {
-          _erc1155Balance = await erc1155.call("balanceOfBatch", [
+          _token_id = await maps.call('tokenOfOwnerByIndex', [
+            state.address,
+            uint256.bnToUint256(0)
+          ])
+          console.log(
+            'tokenOfOwnerByIndex result',
+            uint256.uint256ToBN(_token_id[0]).toString()
+          )
+          dispatch({
+            type: 'set_tokenId',
+            tokenId: uint256.uint256ToBN(_token_id[0]).toNumber()
+          })
+          refreshPopulation(resources)
+        } catch (e) {
+          console.warn('Error when retrieving tokenOwner by Index ')
+          console.warn(e)
+        }
+      }
+    },
+    [state.address]
+  )
+
+  const refreshPopulation = React.useCallback(
+    async (resources: any) => {
+      let _newPopulation: any
+      if (resources && state.address && state.tokenId) {
+        try {
+          _newPopulation = await resources.call('get_population', [
+            uint256.bnToUint256(state.tokenId)
+          ])
+          // console.log("_newPopulation", _newPopulation)
+          dispatch({
+            type: 'set_population',
+            populationBusy: toBN(_newPopulation[0][1]).toNumber(),
+            populationFree: toBN(_newPopulation[0][0]).toNumber()
+          })
+        } catch (e) {
+          console.warn('Error when retrieving get_population in M02_Resources')
+          console.warn(e)
+        }
+      }
+    },
+    [state.address, state.tokenId]
+  )
+
+  const refreshResources = React.useCallback(
+    async (erc1155: any) => {
+      let _erc1155Balance: any
+      if (state.address) {
+        try {
+          _erc1155Balance = await erc1155.call('balanceOfBatch', [
             [
               state.address,
               state.address,
@@ -510,230 +542,305 @@ export const AppStateProvider: React.FC<
               state.address,
               state.address
             ],
-            [uint256.bnToUint256(0), uint256.bnToUint256(1), uint256.bnToUint256(2), uint256.bnToUint256(3), uint256.bnToUint256(5), uint256.bnToUint256(6), uint256.bnToUint256(8)]
-          ]);
+            [
+              uint256.bnToUint256(0),
+              uint256.bnToUint256(1),
+              uint256.bnToUint256(2),
+              uint256.bnToUint256(3),
+              uint256.bnToUint256(5),
+              uint256.bnToUint256(6),
+              uint256.bnToUint256(8)
+            ]
+          ])
           dispatch({
-            type: "set_erc1155Res",
+            type: 'set_erc1155Res',
             wood: uint256.uint256ToBN(_erc1155Balance[0][1]).toNumber(),
             rock: uint256.uint256ToBN(_erc1155Balance[0][2]).toNumber(),
             meat: uint256.uint256ToBN(_erc1155Balance[0][3]).toNumber(),
             cereal: uint256.uint256ToBN(_erc1155Balance[0][4]).toNumber(),
             metal: uint256.uint256ToBN(_erc1155Balance[0][5]).toNumber(),
             coal: uint256.uint256ToBN(_erc1155Balance[0][6]).toNumber()
-          });
+          })
         } catch (e) {
-          console.warn("Error when retrieving resources.");
-          console.warn(e);
+          console.warn('Error when retrieving resources.')
+          console.warn(e)
         }
       }
-  }, [state.address]);
+    },
+    [state.address]
+  )
 
-  const refreshMapArray = React.useCallback(async (worlds : any) => {
-    let _mapArray : any[] = [];
-    if (state.tokenId) {
-      try {
-        var elem = await worlds.call("get_map_array", [
-          uint256.bnToUint256(state.tokenId),
-        ]);
-        var i = 0
-        var counters : any[] = [];
-        elem.forEach((_map : any) => {
-          while (i < 640) {
-            var elem = toBN(_map[i])
-            _mapArray.push(elem.toString())
-            if (elem.toString().length < 16) {
-              var type_id = parseInt(elem.toString()[4] + elem.toString()[5])
-              if (type_id == 2 || type_id == 3 || type_id == 20 || type_id == 27) {
-                if (counters[type_id]) {
-                  counters[type_id] += 1
-                } else {
-                  counters[type_id] = 1
-                }
-              }
-            } else {
-              var type_id = parseInt(elem.toString()[5] + elem.toString()[6])
-              if (type_id == 2 || type_id == 3 || type_id == 20 || type_id == 27) {
-                if (counters[type_id]) {
-                  counters[type_id] += 1
-                } else {
-                  counters[type_id] = 1
-                }
-              }
-            }
-            i++;
-          }
-        })
-        console.log('counters', counters)
-        dispatch({
-          type: "set_mapArray",
-          mapArray: _mapArray,
-          counters: counters
-        });
-      } catch (e) {
-        console.warn("Error when retrieving get_map_array in M01_Worlds");
-        console.warn(e);
-      }
-    }
-  }, [state.tokenId]);
-
-  const refreshBalance = React.useCallback(async (coins : any) => {
-    let _frensCoinsBalance : any;
-    if (state.address) {
+  const refreshMapArray = React.useCallback(
+    async (worlds: any) => {
+      const _mapArray: any[] = []
+      if (state.tokenId) {
         try {
-          _frensCoinsBalance = await coins.call("balanceOf", [
-            state.address,
-          ]);
+          const elem = await worlds.call('get_map_array', [
+            uint256.bnToUint256(state.tokenId)
+          ])
+          let i = 0
+          const counters: any[] = []
+          elem.forEach((_map: any) => {
+            while (i < 640) {
+              const elem = toBN(_map[i])
+              _mapArray.push(elem.toString())
+              if (elem.toString().length < 16) {
+                var type_id = parseInt(elem.toString()[4] + elem.toString()[5])
+                if (
+                  type_id == 2 ||
+                  type_id == 3 ||
+                  type_id == 20 ||
+                  type_id == 27
+                ) {
+                  if (counters[type_id]) {
+                    counters[type_id] += 1
+                  } else {
+                    counters[type_id] = 1
+                  }
+                }
+              } else {
+                var type_id = parseInt(elem.toString()[5] + elem.toString()[6])
+                if (
+                  type_id == 2 ||
+                  type_id == 3 ||
+                  type_id == 20 ||
+                  type_id == 27
+                ) {
+                  if (counters[type_id]) {
+                    counters[type_id] += 1
+                  } else {
+                    counters[type_id] = 1
+                  }
+                }
+              }
+              i++
+            }
+          })
+          console.log('counters', counters)
+          dispatch({
+            type: 'set_mapArray',
+            mapArray: _mapArray,
+            counters
+          })
+        } catch (e) {
+          console.warn('Error when retrieving get_map_array in M01_Worlds')
+          console.warn(e)
+        }
+      }
+    },
+    [state.tokenId]
+  )
+
+  const refreshBalance = React.useCallback(
+    async (coins: any) => {
+      let _frensCoinsBalance: any
+      if (state.address) {
+        try {
+          _frensCoinsBalance = await coins.call('balanceOf', [state.address])
           // console.log('_frensCoinsBalance', uint256.uint256ToBN(_frensCoinsBalance[0]).toNumber())
           dispatch({
-            type: "set_frensCoins",
+            type: 'set_frensCoins',
             frensCoins: uint256.uint256ToBN(_frensCoinsBalance[0]).toNumber()
-          });
+          })
         } catch (e) {
-          console.warn("Error when retrieving balance of coins");
-          console.warn(e);
+          console.warn('Error when retrieving balance of coins')
+          console.warn(e)
         }
       }
-      }, [state.address]);
+    },
+    [state.address]
+  )
 
-    const refreshEnergyLevel = React.useCallback(async (resources : any) => {
-        // DEBUG tokenId to replace
-        let _energyLevel : any;
-        if (state.address && state.tokenId) {
-          try {
-            _energyLevel = await resources.call("get_energy_level", [
-              uint256.bnToUint256(state.tokenId),
-            ]);
-            // console.log('_energyLevel', toBN(_energyLevel[0]).toNumber())
-            dispatch({
-              type: "set_energy",
-              energy: toBN(_energyLevel[0]).toNumber()
-            });
-          } catch (e) {
-            console.warn("Error when retrieving get_energy_level in M02_Resources");
-            console.warn(e);
-          }
-        }
-    }, [state.address, state.tokenId]);
-
-    const refreshBlockGame = React.useCallback(async (resources : any) => {
-      let _lastestBlock : any;
+  const refreshEnergyLevel = React.useCallback(
+    async (resources: any) => {
+      // DEBUG tokenId to replace
+      let _energyLevel: any
       if (state.address && state.tokenId) {
         try {
-          _lastestBlock = await resources.call("get_latest_block", [
+          _energyLevel = await resources.call('get_energy_level', [
             uint256.bnToUint256(state.tokenId)
-          ]);
+          ])
+          // console.log('_energyLevel', toBN(_energyLevel[0]).toNumber())
+          dispatch({
+            type: 'set_energy',
+            energy: toBN(_energyLevel[0]).toNumber()
+          })
+        } catch (e) {
+          console.warn(
+            'Error when retrieving get_energy_level in M02_Resources'
+          )
+          console.warn(e)
+        }
+      }
+    },
+    [state.address, state.tokenId]
+  )
+
+  const refreshBlockGame = React.useCallback(
+    async (resources: any) => {
+      let _lastestBlock: any
+      if (state.address && state.tokenId) {
+        try {
+          _lastestBlock = await resources.call('get_latest_block', [
+            uint256.bnToUint256(state.tokenId)
+          ])
           // console.log('_lastestBlock', toBN(_lastestBlock[0]).toString())
           dispatch({
-            type: "set_lastBlock",
+            type: 'set_lastBlock',
             blockGame: toBN(_lastestBlock[0]).toNumber()
-          });
+          })
         } catch (e) {
-          console.warn("Error when retrieving get_latest_block in M02_Resources");
-          console.warn(e);
+          console.warn(
+            'Error when retrieving get_latest_block in M02_Resources'
+          )
+          console.warn(e)
         }
       }
-    }, [state.address, state.tokenId]);
+    },
+    [state.address, state.tokenId]
+  )
 
-    const fetchMapType = React.useCallback((type : any) => {
-      dispatch({
-        type: "set_mapType",
-        mapType: type as string
-      });
-    }, []);
+  const fetchMapType = React.useCallback((type: any) => {
+    dispatch({
+      type: 'set_mapType',
+      mapType: type as string
+    })
+  }, [])
 
-  const refreshBuildingData = React.useCallback(async (building : any) => {
-    let _lastestBuildingData : any;
-    if (state.address && state.tokenId) {
-      try {
-        _lastestBuildingData = await building.call("get_all_buildings_data", [
-          uint256.bnToUint256(state.tokenId)
-        ]);
-        // console.log('_lastestBuildingData', _lastestBuildingData[0])
+  const refreshBuildingData = React.useCallback(
+    async (building: any) => {
+      let _lastestBuildingData: any
+      if (state.address && state.tokenId) {
+        try {
+          _lastestBuildingData = await building.call('get_all_buildings_data', [
+            uint256.bnToUint256(state.tokenId)
+          ])
+          // console.log('_lastestBuildingData', _lastestBuildingData[0])
 
-        var maxLength = Object.keys(_lastestBuildingData[0]).length
-        var i = 0;
-        var inactiveBuildings : any[] = [];
-        var activeBuildings : any[] = [];
-        while (i < maxLength) {
-          if (toBN(_lastestBuildingData[0][i + 3]).toNumber() == 0 && (toBN(_lastestBuildingData[0][i]).toNumber() != 1 && toBN(_lastestBuildingData[0][i + 1]).toNumber() != 4 && toBN(_lastestBuildingData[0][i + 1]).toNumber() != 5)) {
-            inactiveBuildings[toBN(_lastestBuildingData[0][i]).toNumber()] = []
-            inactiveBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['type'] = toBN(_lastestBuildingData[0][i + 1]).toNumber()
-            inactiveBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['pos_start'] = toBN(_lastestBuildingData[0][i + 2]).toNumber()
-            inactiveBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['recharges'] = toBN(_lastestBuildingData[0][i + 3]).toNumber()
-            inactiveBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['last_claim'] = toBN(_lastestBuildingData[0][i + 4]).toNumber()
-          } else if (toBN(_lastestBuildingData[0][i]).toNumber() != 1 && toBN(_lastestBuildingData[0][i + 1]).toNumber() != 4 && toBN(_lastestBuildingData[0][i + 1]).toNumber() != 5) {
-            activeBuildings[toBN(_lastestBuildingData[0][i]).toNumber()] = []
-            activeBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['type'] = toBN(_lastestBuildingData[0][i + 1]).toNumber()
-            activeBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['pos_start'] = toBN(_lastestBuildingData[0][i + 2]).toNumber()
-            activeBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['recharges'] = toBN(_lastestBuildingData[0][i + 3]).toNumber()
-            activeBuildings[toBN(_lastestBuildingData[0][i]).toNumber()]['last_claim'] = toBN(_lastestBuildingData[0][i + 4]).toNumber()
+          const maxLength = Object.keys(_lastestBuildingData[0]).length
+          let i = 0
+          const inactiveBuildings: any[] = []
+          const activeBuildings: any[] = []
+          while (i < maxLength) {
+            if (
+              toBN(_lastestBuildingData[0][i + 3]).toNumber() == 0 &&
+              toBN(_lastestBuildingData[0][i]).toNumber() != 1 &&
+              toBN(_lastestBuildingData[0][i + 1]).toNumber() != 4 &&
+              toBN(_lastestBuildingData[0][i + 1]).toNumber() != 5
+            ) {
+              inactiveBuildings[toBN(_lastestBuildingData[0][i]).toNumber()] =
+                []
+              inactiveBuildings[
+                toBN(_lastestBuildingData[0][i]).toNumber()
+              ].type = toBN(_lastestBuildingData[0][i + 1]).toNumber()
+              inactiveBuildings[
+                toBN(_lastestBuildingData[0][i]).toNumber()
+              ].pos_start = toBN(_lastestBuildingData[0][i + 2]).toNumber()
+              inactiveBuildings[
+                toBN(_lastestBuildingData[0][i]).toNumber()
+              ].recharges = toBN(_lastestBuildingData[0][i + 3]).toNumber()
+              inactiveBuildings[
+                toBN(_lastestBuildingData[0][i]).toNumber()
+              ].last_claim = toBN(_lastestBuildingData[0][i + 4]).toNumber()
+            } else if (
+              toBN(_lastestBuildingData[0][i]).toNumber() != 1 &&
+              toBN(_lastestBuildingData[0][i + 1]).toNumber() != 4 &&
+              toBN(_lastestBuildingData[0][i + 1]).toNumber() != 5
+            ) {
+              activeBuildings[toBN(_lastestBuildingData[0][i]).toNumber()] = []
+              activeBuildings[
+                toBN(_lastestBuildingData[0][i]).toNumber()
+              ].type = toBN(_lastestBuildingData[0][i + 1]).toNumber()
+              activeBuildings[
+                toBN(_lastestBuildingData[0][i]).toNumber()
+              ].pos_start = toBN(_lastestBuildingData[0][i + 2]).toNumber()
+              activeBuildings[
+                toBN(_lastestBuildingData[0][i]).toNumber()
+              ].recharges = toBN(_lastestBuildingData[0][i + 3]).toNumber()
+              activeBuildings[
+                toBN(_lastestBuildingData[0][i]).toNumber()
+              ].last_claim = toBN(_lastestBuildingData[0][i + 4]).toNumber()
+            }
+
+            i += 5
           }
 
-          i += 5;
+          console.log('Inactive buildings', inactiveBuildings)
+          console.log('Active buildings', activeBuildings)
+          console.log('Total buildings', maxLength / 5)
+
+          dispatch({
+            type: 'set_buildingData',
+            active: activeBuildings as [],
+            inactive: inactiveBuildings as [],
+            total: maxLength / 5
+          })
+        } catch (e) {
+          console.warn(
+            'Error when retrieving get_all_buildings_data in M03_Buildings'
+          )
+          console.warn(e)
         }
-
-        console.log('Inactive buildings', inactiveBuildings)
-        console.log('Active buildings', activeBuildings)
-        console.log('Total buildings', maxLength / 5)
-
-        dispatch({
-          type: "set_buildingData",
-          active: activeBuildings as [],
-          inactive: inactiveBuildings as [],
-          total: maxLength/ 5 as number
-        });
-      } catch (e) {
-        console.warn("Error when retrieving get_all_buildings_data in M03_Buildings");
-        console.warn(e);
       }
-    }
-  }, [state.address, state.tokenId]);
+    },
+    [state.address, state.tokenId]
+  )
 
-  const updateNonce = React.useCallback(async (nonce: string) => {
-    if (nonce) {
+  const updateNonce = React.useCallback(
+    async (nonce: string) => {
+      if (nonce) {
         console.log('Nonce', (parseInt(nonce, 16) + 1).toString(16))
         dispatch({
-          type: "set_nonce",
-          nonce: "0x" + (parseInt(nonce, 16) + 1).toString(16),
-        });
-    }
-  }, [state.nonce]);
-
-  const setAccountContract = React.useCallback(async (account : any) => {
-
-    let _currNonce;
-    if (account) {
-      console.log('state.address', account)
-      try {
-        _currNonce = await account.getNonce()
-        console.log('_currNonce', _currNonce)
-        dispatch({
-          type: "set_accountContract",
-          accountContract: account,
-          nonce: _currNonce
-        });
-      } catch (e) {
-        console.warn("Error when fetching view function getNonce() of player account");
-        console.warn(e);
+          type: 'set_nonce',
+          nonce: '0x' + (parseInt(nonce, 16) + 1).toString(16)
+        })
       }
-    }
-  }, [state.address, state.accountContract]);
+    },
+    [state.nonce]
+  )
 
-  const setHarvesting = React.useCallback(async (posX: number, posY: number, status: number) => {
-    if (posX && posY && state.harvestingArr && (status == 1 || status == 0) ) {
-      let currArr = state.harvestingArr
-      if (currArr && currArr[posY] != undefined) {
+  const setAccountContract = React.useCallback(
+    async (account: any) => {
+      let _currNonce
+      if (account) {
+        console.log('state.address', account)
+        try {
+          _currNonce = await account.getNonce()
+          console.log('_currNonce', _currNonce)
+          dispatch({
+            type: 'set_accountContract',
+            accountContract: account,
+            nonce: _currNonce
+          })
+        } catch (e) {
+          console.warn(
+            'Error when fetching view function getNonce() of player account'
+          )
+          console.warn(e)
+        }
+      }
+    },
+    [state.address, state.accountContract]
+  )
+
+  const setHarvesting = React.useCallback(
+    async (posX: number, posY: number, status: number) => {
+      if (posX && posY && state.harvestingArr && (status == 1 || status == 0)) {
+        const currArr = state.harvestingArr
+        if (currArr && currArr[posY] != undefined) {
           currArr[posY][posX] = status
-      } else {
-        currArr[posY] = []
-        currArr[posY][posX] = status
+        } else {
+          currArr[posY] = []
+          currArr[posY][posX] = status
+        }
+        dispatch({
+          type: 'set_harvestingArr',
+          harvestingArr: currArr
+        })
       }
-      dispatch({
-        type: "set_harvestingArr",
-        harvestingArr: currArr
-      });
-    }
-  }, [state.harvestingArr]);
+    },
+    [state.harvestingArr]
+  )
 
   return (
     <StateContext.Provider
@@ -774,11 +881,10 @@ export const AppStateProvider: React.FC<
     >
       {props.children}
     </StateContext.Provider>
-  );
-};
+  )
+}
 
-export default StateContext;
-
+export default StateContext
 
 // const arrayIds = {
 //   0: 0,

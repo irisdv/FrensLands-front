@@ -1,8 +1,8 @@
-import { useContext } from "react";
-import StateContext from "../providers/GameContext";
+import { useContext } from 'react'
+import StateContext from '../providers/GameContext'
 
 export const useGameContext = () => {
-  const context = useContext(StateContext);
+  const context = useContext(StateContext)
 
-  return context;
-};
+  return context
+}

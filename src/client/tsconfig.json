@@ -1,20 +1,24 @@
 {
-    "compilerOptions": {
-        "moduleResolution": "node",
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
-        "target": "es5",
-        "module": "es6",
-        "jsx": "react",
-        "noImplicitAny": true,
-        "allowSyntheticDefaultImports": true,
-        "resolveJsonModule": true,
-        "paths": {
-            "~/*": ["./src/client/*"],
-            "three/examples/jsm/libs/tween.module.min": ["../typings/tween.js"]
-
-        }
-    },
-    "include": ["**/*.ts", "**/*.tsx", "./src/custom.d.ts", "./src/CustomAudio.type.ts"],
-    "exclude": [ "node_modules" ]
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "target": "es5",
+    "module": "es6",
+    "jsx": "react",
+    "noImplicitAny": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "paths": {
+      "~/*": ["./src/client/*"],
+      "three/examples/jsm/libs/tween.module.min": ["../typings/tween.js"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "./src/custom.d.ts",
+    "./src/CustomAudio.type.ts"
+  ],
+  "exclude": ["node_modules"]
 }

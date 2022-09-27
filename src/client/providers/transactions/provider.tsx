@@ -6,14 +6,20 @@ import { NotifItem, Transaction, TransactionSubmitted } from './model'
 import { transactionManagerReducer } from './reducer'
 import { nanoid } from 'nanoid'
 
-function shouldRefreshTransaction(transaction: Transaction, now: number): boolean {
+function shouldRefreshTransaction (
+  transaction: Transaction,
+  now: number
+): boolean {
   // try to get transaction data as soon as possible
   if (transaction.status === 'TRANSACTION_RECEIVED') {
     return true
   }
 
   // wont' be updated anymore
-  if (transaction.status === 'ACCEPTED_ON_L1' || transaction.status === 'REJECTED') {
+  if (
+    transaction.status === 'ACCEPTED_ON_L1' ||
+    transaction.status === 'REJECTED'
+  ) {
     return false
   }
 
@@ -30,9 +36,9 @@ interface NotifTransactionManagerProviderProps {
   interval?: number
 }
 
-export function NotifTransactionManagerProvider({
+export function NotifTransactionManagerProvider ({
   children,
-  interval,
+  interval
 }: NotifTransactionManagerProviderProps): JSX.Element {
   const { library } = useStarknet()
 
@@ -42,32 +48,37 @@ export function NotifTransactionManagerProvider({
   })
 
   const refresh = useCallback(
-
     async (transaction: Transaction) => {
       try {
-        const transactionResponse = await library.getTransaction(transaction.transactionHash)
+        const transactionResponse = await library.getTransaction(
+          transaction.transactionHash
+        )
         const lastUpdatedAt = Date.now()
 
         if (transaction.status !== transactionResponse.status) {
           dispatch({
             type: 'update_transaction',
-            transactionResponse: transactionResponse,
-            lastUpdatedAt: lastUpdatedAt,
+            transactionResponse,
+            lastUpdatedAt,
             show: true,
-            transactionHash: transaction.transactionHash,
+            transactionHash: transaction.transactionHash
           })
         }
 
-        if (transaction.status !== 'NOT_RECEIVED' && transaction.status !== 'PENDING' && transactionResponse.status !== 'ACCEPTED_ON_L1') {
+        if (
+          transaction.status !== 'NOT_RECEIVED' &&
+          transaction.status !== 'PENDING' &&
+          transactionResponse.status !== 'ACCEPTED_ON_L1'
+        ) {
           dispatch({
             type: 'add_notification',
             notifItem: {
               content: {
                 status: transactionResponse.status,
                 description: transaction.metadata,
-                transactionHash: transaction.transactionHash,
-              },
-            },
+                transactionHash: transaction.transactionHash
+              }
+            }
           })
         }
       } catch (err) {
@@ -81,11 +92,19 @@ export function NotifTransactionManagerProvider({
   const refreshByTxHash = useCallback(
     async (transactionHash: string) => {
       try {
-        const transactionResponse = await library.getTransaction(transactionHash)
+        const transactionResponse = await library.getTransaction(
+          transactionHash
+        )
         const lastUpdatedAt = Date.now()
         const show = true
 
-        dispatch({ type: 'update_transaction', transactionResponse, lastUpdatedAt, show, transactionHash })
+        dispatch({
+          type: 'update_transaction',
+          transactionResponse,
+          lastUpdatedAt,
+          show,
+          transactionHash
+        })
       } catch (err) {
         console.error(err)
       }
@@ -115,13 +134,21 @@ export function NotifTransactionManagerProvider({
       // dispatch({ type: 'remove_transaction', transactionHash })
 
       try {
-        const transactionResponse = await library.getTransaction(transactionHash)
+        const transactionResponse = await library.getTransaction(
+          transactionHash
+        )
         const lastUpdatedAt = Date.now()
         const show = false
         console.log('in remove', transactionHash)
 
         // dispatch({ type: 'update_transaction', transactionResponse, lastUpdatedAt, show, transactionHash })
-        dispatch({ type: 'remove_transaction', transactionResponse, lastUpdatedAt, show, transactionHash })
+        dispatch({
+          type: 'remove_transaction',
+          transactionResponse,
+          lastUpdatedAt,
+          show,
+          transactionHash
+        })
       } catch (err) {
         console.error(err)
       }

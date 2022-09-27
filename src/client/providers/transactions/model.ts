@@ -1,4 +1,8 @@
-import { Status, TransactionStatus, Transaction as NotifTransaction } from 'starknet'
+import {
+  Status,
+  TransactionStatus,
+  Transaction as NotifTransaction
+} from 'starknet'
 
 export interface TransactionSubmitted {
   status: TransactionStatus
@@ -29,7 +33,11 @@ export interface NotifContent {
   pos_start?: number
 }
 
-export type NotifItem = { key: string, show: boolean, content: NotifContent }
+export interface NotifItem {
+  key: string
+  show: boolean
+  content: NotifContent
+}
 
 export interface NotifTransactionManager {
   transactions: Transaction[]
@@ -42,7 +50,7 @@ export interface NotifTransactionManager {
 
 export const TRANSACTION_MANAGER_INITIAL_STATE: NotifTransactionManager = {
   transactions: [],
-  notifList : [],
+  notifList: [],
   addTransaction: (_transaction) => undefined,
   removeTransaction: (_transactionHash) => undefined,
   refreshTransaction: (_transactionHash) => undefined,
