@@ -9,6 +9,26 @@ interface Imaps {
 
 export default function Resources ({frontBlockArray, textArrRef, rightBuildingType, position, worldType, gallery, animIndex} : any) : any{
 
+
+
+
+    const randAnimArray = useMemo(() => {
+
+      const randAnimArrayTemp = []
+      //gen the random animations array
+      console.log("hello moto")
+      var i = 0;
+      while (i < 640)
+      {
+          randAnimArrayTemp[i] = parseInt((Math.random() * (4 - 1) + 1).toFixed(0))
+          i++
+      }
+      console.log("randAnimGen = ", randAnimArrayTemp)
+
+      return { randAnimArrayTemp }
+
+    }, [])
+
     const frontBlockArrayValue = useMemo(() => {
         if (frontBlockArray && Object.keys(frontBlockArray).length > 0) {
             return { frontBlockArray }
@@ -79,6 +99,7 @@ export default function Resources ({frontBlockArray, textArrRef, rightBuildingTy
                         position={position}
                         worldType={worldType}
                         animIndex={animIndex}
+                        randAnimArray={randAnimArray}
                     />
         })
     )

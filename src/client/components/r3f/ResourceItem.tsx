@@ -16,9 +16,10 @@ interface IBlock {
     worldType: any
     level: number
     animIndex: any
+    randAnimArray: any
 }
 
-export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType, position, frontBlockArray, textureLoader, textureSelected, worldType, level, animIndex}) : any => {
+export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType, position, frontBlockArray, textureLoader, textureSelected, worldType, level, animIndex, randAnimArray}) : any => {
 
     const meshRef = useRef<any>()
     const clockRef = useRef<any>()
@@ -173,18 +174,19 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
     const animations = useMemo(() => {
 
         let textureType : Vector2 = new Vector2(0, 0);
+        let randAnim : number = parseInt((Math.random() * (4 - 1) + 1).toFixed(0));
 
         if (block[9] > 0) {
             if (block[3] == 3) {
-                textureType = findTextByID(animArray[worldType][block[9] - 1][animIndex]) // - 1])
-
+                //textureType = findTextByID(animArray[worldType][block[9] - 1][animIndex]) // - 1])
+                textureType = findTextByID(animArray[worldType][block[9] - 1][randAnim - 1])
                 const localT = textureLoader.clone()
                 localT.needsUpdate = true
                 localT.offset.set(textureType.x, textureType.y)
                 setLocalTexture(localT)
                 return textureType
             }
-        } 
+        }
 
     }, [animIndex])
 
@@ -196,8 +198,7 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
         if (((blockValue[0] == position.x && blockValue[1] == position.y) || blockValue[0] == frameData?.posX && blockValue[1] == frameData?.posY)) {
             if (block[9] > 0) {
                 if (block[3] == 3) {
-                    textureType = findTextByID(animSelectedArray[worldType][block[9] - 1][animIndex - 1])
-
+                    textureType = findTextByID(animSelectedArray[worldType][block[9] - 1][animIndex]) //- 1])
                     const localT = textureSelected.clone()
                     localT.needsUpdate = true
                     localT.offset.set(textureType.x, textureType.y)
@@ -235,9 +236,7 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
         return (new Vector2(0,0));
     }
 
-
     useFrame(() => {
-
 
 
         if (!meshRef || !meshRef.current) {
