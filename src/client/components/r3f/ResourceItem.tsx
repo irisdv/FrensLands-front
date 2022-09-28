@@ -177,8 +177,8 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
 
         if (block[9] > 0) {
             if (block[3] == 3) {
-                textureType = findTextByID(animArray[worldType][block[9] - 1][animIndex]) // - 1])
-                //textureType = findTextByID(animArray[worldType][block[9] - 1][randAnim - 1])
+                //textureType = findTextByID(animArray[worldType][block[9] - 1][animIndex]) // - 1])
+                textureType = findTextByID(animArray[worldType][block[9] - 1][randAnim - 1])
                 const localT = textureLoader.clone()
                 localT.needsUpdate = true
                 localT.offset.set(textureType.x, textureType.y)

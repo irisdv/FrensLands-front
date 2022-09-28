@@ -110,7 +110,7 @@ export const Map = (props : any)=> {
 
 
     useFrame(({ mouse, raycaster }) => {
-        if ((Date.now() - curT) > 250)
+        if ((Date.now() - curT) > 400)
         {
             if (animIndex <= 3)
             {
