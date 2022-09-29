@@ -110,7 +110,8 @@ export const Map = (props : any)=> {
 
 
     useFrame(({ mouse, raycaster }) => {
-        if ((Date.now() - curT) > 400)
+        // CREATE A VARIABLE WITH THE SPEED VALUE TO CHANGE IT WITH WEATHER
+        if ((Date.now() - curT) > 100)
         {
             if (animIndex <= 3)
             {

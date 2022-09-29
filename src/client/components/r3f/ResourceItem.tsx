@@ -173,17 +173,23 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
     const animations = useMemo(() => {
 
         let textureType : Vector2 = new Vector2(0, 0);
+        //RANDTREE AND RANDRATIO SHOULD BE GLOBAL TO USE THEM FOR WEATHER
+        let randTree : number = parseInt((Math.random() * (100 - 1) + 1).toFixed(0));
+        let randRatio : number = parseInt((Math.random() * (15 - 5) + 5).toFixed(0));
         let randAnim : number = parseInt((Math.random() * (4 - 1) + 1).toFixed(0));
 
-        if (block[9] > 0) {
-            if (block[3] == 3) {
-                //textureType = findTextByID(animArray[worldType][block[9] - 1][animIndex]) // - 1])
-                textureType = findTextByID(animArray[worldType][block[9] - 1][randAnim - 1])
-                const localT = textureLoader.clone()
-                localT.needsUpdate = true
-                localT.offset.set(textureType.x, textureType.y)
-                setLocalTexture(localT)
-                return textureType
+        if (randTree < randRatio)
+        {
+            if (block[9] > 0) {
+                if (block[3] == 3) {
+                    //textureType = findTextByID(animArray[worldType][block[9] - 1][animIndex]) // - 1])
+                    textureType = findTextByID(animArray[worldType][block[9] - 1][randAnim - 1])
+                    const localT = textureLoader.clone()
+                    localT.needsUpdate = true
+                    localT.offset.set(textureType.x, textureType.y)
+                    setLocalTexture(localT)
+                    return textureType
+                }
             }
         }
 
