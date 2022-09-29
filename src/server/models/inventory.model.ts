@@ -1,9 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
   const Inventory = sequelize.define("inventory", {
-    // account: {
-    //   type: Sequelize.STRING,
-    //   field: "account",
-    // },
     attractivityRatio: {
       type: Sequelize.SMALLINT,
       field: "attractivityRatio",

@@ -1,8 +1,12 @@
 module.exports = (sequelize, Sequelize) => {
   const PlayerAction = sequelize.define("player_action", {
-    actionType: {
+    entrypoint: {
       type: Sequelize.STRING,
-      field: "actionType",
+      field: "entrypoint",
+    },
+    calldata: {
+      type: Sequelize.STRING,
+      field: "calldata",
     },
     validated: {
       type: Sequelize.BOOLEAN,

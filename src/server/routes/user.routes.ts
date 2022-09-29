@@ -2,8 +2,6 @@ const { authJwt } = require("../middleware");
 const users = require("../controllers/user.controller");
 
 module.exports = (app) => {
-  // var router = require("express").Router();
-
   app.use(function (req, res, next) {
     res.header(
       "Access-Control-Allow-Headers",
@@ -12,29 +10,10 @@ module.exports = (app) => {
     next();
   });
 
-  // https://www.bezkoder.com/node-express-sequelize-postgresql/#Test_the_APIs
-
   // Retrieve a single User from address
   app.get("/api/users/:account", [authJwt.verifyToken], users.findOne);
 
   app.post("/api/users/settings", [authJwt.verifyToken], users.updateSettings);
 
   app.post("/api/users/init", [authJwt.verifyToken], users.initGame);
-
-  // Update a User from address
-  // router.put("/:wallet_address", users.update);
-
-  // Increment resources of user from address
-  // router.put("/resources/:address", users.updateResources);
-
-  // Delete a User from address and its resources
-  // router.delete("/:wallet_address", users.delete);
-
-  // Retrieve all Users with their resources
-  // router.get("/", users.findAll);
-
-  // Delete all users
-  // router.delete("/", users.deleteAll);
-
-  // app.use('/api/users', router);
 };

@@ -7,7 +7,6 @@ exports.findOne = (req, res) => {
   const id = req.params.id;
   StaticResources.findOne({
     where: { id: id },
-    // attributes: ["id", "spriteId"],
   })
     .then((data) => {
       if (data) {

@@ -9,6 +9,7 @@
     "noImplicitAny": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
+    "checkJs": false,
     "paths": {
       "~/*": ["./src/client/*"],
       "three/examples/jsm/libs/tween.module.min": ["../typings/tween.js"]

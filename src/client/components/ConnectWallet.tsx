@@ -1,10 +1,7 @@
 import React, { memo } from "react";
-import {
-  useStarknet,
-  useConnectors,
-  InjectedConnector,
-} from "@starknet-react/core";
+import { useStarknet, useConnectors } from "@starknet-react/core";
 import UI_Frames from "../style/resources/front/Ui_Frames3.svg";
+import { getStarknet } from "get-starknet";
 
 interface IConnect {
   close: any;
@@ -56,11 +53,16 @@ function Icon(props: any) {
   );
 }
 
-// export const ConnectWallet = memo<IConnect>(({ close }) : any => {
 export function ConnectWallet(props: any) {
   const { close } = props;
-  const { account } = useStarknet();
+  // const { account } = useStarknet();
   const { available, connect, disconnect, connectors } = useConnectors();
+
+  const connectWallet = async () => {
+    const wallet = await getStarknet();
+    console.log("wallet", wallet);
+    await wallet.enable({ showModal: true });
+  };
 
   // if (account) {
   //   return (
@@ -91,7 +93,7 @@ export function ConnectWallet(props: any) {
               available.map((connector) => (
                 <div className="mt-5 flex justify-center" key={connector.id()}>
                   <button
-                    onClick={() => connect(connector)}
+                    onClick={() => connectWallet()}
                     style={{
                       display: "flex",
                       alignItems: "center",

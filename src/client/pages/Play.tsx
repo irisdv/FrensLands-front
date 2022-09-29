@@ -11,10 +11,14 @@ import { useGameContext } from "../hooks/useGameContext";
 import { Achievements } from "../components/GameUI/Achievements";
 import { useNavigate } from "react-router-dom";
 import { allMetadata } from "../data/metadata";
+import { useNewGameContext } from "../hooks/useNewGameContext";
+import { getStarknet } from "get-starknet";
 
 export default function Play() {
-  const { account } = useStarknet();
-  const { setAddress, updateTokenId, tokenId, fetchMapType } = useGameContext();
+  // const { account } = useStarknet();
+  const { address, setAddress, updateTokenId, tokenId, fetchMapType } =
+    useGameContext();
+  const { player, initPlayer } = useNewGameContext();
   const [worldType, setWorldType] = useState(-1);
   const navigate = useNavigate();
 
@@ -34,18 +38,35 @@ export default function Play() {
   const [level, setLevel] = useState(1);
 
   useEffect(() => {
-    if (account) {
-      setAddress(account);
-    } else {
-      navigate("/");
+    if (!player) {
+      const _wallet = getStarknet();
+      _wallet.enable().then((data: any) => {
+        console.log("_wallet", _wallet);
+        if (_wallet.isConnected) {
+          initPlayer(_wallet);
+          setAddress(_wallet.account.address); // ancien game context
+        }
+      });
     }
-  }, [account]);
+    // console.log('wallet', _wallet);
+    // await _wallet.enable( { showModal: true })
+    // setAccount(_wallet);
+    // if (player && player.isConnected) {
+    //   // setAddress(account);
+    //   console.log('player', player)
+    // }
+    // else {
+    //   navigate("/");
+    // }
+  }, [player]);
+  // console.log('player', player)
 
   useEffect(() => {
-    if (account && !tokenId) {
-      updateTokenId(account);
+    if (address && !tokenId) {
+      updateTokenId(address);
+      // Fetch player information if none then initGame + store action in DB
     }
-  }, [account, tokenId]);
+  }, [address, tokenId]);
 
   useEffect(() => {
     if (tokenId) {
@@ -219,14 +240,11 @@ export default function Play() {
   const initGame = async () => {
     fetch("http://localhost:3001/api/users/init", {
       method: "POST",
-      // headers: {
-      //   'Content-Type': 'application/json'
-      // },
       headers: {
         "x-access-token": localStorage.getItem("user") as string,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ account: account, biomeId: 1 }),
+      body: JSON.stringify({ account: player.account.address, biomeId: 1 }),
     })
       .then(async (response) => {
         return await response.json();
@@ -278,7 +296,7 @@ export default function Play() {
             }}
           >
             {" "}
-            Test
+            Init Game info player
           </button>
         </>
       ) : (

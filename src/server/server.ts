@@ -37,6 +37,7 @@ require("./routes/auth.routes")(app);
 require("./routes/user.routes")(app);
 require("./routes/static_building.routes")(app);
 require("./routes/static_resources_spawned.routes")(app);
+require("./routes/player_action.routes")(app);
 
 /** catch 404 and forward to error handler */
 app.use("*", (req, res) => {
@@ -101,19 +102,19 @@ server.listen(port); // Listen on provided port, on all network interfaces
 // }
 
 //  ------------ SOCKETS MANAGEMENT ------------
-const io = require("socket.io")(server);
+// const io = require("socket.io")(server);
 // app.set("socketio", io); // set socketio in app to use it in routes
 
-io.on("connection", (socket: Socket) => {
-  console.log("new client connected", socket.id);
+// io.on("connection", (socket: Socket) => {
+//   console.log("new client connected", socket.id);
 
-  // socket.on("updateSettings", (data) => {
-  //     console.log('updateSettings', data)
+//   // socket.on("updateSettings", (data) => {
+//   //     console.log('updateSettings', data)
 
-  //     socket.emit('zoomUpdated', data)
-  // })
-  // socket.emit('hello');
-});
+//   //     socket.emit('zoomUpdated', data)
+//   // })
+//   // socket.emit('hello');
+// });
 
 server.on("listening", () => {
   console.log(`Listening on port:: http://localhost:${port}/`);

@@ -1,4 +1,4 @@
-import { useStarknet, useStarknetBlock } from "@starknet-react/core";
+import { useStarknetBlock } from "@starknet-react/core";
 import React, { useMemo, useState, useEffect } from "react";
 import { toBN } from "starknet/dist/utils/number";
 import { useGameContext } from "../../hooks/useGameContext";
@@ -11,11 +11,14 @@ import UI_Frames from "../../style/resources/front/Ui_Frames3.svg";
 import useResourcesContext from "../../hooks/useResourcesContext";
 import { useSelectContext } from "../../hooks/useSelectContext";
 import useReinitialize from "../../hooks/invoke/useReinitialize";
+import { useNewGameContext } from "../../hooks/useNewGameContext";
+import { useResourcesContract } from "../../hooks/contracts/resources";
+
+import { getStarknet } from "get-starknet";
 
 export function MenuBar() {
-  const { account } = useStarknet();
   const { data: block } = useStarknetBlock();
-
+  const { addAction, payloadActions, player } = useNewGameContext();
   const {
     tokenId,
     updateTokenId,
@@ -25,6 +28,7 @@ export function MenuBar() {
     nonce,
     updateNonce,
     counterResources,
+    accountContract,
   } = useGameContext();
   const {
     energy,
@@ -39,9 +43,10 @@ export function MenuBar() {
     cereal,
   } = useResourcesContext();
   const { zoomMode, updateZoom } = useSelectContext();
+  const { contract: resourcesContract } = useResourcesContract();
 
-  const claimingInvoke = useClaim();
-  const activeNotifications = useActiveNotifications();
+  // const claimingInvoke = useClaim();
+  // const activeNotifications = useActiveNotifications();
 
   const reinitializeInvoke = useReinitialize();
 
@@ -52,31 +57,57 @@ export function MenuBar() {
   const [claimableResources, setClaimableResources] = useState<any[]>([]);
 
   useEffect(() => {
-    if (account) setAddress(account);
-  }, [account]);
+    if (player && player.isConnected) setAddress(player.account.address);
+  }, [player]);
 
   useEffect(() => {
-    if (account && !tokenId) {
-      updateTokenId(account);
+    if (player && player.isConnected && !tokenId) {
+      updateTokenId(player.account.address);
     }
-  }, [account, tokenId]);
+  }, [player, tokenId]);
+
+  console.log("payloadActions", payloadActions);
 
   // Invoke claim resources
   const claimResources = () => {
-    if (tokenId) {
-      const tx_hash = claimingInvoke(tokenId, nonceValue);
-      setClaiming(tx_hash);
+    // Multicall
+    console.log("actions = ", payloadActions);
 
-      tx_hash.then((res) => {
-        console.log("res", res);
-        if (res != 0) {
-          updateNonce(nonceValue);
-        }
+    let _calls: any[] = [];
+    payloadActions.forEach((action) => {
+      // Build calldata
+      var _calldata: any[] = [];
+      var _data = action.calldata.split("|");
+      _data.forEach((elem: any) => {
+        _calldata.push(elem);
       });
-    } else {
-      console.log("Missing tokenId");
-    }
-    setClaiming(true);
+      _calls.push({
+        contractAddress: resourcesContract?.address.toLowerCase() as string,
+        entrypoint: action.entrypoint as string,
+        calldata: _calldata,
+      });
+    });
+
+    player.account.getNonce().then((nonce: any) => {
+      console.log("nonce", nonce);
+      player.account.execute(_calls);
+      // TODO : add nounce in execute multicall
+    });
+
+    // if (tokenId) {
+    //   const tx_hash = claimingInvoke(tokenId, nonceValue);
+    //   setClaiming(tx_hash);
+
+    //   tx_hash.then((res) => {
+    //     console.log("res", res);
+    //     if (res != 0) {
+    //       updateNonce(nonceValue);
+    //     }
+    //   });
+    // } else {
+    //   console.log("Missing tokenId");
+    // }
+    // setClaiming(true);
   };
 
   const nonceValue = useMemo(() => {
@@ -385,14 +416,14 @@ export function MenuBar() {
               className="flex jutify-center relative mx-auto"
               style={{ marginTop: "-13px" }}
             >
-              {tokenId && blockClaimable && blockClaimable > 0 ? (
-                <div
-                  className="btnClaim pixelated"
-                  onClick={() => claimResources()}
-                ></div>
-              ) : (
-                <div className="btnClaimDisabled pixelated"></div>
-              )}
+              {/* {tokenId && blockClaimable && blockClaimable > 0 ? ( */}
+              <div
+                className="btnClaim pixelated"
+                onClick={() => claimResources()}
+              ></div>
+              {/* ) : (
+              //   <div className="btnClaimDisabled pixelated"></div>
+              // )}*/}
             </div>
             <div
               className="flex jutify-center relative mx-auto"
@@ -414,7 +445,9 @@ export function MenuBar() {
             </div> */}
         </div>
       </div>
-      <div onClick={() => updateZoom(!zoomValue, account as string)}>
+      <div
+        onClick={() => updateZoom(!zoomValue, player.account.address as string)}
+      >
         {zoomValue ? (
           <div className="checkZoom1 pixelated"></div>
         ) : (

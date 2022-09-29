@@ -5,6 +5,7 @@ const UserSetting = models.settings;
 const PlayerInventory = models.inventories;
 const PlayerLand = models.lands;
 const PlayerBuilding = models.player_buildings;
+const PlayerAction = models.player_actions;
 
 // Retrieve user information
 exports.findOne = (req, res) => {
@@ -17,6 +18,38 @@ exports.findOne = (req, res) => {
         model: UserSetting,
         attributes: ["zoom", "tutorial", "sound"],
       },
+      {
+        model: PlayerInventory,
+        attributes: [
+          "wood",
+          "rock",
+          "food",
+          "metal",
+          "coal",
+          "gold",
+          "energy",
+          "coin",
+          "totalPop",
+          "freePop",
+          "timeSpent",
+          "level",
+        ],
+      },
+      {
+        model: PlayerBuilding,
+        attributes: ["posX", "posY", "blockX", "blockY", "unitTimeCreatedAt"],
+      },
+      {
+        model: PlayerLand,
+        attributes: ["id", "biomeId", "fullMap"],
+      },
+      {
+        model: PlayerAction,
+        attributes: ["entrypoint", "calldata"],
+        where: { validated: false },
+      },
+      // player rs spawned
+      // Player busyPop
     ],
   })
     .then((data) => {
@@ -70,6 +103,8 @@ exports.initGame = (req, res) => {
   const biomeId = req.userData.biomeId;
 
   var current_user;
+  var landId;
+
   User.findOne({
     where: { account: account },
   })
@@ -86,13 +121,14 @@ exports.initGame = (req, res) => {
           const player_land = {
             fk_userid: current_user.id,
             biomeId: biomeId,
-            nbResourcesSpawned: 196,
-            nbResourcesLeft: 196,
+            nbResourceSpawned: 196,
+            nbResourceLeft: 196,
             nbBuilding: 1,
           };
 
           PlayerLand.create(player_land)
             .then((data) => {
+              landId = data.id;
               // Init cabin
               const cabin = {
                 fk_userid: current_user.id,
@@ -106,8 +142,25 @@ exports.initGame = (req, res) => {
               };
 
               PlayerBuilding.create(cabin)
-                .then((data) => {
-                  res.send(data);
+                .then((data: any) => {
+                  const start_game = {
+                    entrypoint: "start_game",
+                    calldata: biomeId,
+                    validated: false,
+                    fk_userid: current_user.id,
+                    fk_landid: landId,
+                  };
+                  PlayerAction.create(start_game)
+                    .then((data) => {
+                      res.send({ success: 1 });
+                    })
+                    .catch((err) => {
+                      res.status(500).send({
+                        message:
+                          err.message ||
+                          "Some error occurred while creating player action.",
+                      });
+                    });
                 })
                 .catch((err) => {
                   res.status(500).send({

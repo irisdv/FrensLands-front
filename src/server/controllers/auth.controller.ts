@@ -6,6 +6,7 @@ const config = require("../config/auth.config");
 const models = require("../models");
 const User = db.users;
 const UserSetting = models.settings;
+const PlayerLand = models.lands;
 
 exports.signin = (req, res) => {
   if (!req.body.account) {
@@ -24,6 +25,10 @@ exports.signin = (req, res) => {
       {
         model: UserSetting,
         attributes: ["zoom", "tutorial", "sound"],
+      },
+      {
+        model: PlayerLand,
+        attributes: ["id", "biomeId", "fullMap"],
       },
     ],
   })
@@ -59,12 +64,14 @@ exports.signin = (req, res) => {
           token: token,
           account: user.account,
           setting: user.setting,
+          land: user.land,
         });
       } else {
         return res.send({
           token: token,
           account: req.body.account,
           setting: { zoom: 1, tutorial: 1, sound: 1 },
+          land: 0,
         });
       }
     })

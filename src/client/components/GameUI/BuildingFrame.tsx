@@ -1,18 +1,15 @@
-import { useStarknet, useStarknetBlock } from "@starknet-react/core";
-import React, { useMemo, useState, useRef, useEffect } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useGameContext } from "../../hooks/useGameContext";
 import { useSelectContext } from "../../hooks/useSelectContext";
 import useHarvestResource from "../../hooks/invoke/useHarvestResource";
 import useDestroy from "../../hooks/invoke/useDestroy";
 import { allBuildings } from "../../data/buildings";
 
-// Test
-// import { useWorldsContract } from '../../hooks/contracts/worlds'
-// import useTest from "../../hooks/invoke/useTest";
 import useResourcesContext from "../../hooks/useResourcesContext";
 import useUpgrade from "../../hooks/invoke/useUpgrade";
 import useRecharge from "../../hooks/invoke/useRecharge";
 import { FrameItem } from "./FrameItem";
+import { useNewGameContext } from "../../hooks/useNewGameContext";
 
 export function BuildingFrame(props: any) {
   const {
@@ -38,16 +35,15 @@ export function BuildingFrame(props: any) {
     cereal,
     resources,
   } = useResourcesContext();
-  const { account } = useStarknet();
+  const { addAction, payloadActions, player } = useNewGameContext();
   const { showFrame, frameData, updateBuildingFrame } = useSelectContext();
   const { frontBlockArray } = props;
-  const { data: block } = useStarknetBlock();
   const { nonce, updateNonce } = useGameContext();
   const [canBuild, setCanBuild] = useState(1);
   const [msg, setMsg] = useState("");
   const [showNotif, setShowNotif] = useState(false);
 
-  const harvestingInvoke = useHarvestResource();
+  // const harvestingInvoke = useHarvestResource();
   const upgradingInvoke = useUpgrade();
   const rechargingInvoke = useRecharge();
   const detroyingInvoke = useDestroy();
@@ -77,16 +73,39 @@ export function BuildingFrame(props: any) {
   }, [harvestingArr]);
 
   useEffect(() => {
-    if (account) {
-      setAddress(account);
+    if (player && player.isConnected) {
+      setAddress(player.account.address);
     }
-  }, [account]);
+  }, [player]);
 
   useEffect(() => {
-    if (account && !tokenId) {
-      updateTokenId(account);
+    if (player.isConnected && !tokenId) {
+      updateTokenId(player.account.address);
     }
-  }, [account, tokenId]);
+  }, [player, tokenId]);
+
+  const storeAction = async (entrypoint: string, calldata: string) => {
+    fetch("http://localhost:3001/api/player_action", {
+      method: "POST",
+      headers: {
+        "x-access-token": localStorage.getItem("user") as string,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        account: player.account.address,
+        action: {
+          entrypoint: entrypoint,
+          calldata: calldata,
+        },
+      }),
+    })
+      .then(async (response) => {
+        return await response.json();
+      })
+      .then((data) => {
+        console.log("action was stored in DB successfully", data);
+      });
+  };
 
   const harvestingResources = (
     type_id: number,
@@ -94,28 +113,41 @@ export function BuildingFrame(props: any) {
     pos_y: number,
     level: number
   ) => {
+    // TODO: add a check for harvesting : balance, popFree
     const pos_start = (pos_y - 1) * 40 + pos_x;
+    console.log("harvesting tree", pos_start);
     if (tokenId) {
       if (type_id == 2 || type_id == 3 || type_id == 20 || type_id == 27) {
-        const tx_hash = harvestingInvoke(
-          tokenId,
-          pos_start,
-          parseInt(frameData?.unique_id as string),
-          type_id,
-          level,
-          pos_x,
-          pos_y,
-          nonceValue
-        );
+        // const tx_hash = harvestingInvoke(
+        //   tokenId,
+        //   pos_start,
+        //   parseInt(frameData?.unique_id as string),
+        //   type_id,
+        //   level,
+        //   pos_x,
+        //   pos_y,
+        //   nonceValue
+        // );
 
-        tx_hash.then((res) => {
-          console.log("res", res);
-          if (res != 0) {
-            updateNonce(nonceValue);
-            // Change status of harvesting to 0
-            setHarvesting(pos_x, pos_y, 0);
-          }
-        });
+        // tx_hash.then((res) => {
+        //   console.log("res", res);
+        //   if (res != 0) {
+        //     updateNonce(nonceValue);
+        //     // Change status of harvesting to 0
+        //     setHarvesting(pos_x, pos_y, 0);
+        //   }
+        // });
+
+        const calldata = tokenId + "|" + 0 + "|" + pos_start;
+        const entrypoint = "harvest";
+
+        // Update front harvesting
+        setHarvesting(pos_x, pos_y, 0);
+
+        // Add action in DB
+        storeAction(entrypoint, calldata);
+        console.log("before action payload", payloadActions);
+        addAction(entrypoint, calldata);
       }
       // setHarvesting(tx_hash);
     } else {

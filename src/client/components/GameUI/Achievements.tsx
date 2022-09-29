@@ -1,12 +1,12 @@
-import { useStarknet } from "@starknet-react/core";
-import React, { useMemo, useState, useRef, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import { allAchievements } from "../../data/achievements";
+import { useNewGameContext } from "../../hooks/useNewGameContext";
 import { useSelectContext } from "../../hooks/useSelectContext";
 import { Achievement } from "../../model/achievement";
 import UI_Frames from "../../style/resources/front/Ui_Frames3.svg";
 
 export function Achievements(props: any) {
-  const { account } = useStarknet();
+  const { player } = useNewGameContext();
   const { tutoMode, updateTuto } = useSelectContext();
   const [lastAchievement, setLastAchievement] = useState<Achievement>();
   const [showGoal, setShowGoal] = useState(false);
@@ -38,12 +38,16 @@ export function Achievements(props: any) {
         showTutorial ? (
           <div
             className="btnShowTuto0 pixelated selectDisable"
-            onClick={() => updateTuto(!showTutorial, account as string)}
+            onClick={() =>
+              updateTuto(!showTutorial, player.account.address as string)
+            }
           ></div>
         ) : (
           <div
             className="btnShowTuto1 pixelated selectDisable"
-            onClick={() => updateTuto(!showTutorial, account as string)}
+            onClick={() =>
+              updateTuto(!showTutorial, player.account.address as string)
+            }
           ></div>
         )
       ) : (

@@ -15,10 +15,11 @@ import { TransactionManagerContext } from "../../providers/transactions/context"
 import { StarknetContext } from "@starknet-react/core/dist/providers/starknet";
 import StateContext from "../../providers/GameContext";
 import { useSelectContext } from "../../hooks/useSelectContext";
-import { useStarknet } from "@starknet-react/core";
+import NewStateContext from "../../providers/NewGameContext";
 
-import socketService from "../../services/socketService";
-import gameService from "../../services/gameService";
+// import socketService from "../../services/socketService";
+// import gameService from "../../services/gameService";
+import { useNewGameContext } from "../../hooks/useNewGameContext";
 
 export const Scene = (props: any) => {
   const ContextBridge = useContextBridge(
@@ -26,11 +27,10 @@ export const Scene = (props: any) => {
     BuildingContext,
     TransactionManagerContext,
     StarknetContext,
-    StateContext
+    StateContext,
+    NewStateContext
   );
   const refCanvas = useRef<any>();
-
-  const { account } = useStarknet();
 
   const { updateBuildingFrame, zoomMode, initSettings } = useSelectContext();
 
@@ -44,7 +44,9 @@ export const Scene = (props: any) => {
   const [frontBlockArray, setFrontBlockArray] = useState([]);
   const [initZoomMode, setInitZoomMode] = useState(0);
 
-  const getUserSettings = async () => {
+  const { initGameSession, player } = useNewGameContext();
+
+  const getUserSettings = async (account: string) => {
     await fetch(`http://localhost:3001/api/users/${account}`, {
       headers: { "x-access-token": localStorage.getItem("user") as string },
     })
@@ -52,7 +54,17 @@ export const Scene = (props: any) => {
         return await response.json();
       })
       .then((data) => {
-        if (data) initSettings(data.setting);
+        console.log("data of player retrieved", data);
+        if (data) {
+          initSettings(data.setting);
+          // Init player new game session
+          initGameSession(
+            data.inventory,
+            data.land,
+            data.player_actions,
+            data.player_buildings
+          );
+        }
         return data.setting.zoom;
       });
   };
@@ -64,8 +76,6 @@ export const Scene = (props: any) => {
       })
       .then((data) => {
         console.log("data static building", data);
-        // if (data) initSettings(data.setting)
-        // return data.setting.zoom
       });
   };
 
@@ -74,8 +84,8 @@ export const Scene = (props: any) => {
   }, []);
 
   const zoomValue = useMemo(() => {
-    if (!initZoomMode) {
-      const zoomVal = getUserSettings();
+    if (!initZoomMode && player.isConnected) {
+      const zoomVal = getUserSettings(player.account.address);
       setInitZoomMode(1);
       return zoomVal;
     } else {

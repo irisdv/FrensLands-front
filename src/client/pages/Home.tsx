@@ -1,97 +1,66 @@
 import React, { useMemo, useEffect, useState, useRef } from "react";
-import {
-  useStarknet,
-  useStarknetCall,
-  useConnectors,
-  useStarknetExecute,
-  useContract,
-} from "@starknet-react/core";
-import { toBN } from "starknet/dist/utils/number";
-import { Link, useNavigate } from "react-router-dom";
-import { gsap } from "gsap";
-import { Abi, uint256 } from "starknet";
-import { ConnectWallet } from "../components/ConnectWallet";
-import Notifications from "../components/Notifications";
-import UI_Frames from "../style/resources/front/Ui_Frames3.svg";
-import { useMapsContract } from "../hooks/contracts/maps";
-import { useWorldsContract } from "../hooks/contracts/worlds";
-import { useGameContext } from "../hooks/useGameContext";
-import useActiveNotifications from "../hooks/useNotifications";
-import useMintMap from "../hooks/invoke/useMintMap";
-import useStartGame from "../hooks/invoke/useStartGame";
-import { useERC1155Contract } from "../hooks/contracts/erc1155";
-import useApprove from "../hooks/invoke/useApprove";
-import { useResourcesContract } from "../hooks/contracts/resources";
-import { allMetadata } from "../data/metadata";
+import { useNavigate } from "react-router-dom";
 
-import AccountAbi from "../abi/Account.json";
+import { uint256 } from "starknet";
+import { getStarknet, IStarknetWindowObject } from "get-starknet";
+import { useStarknetCall } from "@starknet-react/core";
+
+import Notifications from "../components/Notifications";
 import MenuHome from "../components/MenuHome";
 
-import socketService from "../services/socketService";
+import { useMapsContract } from "../hooks/contracts/maps";
+import { useGameContext } from "../hooks/useGameContext";
+import { useERC1155Contract } from "../hooks/contracts/erc1155";
+import { useResourcesContract } from "../hooks/contracts/resources";
+import { ILand } from "../providers/NewGameContext";
 
-import { io } from "socket.io-client";
-import { useSelectContext } from "../hooks/useSelectContext";
-const starknet = require("starknet");
-let socket: any;
+import { gsap } from "gsap";
+import UI_Frames from "../style/resources/front/Ui_Frames3.svg";
+
+// import socketService from "../services/socketService";
+// import { io } from "socket.io-client";
+// let socket: any;
 
 export default function Home() {
-  const { account } = useStarknet();
-  const { available, connect, disconnect } = useConnectors();
-  const [hasWallet, setHasWallet] = useState(false);
+  const [wallet, setWallet] = useState<IStarknetWindowObject>();
+  const [signedIn, setSignedIn] = useState(false);
+  const [hasLand, setHasLand] = useState<ILand>();
   const navigate = useNavigate();
   const {
-    setAddress,
     updateTokenId,
-    tokenId,
-    nonce,
-    setAccountContract,
-    accountContract,
-    updateNonce,
+    // nonce,
+    // updateNonce,
   } = useGameContext();
-  const activeNotifications = useActiveNotifications();
-  const [worldType, setWorldType] = useState<any>(null);
   const scrollRef = useRef<null | HTMLDivElement>(null);
 
   // Call
-  const { contract: worlds } = useWorldsContract();
   const { contract: maps } = useMapsContract();
-  // const { contract: buildings } = useBuildingsContract();
   const { contract: resources } = useResourcesContract();
   const { contract: erc1155 } = useERC1155Contract();
   const [watch, setWatch] = useState(true);
-  // Invoke
-  const generateMap = useMintMap();
-  const initializeGame = useStartGame();
-  const approveMO3ERC1155 = useApprove();
-  const [settingUp, setSettingUp] = useState<any>(null);
   const [canPlay, setCanPlay] = useState(0);
-  const [message, setMessage] = useState<any>(null);
   const [approved, setApproved] = useState<any>(null);
 
-  // Connection to FL
-  const [connected, setConnected] = useState(false);
-  const [signedIn, setSignedIn] = useState(false);
-  // const sdk = require('api')('@aspect/v0.1-testnet#13qgon3yl4dk4egj');
+  // const connectSocket = async (account: string) => {
+  //   const socket = socketService
+  //     .connect("http://localhost:8008/", account)
+  //     .then((result) => {
+  //       setConnected(true);
+  //     })
+  //     .catch((err) => {
+  //       console.log("Error", err);
+  //     });
+  // };
 
-  const connectSocket = async (account: string) => {
-    const socket = socketService
-      .connect("http://localhost:8008/", account)
-      .then((result) => {
-        setConnected(true);
-      })
-      .catch((err) => {
-        console.log("Error", err);
-      });
-  };
+  // useEffect(() => {
+  //   if (!connected && account) {
+  //     connectSocket(account);
+  //   }
+  // });
 
-  useEffect(() => {
-    if (!connected && account) {
-      connectSocket(account);
-    }
-  });
-
+  // ------------------------------------- START: Fetch DB --------------------------------------------
   // Connexion du user
-  const getUserInfo = async () => {
+  const getUserInfo = async (account: string) => {
     fetch("http://localhost:3001/api/auth/signin", {
       method: "POST",
       headers: {
@@ -103,43 +72,137 @@ export default function Home() {
         return await response.json();
       })
       .then((data) => {
-        console.log("userData", data);
+        console.log(
+          "userData received, ready to initialize game session withat data : ",
+          data
+        );
         if (data && data.token) localStorage.setItem("user", data.token);
         setSignedIn(true);
+        if (data.land == 0) {
+          console.log("user has no land, need to initialize");
+        } else {
+          setHasLand(data.land);
+        }
       });
   };
 
-  useEffect(() => {
-    if (account) {
-      console.log("account exists", account);
-      setAddress(account);
-    }
-  }, [account]);
+  const initGame = async (account: string, biomeId: number) => {
+    fetch("http://localhost:3001/api/users/init", {
+      method: "POST",
+      headers: {
+        "x-access-token": localStorage.getItem("user") as string,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ account: account, biomeId: biomeId }),
+    })
+      .then(async (response) => {
+        return await response.json();
+      })
+      .then((data) => {
+        console.log("userData", data);
+        if (data && data.success) {
+          navigate("/play");
+        }
+      });
+  };
 
-  useEffect(() => {
-    if (account && !tokenId) {
-      updateTokenId(account);
-    }
-  }, [account, tokenId]);
+  // ------------------------------------- END: Fetch DB --------------------------------------------
 
-  useEffect(() => {
-    if (account && tokenId) {
-      const _metadata = allMetadata.filter((res) => res.id == tokenId);
-      setWorldType(_metadata[0].biome);
-      getUserInfo();
-    }
-  }, [account, tokenId]);
+  const connectWallet = async () => {
+    const _wallet = await getStarknet();
+    console.log("wallet", _wallet);
+    await _wallet.enable({ showModal: true });
+    setWallet(_wallet);
+  };
 
+  // Sign in player after wallet connect
   useEffect(() => {
-    if (account && !accountContract) {
-      const accountC = new starknet.Account(
-        AccountAbi as Abi,
-        account,
-        starknet.Provider
-      );
-      setAccountContract(accountC);
+    if (wallet?.isConnected && !signedIn) {
+      getUserInfo(wallet.account.address);
     }
-  }, [account, accountContract]);
+  }, [wallet]);
+
+  // Get current nonce value
+  // const nonceValue = useMemo(() => {
+  //   console.log("new nonce value", nonce);
+  //   return nonce;
+  // }, [nonce]);
+
+  // Fetch NFT balance of user
+  const { data: fetchBalanceNFTResult } = useStarknetCall({
+    contract: maps,
+    method: "balanceOf",
+    args: [wallet?.account.address],
+    options: { watch },
+  });
+
+  const BalanceNFTValue = useMemo(() => {
+    if (fetchBalanceNFTResult != null && fetchBalanceNFTResult.length > 0) {
+      const elem = uint256.uint256ToBN(fetchBalanceNFTResult[0]);
+      const balance = elem.toNumber();
+
+      if (balance == 1 && wallet?.account.address)
+        updateTokenId(wallet?.account.address);
+
+      return { NFTbalance: balance };
+    }
+  }, [fetchBalanceNFTResult]);
+
+  // Fetch gameStatus
+  // const { data: fetchGameStatus } = useStarknetCall({
+  //   contract: worlds,
+  //   method: "get_game_status",
+  //   args: [uint256.bnToUint256(tokenId as number)],
+  //   options: { watch },
+  // });
+  // const GameStatusValue = useMemo(() => {
+  //   if (fetchGameStatus != null && fetchGameStatus.length > 0) {
+  //     const status = toBN(fetchGameStatus[0]).toNumber();
+
+  //     console.log("status game", status);
+
+  //     if (status == 1) setCanPlay(1);
+
+  //     return { gameStatus: status };
+  //   }
+  // }, [fetchGameStatus, tokenId]);
+
+  // Invoke Starting game
+  const startGame = async (biomeId: number) => {
+    console.log("startingGame invoke with biomeId", biomeId);
+
+    // Send tx to init game on-chain
+
+    // Init game in DB
+    await initGame(wallet?.account.address as string, biomeId);
+
+    //   if (tokenId && !settingUp) {
+    //     const tx_hash = initializeGame(tokenId, nonceValue);
+    //     console.log("tx hash", tx_hash);
+    //     setSettingUp(tx_hash);
+
+    //     tx_hash.then((res) => {
+    //       console.log("res", res);
+    //       if (res != 0) {
+    //         updateNonce(nonceValue);
+    //       } else {
+    //         setSettingUp(null);
+    //       }
+    //     });
+    //   } else if (!tokenId) {
+    //     console.log("Missing tokenId");
+    //     setMessage("You need to own a Frens Lands map to initialize a game.");
+    //   } else {
+    //     console.log("Already Setting Up");
+    //   }
+  };
+
+  // --------------------- STYLE ------------------------------
+  const executeScroll = () => {
+    if (scrollRef.current != null) {
+      scrollRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   // Rotation world
   useEffect(() => {
@@ -150,141 +213,6 @@ export default function Home() {
       ease: "none",
     });
   });
-
-  const nonceValue = useMemo(() => {
-    console.log("new nonce value", nonce);
-    return nonce;
-  }, [nonce]);
-
-  // Fetch NFT balance of user
-  const { data: fetchBalanceNFTResult } = useStarknetCall({
-    contract: maps,
-    method: "balanceOf",
-    args: [account],
-    options: { watch },
-  });
-
-  const BalanceNFTValue = useMemo(() => {
-    if (fetchBalanceNFTResult != null && fetchBalanceNFTResult.length > 0) {
-      const elem = uint256.uint256ToBN(fetchBalanceNFTResult[0]);
-      const balance = elem.toNumber();
-
-      if (balance == 1 && account) updateTokenId(account);
-
-      return { NFTbalance: balance };
-    }
-  }, [fetchBalanceNFTResult]);
-
-  // Fetch gameStatus
-  const { data: fetchGameStatus } = useStarknetCall({
-    contract: worlds,
-    method: "get_game_status",
-    args: [uint256.bnToUint256(tokenId as number)],
-    options: { watch },
-  });
-  const GameStatusValue = useMemo(() => {
-    if (fetchGameStatus != null && fetchGameStatus.length > 0) {
-      const status = toBN(fetchGameStatus[0]).toNumber();
-
-      console.log("status game", status);
-
-      if (status == 1) setCanPlay(1);
-
-      return { gameStatus: status };
-    }
-  }, [fetchGameStatus, tokenId]);
-
-  // Check if is approved
-  const { data: fetchApprovalState } = useStarknetCall({
-    contract: erc1155,
-    method: "isApprovedForAll",
-    args: [account, resources?.address],
-    options: { watch },
-  });
-
-  const approvalStatusValue = useMemo(() => {
-    if (fetchApprovalState != null && fetchApprovalState.length > 0) {
-      const elem = uint256.uint256ToBN(fetchApprovalState[0]);
-      const appr = toBN(fetchApprovalState[0]).toNumber();
-
-      console.log("appr", appr);
-
-      if (appr) setApproved(true);
-
-      return { appr };
-    }
-  }, [fetchApprovalState, account, tokenId, approved]);
-
-  const approveM03 = () => {
-    if (!approved && tokenId) {
-      const tx_hash = approveMO3ERC1155(nonceValue);
-      console.log("tx hash approval ERC1155", tx_hash);
-      setApproved(tx_hash);
-
-      tx_hash.then((res) => {
-        console.log("res", res);
-        if (res != 0) {
-          updateNonce(nonceValue);
-        } else {
-          setApproved(null);
-        }
-      });
-    }
-  };
-
-  // Invoke Starting game
-  const startGame = () => {
-    console.log("startingGame invoke");
-    if (tokenId && !settingUp) {
-      const tx_hash = initializeGame(tokenId, nonceValue);
-      console.log("tx hash", tx_hash);
-      setSettingUp(tx_hash);
-
-      tx_hash.then((res) => {
-        console.log("res", res);
-        if (res != 0) {
-          updateNonce(nonceValue);
-        } else {
-          setSettingUp(null);
-        }
-      });
-    } else if (!tokenId) {
-      console.log("Missing tokenId");
-      setMessage("You need to own a Frens Lands map to initialize a game.");
-    } else {
-      console.log("Already Setting Up");
-    }
-  };
-
-  useEffect(() => {
-    if (settingUp) {
-      const data = activeNotifications.filter(
-        (transactions) =>
-          transactions?.transactionHash === (settingUp as string)
-      );
-      if (data && data[0]) {
-        if (data[0].status == "REJECTED") {
-          setMessage("Your transaction has failed... Try again.");
-          setSettingUp(null);
-        } else if (
-          data[0].status == "ACCEPTED_ON_L1" ||
-          data[0].status == "ACCEPTED_ON_L2"
-        ) {
-          setMessage("Your transaction was accepted. Now you can play!");
-          setSettingUp(true);
-          if (approved) navigate("/play");
-        } else {
-          setMessage("Your transaction is ongoing.");
-        }
-      }
-    }
-  }, [settingUp, activeNotifications]);
-
-  const executeScroll = () => {
-    if (scrollRef.current != null) {
-      scrollRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
 
   return (
     <>
@@ -320,47 +248,124 @@ export default function Home() {
               className="absolute selectDisable"
               style={{ width: "100vw", top: "0" }}
             >
-              {account &&
-                BalanceNFTValue != null &&
-                BalanceNFTValue.NFTbalance == 1 &&
-                worldType >= 0 &&
-                worldType != null && (
+              {/* Player is already registered and has a land */}
+              {wallet?.isConnected && hasLand && signedIn && (
+                <>
                   <img
                     className="relative mx-auto pixelated nftImg"
-                    src={`resources/maps/FrensLand_NFTs_${worldType}.png`}
+                    src={`resources/maps/FrensLand_NFTs_${hasLand.biomeId}.png`}
                   />
+                  <div style={{ height: "170px", pointerEvents: "all" }}>
+                    <button
+                      className="relative mx-auto pixelated btnPlay"
+                      onClick={() => navigate("/play")}
+                      style={{ marginTop: "-65px" }}
+                    ></button>
+                  </div>
+                </>
+              )}
+              {/* User is connected, has an NFT but doesn't have a land  */}
+              {wallet?.isConnected &&
+                !hasLand &&
+                BalanceNFTValue != null &&
+                BalanceNFTValue.NFTbalance == 1 && (
+                  <>
+                    <div className="grid grid-cols-5 px-8">
+                      <div
+                        className="cursor-pointer px-5"
+                        onClick={() => startGame(1)}
+                      >
+                        <img
+                          className="relative mx-auto pixelated nftImg hover:scale-110"
+                          src={`resources/maps/FrensLand_NFTs_1.png`}
+                        />
+                      </div>
+                      <div
+                        className="cursor-pointer px-5"
+                        onClick={() => startGame(2)}
+                      >
+                        <img
+                          className="relative mx-auto pixelated nftImg hover:scale-110"
+                          src={`resources/maps/FrensLand_NFTs_2.png`}
+                        />
+                      </div>
+                      <div
+                        className="cursor-pointer px-5"
+                        onClick={() => startGame(0)}
+                      >
+                        <img
+                          className="relative mx-auto pixelated nftImg hover:scale-110"
+                          src={`resources/maps/FrensLand_NFTs_0.png`}
+                        />
+                      </div>
+                      <div
+                        className="cursor-pointer px-5"
+                        onClick={() => startGame(3)}
+                      >
+                        <img
+                          className="relative mx-auto pixelated nftImg hover:scale-110"
+                          src={`resources/maps/FrensLand_NFTs_3.png`}
+                        />
+                      </div>
+                      <div
+                        className="cursor-pointer px-5"
+                        onClick={() => startGame(4)}
+                      >
+                        <img
+                          className="relative mx-auto pixelated nftImg hover:scale-110"
+                          src={`resources/maps/FrensLand_NFTs_4.png`}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="messageNotifParent">
+                      <div
+                        className="messageNotif fontHPxl-sm mx-auto text-center"
+                        style={{
+                          borderImage: `url(data:image/svg+xml;base64,${btoa(
+                            UI_Frames
+                          )}) 18 fill stretch`,
+                        }}
+                      >
+                        <p>Chose a land to start playing!</p>
+                      </div>
+                    </div>
+                  </>
                 )}
-              {account &&
+              {/* User is connected and does not have a land and doesn't have a NFT either  */}
+              {wallet?.isConnected &&
+                !hasLand &&
                 BalanceNFTValue != null &&
                 BalanceNFTValue.NFTbalance == 0 && (
-                  <div className="messageNotifParent">
-                    <div
-                      className="messageNotif fontHPxl-sm mx-auto text-center"
-                      style={{
-                        borderImage: `url(data:image/svg+xml;base64,${btoa(
-                          UI_Frames
-                        )}) 18 fill stretch`,
-                      }}
-                    >
-                      <p>You don't own a map... </p>
-                      <br />
-                      <p>
-                        Join the{" "}
-                        <a
-                          className="cursor-pointer"
-                          style={{ color: "#964489" }}
-                          href="https://discord.gg/gehYZU9Trf"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          Frens Lands discord server
-                        </a>{" "}
-                        to take part in the next testing sessions.
-                      </p>
+                  <>
+                    <div className="grid grid-col-1 px-8">
+                      <div
+                        className="cursor-pointer px-5"
+                        onClick={() => startGame(0)}
+                      >
+                        <img
+                          className="relative mx-auto pixelated nftImg hover:scale-110"
+                          src={`resources/maps/FrensLand_NFTs_0.png`}
+                        />
+                      </div>
                     </div>
-                  </div>
+
+                    <div className="messageNotifParent">
+                      <div
+                        className="messageNotif fontHPxl-sm mx-auto text-center"
+                        style={{
+                          borderImage: `url(data:image/svg+xml;base64,${btoa(
+                            UI_Frames
+                          )}) 18 fill stretch`,
+                        }}
+                      >
+                        <p>Chose a land to start playing!</p>
+                      </div>
+                    </div>
+                  </>
                 )}
-              {account &&
+
+              {/* {account?.isConnected &&
                 BalanceNFTValue != null &&
                 BalanceNFTValue.NFTbalance == 1 &&
                 GameStatusValue != null &&
@@ -371,8 +376,8 @@ export default function Home() {
                     onClick={() => startGame()}
                     style={{ marginTop: "-65px" }}
                   ></button>
-                )}
-              {account &&
+                )} */}
+              {/* {account?.isConnected &&
               BalanceNFTValue != null &&
               BalanceNFTValue.NFTbalance == 1 &&
               GameStatusValue != null &&
@@ -393,7 +398,7 @@ export default function Home() {
               ) : (
                 ""
               )}
-              {account &&
+              {account?.isConnected &&
                 BalanceNFTValue != null &&
                 BalanceNFTValue.NFTbalance == 1 &&
                 GameStatusValue != null &&
@@ -403,18 +408,22 @@ export default function Home() {
                     className="relative mx-auto pixelated btnApproval"
                     onClick={() => approveM03()}
                   ></button>
-                )}
-              {hasWallet && !account ? (
+                )} */}
+              {/* {hasWallet && !account ? (
                 <ConnectWallet close={() => setHasWallet(false)} />
-              ) : null}
-              {!account && (
+              ) : null} */}
+
+              {/* Connect Wallet */}
+              {!wallet?.isConnected && (
                 <button
-                  onClick={() => setHasWallet(true)}
+                  onClick={() => connectWallet()}
                   className="relative mx-auto btnPlay pixelated"
                   style={{ marginTop: "300px" }}
                 ></button>
               )}
-              {account && canPlay && approved == true && signedIn && (
+
+              {/* Send user to next page */}
+              {wallet?.isConnected && canPlay && approved == true && signedIn && (
                 <div style={{ height: "170px", pointerEvents: "all" }}>
                   <button
                     className="relative mx-auto pixelated btnPlay"

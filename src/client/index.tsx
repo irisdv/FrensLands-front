@@ -10,6 +10,7 @@ import { BrowserRouter } from "react-router-dom";
 import { AppStateProvider } from "./providers/GameContext";
 import { NotifTransactionManagerProvider } from "./providers/transactions";
 import { SelectStateProvider } from "./providers/SelectContext";
+import { NewAppStateProvider } from "./providers/NewGameContext";
 
 const container = document.getElementById("root");
 const root = createRoot(container!); // createRoot(container!) if you use TypeScript
@@ -26,9 +27,11 @@ root.render(
       <NotifTransactionManagerProvider>
         <BrowserRouter>
           <AppStateProvider>
-            <SelectStateProvider>
-              <App />
-            </SelectStateProvider>
+            <NewAppStateProvider>
+              <SelectStateProvider>
+                <App />
+              </SelectStateProvider>
+            </NewAppStateProvider>
           </AppStateProvider>
         </BrowserRouter>
       </NotifTransactionManagerProvider>
