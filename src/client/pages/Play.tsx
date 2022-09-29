@@ -237,23 +237,6 @@ export default function Play() {
     return tempDecomp;
   }
 
-  const initGame = async () => {
-    fetch("http://localhost:3001/api/users/init", {
-      method: "POST",
-      headers: {
-        "x-access-token": localStorage.getItem("user") as string,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ account: player.account.address, biomeId: 1 }),
-    })
-      .then(async (response) => {
-        return await response.json();
-      })
-      .then((data) => {
-        console.log("userData", data);
-      });
-  };
-
   return (
     <>
       {frontBlockArray?.frontArray != null &&
@@ -286,18 +269,6 @@ export default function Play() {
               <BottomBar level={level} />
             </SelectStateProvider>
           </BuildingStateProvider>
-          <button
-            onClick={() => initGame()}
-            style={{
-              top: "100px",
-              position: "absolute",
-              zIndex: "10",
-              left: "100px",
-            }}
-          >
-            {" "}
-            Init Game info player
-          </button>
         </>
       ) : (
         <div
