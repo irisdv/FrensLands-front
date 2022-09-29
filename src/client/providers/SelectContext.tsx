@@ -83,7 +83,6 @@ type Action =
   | SetError;
 
 function reducer(state: ISelectState, action: Action): ISelectState {
-  console.log("action type", action);
   switch (action.type) {
     case "set_showFrame": {
       return {

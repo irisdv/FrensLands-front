@@ -5,20 +5,21 @@ import { Scene } from "../components/r3f/Scene";
 import { MenuBar } from "../components/GameUI/MenuBar";
 import { BottomBar } from "../components/GameUI/BottomBar";
 import { BuildingFrame } from "../components/GameUI/BuildingFrame";
-import { SelectStateProvider } from "../providers/SelectContext";
-import { BuildingStateProvider } from "../providers/BuildingContext";
+// import { SelectStateProvider } from "../providers/SelectContext";
+// import { BuildingStateProvider } from "../providers/BuildingContext";
 import { useGameContext } from "../hooks/useGameContext";
 import { Achievements } from "../components/GameUI/Achievements";
 import { useNavigate } from "react-router-dom";
 import { allMetadata } from "../data/metadata";
 import { useNewGameContext } from "../hooks/useNewGameContext";
 import { getStarknet } from "get-starknet";
+import { useSelectContext } from "../hooks/useSelectContext";
 
 export default function Play() {
-  // const { account } = useStarknet();
   const { address, setAddress, updateTokenId, tokenId, fetchMapType } =
     useGameContext();
-  const { player, initPlayer } = useNewGameContext();
+  const { player, initPlayer, initGameSession } = useNewGameContext();
+  const { initSettings } = useSelectContext();
   const [worldType, setWorldType] = useState(-1);
   const navigate = useNavigate();
 
@@ -37,6 +38,29 @@ export default function Play() {
   const [buildingCounters, setBuildingCounters] = useState<any[]>([]);
   const [level, setLevel] = useState(1);
 
+  const getUserInfo = async (account: string) => {
+    await fetch(`http://localhost:3001/api/users/${account}`, {
+      headers: { "x-access-token": localStorage.getItem("user") as string },
+    })
+      .then(async (response) => {
+        return await response.json();
+      })
+      .then((data) => {
+        console.log("data of player retrieved", data);
+        if (data) {
+          initSettings(data.setting);
+          // Init player new game session
+          initGameSession(
+            data.inventory,
+            data.land,
+            data.player_actions,
+            data.player_buildings
+          );
+        }
+        return data;
+      });
+  };
+
   useEffect(() => {
     if (!player) {
       const _wallet = getStarknet();
@@ -45,21 +69,13 @@ export default function Play() {
         if (_wallet.isConnected) {
           initPlayer(_wallet);
           setAddress(_wallet.account.address); // ancien game context
+          getUserInfo(_wallet.account.address);
+        } else {
+          navigate("/");
         }
       });
     }
-    // console.log('wallet', _wallet);
-    // await _wallet.enable( { showModal: true })
-    // setAccount(_wallet);
-    // if (player && player.isConnected) {
-    //   // setAddress(account);
-    //   console.log('player', player)
-    // }
-    // else {
-    //   navigate("/");
-    // }
   }, [player]);
-  // console.log('player', player)
 
   useEffect(() => {
     if (address && !tokenId) {
@@ -74,6 +90,13 @@ export default function Play() {
       setWorldType(_metadata[0].biome);
     }
   }, [tokenId]);
+
+  // useEffect(() => {
+  //   if (player && player.isConnected) {
+  //     // fetch user information and init game
+
+  //   }
+  // }, [player])
 
   useEffect(() => {
     let x = 0;
@@ -242,33 +265,29 @@ export default function Play() {
       {frontBlockArray?.frontArray != null &&
       Object.keys(frontBlockArray.frontArray).length > 0 ? (
         <>
-          <BuildingStateProvider>
-            <SelectStateProvider>
-              <MenuBar />
-              <Achievements level={level} />
-              <div style={{ height: "100vh", width: "100vw", zIndex: "0" }}>
-                {frontBlockArray &&
-                  Object.keys(frontBlockArray).length > 0 &&
-                  worldType != null &&
-                  worldType != -1 && (
-                    <Scene
-                      mapArray={frontBlockArray.frontArray}
-                      textArrRef={textArrRef}
-                      rightBuildingType={rightBuildingType}
-                      worldType={worldType}
-                      UBlockIDs={UBlockIDs}
-                    />
-                  )}
-              </div>
-              {frontBlockArray && Object.keys(frontBlockArray).length > 0 && (
-                <BuildingFrame
-                  frontBlockArray={frontBlockArray.frontArray}
-                  level={level}
+          <MenuBar />
+          <Achievements level={level} />
+          <div style={{ height: "100vh", width: "100vw", zIndex: "0" }}>
+            {frontBlockArray &&
+              Object.keys(frontBlockArray).length > 0 &&
+              worldType != null &&
+              worldType != -1 && (
+                <Scene
+                  mapArray={frontBlockArray.frontArray}
+                  textArrRef={textArrRef}
+                  rightBuildingType={rightBuildingType}
+                  worldType={worldType}
+                  UBlockIDs={UBlockIDs}
                 />
               )}
-              <BottomBar level={level} />
-            </SelectStateProvider>
-          </BuildingStateProvider>
+          </div>
+          {frontBlockArray && Object.keys(frontBlockArray).length > 0 && (
+            <BuildingFrame
+              frontBlockArray={frontBlockArray.frontArray}
+              level={level}
+            />
+          )}
+          <BottomBar level={level} />
         </>
       ) : (
         <div

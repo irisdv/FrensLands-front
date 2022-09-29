@@ -2,8 +2,8 @@ import { useStarknetBlock } from "@starknet-react/core";
 import React, { useMemo, useState, useEffect } from "react";
 import { toBN } from "starknet/dist/utils/number";
 import { useGameContext } from "../../hooks/useGameContext";
-import useClaim from "../../hooks/invoke/useClaim";
-import useActiveNotifications from "../../hooks/useNotifications";
+// import useClaim from "../../hooks/invoke/useClaim";
+// import useActiveNotifications from "../../hooks/useNotifications";
 import Notifications from "../Notifications";
 import { allBuildings } from "../../data/buildings";
 import UI_Frames from "../../style/resources/front/Ui_Frames3.svg";
@@ -14,11 +14,12 @@ import useReinitialize from "../../hooks/invoke/useReinitialize";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
 import { useResourcesContract } from "../../hooks/contracts/resources";
 
-import { getStarknet } from "get-starknet";
+// import { getStarknet } from "get-starknet";
 
 export function MenuBar() {
   const { data: block } = useStarknetBlock();
   const { addAction, payloadActions, player } = useNewGameContext();
+  const { zoomMode, updateZoom } = useSelectContext();
   const {
     tokenId,
     updateTokenId,
@@ -42,11 +43,7 @@ export function MenuBar() {
     meat,
     cereal,
   } = useResourcesContext();
-  const { zoomMode, updateZoom } = useSelectContext();
   const { contract: resourcesContract } = useResourcesContract();
-
-  // const claimingInvoke = useClaim();
-  // const activeNotifications = useActiveNotifications();
 
   const reinitializeInvoke = useReinitialize();
 
@@ -55,6 +52,10 @@ export function MenuBar() {
   const [popUpInit, setPopUpInit] = useState(false);
 
   const [claimableResources, setClaimableResources] = useState<any[]>([]);
+
+  // useEffect(() => {
+  //   console.log('useEffect zoom menubar', zoomMode)
+  // }, [zoomMode])
 
   useEffect(() => {
     if (player && player.isConnected) setAddress(player.account.address);
@@ -65,8 +66,6 @@ export function MenuBar() {
       updateTokenId(player.account.address);
     }
   }, [player, tokenId]);
-
-  console.log("payloadActions", payloadActions);
 
   // Invoke claim resources
   const claimResources = () => {
@@ -185,9 +184,8 @@ export function MenuBar() {
   }, [block?.block_number, blockGame, claiming]);
 
   const zoomValue = useMemo(() => {
-    console.log("menu bar zoom value", zoomMode);
     return zoomMode;
-  }, [zoomMode]);
+  }, [zoomMode, player]);
 
   return (
     <>

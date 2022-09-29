@@ -32,7 +32,7 @@ export const Scene = (props: any) => {
   );
   const refCanvas = useRef<any>();
 
-  const { updateBuildingFrame, zoomMode, initSettings } = useSelectContext();
+  const { updateBuildingFrame, zoomMode } = useSelectContext();
 
   const { mapArray, textArrRef, rightBuildingType, worldType, UBlockIDs } =
     props;
@@ -42,32 +42,7 @@ export const Scene = (props: any) => {
   const [mouseRightPressed, setMouseRightPressed] = useState(0);
   const [mouseMiddlePressed, setMouseMiddlePressed] = useState(0);
   const [frontBlockArray, setFrontBlockArray] = useState([]);
-  const [initZoomMode, setInitZoomMode] = useState(0);
-
-  const { initGameSession, player } = useNewGameContext();
-
-  const getUserSettings = async (account: string) => {
-    await fetch(`http://localhost:3001/api/users/${account}`, {
-      headers: { "x-access-token": localStorage.getItem("user") as string },
-    })
-      .then(async (response) => {
-        return await response.json();
-      })
-      .then((data) => {
-        console.log("data of player retrieved", data);
-        if (data) {
-          initSettings(data.setting);
-          // Init player new game session
-          initGameSession(
-            data.inventory,
-            data.land,
-            data.player_actions,
-            data.player_buildings
-          );
-        }
-        return data.setting.zoom;
-      });
-  };
+  const { player } = useNewGameContext();
 
   const getStaticBuildings = async () => {
     await fetch(`http://localhost:3001/api/static_buildings`)
@@ -84,14 +59,10 @@ export const Scene = (props: any) => {
   }, []);
 
   const zoomValue = useMemo(() => {
-    if (!initZoomMode && player.isConnected) {
-      const zoomVal = getUserSettings(player.account.address);
-      setInitZoomMode(1);
-      return zoomVal;
-    } else {
+    if (player.isConnected && zoomMode != undefined) {
       return zoomMode;
     }
-  }, [zoomMode]);
+  }, [zoomMode, player]);
 
   const [keyMap, setKeyMap] = useState({
     Escape: false,

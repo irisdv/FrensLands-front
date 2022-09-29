@@ -501,6 +501,7 @@ export function BuildingFrame(props: any) {
             frameData.id &&
             frameData.level &&
             allBuildings[frameData.id - 1].cost_update != null &&
+            allBuildings[frameData.id - 1].cost_update?.[frameData.level - 1] &&
             allBuildings[frameData.id - 1].cost_update?.[frameData.level - 1]
               .pop_min &&
             !frameData.unique_id ? (
