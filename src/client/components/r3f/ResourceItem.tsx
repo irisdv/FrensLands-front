@@ -133,7 +133,7 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
 
     const clockTextureHovered = useMemo(() => {
         if (textureLoader) {
-            let textureType = findTextByID(242);
+            let textureType = findTextByID(256);
             const localT = textureLoader.clone()
             localT.needsUpdate = true
             localT.offset.set(textureType.x, textureType.y);
