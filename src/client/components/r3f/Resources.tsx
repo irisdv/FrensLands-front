@@ -22,7 +22,7 @@ export default function Resources ({frontBlockArray, textArrRef, rightBuildingTy
             // if (gallery != undefined && gallery == 1) {
             //     textObj = new TextureLoader().load("../resources/textures/Matchbox_Tiles_Objects_nogrid_0.png");
             // } else {
-                textObj = new TextureLoader().load("resources/textures/Matchbox_Tiles_Objects_nogrid_0.png");
+                textObj = new TextureLoader().load("resources/textures/Matchbox_Tiles_Objects_nogrid_"+worldType.toString()+".png");
             // }
             textObj.repeat = new Vector2(0.0625, 0.0625)
             textObj.magFilter = NearestFilter;
@@ -39,7 +39,7 @@ export default function Resources ({frontBlockArray, textArrRef, rightBuildingTy
             // if (gallery != undefined && gallery == 1) {
             //     textObj = new TextureLoader().load("../resources/textures/Matchbox_Tiles_Objects_Outlined_nogrid_0.png");
             // } else {
-                textObj = new TextureLoader().load("resources/textures/Matchbox_Tiles_Objects_Outlined_nogrid_0.png");
+                textObj = new TextureLoader().load("resources/textures/Matchbox_Tiles_Objects_Outlined_nogrid_"+worldType.toString()+".png");
             // }
 
             textObj.repeat = new Vector2(0.0625, 0.0625)
