@@ -1217,7 +1217,7 @@ body {
     width:calc(64px * 2);
     background-position:calc(8 * 1 * 64px) calc(5 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
-    top: 0px;
+    top:55px;
     right: 0px;
     z-index: 1;
     position: absolute;
@@ -1233,7 +1233,7 @@ body {
     width:calc(64px * 2);
     background-position:calc(10 * 1 * 64px) calc(5 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
-    top: 0px;
+    top: 55px;
     right: 0px;
     z-index: 1;
     position: absolute;
@@ -1587,6 +1587,44 @@ body {
     width:calc(64px * 1);
     background-position:calc(4 * 1 * 64px) calc(13 * 1 * 64px);
     background-size:calc(1408px * 1) calc(768px * 1);
+}
+
+.btnZoom {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 2);
+    background-position:calc(12 * 1 * 64px) calc(5 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+    position: absolute;
+    z-index: 1;
+    top: 0px;
+    right: -7px;
+}
+
+.checkZoom1 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(10 * 1 * 64px) calc(9 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+    position: absolute;
+    z-index: 1;
+    top: -1px;
+    right: 75px;
+}
+.checkZoom0 {
+    display:inline-block;
+    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+    height:calc(64px * 1);
+    width:calc(64px * 1);
+    background-position:calc(9 * 1 * 64px) calc(9 * 1 * 64px);
+    background-size:calc(1408px * 1) calc(768px * 1);
+    position: absolute;
+    z-index: 1;
+    top: -1px;
+    right: 75px;
 }
 
 

@@ -19,8 +19,7 @@ import { useSelectContext } from '../../hooks/useSelectContext';
 export const Scene = (props : any) => {
     const ContextBridge = useContextBridge(SelectContext, BuildingContext, TransactionManagerContext, StarknetContext, StateContext)
     const refCanvas = useRef<any>()
-
-    const { updateBuildingFrame } = useSelectContext()
+    const { updateBuildingFrame, zoomMode } = useSelectContext()
 
     const { mapArray, textArrRef, rightBuildingType, worldType, UBlockIDs } = props
 
@@ -29,8 +28,6 @@ export const Scene = (props : any) => {
     const [mouseRightPressed, setMouseRightPressed] = useState(0)
     const [mouseMiddlePressed, setMouseMiddlePressed] = useState(0)
     const [frontBlockArray, setFrontBlockArray] = useState([])
-
-    // var mouseWheelPropTest = 0
 
     const [keyMap, setKeyMap] = useState({
         Escape: false,
@@ -41,6 +38,10 @@ export const Scene = (props : any) => {
     const [ index, setIndex ] = useState(10);
     indexRef.current = index;
 
+    const zoomValue = useMemo(() => {
+        return zoomMode
+    }, [zoomMode])
+
     useEffect(() => {
         const handleKeyDown = (event : any) => {
             setKeyMap((m) => ({ ...m, [event.code]: true }))
@@ -49,11 +50,20 @@ export const Scene = (props : any) => {
             setKeyMap((m) => ({ ...m, [event.code]: false }))
         }
         const handleMouseWheelProp = (event : any) => {
-          if (event.deltaY > 0 && indexRef.current > 4) {
-              setIndex(() => indexRef.current - 1);
-          } else if (event.deltaY < 0 && indexRef.current < 20)  {
-              setIndex(() => indexRef.current + 1);
-          }
+            if (zoomValue) {
+                if (event.deltaY > 0 && indexRef.current > 4) {
+                    setIndex(() => indexRef.current - 1);
+                } else if (event.deltaY < 0 && indexRef.current < 20)  {
+                    setIndex(() => indexRef.current + 1);
+                }
+            } else {
+                if (event.deltaY > 0 && indexRef.current < 20) {
+                    setIndex(() => indexRef.current + 1);
+                } else if (event.deltaY < 0 && indexRef.current  > 4)  {
+                    setIndex(() => indexRef.current - 1);
+                }
+            }
+          
         }
         document.addEventListener('keydown', handleKeyDown)
         document.addEventListener('keyup', handleKeyUp)
@@ -65,7 +75,7 @@ export const Scene = (props : any) => {
           let passiveObject: any = { passive: true }
           document.removeEventListener("wheel", handleMouseWheelProp, passiveObject);
         }
-      }, [])
+      }, [zoomValue])
 
       useEffect(() => {
         if (keyMap && keyMap['Escape'] == true) {
