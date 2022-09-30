@@ -1,26 +1,4 @@
-import React, {
-    useReducer,
-    useEffect,
-    useState,
-    useCallback,
-    useContext,
-    Fragment,
-    ReactFragment,
-  } from "react";
-  import * as starknet from "starknet";
-  import { defaultProvider, number, uint256 } from "starknet";
-  import { toBN } from "starknet/dist/utils/number";
-  import { bnToUint256, uint256ToBN } from 'starknet/dist/utils/uint256'
-  import { BuildingFrame } from "../components/GameUI/BuildingFrame";
-  
-  import { useBuildingsContract } from "../hooks/contracts/buildings";
-  import { useWorldsContract } from "../hooks/contracts/worlds";
-  import { useResourcesContract } from "../hooks/contracts/resources";
-  import { useFrensCoinsContract } from "../hooks/contracts/frenscoins";
-  import { useMapsContract } from "../hooks/contracts/maps";
-  import { useERC1155Contract } from "../hooks/contracts/erc1155";
-  import { useStarknet } from "@starknet-react/core";
-  import { GetBlockResponse } from 'starknet'
+import React, { useReducer } from "react";
   
   
   export interface IFrame {
@@ -47,6 +25,8 @@ import React, {
     updateBuildingFrame: (show: boolean, data: {}) => void;
     sound?: boolean
     updateSound: (val : boolean) => void;
+    zoomMode?: boolean
+    updateZoom: (val : boolean) => void;
   }
   
   export const SelectState: ISelectState = {
@@ -55,6 +35,8 @@ import React, {
     updateBuildingFrame: (show, data) => {},
     sound: true,
     updateSound: (val) => {},
+    zoomMode: false,
+    updateZoom: (val) => {},
   };
   
   const SelectContext = React.createContext(SelectState);
@@ -75,10 +57,16 @@ import React, {
     type: "set_sound";
     sound?: boolean
   }
+
+  interface SetZoom {
+    type: "set_zoom";
+    zoomMode?: boolean
+  }
   
   type Action =
     | SetShowFrame
     | SetSound
+    | SetZoom
     | SetError;
   
   function reducer(state: ISelectState, action: Action): ISelectState {
@@ -92,6 +80,11 @@ import React, {
       case "set_sound": {
         return { ...state, 
           sound: action.sound
+        };
+      }
+      case "set_zoom": {
+        return { ...state, 
+          zoomMode: action.zoomMode
         };
       }
       case "set_error": {
@@ -128,6 +121,15 @@ import React, {
     []
   );
 
+  const updateZoom = React.useCallback((val: boolean) => {
+      dispatch({
+        type: "set_zoom",
+        zoomMode: val
+      });
+    },
+    []
+  );
+
 
     return (
       <SelectContext.Provider
@@ -136,7 +138,9 @@ import React, {
           showFrame: state.showFrame,
           updateBuildingFrame,
           sound: state.sound,
-          updateSound
+          updateSound,
+          zoomMode: state.zoomMode,
+          updateZoom
         }}
       >
         {props.children}

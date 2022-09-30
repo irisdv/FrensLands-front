@@ -16,7 +16,6 @@ export const Camera = (props : any) => {
     const [zoom, setZoom] = useState(0)
 
     const mouseWheelValue = useMemo(() => {
-      console.log(mouseWheelProp)
         if (mouseWheelProp != null){
             setZoom(1)
             console.log('mouseWheelProp', mouseWheelProp)
