@@ -182,13 +182,15 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
         {
             if (block[9] > 0) {
                 if (block[3] == 3) {
-                    //textureType = findTextByID(animArray[worldType][block[9] - 1][animIndex]) // - 1])
-                    textureType = findTextByID(animArray[worldType][block[9] - 1][randAnim - 1])
-                    const localT = textureLoader.clone()
-                    localT.needsUpdate = true
-                    localT.offset.set(textureType.x, textureType.y)
-                    setLocalTexture(localT)
-                    return textureType
+                    if (block[7] == 1) {
+                        //textureType = findTextByID(animArray[worldType][block[9] - 1][animIndex]) // - 1])
+                        textureType = findTextByID(animArray[worldType][block[9] - 1][randAnim - 1])
+                        const localT = textureLoader.clone()
+                        localT.needsUpdate = true
+                        localT.offset.set(textureType.x, textureType.y)
+                        setLocalTexture(localT)
+                        return textureType
+                    }
                 }
             }
         }
@@ -203,12 +205,14 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
         if (((blockValue[0] == position.x && blockValue[1] == position.y) || blockValue[0] == frameData?.posX && blockValue[1] == frameData?.posY)) {
             if (block[9] > 0) {
                 if (block[3] == 3) {
-                    textureType = findTextByID(animSelectedArray[worldType][block[9] - 1][animIndex]) //- 1])
-                    const localT = textureSelected.clone()
-                    localT.needsUpdate = true
-                    localT.offset.set(textureType.x, textureType.y)
-                    setLocalTextureSelected(localT)
-                    return textureType
+                    if (block[7] == 1) {
+                        textureType = findTextByID(animSelectedArray[worldType][block[9] - 1][animIndex]) //- 1])
+                        const localT = textureSelected.clone()
+                        localT.needsUpdate = true
+                        localT.offset.set(textureType.x, textureType.y)
+                        setLocalTextureSelected(localT)
+                        return textureType
+                    }
                 }
             }
         }
