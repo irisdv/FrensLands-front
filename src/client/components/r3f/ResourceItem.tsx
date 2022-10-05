@@ -126,7 +126,6 @@ export const ResourceItem = memo<IBlock>(({block, textArrRef, rightBuildingType,
     const underConstructionSelect = useMemo(() => {
         if (textureValue) {
             let textureType = findTextByID(65);
-
             const localT = textureSelected.clone()
             localT.needsUpdate = true
             localT.offset.set(textureType.x, textureType.y);
