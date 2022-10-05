@@ -31,7 +31,7 @@ export const Map = (props : any)=> {
     const musicRef = useRef<THREE.Audio>()
     const { scene, raycaster, camera } = useThree()
 
-    // Audio 
+    // Audio
     // const menuTheme = useLoader(AudioLoader, "resources/sounds/ogg/FrensLand_MenuTheme.ogg");
     // const [listener] = useState(() => new AudioListener());
 
@@ -49,6 +49,8 @@ export const Map = (props : any)=> {
     const [tempBuildMesh, setTempBuildMesh] = useState(new Vector3(0,0,0))
     const [spaceValid, setSpaceValid] = useState(0)
     const [UBlockIDs, setUBlockIDs] = useState(buildingsIDs)
+    const [animIndex, setAnimIndex] = useState(1)
+    const [curT, setCurT] = useState(Date.now())
 
     // Select objects
     const [objectSelected, setObjectSelected] = useState(0);
@@ -60,7 +62,7 @@ export const Map = (props : any)=> {
         return nonce
     }, [nonce])
 
-    // Frens 
+    // Frens
     const frensArray = useMemo(() => {
         var max = 1;
         if (populationBusy && populationFree) {
@@ -75,7 +77,7 @@ export const Map = (props : any)=> {
         while (i < max) {
             var curPos = new Vector2;
             var targetPos = new Vector2;
-    
+
             curPos.x = parseInt((Math.random() * (39 - 1) + 1).toFixed(0));
             curPos.y = parseInt((Math.random() * (15 - 1) + 1).toFixed(0));
             targetPos.x = parseInt((Math.random() * (39 - 1) + 1).toFixed(0));
@@ -105,7 +107,28 @@ export const Map = (props : any)=> {
       }
     }
 
+
+
     useFrame(({ mouse, raycaster }) => {
+        // CREATE A VARIABLE WITH THE SPEED VALUE TO CHANGE IT WITH WEATHER
+        if ((Date.now() - curT) > 100)
+        {
+            if (animIndex <= 3)
+            {
+                setAnimIndex(animIndex + 1)
+            }
+            
+            if (animIndex == 3)
+            {
+                setAnimIndex(0)
+            }
+
+            //console.log("animIndex = ", animIndex)
+            setCurT(Date.now())
+        }
+
+
+
         currBlockPos = new Vector2(0, 0);
 
         const intersects = raycaster.intersectObjects(scene.children, true)
@@ -208,11 +231,11 @@ export const Map = (props : any)=> {
             {
                 // OPEN POPUP BUILDING WITH INFORMATION - NOT SELECTED
                 updateBuildingFrame(true, {
-                    "id": selectedObj?.type_id, 
-                    "level": frontBlockArray[rayY][rayX][7], 
-                    "unique_id": selectedObj?.unique_id, 
-                    "posX": frontBlockArray[rayY][rayX][0], 
-                    "posY": frontBlockArray[rayY][rayX][1], 
+                    "id": selectedObj?.type_id,
+                    "level": frontBlockArray[rayY][rayX][7],
+                    "unique_id": selectedObj?.unique_id,
+                    "posX": frontBlockArray[rayY][rayX][0],
+                    "posY": frontBlockArray[rayY][rayX][1],
                     "selected": 0
                 });
             }
@@ -284,8 +307,8 @@ export const Map = (props : any)=> {
             frontBlockArray[pos.y][pos.x - 0.5][10] = 0 // status : building
             buildTx(UBlockIDs + 1, frameData?.id as number, pos.x - 0.5, pos.y)
             // END TEST
-            
-            // Update global variables 
+
+            // Update global variables
             setUBlockIDs(UBlockIDs + 1)
             setPlacementActive(0)
         }
@@ -389,7 +412,7 @@ export const Map = (props : any)=> {
                             frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] += 1
                         }
                     }
-                } 
+                }
             })
         }
 
@@ -399,7 +422,7 @@ export const Map = (props : any)=> {
           )
         if (rejectedTxList) {
             txList.map((tx) => {
-                // TX for upgrades 
+                // TX for upgrades
                 if (tx.status == 'REJECTED') {
 
                     let _txExists : {} = {};
@@ -434,7 +457,7 @@ export const Map = (props : any)=> {
     }, [transactions])
 
 
-    // Load Frens texture 
+    // Load Frens texture
     const frenTexture = useMemo(() => {
         if (textArrRef && textArrRef.length > 0) {
             let textObj;
@@ -467,6 +490,7 @@ export const Map = (props : any)=> {
                     rightBuildingType={rightBuildingType}
                     position={currBlockPosState}
                     worldType={worldType}
+                    animIndex={animIndex}
                 />
             }
 
