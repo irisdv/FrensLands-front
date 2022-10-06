@@ -1,5 +1,9 @@
 module.exports = (sequelize, Sequelize) => {
   const StaticBuilding = sequelize.define("static_building", {
+    type: {
+      type: Sequelize.STRING,
+      field: "type",
+    },
     spriteId: {
       type: Sequelize.STRING,
       field: "spriteId",
@@ -11,6 +15,10 @@ module.exports = (sequelize, Sequelize) => {
     name: {
       type: Sequelize.STRING,
       field: "name",
+    },
+    levelToUnlock: {
+      type: Sequelize.SMALLINT,
+      field: "levelToUnlock",
     },
     locked: {
       type: Sequelize.BOOLEAN,
@@ -52,6 +60,11 @@ module.exports = (sequelize, Sequelize) => {
     maintainCost: {
       type: Sequelize.STRING,
       field: "maintainCost",
+      defaultValue: null,
+    },
+    repairCost: {
+      type: Sequelize.STRING,
+      field: "repairCost",
       defaultValue: null,
     },
     production: {

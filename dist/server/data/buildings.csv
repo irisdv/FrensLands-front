@@ -1,2 +1,3 @@
-spriteId,biomeId,name,locked,size,canDestroy,canMove,fertilityNeed,nbLevel,maintain,createCost,maintainCost,production
-2|1,1,Cabin,TRUE,1,FALSE,FALSE,1,2,FALSE,,,102
+id,type,spriteId,biomeId,name,pLevelToUnlock,locked,size,canDestroy,canMove,fertilityNeed,nbLevel,needMaintain,createCost,maintainCost,repairCost,production
+1,housing,22,1,Cabin,0,FALSE,1,FALSE,TRUE,100,2,FALSE,2-0-0-0-0-0-0-0-0-0-0-0,0-0-0-0-0-0-0-0-0-0-0-0,2-0-0-0-0-0-0-0-0-0-0-0,0-0-0-0-0-0-0-0-0-0-0-0
+2,housing,36,1,House,0,FALSE,1,TRUE,TRUE,100,1,FALSE,3-2-0-0-0-0-0-0-0-0-0-0,0-0-0-0-0-0-0-0-0-0-0-0,2-1-0-0-0-0-0-0-0-0-0-0,0-0-0-0-0-0-0-0-0-0-0-0

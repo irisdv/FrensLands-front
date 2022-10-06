@@ -1,8 +1,17 @@
 module.exports = (sequelize, Sequelize) => {
   const StaticResource = sequelize.define("static_resource", {
+    type: {
+      type: Sequelize.STRING,
+      field: "type",
+    },
     spriteId: {
       type: Sequelize.STRING,
       field: "spriteId",
+    },
+    animated: {
+      type: Sequelize.BOOLEAN,
+      field: "animated",
+      defaultValue: true,
     },
     biomeId: {
       type: Sequelize.STRING,
