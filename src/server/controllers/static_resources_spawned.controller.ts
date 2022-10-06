@@ -1,6 +1,6 @@
 export {};
 const models = require("../models");
-const StaticResources = models.static_resources_spawned;
+const StaticResources = models.static_resources;
 
 // Retrieve static resource spawned information by id
 exports.findOne = (req, res) => {

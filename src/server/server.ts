@@ -50,7 +50,10 @@ app.use("*", (req, res) => {
 const server = http.createServer(app); // create http server
 server.listen(port); // Listen on provided port, on all network interfaces
 
-// -------------- TEST : IMPORT CSV STATIC DATA INTO DB --------------
+//-------------- TEST : IMPORT CSV STATIC DATA INTO DB --------------
+
+
+
 // if (!dbInitialized) {
 //     // Add fixed data from csv file
 //     const db = require("./models");
@@ -100,6 +103,10 @@ server.listen(port); // Listen on provided port, on all network interfaces
 //     });
 //   dbInitialized = true;
 // }
+
+
+
+
 
 //  ------------ SOCKETS MANAGEMENT ------------
 // const io = require("socket.io")(server);
