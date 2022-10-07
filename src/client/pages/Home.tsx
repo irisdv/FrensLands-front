@@ -1,7 +1,7 @@
 import React, { useMemo, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { uint256 } from "starknet";
+import starknet, { uint256, number } from "starknet";
 import { getStarknet, IStarknetWindowObject } from "get-starknet";
 import { useStarknetCall } from "@starknet-react/core";
 
@@ -16,6 +16,8 @@ import { ILand } from "../providers/NewGameContext";
 
 import { gsap } from "gsap";
 import UI_Frames from "../style/resources/front/Ui_Frames3.svg";
+import useStartGame from "../hooks/invoke/useStartGame";
+import { useFLContract } from "../hooks/contracts/frenslands";
 
 // import socketService from "../services/socketService";
 // import { io } from "socket.io-client";
@@ -25,9 +27,11 @@ export default function Home() {
   const [wallet, setWallet] = useState<IStarknetWindowObject>();
   const [signedIn, setSignedIn] = useState(false);
   const [hasLand, setHasLand] = useState<ILand>();
+  const [hasInit, setHasInit] = useState(0);
   const navigate = useNavigate();
   const {
     updateTokenId,
+    tokenId,
     // nonce,
     // updateNonce,
   } = useGameContext();
@@ -35,11 +39,12 @@ export default function Home() {
 
   // Call
   const { contract: maps } = useMapsContract();
-  const { contract: resources } = useResourcesContract();
-  const { contract: erc1155 } = useERC1155Contract();
+  const { contract: frenslands } = useFLContract();
+  // const { contract: erc1155 } = useERC1155Contract();
   const [watch, setWatch] = useState(true);
   const [canPlay, setCanPlay] = useState(0);
   const [approved, setApproved] = useState<any>(null);
+  const initializeGame = useStartGame();
 
   // const connectSocket = async (account: string) => {
   //   const socket = socketService
@@ -141,6 +146,8 @@ export default function Home() {
       const elem = uint256.uint256ToBN(fetchBalanceNFTResult[0]);
       const balance = elem.toNumber();
 
+      console.log("balance NFT", balance);
+
       if (balance == 1 && wallet?.account.address)
         updateTokenId(wallet?.account.address);
 
@@ -167,14 +174,58 @@ export default function Home() {
   //   }
   // }, [fetchGameStatus, tokenId]);
 
+  // get_owner call avec land_id > if returns == 0 alors not initialized, if biomeId == correct biomeId alors ça a été init 
+
+  const checkWasInit = (_wallet: any, token: number) => {
+    // _wallet.account.
+    // const provider = new starknet.Provider()
+    _wallet.account.callContract(
+        {
+          contractAddress: "0x060363b467a2b8d409234315babe6be180020e0bb65d708c0d09be6fd3691a2f",
+          entrypoint: 'get_owner',
+          calldata: [number.toFelt(token)]
+        }
+      )
+      .then((res : any) => {
+        console.log('res', res);
+        return res;
+      })
+  }
+
   // Invoke Starting game
   const startGame = async (biomeId: number) => {
     console.log("startingGame invoke with biomeId", biomeId);
 
     // Send tx to init game on-chain
+    console.log("tokenId of owner", tokenId);
+
+    if (wallet && tokenId && !hasInit) {
+
+      wallet.account.callContract
+
+      let wasInit = await checkWasInit(wallet, tokenId as number);
+      console.log('wasInit', wasInit);
+
+      // let nonce = await wallet.account.getNonce();
+      // const result = await wallet.account.execute(
+      //   [
+      //     {
+      //       contractAddress: frenslands?.address as string,
+      //       entrypoint: "start_game",
+      //       calldata: [tokenId, 0, biomeId],
+      //     },
+      //   ],
+      //   undefined,
+      //   { maxFee: 500, nonce }
+      // );
+
+      // const tx_hash = await initializeGame(wallet, tokenId, biomeId, nonce);
+      // console.log('tx_hash', tx_hash);
+      // setHasInit(1);
+    }
 
     // Init game in DB
-    await initGame(wallet?.account.address as string, biomeId);
+    // await initGame(wallet?.account.address as string, biomeId);
 
     //   if (tokenId && !settingUp) {
     //     const tx_hash = initializeGame(tokenId, nonceValue);
@@ -229,6 +280,13 @@ export default function Home() {
                 <Notifications />
               </div>
             </div>
+
+            <button
+              onClick={() => startGame(2)}
+              style={{ position: "absolute", zIndex: 100 }}
+            >
+              START GAME
+            </button>
 
             <div className="absolute" style={{ width: "100vw", top: "0" }}>
               <img
