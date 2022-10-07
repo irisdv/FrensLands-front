@@ -29,7 +29,7 @@ module.exports = (sequelize, Sequelize) => {
       field: "unitTimeCreatedAt",
     },
     log: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
       field: "log",
     },
   });

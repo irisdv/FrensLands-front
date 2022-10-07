@@ -5,7 +5,7 @@ module.exports = (sequelize, Sequelize) => {
       field: "biomeId",
     },
     fullMap: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
       field: "fullMap",
     },
     nbResourceSpawned: {

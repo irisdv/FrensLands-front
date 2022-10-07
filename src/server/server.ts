@@ -52,16 +52,16 @@ server.listen(port); // Listen on provided port, on all network interfaces
 
 // -------------- TEST : IMPORT CSV STATIC DATA INTO DB --------------
 // if (!dbInitialized) {
-//     // Add fixed data from csv file
-//     const db = require("./models");
+//   // Add fixed data from csv file
+//   const db = require("./models");
 
-//     const StaticBuilding = db.static_buildings;
-//     const inputFile = path.resolve(__dirname, "./data/buildings.csv");
-//     let buildingData = [];
+//   const StaticBuilding = db.static_buildings;
+//   const inputFile = path.resolve(__dirname, "./data/buildings.csv");
+//   let buildingData = [];
 
-//     const StaticRS = db.static_resources;
-//     const rsFile = path.resolve(__dirname, "./data/rs.csv");
-//     let rsData = [];
+//   const StaticRS = db.static_resources;
+//   const rsFile = path.resolve(__dirname, "./data/rs.csv");
+//   let rsData = [];
 
 //   fs.createReadStream(inputFile)
 //     .pipe(csv.parse({ headers: true }))

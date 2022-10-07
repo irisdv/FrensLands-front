@@ -6,6 +6,7 @@ const PlayerInventory = models.inventories;
 const PlayerLand = models.lands;
 const PlayerBuilding = models.player_buildings;
 const PlayerAction = models.player_actions;
+import { initMap } from "../utils/constant";
 
 // Retrieve user information
 exports.findOne = (req, res) => {
@@ -37,7 +38,7 @@ exports.findOne = (req, res) => {
       },
       {
         model: PlayerBuilding,
-        attributes: ["posX", "posY", "blockX", "blockY", "unitTimeCreatedAt"],
+        attributes: ["posX", "posY", "blockX", "blockY", "fk_buildingid"],
       },
       {
         model: PlayerLand,
@@ -48,8 +49,6 @@ exports.findOne = (req, res) => {
         attributes: ["entrypoint", "calldata"],
         where: { validated: false },
       },
-      // player rs spawned
-      // Player busyPop
     ],
   })
     .then((data) => {
@@ -121,6 +120,7 @@ exports.initGame = (req, res) => {
           const player_land = {
             fk_userid: current_user.id,
             biomeId: biomeId,
+            fullMap: initMap,
             nbResourceSpawned: 196,
             nbResourceLeft: 196,
             nbBuilding: 1,

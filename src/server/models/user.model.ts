@@ -7,25 +7,25 @@ module.exports = (sequelize, Sequelize) => {
     inGameTime: {
       type: Sequelize.INTEGER,
       field: "inGameTime",
+      defaultValue: 0,
     },
     nbActions: {
       type: Sequelize.INTEGER,
       field: "nbActions",
-    },
-    nbLands: {
-      type: Sequelize.SMALLINT,
-      field: "nbLands",
+      defaultValue: 0,
     },
     totalBuild: {
       type: Sequelize.INTEGER,
       field: "totalBuild",
+      defaultValue: 0,
     },
     totalHarvest: {
       type: Sequelize.INTEGER,
       field: "totalHarvest",
+      defaultValue: 0,
     },
     log: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
       field: "log",
     },
   });
