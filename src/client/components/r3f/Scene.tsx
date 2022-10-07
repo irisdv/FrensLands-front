@@ -12,7 +12,7 @@ import { Vector2 } from "three";
 import BuildingContext from "../../providers/BuildingContext";
 import SelectContext from "../../providers/SelectContext";
 import { TransactionManagerContext } from "../../providers/transactions/context";
-import { StarknetContext } from "@starknet-react/core/dist/providers/starknet";
+// import { StarknetContext } from "@starknet-react/core/dist/providers/starknet";
 import StateContext from "../../providers/GameContext";
 import { useSelectContext } from "../../hooks/useSelectContext";
 import NewStateContext from "../../providers/NewGameContext";
@@ -26,7 +26,7 @@ export const Scene = (props: any) => {
     SelectContext,
     BuildingContext,
     TransactionManagerContext,
-    StarknetContext,
+    // StarknetContext,
     StateContext,
     NewStateContext
   );

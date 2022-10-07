@@ -177,13 +177,13 @@ export function BuildingFrame(props: any) {
       console.log("tx hash upgrade", tx_hash);
       // setUpgrading(tx_hash);
 
-      tx_hash.then((res) => {
-        console.log("res", res);
-        if (res != 0) {
-          updateNonce(nonceValue);
-          setHarvesting(pos_x, pos_y, 0);
-        }
-      });
+      // tx_hash.then((res) => {
+      //   console.log("res", res);
+      //   if (res != 0) {
+      //     updateNonce(nonceValue);
+      //     setHarvesting(pos_x, pos_y, 0);
+      //   }
+      // });
     } else {
       console.log("Missing tokenId");
     }
@@ -212,12 +212,12 @@ export function BuildingFrame(props: any) {
       );
       console.log("tx hash recharging", tx_hash);
 
-      tx_hash.then((res) => {
-        console.log("res", res);
-        if (res != 0) {
-          updateNonce(nonceValue);
-        }
-      });
+      // tx_hash.then((res) => {
+      //   console.log("res", res);
+      //   if (res != 0) {
+      //     updateNonce(nonceValue);
+      //   }
+      // });
     } else {
       console.log("Missing tokenId");
     }
@@ -239,13 +239,13 @@ export function BuildingFrame(props: any) {
       console.log("tx hash destroy", tx_hash);
       // setDestroying(tx_hash);
 
-      tx_hash.then((res) => {
-        console.log("res", res);
-        if (res != 0) {
-          updateNonce(nonceValue);
-          setHarvesting(pos_x, pos_y, 0);
-        }
-      });
+      // tx_hash.then((res) => {
+      //   console.log("res", res);
+      //   if (res != 0) {
+      //     updateNonce(nonceValue);
+      //     setHarvesting(pos_x, pos_y, 0);
+      //   }
+      // });
     } else {
       console.log("Missing tokenId");
     }

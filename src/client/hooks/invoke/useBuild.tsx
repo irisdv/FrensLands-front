@@ -1,8 +1,10 @@
 import { useStarknet } from "@starknet-react/core";
 import { useCallback } from "react";
-import { AddTransactionResponse, uint256 } from "starknet";
+// import { AddTransactionResponse, uint256 } from "starknet";
 import { useNotifTransactionManager } from "../../providers/transactions";
 import { useBuildingsContract } from "../contracts/buildings";
+
+
 
 export default function useBuild() {
   const { account } = useStarknet();
@@ -35,35 +37,35 @@ export default function useBuild() {
         throw new Error("Missing Arguments");
       }
 
-      return await contract
-        .invoke(
-          "build",
-          [uint256.bnToUint256(tokenId), building_type_id, pos_start],
-          { nonce }
-        )
-        .then((tx: AddTransactionResponse) => {
-          console.log("Transaction hash: ", tx.transaction_hash);
+      // return await contract
+      //   .invoke(
+      //     "build",
+      //     [uint256.bnToUint256(tokenId), building_type_id, pos_start],
+      //     { nonce }
+      //   )
+      //   .then((tx: AddTransactionResponse) => {
+      //     console.log("Transaction hash: ", tx.transaction_hash);
 
-          addTransaction({
-            status: tx.code,
-            transactionHash: tx.transaction_hash,
-            address: account,
-            metadata: {
-              method: "build",
-              message: "Build",
-              posX,
-              posY,
-              uniqueId,
-              type_id: building_type_id,
-            },
-          });
+      //     addTransaction({
+      //       status: tx.code,
+      //       transactionHash: tx.transaction_hash,
+      //       address: account,
+      //       metadata: {
+      //         method: "build",
+      //         message: "Build",
+      //         posX,
+      //         posY,
+      //         uniqueId,
+      //         type_id: building_type_id,
+      //       },
+      //     });
 
-          return tx.transaction_hash;
-        })
-        .catch((e) => {
-          console.error(e);
-          return 0;
-        });
+      //     return tx.transaction_hash;
+      //   })
+      //   .catch((e) => {
+      //     console.error(e);
+      //     return 0;
+      //   });
     },
     [account, addTransaction, contract]
   );

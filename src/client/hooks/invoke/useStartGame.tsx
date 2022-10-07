@@ -1,18 +1,19 @@
 import { useStarknet } from "@starknet-react/core";
 import React, { useCallback } from "react";
-import { AddTransactionResponse, uint256 } from "starknet";
+import { uint256, InvokeFunctionResponse } from "starknet";
+// AddTransactionResponse
 import { useNotifTransactionManager } from "../../providers/transactions";
-import { useWorldsContract } from "../contracts/worlds";
+import { useFLContract } from "../contracts/frenslands";
 
 export default function useStartGame() {
-  const { account } = useStarknet();
-  const { contract } = useWorldsContract();
+  // const { account } = useStarknet();
+  const { contract } = useFLContract();
 
   const { addTransaction } = useNotifTransactionManager();
 
   return useCallback(
-    async (tokenId: number, nonce: string) => {
-      if (contract == null || !account) {
+    async (wallet: any, tokenId: number, biomeId: number, nonce: string) => {
+      if (contract == null) {
         throw new Error("Missing Dependencies");
       }
 
@@ -22,19 +23,24 @@ export default function useStartGame() {
       }
 
       return await contract
-        .invoke("start_game", [uint256.bnToUint256(tokenId)], { nonce })
-        .then((tx: AddTransactionResponse) => {
-          console.log("Transaction hash: ", tx.transaction_hash);
+        .invoke("start_game", [uint256.bnToUint256(tokenId), biomeId], {
+          nonce: nonce,
+          maxFee: 1618293576158800,
+        })
+        // .then((tx: AddTransactionResponse) => {
+          .then((tx: InvokeFunctionResponse) => {
+          console.log("Transaction hash: ", tx);
 
-          addTransaction({
-            status: tx.code,
-            transactionHash: tx.transaction_hash,
-            address: account,
-            metadata: {
-              method: "start_game",
-              message: "Initialiazing a game",
-            },
-          });
+
+          // addTransaction({
+          //   status: tx.status,
+          //   transactionHash: tx.transaction_hash,
+          //   address: wallet.account.address,
+          //   metadata: {
+          //     method: "start_game",
+          //     message: "Initialiazing a game",
+          //   },
+          // });
 
           return tx.transaction_hash;
         })
@@ -43,6 +49,6 @@ export default function useStartGame() {
           return 0;
         });
     },
-    [account, addTransaction, contract]
+    [addTransaction, contract]
   );
 }
