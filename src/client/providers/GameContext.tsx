@@ -6,6 +6,7 @@ import {
   defaultProvider,
   stark,
   KeyPair,
+  number,
   GetBlockResponse,
 } from "starknet";
 import { toBN } from "starknet/dist/utils/number";
@@ -375,22 +376,22 @@ export const AppStateProvider: React.FC<
 
   const fetchBlock = useCallback(() => {
     if (library) {
-      library
-        .getBlock()
-        .then((newBlock) => {
-          setBlock((oldBlock) => {
-            if (oldBlock?.block_hash === newBlock.block_hash) {
-              return oldBlock;
-            }
-            // Reset error and return new block.
-            setError(undefined);
-            return newBlock;
-          });
-        })
-        .catch(() => {
-          setError("failed fetching block");
-        })
-        .finally(() => setLoading(false));
+      // library
+      //   .getBlock()
+      //   .then((newBlock) => {
+      //     setBlock((oldBlock) => {
+      //       if (oldBlock?.block_hash === newBlock.block_hash) {
+      //         return oldBlock;
+      //       }
+      //       // Reset error and return new block.
+      //       setError(undefined);
+      //       return newBlock;
+      //     });
+      //   })
+      //   .catch(() => {
+      //     setError("failed fetching block");
+      //   })
+      //   .finally(() => setLoading(false));
     }
   }, [library, setLoading, setError, setBlock]);
 
@@ -480,10 +481,10 @@ export const AppStateProvider: React.FC<
   const updateTokenId = React.useCallback(
     async (account: any) => {
       let _token_id;
-      if (maps != null && account && state.address) {
+      if (maps != null && account) {
         try {
           _token_id = await maps.call("tokenOfOwnerByIndex", [
-            state.address,
+            number.toFelt(account),
             uint256.bnToUint256(0),
           ]);
           console.log(
@@ -494,7 +495,7 @@ export const AppStateProvider: React.FC<
             type: "set_tokenId",
             tokenId: uint256.uint256ToBN(_token_id[0]).toNumber(),
           });
-          refreshPopulation(resources);
+          // refreshPopulation(resources);
         } catch (e) {
           console.warn("Error when retrieving tokenOwner by Index ");
           console.warn(e);

@@ -1,7 +1,7 @@
 import {
   Status,
   TransactionStatus,
-  Transaction as NotifTransaction,
+  // Transaction as NotifTransaction,
 } from "starknet";
 
 export interface TransactionSubmitted {
@@ -15,7 +15,8 @@ export interface TransactionSubmitted {
 
 export interface TransactionReceived {
   status: Status;
-  transaction: NotifTransaction;
+  // transaction: NotifTransaction;
+  transaction: any
   transactionHash: string;
   lastUpdatedAt: number;
   show?: boolean;

@@ -54,32 +54,32 @@ export function NotifTransactionManagerProvider({
         );
         const lastUpdatedAt = Date.now();
 
-        if (transaction.status !== transactionResponse.status) {
-          dispatch({
-            type: "update_transaction",
-            transactionResponse,
-            lastUpdatedAt,
-            show: true,
-            transactionHash: transaction.transactionHash,
-          });
-        }
+        // if (transaction.status !== transactionResponse.status) {
+        //   dispatch({
+        //     type: "update_transaction",
+        //     transactionResponse,
+        //     lastUpdatedAt,
+        //     show: true,
+        //     transactionHash: transaction.transactionHash,
+        //   });
+        // }
 
-        if (
-          transaction.status !== "NOT_RECEIVED" &&
-          transaction.status !== "PENDING" &&
-          transactionResponse.status !== "ACCEPTED_ON_L1"
-        ) {
-          dispatch({
-            type: "add_notification",
-            notifItem: {
-              content: {
-                status: transactionResponse.status,
-                description: transaction.metadata,
-                transactionHash: transaction.transactionHash,
-              },
-            },
-          });
-        }
+        // if (
+        //   transaction.status !== "NOT_RECEIVED" &&
+        //   transaction.status !== "PENDING" &&
+        //   transactionResponse.status !== "ACCEPTED_ON_L1"
+        // ) {
+        //   dispatch({
+        //     type: "add_notification",
+        //     notifItem: {
+        //       content: {
+        //         status: transactionResponse.status,
+        //         description: transaction.metadata,
+        //         transactionHash: transaction.transactionHash,
+        //       },
+        //     },
+        //   });
+        // }
       } catch (err) {
         // TODO(fra): somehow should track the error
         console.error(err);
