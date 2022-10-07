@@ -9,18 +9,27 @@ export interface ILand {
   fullMap: string;
 }
 
-export interface IInventory {
+export interface Iinventory {
   wood: number;
   rock: number;
-  food: number;
-  metal: number;
   coal: number;
+  metal: number;
   energy: number;
+  gold: number;
+  food: number;
   coin: number;
-  totalPop: number;
   freePop: number;
+  totalPop: number;
   timeSpent: number;
   level: number;
+}
+
+export interface IplayerBuilding {
+  blockX: number;
+  blockY: number;
+  posX: number;
+  posY: number;
+  fk_buildingid: number;
 }
 
 export interface INewGameState {
@@ -36,10 +45,10 @@ export interface INewGameState {
   harvestActions: any[];
   initPlayer: (wallet: IStarknetWindowObject) => void;
   initGameSession: (
-    inventory: IInventory,
+    inventory: Iinventory,
     land: ILand,
     playerActions: [],
-    playerBuildings: []
+    playerBuildings: IplayerBuilding
   ) => void;
   addAction: (entrypoint: string, calldata: string) => void;
 }
@@ -136,6 +145,8 @@ export const NewAppStateProvider: React.FC<
 > = (props: React.PropsWithChildren<{ children: any }>): React.ReactElement => {
   const [state, dispatch] = useReducer(reducer, NewGameState);
   const value = React.useMemo(() => [state, dispatch], [state]);
+  //const [fixBuildVal, setFixBuildVal] = useState<any[]>([]);
+  //const [fixResVal, setFixResVal] = useState<any[]>([]);
 
   const addAction = React.useCallback(
     (entrypoint: string, calldata: string) => {
@@ -166,8 +177,6 @@ export const NewAppStateProvider: React.FC<
     tempArray[y] = [];
     var compMapSplit = compMap.split("|");
 
-    console.log("compMap", compMapSplit);
-
     while (i < compMapSplit.length) {
       if (x > 40) {
         y++;
@@ -175,26 +184,38 @@ export const NewAppStateProvider: React.FC<
         x = 0;
       }
 
-      tempArray[y][x] = [];
-      tempArray[y][x].resType = parseInt(compMapSplit[i][0]);
-      tempArray[y][x].type = parseInt(compMapSplit[i][1] + compMapSplit[i][2]);
-      tempArray[y][x].id = parseInt(
-        compMapSplit[i][3] +
-          compMapSplit[i][4] +
-          compMapSplit[i][5] +
-          compMapSplit[i][6]
-      );
-      tempArray[y][x].state = parseInt(compMapSplit[i][7]);
-      tempArray[y][x].blockType = parseInt(compMapSplit[i][8]);
-      tempArray[y][x].blockFertility = parseInt(
-        compMapSplit[i][9] + compMapSplit[i][10]
-      );
+      if (compMapSplit[i] == "0") {
+        tempArray[y][x] = [];
+        tempArray[y][x].resType = 0;
+        tempArray[y][x].type = 0;
+        tempArray[y][x].id = 0;
+        tempArray[y][x].state = 0;
+        tempArray[y][x].blockType = 0;
+        tempArray[y][x].blockFertility = 0;
+      } else {
+        tempArray[y][x] = [];
+        tempArray[y][x].resType = parseInt(compMapSplit[i][0]);
+        tempArray[y][x].type = parseInt(
+          compMapSplit[i][1] + compMapSplit[i][2]
+        );
+        tempArray[y][x].id = parseInt(
+          compMapSplit[i][3] +
+            compMapSplit[i][4] +
+            compMapSplit[i][5] +
+            compMapSplit[i][6]
+        );
+        tempArray[y][x].state = parseInt(compMapSplit[i][7]);
+        tempArray[y][x].blockType = parseInt(compMapSplit[i][8]);
+        tempArray[y][x].blockFertility = parseInt(
+          compMapSplit[i][9] + compMapSplit[i][10]
+        );
+      }
 
       x++;
       i++;
     }
 
-    console.log("tempArray", tempArray);
+    console.log(tempArray);
 
     return tempArray;
   };
@@ -230,9 +251,9 @@ export const NewAppStateProvider: React.FC<
     while (i < 640) {
       let resType: string = "";
       let type: string = "";
-      let tempUID: string = "0";
-      let state: any = 0;
-      let fertility: number = 99;
+      let tempUID: any = "0";
+      let state: string = "0";
+      let fertility: string = "99";
       let infraType: string = "1";
 
       while (j < rock.length) {
@@ -270,7 +291,7 @@ export const NewAppStateProvider: React.FC<
 
       if (resType != "1") {
         tempUID = "0";
-        fertility = 0;
+        fertility = "0";
         infraType = "0";
       } else {
         tempUID = uid.toString();
@@ -286,7 +307,7 @@ export const NewAppStateProvider: React.FC<
       }
 
       fullMap =
-        fullMap.toString() +
+        fullMap +
         parseInt(
           infraType.toString() +
             resType.toString() +
@@ -294,28 +315,45 @@ export const NewAppStateProvider: React.FC<
             tempUID.toString() +
             state.toString() +
             fertility.toString()
-        ) +
+        ).toString() +
         "|";
 
       i++;
     }
-
-    console.log("fullMap", fullMap);
     return fullMap;
   };
 
-  const getStaticResources = async () => {
-    await fetch(`http://localhost:3001/api/static_resources_spawned`, {
-      headers: { "Content-Type": "application/json" },
-    }).then(async (response) => {
-      return await response.json();
-    });
-    // .then(async (data) => {
-    //   console.log("static resources spawned retrieved", data);
-    //   let response = await data;
-    //   return response;
-    // });
-  };
+  // COMPOSITIOM
+  // resource_type : 1        [resources,buildings,roads,decoration]
+  // resource_type_id : 2     [type of resources]
+  // resource_uid : 4         [ID]
+  // level : 1                [STATE]
+  // mat_type : 1             [block mat type]
+  // fertility: 2
+
+  // FUNCTION TO DO
+
+  // ||||||- enough to harvest : resources / population (type of resource spawned)
+  // ||||||- enough to build : resources / population (type of building)
+  // ||||||- enough to repair
+  // ||||||- get resource / population back from destroying (type of building) ---> unsigned_div_rem keep just quotient | full pop
+  // ||||||- enough to fuel production of one building (type of building)
+  // ||||||- calculate total claimable resources ()
+  // ||||||- can move an infrastructure (is movable, destination block is empty)
+  // ||||||- make array of fix building values
+  // ||||||- make array of fix resources values
+  // ||||||- create building
+  // ||||||- repair building
+  // ||||||- maintain building
+  // ||||||- destroy building
+  // ||||||- harvest resources
+  // - receive resources from harvest (with timer)  ----> Need to create a Special Incoming array (checked often)
+  // - levelManagement (increase/decrease)
+  // - REV_cancelCreate
+  // - REV_cancelHarvest
+  // - REV_cancelRepair
+  // - REV_cancelMaintain
+  // - REV_cancelMove
 
   const getStaticBuildings = () => {
     return fetch(`http://localhost:3001/api/static_buildings`, {
@@ -325,58 +363,378 @@ export const NewAppStateProvider: React.FC<
       .then((data) => {
         console.log("static buildings retrieved", data);
         return data;
+      });
+  };
+
+  const getStaticResources = () => {
+    return fetch(`http://localhost:3001/api/static_resources_spawned`, {
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("static resources spawned retrieved", data);
+        return data;
       })
       .catch((error) => {
         console.log("error", error);
       });
   };
 
+  const parseResToArray = (str: string) => {
+    var tempArray = str.split("-");
+
+    return tempArray;
+  };
+
+  const parsePipeResToArray = (str: string) => {
+    var tempArray = str.split("|");
+
+    return tempArray;
+  };
+
+  const checkResHarvest = (id: number, inventory: any, fixResVal: any) => {
+    let i: number = 0;
+
+    while (i < fixResVal[id].harvestCost) {
+      if (inventory[i] < fixResVal[id].harvestCost[i]) {
+        console.log("not enough resources to harvest ", id);
+        return 0;
+      }
+    }
+    console.log("enough resources to harvest ", id);
+    return 1;
+  };
+
+  const checkResMaintain = (id: number, inventory: any, fixBuildVal: any) => {
+    let i: number = 0;
+
+    while (i < fixBuildVal[id].maintainCost) {
+      if (inventory[i] < fixBuildVal[id].maintainCost[i]) {
+        console.log("not enough resources to maintain ", id);
+        return 0;
+      }
+    }
+    console.log("enough resources to maintain ", id);
+    return 1;
+  };
+
+  const checkResBuild = (id: number, inventory: any, fixBuildVal: any) => {
+    let i: number = 0;
+
+    while (i < fixBuildVal[id].createCost) {
+      if (i == 8) {
+        if (inventory[i] - fixBuildVal[id].createCost[i] < 1) {
+          console.log("not enough resources to build ", id);
+          return 0;
+        }
+      } else if (inventory[i] < fixBuildVal[id].createCost[i]) {
+        console.log("not enough resources to build ", id);
+        return 0;
+      }
+    }
+    console.log("enough resources to build ", id);
+    return 1;
+  };
+
+  const checkResRepair = (id: number, inventory: any, fixBuildVal: any) => {
+    let i: number = 0;
+
+    while (i < fixBuildVal[id].repairCost) {
+      if (inventory[i] < fixBuildVal[id].repairCost[i]) {
+        console.log("not enough resources to repair ", id);
+        return 0;
+      }
+    }
+    console.log("enough resources to repair ", id);
+    return 1;
+  };
+
+  const checkIsMovable = (id: number, fixBuildVal: any) => {
+    if (fixBuildVal[id].canMove == true) {
+      return 1;
+    } else {
+      return 0;
+    }
+  };
+
+  const claim = (mapBuildingArray: any, fixBuildVal: any, inventory: any) => {
+    let i: number = 0;
+    let j: number = 0;
+    let cycles: number = 1;
+
+    // CALCULATE THE NUMBER OF CYCLES
+
+    while (i < mapBuildingArray.length) {
+      while (j < fixBuildVal[mapBuildingArray[i].id].production.length) {
+        inventory[j] +=
+          fixBuildVal[mapBuildingArray[i].id].production[j] * cycles;
+        j++;
+      }
+      j = 0;
+      i++;
+    }
+    //NEED TO RETURN MAPBUILDINGARRAY TOO WITH THE LAST CLAIMED BLOCK UPDATED
+    return inventory;
+  };
+
+  const createBuildingPay = (
+    id: number,
+    mapBuildingArray: any,
+    inventory: any,
+    fixBuildVal: any
+  ) => {
+    let i: number = 0;
+
+    while (i < fixBuildVal[id].createCost) {
+      inventory[i] -= fixBuildVal[id].createCost[i];
+      i++;
+    }
+    mapBuildingArray = addToBuildingArray(mapBuildingArray, id, 0, 0, 0, 0);
+    //NEED TO RETURN MAPBUILDINGARRAY AND CONNECT THE POSITIONS
+    return inventory;
+  };
+
+  const addToBuildingArray = (
+    mapBuildingArray: any,
+    id: number,
+    posX: number,
+    posY: number,
+    blockX: number,
+    blockY: number
+  ) => {
+    // NEED TO TEST IF IT's LIKE THIS OR [mapBuildingArray.length + 1]
+    mapBuildingArray[mapBuildingArray.length] = [];
+    mapBuildingArray[mapBuildingArray.length].id = id;
+    mapBuildingArray[mapBuildingArray.length].posX = posX;
+    mapBuildingArray[mapBuildingArray.length].posY = posY;
+    mapBuildingArray[mapBuildingArray.length].blockX = blockX;
+    mapBuildingArray[mapBuildingArray.length].blockY = blockY;
+
+    return mapBuildingArray;
+  };
+
+  const deleteFromBuildingArray = (mapBuildingArray: any, uid: number) => {
+    // RIGHT WAY TO DELETE AN ELEMENT ?
+    const temp: any[] = [];
+    mapBuildingArray[uid] = temp;
+
+    return mapBuildingArray;
+  };
+
+  const destroyBuilding = (
+    uid: number,
+    id: number,
+    mapBuildingArray: any,
+    inventory: any,
+    fixBuildVal: any
+  ) => {
+    let i: number = 0;
+    // NEED TO DO THE SPECIAL DIVISION LIKE IT IS ON CHAIN
+    while (i < fixBuildVal[id].createCost) {
+      inventory[i] += fixBuildVal[id].createCost[i];
+      i++;
+    }
+    mapBuildingArray = deleteFromBuildingArray(mapBuildingArray, uid);
+    //NEED TO RETURN MAPBUILDINGARRAY AS WELL
+    return inventory;
+  };
+
+  const repairBuildingPay = (id: number, inventory: any, fixBuildVal: any) => {
+    let i: number = 0;
+
+    while (i < fixBuildVal[id].repairCost) {
+      inventory[i] -= fixBuildVal[id].repairCost[i];
+      i++;
+    }
+    return inventory;
+  };
+
+  const maintainBuildingPay = (
+    id: number,
+    inventory: any,
+    fixBuildVal: any
+  ) => {
+    let i: number = 0;
+
+    while (i < fixBuildVal[id].maintainCost) {
+      inventory[i] -= fixBuildVal[id].maintainCost[i];
+      i++;
+    }
+    return inventory;
+  };
+
+  const harvestResPay = (
+    id: number,
+    uid: number,
+    inventory: any,
+    fixResVal: any,
+    harvestIncoming: any
+  ) => {
+    let i: number = 0;
+
+    while (i < fixResVal[id].harvestCost) {
+      inventory[i] -= fixResVal[id].harvestCost[i];
+      i++;
+    }
+    addToHarvestArray(id, uid, harvestIncoming);
+    return inventory;
+  };
+
+  const addToHarvestArray = (id: number, uid: number, harvestIncoming: any) => {
+    harvestIncoming[harvestIncoming.length] = [];
+    harvestIncoming[harvestIncoming.length].uid = uid;
+    harvestIncoming[harvestIncoming.length].type = id;
+    harvestIncoming[harvestIncoming.length].harvestStartTime = Date.now();
+    harvestIncoming[harvestIncoming.length].harvestDelay = 1000;
+
+    return harvestIncoming;
+  };
+
+  const receiveResHarvest = (id: number, inventory: any, fixResVal: any) => {
+    let i: number = 0;
+
+    while (i < fixResVal[id].production) {
+      inventory[i] += fixResVal[id].production[i];
+      i++;
+    }
+    return inventory;
+  };
+
+  const playerLevelIncrease = (inventory: any) => {
+    inventory[11] += 1;
+    return inventory;
+  };
+
+  const playerLevelDecrease = (inventory: any) => {
+    inventory[11] -= 1;
+    return inventory;
+  };
+
   const initGameSession = React.useCallback(
     async (
-      inventory: IInventory,
+      inventory: Iinventory,
       land: ILand,
       playerActions: [],
-      playerBuildings: []
+      playerBuildings: IplayerBuilding
     ) => {
-      console.log("inventory received", inventory.wood);
-      console.log("playerBuildings", playerBuildings);
+      //console.log("inventory = ", inventory);
+      console.log("playerBuildings = ", playerBuildings);
 
-      // for (const key in inventory) {
-      //   console.log(`${key}: ${inventory[key]}`);
-      // }
+      let fullMap: string = "";
+      fullMap = generateFullMap();
+      //console.log("fullMap = ", fullMap);
+      let testArray = [];
+      testArray = revComposeD(fullMap);
+      //console.log("testArray = ", testArray);
 
-      revComposeD(
-        "10300112199|10300112199|10300112199|10300112199|10300112199"
-      );
-
-      generateFullMap();
-
+      // Fetch static buildings
       let staticBuildings: any = await getStaticBuildings();
+      // Fetch static resources spawned
+      let staticResources: any = await getStaticResources();
 
-      // .then((res) => {
-      //   staticBuildings = res;
-      //   return staticBuildings;
-      //   // Object.keys(staticBuildings)
-      // })
-      console.log("staticBuildings", staticBuildings);
+      //  - - - - - - DATA IN ARRAYS - - - - - -
 
-      // const keys = Object.keys(staticBuildings);
+      let inventoryArray: any[] = [];
 
-      Object.keys(staticBuildings).map((key: any) => {
-        console.log("building", staticBuildings[key]);
-      });
+      inventoryArray[0] = inventory.wood;
+      inventoryArray[1] = inventory.rock;
+      inventoryArray[4] = inventory.food;
+      inventoryArray[3] = inventory.metal;
+      inventoryArray[2] = inventory.coal;
+      inventoryArray[6] = inventory.energy;
+      inventoryArray[5] = inventory.coin;
+      inventoryArray[7] = inventory.gold;
+      inventoryArray[8] = inventory.freePop;
+      inventoryArray[9] = inventory.totalPop;
+      inventoryArray[10] = inventory.timeSpent;
+      inventoryArray[11] = inventory.level;
 
-      // for (const i in staticBuildings) {
-      //   console.log(staticBuildings[i]);
-      // }
-      // keys.forEach((key, index) => {
+      console.log("inventoryArray = ", inventoryArray);
 
-      //   console.log(`${key}: ${staticBuildings[key] as any}`);
-      // });
+      let i: number = 0;
+      let mapBuildingArray: any[] = [];
+      const mapBuildingTemp = Object.values(playerBuildings);
 
-      // getStaticResources();
+      while (i < mapBuildingTemp.length) {
+        mapBuildingArray[i] = [];
 
-      //   TODO : transform land.fullMap into the correct array format
+        mapBuildingArray[i].blockX = mapBuildingTemp[i].blockX;
+        mapBuildingArray[i].blockY = mapBuildingTemp[i].blockY;
+        mapBuildingArray[i].posX = mapBuildingTemp[i].posX;
+        mapBuildingArray[i].posY = mapBuildingTemp[i].posY;
+        mapBuildingArray[i].id = mapBuildingTemp[i].fk_buildingid;
+
+        i++;
+      }
+
+      console.log("mapBuildingArray = ", mapBuildingArray);
+
+      i = 0;
+      let fixBuildVal: any[] = [];
+
+      while (i < staticBuildings.length) {
+        fixBuildVal[i] = [];
+        fixBuildVal[i].id = staticBuildings[i].id;
+        fixBuildVal[i].type = staticBuildings[i].type;
+        fixBuildVal[i].biome = staticBuildings[i].biomeId;
+        fixBuildVal[i].name = staticBuildings[i].name;
+        fixBuildVal[i].sprite = parseResToArray(staticBuildings[i].spriteId);
+        fixBuildVal[i].canMove = staticBuildings[i].canMove;
+        fixBuildVal[i].canDestroy = staticBuildings[i].canDestroy;
+        fixBuildVal[i].level = staticBuildings[i].nbLevel;
+        fixBuildVal[i].needMaintain = staticBuildings[i].needMaintain;
+        fixBuildVal[i].animated = staticBuildings[i].animated;
+        fixBuildVal[i].pLevelToUnlock = staticBuildings[i].pLevelToUnlock;
+        fixBuildVal[i].locked = staticBuildings[i].locked;
+        fixBuildVal[i].fertility = staticBuildings[i].fertilityNeed;
+        fixBuildVal[i].createCost = parseResToArray(
+          staticBuildings[i].createCost
+        );
+        fixBuildVal[i].maintainCost = parseResToArray(
+          staticBuildings[i].maintainCost
+        );
+        fixBuildVal[i].production = parseResToArray(
+          staticBuildings[i].production
+        );
+        i++;
+      }
+      console.log("fixBuildVal = ", fixBuildVal);
+
+      i = 0;
+
+      let fixResVal: any[] = [];
+
+      while (i < staticResources.length) {
+        let tempSpriteArray: any[] = [];
+        tempSpriteArray = parsePipeResToArray(staticResources[i].spriteId);
+
+        fixResVal[i] = [];
+        fixResVal[i].id = staticResources[i].id;
+        fixResVal[i].biome = staticResources[i].biomeId;
+        fixResVal[i].type = staticResources[i].type;
+        fixResVal[i].nbHarvest = staticResources[i].nbHarvest;
+        fixResVal[i].animated = staticResources[i].animated;
+        fixResVal[i].locked = staticResources[i].locked;
+        fixResVal[i].size = staticResources[i].size;
+        fixResVal[i].level = staticResources[i].nbLevels;
+        fixResVal[i].fertility = staticResources[i].fertilityNeed;
+        fixResVal[i].sprites = parseResToArray(tempSpriteArray[0]);
+        fixResVal[i].harvestSprites = parseResToArray(tempSpriteArray[1]);
+        fixResVal[i].harvestCost = parseResToArray(
+          staticResources[i].harvestCost
+        );
+        fixResVal[i].production = parseResToArray(
+          staticResources[i].production
+        );
+
+        i++;
+      }
+
+      console.log("fixResVal[i] = ", fixResVal);
+
+      let harvestIncoming: any[] = [];
+
+      //  - - - - - - DATA IN ARRAYS - - - - - - END
 
       dispatch({
         type: "set_gameSession",

@@ -25,7 +25,7 @@ app.use(express.static(path.join(__dirname, "../client")));
 
 const db = require("./models"); // import models DB
 db.sequelize.sync();
-// db.sequelize.sync({ force: true });
+//db.sequelize.sync({ force: true });
 // -------------- DEBUG : UNCOMMENT TO DROP ALL DB --------------
 // db.sequelize.sync().then(function () {
 //   return db.sequelize.drop();
@@ -50,7 +50,8 @@ app.use("*", (req, res) => {
 const server = http.createServer(app); // create http server
 server.listen(port); // Listen on provided port, on all network interfaces
 
-// -------------- TEST : IMPORT CSV STATIC DATA INTO DB --------------
+//-------------- TEST : IMPORT CSV STATIC DATA INTO DB --------------
+
 // if (!dbInitialized) {
 //   // Add fixed data from csv file
 //   const db = require("./models");
