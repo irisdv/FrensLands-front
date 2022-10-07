@@ -37,7 +37,7 @@ exports.findOne = (req, res) => {
       },
       {
         model: PlayerBuilding,
-        attributes: ["posX", "posY", "blockX", "blockY", "unitTimeCreatedAt"],
+        attributes: ["posX", "posY", "blockX", "blockY", "fk_buildingid"],
       },
       {
         model: PlayerLand,
