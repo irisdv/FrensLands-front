@@ -39,7 +39,7 @@ export const ResourceItem = memo<IBlock>(
     const [localTextureSelected, setLocalTextureSelected] = useState<any>(null);
     // const [localTextureClock, setLocalTextureClock] = useState<any>(null);
     const { frameData, updateBuildingFrame } = useSelectContext();
-    const { harvestActions } = useNewGameContext();
+    const { harvestActions, playerBuilding } = useNewGameContext();
 
     const frameDataValue = useMemo(() => {
       if (frameData != null && clicked) {
@@ -94,8 +94,17 @@ export const ResourceItem = memo<IBlock>(
           );
         }
       } else if (block.infraType == 2) {
-        if (block.type == 1 && block.state == 1) {
-          textureType = findTextByID(2);
+        if (block.type == 1) {
+          const _entry = playerBuilding.filter((elem: any) => {
+            return elem.gameUid == block.id;
+          });
+          if (_entry[0].decay == 100) {
+            textureType = findTextByID(2);
+          } else {
+            textureType = findTextByID(
+              staticBuildings[block.type - 1].sprite[0]
+            );
+          }
         } else {
           textureType = findTextByID(staticBuildings[block.type - 1].sprite[0]);
         }
@@ -105,7 +114,7 @@ export const ResourceItem = memo<IBlock>(
       localT.offset.set(textureType.x, textureType.y);
       setLocalTexture(localT);
       return textureType;
-    }, [block, blockValue, level]);
+    }, [block, blockValue, level, playerBuilding]);
 
     const textureValueSelected = useMemo(() => {
       let textureType: Vector2 = new Vector2(0, 0);
@@ -140,8 +149,17 @@ export const ResourceItem = memo<IBlock>(
           );
         }
       } else if (block.infraType == 2) {
-        if (block.type == 1 && block.state == 1) {
-          textureType = findTextByID(2);
+        if (block.type == 1) {
+          const _entry = playerBuilding.filter((elem: any) => {
+            return elem.gameUid == block.id;
+          });
+          if (_entry[0].decay == 100) {
+            textureType = findTextByID(2);
+          } else {
+            textureType = findTextByID(
+              staticBuildings[block.type - 1].sprite[0]
+            );
+          }
         } else {
           textureType = findTextByID(staticBuildings[block.type - 1].sprite[0]);
         }
@@ -151,7 +169,7 @@ export const ResourceItem = memo<IBlock>(
       localT.offset.set(textureType.x, textureType.y);
       setLocalTextureSelected(localT);
       return textureType;
-    }, [block, blockValue, level]);
+    }, [block, blockValue, level, playerBuilding]);
 
     const underConstruction = useMemo(() => {
       if (textureValue) {

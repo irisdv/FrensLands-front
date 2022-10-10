@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { repairAction } from "../../../api/player";
 import { useGameContext } from "../../../hooks/useGameContext";
 import { useNewGameContext } from "../../../hooks/useNewGameContext";
 import { useSelectContext } from "../../../hooks/useSelectContext";
@@ -20,19 +21,18 @@ export function BF_upgrade(props: any) {
 
   const {
     updateInventory,
-    updateHarvestActions,
-    updateMapBlock,
-    fullMap,
     addAction,
     inventory,
     wallet,
+    playerBuilding,
+    updatePlayerBuilding,
   } = useNewGameContext();
-  const { showFrame, frameData, updateBuildingFrame } = useSelectContext();
+  const { updateBuildingFrame } = useSelectContext();
   const { tokenId } = useGameContext();
   const [showNotif, setShowNotif] = useState(false);
 
   //   Function to upgrade building
-  const upgradeBuilding = (
+  const upgradeBuilding = async (
     _typeId: number,
     _posX: number,
     _posY: number,
@@ -49,7 +49,6 @@ export function BF_upgrade(props: any) {
         inventory,
         staticBuildingsData
       );
-      console.log("inventory", _inventory);
       updateInventory(_inventory);
 
       // Store on-chain action in context
@@ -59,39 +58,33 @@ export function BF_upgrade(props: any) {
 
       // ? repair timer has passed
       // receive resources after upgrade
-      // updateInventory(_inventoryUpdated);
-      // Update playerBuilding decay value
+      _inventory[9] += staticBuildingsData[_typeId - 1].repairCost[9];
+      updateInventory(_inventory);
+
+      const _idx = playerBuilding.findIndex((obj) => obj.gameUid == uid);
+      playerBuilding[_idx].decay = 0;
+      updatePlayerBuilding(playerBuilding);
+
+      updateBuildingFrame(false, {
+        infraType: 0,
+        type_id: 0,
+        state: 0,
+        posX: 0,
+        posY: 0,
+        selected: 0,
+      });
 
       // ? send request to db
+      let _action = await repairAction(
+        wallet.account.address,
+        entrypoint,
+        calldata,
+        inventory,
+        playerBuilding[_idx].gameUid
+      );
     } else {
       console.log("Cannot repair or missing tokenId");
     }
-    // const pos_start = (pos_y - 1) * 40 + pos_x;
-    // console.log("pos_start", pos_start);
-    // if (tokenId) {
-    //   const tx_hash = upgradingInvoke(
-    //     tokenId,
-    //     pos_start,
-    //     parseInt(frameData?.unique_id as string),
-    //     type_id,
-    //     level,
-    //     pos_x,
-    //     pos_y,
-    //     nonceValue
-    //   );
-    //   console.log("tx hash upgrade", tx_hash);
-    //   // setUpgrading(tx_hash);
-
-    //   // tx_hash.then((res) => {
-    //   //   console.log("res", res);
-    //   //   if (res != 0) {
-    //   //     updateNonce(nonceValue);
-    //   //     setHarvesting(pos_x, pos_y, 0);
-    //   //   }
-    //   // });
-    // } else {
-    //   console.log("Missing tokenId");
-    // }
   };
 
   return (
@@ -130,7 +123,7 @@ export function BF_upgrade(props: any) {
           >
             {/* Population Required to build */}
             {decay == 100 &&
-            staticBuildingsData[typeId - 1].createCost[8] > 0 ? (
+            staticBuildingsData[typeId - 1].repairCost[8] > 0 ? (
               <div className="flex flex-row justify-center inline-block relative">
                 <div
                   className="fontHPxl-sm"
@@ -152,13 +145,13 @@ export function BF_upgrade(props: any) {
             )}
             {/* Pop additional after building */}
             {decay == 100 &&
-            staticBuildingsData[typeId - 1].createCost[9] > 0 ? (
+            staticBuildingsData[typeId - 1].repairCost[9] > 0 ? (
               <div className="flex flex-row justify-center inline-block relative">
                 <div
                   className="fontHPxl-sm"
                   style={{ position: "absolute", top: "-9px", left: "46px" }}
                 >
-                  +{staticBuildingsData[typeId - 1].createCost[9]}
+                  +{staticBuildingsData[typeId - 1].repairCost[9]}
                 </div>
                 <div
                   className={"mb-3 small12"}

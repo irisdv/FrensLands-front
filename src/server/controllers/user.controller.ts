@@ -314,7 +314,7 @@ exports.repair = (req, res) => {
   const account = req.userData.account;
   const repairAction = req.userData.action;
   const inventory = req.userData.inventory;
-  const fullMap = req.userData.fullMap;
+  const uid = req.userData.uid;
 
   var current_user;
 
@@ -329,7 +329,6 @@ exports.repair = (req, res) => {
     ],
   })
     .then((user: any) => {
-      console.log("user fetched in DB", user);
       current_user = user;
 
       // Add action entry
@@ -351,7 +350,6 @@ exports.repair = (req, res) => {
             where: { account: account },
           })
             .then((data: any) => {
-              // TODO update player building entry
               var current_building = {
                 decay: 0,
               };
@@ -360,6 +358,7 @@ exports.repair = (req, res) => {
                 where: {
                   fk_userid: current_user.id,
                   fk_landid: current_user.land.id,
+                  gameUid: uid,
                 },
               })
                 .then((data: any) => {

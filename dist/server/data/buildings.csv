@@ -1,5 +1,5 @@
 id,type,spriteId,biomeId,name,description,pLevelToUnlock,locked,size,canDestroy,canMove,canProduce,fertilityNeed,nbLevel,needMaintain,createCost,maintainCost,repairCost,production
-1,housing,1,1,Cabin,A small cabin to house your first fren. Fixing it will bring 2 new frens into your community.,0,FALSE,1,FALSE,TRUE,FALSE,100,2,FALSE,2-0-0-0-0-0-0-0-0-2-0-0,0-0-0-0-0-0-0-0-0-0-0-0,2-0-0-0-0-0-0-0-0-0-0-0,0-0-0-0-0-0-0-0-0-0-0-0
+1,housing,1,1,Cabin,A small cabin to house your first fren. Fixing it will bring 2 new frens into your community.,0,FALSE,1,FALSE,TRUE,FALSE,100,2,FALSE,0-0-0-0-0-0-0-0-0-0-0-0,0-0-0-0-0-0-0-0-0-0-0-0,2-0-0-0-0-0-0-0-0-2-0-0,0-0-0-0-0-0-0-0-0-0-0-0
 2,housing,3,1,House,Houses bring 2 new frens into your community.,1,FALSE,1,TRUE,TRUE,FALSE,100,1,FALSE,3-2-0-0-0-0-0-0-0-2-0-0,0-0-0-0-0-0-0-0-0-0-0-0,2-1-0-0-0-0-0-0-0-0-0-0,0-0-0-0-0-0-0-0-0-0-0-0
 3,housing,10,1,Appartment ,Appartments bring 6 new frens into your community.,6,FALSE,1,TRUE,TRUE,TRUE,100,1,TRUE,10-7-4-0-0-0-5-0-0-6-0-0,0-0-0-0-0-0-0-0-0-0-0-0,2-1-0-0-0-0-0-0-0-0-0-1,0-0-0-0-0-0-0-0-0-0-0-0
 4,housing,5,1,Hotel,Hotels attracts new frens into your community.,6,FALSE,1,TRUE,TRUE,TRUE,100,1,TRUE,0-22-12-24-0-12-16-0-7-28-0-0,0-0-7-0-0-3-3-0-0-0-0-0,2-1-0-0-0-0-0-0-0-0-0-2,0-0-0-0-0-0-12-0-0-0-0-0

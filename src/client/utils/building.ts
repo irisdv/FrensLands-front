@@ -415,7 +415,8 @@ export const repairBuildingPay = (
 ) => {
   let i: number = 0;
 
-  while (i < fixBuildVal[id].repairCost.length) {
+  // while (i < fixBuildVal[id].repairCost.length) {
+  while (i < 9) {
     inventory[i] -= fixBuildVal[id].repairCost[i];
     i++;
   }

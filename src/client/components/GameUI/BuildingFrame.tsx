@@ -43,6 +43,7 @@ export function BuildingFrame(props: any) {
   const [canHarvest, setCanHarvest] = useState(1);
   const [canBuild, setCanBuild] = useState(1);
   const [canRepair, setCanRepair] = useState(1);
+  const [decay, setDecay] = useState(0);
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -134,22 +135,29 @@ export function BuildingFrame(props: any) {
           frameData.unique_id &&
           !staticBuildings[frameData.typeId - 1].needMaintain
         ) {
+          setDecay(0);
           // * Case building qui ne produit pas déjà construit
 
-          // TODO ajouter une condition pour check si decay et besoin de le calculer
           if (frameData.typeId == 1) {
-            const _canRepair = checkResRepairMsg(
-              frameData.typeId - 1,
-              inventory,
-              staticBuildings
-            );
+            const _entry = playerBuilding.filter((elem) => {
+              return elem.gameUid == frameData.unique_id;
+            });
 
-            if (_canRepair.length > 0) {
-              setCanRepair(0);
-              _msg = buildErrorMsg(_canRepair, "repair");
-              setMsg(_msg);
-            } else {
-              setCanRepair(1);
+            if (_entry[0].decay > 0) {
+              setDecay(_entry[0].decay);
+              const _canRepair = checkResRepairMsg(
+                frameData.typeId - 1,
+                inventory,
+                staticBuildings
+              );
+
+              if (_canRepair.length > 0) {
+                setCanRepair(0);
+                _msg = buildErrorMsg(_canRepair, "repair");
+                setMsg(_msg);
+              } else {
+                setCanRepair(1);
+              }
             }
           }
         }
@@ -164,8 +172,6 @@ export function BuildingFrame(props: any) {
   if (frameData?.typeId == 0) {
     return <></>;
   }
-
-  console.log("frameData", frameData);
 
   return (
     <>
@@ -212,8 +218,8 @@ export function BuildingFrame(props: any) {
               state={frameDataValue.state}
               posX={frameDataValue.posX}
               posY={frameDataValue.posY}
-              // ! get decay from player building array
-              decay={100}
+              uid={frameDataValue.unique_id}
+              decay={decay}
               _canRepair={canRepair}
               _msg={msg}
               staticBuildingsData={staticBuildings}

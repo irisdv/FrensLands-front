@@ -112,6 +112,49 @@ export const harvestAction = (
 };
 
 /**
+ * repairAction
+ * * Update after player built
+ * @param account {[]} player wallet address
+ * @param entrypoint {string} in contract
+ * @param calldata {string}
+ * @param inventory {[]} updated player inventory
+ * @return success
+ */
+// TODO translated fullMap into string and add in request
+export const repairAction = (
+  account: string,
+  entrypoint: string,
+  calldata: string,
+  inventory: any,
+  uid: number
+) => {
+  fetch("http://localhost:3001/api/users/repair", {
+    method: "POST",
+    headers: {
+      "x-access-token": localStorage.getItem("user") as string,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      account: account,
+      action: {
+        entrypoint: entrypoint,
+        calldata: calldata,
+      },
+      inventory: inventory,
+      uid: uid,
+    }),
+  })
+    .then(async (response) => await response.json())
+    .then((data) => {
+      console.log("harvest Action was stored in DB successfully", data);
+      return data;
+    })
+    .catch((error) => {
+      console.log("error while storing harvest action in DB", error);
+    });
+};
+
+/**
  * storeAction
  * * Add action in player actions table
  * @param account {[]} player wallet address
