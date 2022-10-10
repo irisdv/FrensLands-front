@@ -45,7 +45,7 @@ export function BF_maintain(props: any) {
     uniqueId: number
   ) => {
     const pos_start = (pos_y - 1) * 40 + pos_x;
-    console.log("pos_start", pos_start);
+    // console.log("pos_start", pos_start);
     // if (tokenId) {
     //   // tokenId : number, pos_start: number, nb_days: number, building_type_id: number, posX: number, posY: number, uniqueId: number
     //   const tx_hash = rechargingInvoke(
@@ -290,7 +290,6 @@ export function BF_maintain(props: any) {
           >
             {Object.keys(staticBuildingsData[typeId - 1].production).map(
               (elem: any) => {
-                console.log("production", elem);
                 return (
                   elem < 7 &&
                   staticBuildingsData[typeId - 1].production[elem] > 0 && (

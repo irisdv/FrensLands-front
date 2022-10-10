@@ -331,7 +331,7 @@ export default function Home() {
                     <div className="grid grid-cols-5 px-8">
                       <div
                         className="cursor-pointer px-5"
-                        onClick={async () => await startGame(1)}
+                        onClick={async () => await startGame(2)}
                       >
                         <img
                           className="relative mx-auto pixelated nftImg hover:scale-110"
@@ -340,7 +340,7 @@ export default function Home() {
                       </div>
                       <div
                         className="cursor-pointer px-5"
-                        onClick={async () => await startGame(2)}
+                        onClick={async () => await startGame(3)}
                       >
                         <img
                           className="relative mx-auto pixelated nftImg hover:scale-110"
@@ -349,7 +349,7 @@ export default function Home() {
                       </div>
                       <div
                         className="cursor-pointer px-5"
-                        onClick={async () => await startGame(0)}
+                        onClick={async () => await startGame(1)}
                       >
                         <img
                           className="relative mx-auto pixelated nftImg hover:scale-110"
@@ -358,7 +358,7 @@ export default function Home() {
                       </div>
                       <div
                         className="cursor-pointer px-5"
-                        onClick={async () => await startGame(3)}
+                        onClick={async () => await startGame(4)}
                       >
                         <img
                           className="relative mx-auto pixelated nftImg hover:scale-110"
@@ -367,7 +367,7 @@ export default function Home() {
                       </div>
                       <div
                         className="cursor-pointer px-5"
-                        onClick={async () => await startGame(4)}
+                        onClick={async () => await startGame(5)}
                       >
                         <img
                           className="relative mx-auto pixelated nftImg hover:scale-110"

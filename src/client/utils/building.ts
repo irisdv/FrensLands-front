@@ -309,17 +309,18 @@ export const claim = (
  */
 export const createBuildingPay = (
   id: number,
-  mapBuildingArray: any,
+  // mapBuildingArray: any,
   inventory: any,
   fixBuildVal: any
 ) => {
   let i: number = 0;
 
-  while (i < fixBuildVal[id].createCost) {
+  // while (i < fixBuildVal[id].createCost.length) {
+  while (i < 9) {
     inventory[i] -= fixBuildVal[id].createCost[i];
     i++;
   }
-  mapBuildingArray = addToBuildingArray(mapBuildingArray, id, 0, 0, 0, 0);
+  // mapBuildingArray = addToBuildingArray(mapBuildingArray, id, 0, 0, 0, 0);
   // NEED TO RETURN MAPBUILDINGARRAY AND CONNECT THE POSITIONS
   return inventory;
 };
@@ -329,28 +330,33 @@ export const createBuildingPay = (
  * * Add a new building to player array
  * TODO need to test it it's [mapBuildingArray.length + 1]
  * @param mapBuildingArray {[]}
- * @param id {number}
+ * @param type {number}
  * @param posX {number}
  * @param posY {number}
  * @param blockX {number}
  * @param blockY {number}
+ * @param uid {number}
  * @return mapBuildingArray {[]} updated
  */
 export const addToBuildingArray = (
   mapBuildingArray: any,
-  id: number,
+  type: number,
   posX: number,
   posY: number,
   blockX: number,
-  blockY: number
+  blockY: number,
+  uid: number
 ) => {
-  // NEED TO TEST IF IT's LIKE THIS OR [mapBuildingArray.length + 1]
-  mapBuildingArray[mapBuildingArray.length] = [];
-  mapBuildingArray[mapBuildingArray.length].id = id;
-  mapBuildingArray[mapBuildingArray.length].posX = posX;
-  mapBuildingArray[mapBuildingArray.length].posY = posY;
-  mapBuildingArray[mapBuildingArray.length].blockX = blockX;
-  mapBuildingArray[mapBuildingArray.length].blockY = blockY;
+  const _newEntry: any[] = [];
+  _newEntry["blockX" as any] = blockX;
+  _newEntry["blockY" as any] = blockY;
+  _newEntry["posX" as any] = posX;
+  _newEntry["posY" as any] = posY;
+  _newEntry["type" as any] = type;
+  _newEntry["decay" as any] = 0;
+  _newEntry["gameUid" as any] = uid;
+
+  mapBuildingArray.push(_newEntry);
 
   return mapBuildingArray;
 };
@@ -409,7 +415,7 @@ export const repairBuildingPay = (
 ) => {
   let i: number = 0;
 
-  while (i < fixBuildVal[id].repairCost) {
+  while (i < fixBuildVal[id].repairCost.length) {
     inventory[i] -= fixBuildVal[id].repairCost[i];
     i++;
   }

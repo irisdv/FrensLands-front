@@ -1,21 +1,14 @@
-import React, { useEffect, useMemo, useRef } from "react";
-import { Canvas, useThree, useFrame, useLoader } from "@react-three/fiber";
-import { PerspectiveCamera } from "@react-three/drei";
-import {
-  TextureLoader,
-  RepeatWrapping,
-  NearestFilter,
-  PlaneGeometry,
-} from "three";
-
-import useInGameContext from "../../hooks/useInGameContext";
+import React, { useMemo } from "react";
+import { TextureLoader, RepeatWrapping, NearestFilter } from "three";
 
 export const TerrainBorder = (props: any) => {
   const { worldType } = props;
 
   const textureLoader = useMemo(() => {
     const textObj = new TextureLoader().load(
-      "resources/textures/World_Boundaries_" + worldType.toString() + ".png"
+      "resources/textures/World_Boundaries_" +
+        (worldType - 1).toString() +
+        ".png"
     );
     textObj.repeat.set(1, 1);
     textObj.wrapS = textObj.wrapT = RepeatWrapping;

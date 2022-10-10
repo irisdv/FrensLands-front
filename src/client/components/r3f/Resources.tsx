@@ -1,17 +1,7 @@
 import React, { useMemo } from "react";
-import {
-  TextureLoader,
-  RepeatWrapping,
-  NearestFilter,
-  PlaneGeometry,
-  Vector2,
-} from "three";
+import { TextureLoader, RepeatWrapping, NearestFilter, Vector2 } from "three";
 import { ResourceLine } from "./ResourceLine";
 const { promises: Fs } = require("fs");
-
-interface Imaps {
-  compArray?: any[];
-}
 
 export default function Resources({
   frontBlockArray,

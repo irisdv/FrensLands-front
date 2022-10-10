@@ -127,7 +127,7 @@ export const SelectStateProvider: React.FC<
   const [state, dispatch] = useReducer(reducer, SelectState);
 
   const updateBuildingFrame = React.useCallback((show: boolean, data: {}) => {
-    console.log("data update building frame", data);
+    // console.log("data update building frame", data);
     dispatch({
       type: "set_showFrame",
       showFrame: show,

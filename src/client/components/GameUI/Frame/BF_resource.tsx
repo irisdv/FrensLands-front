@@ -8,6 +8,7 @@ import {
   receiveResHarvest,
 } from "../../../utils/building";
 import { FrameItem } from "../FrameItem";
+import { harvestAction } from "../../../api/player";
 
 export function BF_resource(props: any) {
   const {
@@ -24,67 +25,16 @@ export function BF_resource(props: any) {
   //   Contexts
   const { updateBuildingFrame } = useSelectContext();
   const {
-    harvestActions,
-    executeHarvest,
     updateInventory,
     updateHarvestActions,
     updateMapBlock,
     fullMap,
     addAction,
-    payloadActions,
     inventory,
     wallet,
   } = useNewGameContext();
-  const { tokenId, buildingData } = useGameContext();
+  const { tokenId } = useGameContext();
   const [showNotif, setShowNotif] = useState(false);
-
-  const storeAction = async (entrypoint: string, calldata: string) => {
-    fetch("http://localhost:3001/api/player_action", {
-      method: "POST",
-      headers: {
-        "x-access-token": localStorage.getItem("user") as string,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        account: wallet.account.address,
-        action: {
-          entrypoint: entrypoint,
-          calldata: calldata,
-        },
-      }),
-    })
-      .then(async (response) => {
-        return await response.json();
-      })
-      .then((data) => {
-        console.log("action was stored in DB successfully", data);
-      });
-  };
-
-  // TODO translated fullMap into string
-  const harvestAction = (entrypoint: string, calldata: string) => {
-    fetch("http://localhost:3001/api/users/harvest", {
-      method: "POST",
-      headers: {
-        "x-access-token": localStorage.getItem("user") as string,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        account: wallet.account.address,
-        action: {
-          entrypoint: entrypoint,
-          calldata: calldata,
-        },
-        inventory: inventory,
-      }),
-    })
-      .then(async (response) => {
-        return await response.json();
-      })
-      .then((data) => {
-        console.log("action was stored in DB successfully", data);
-      });
-  };
 
   const harvestingResources = async (
     _typeId: number,
@@ -128,42 +78,18 @@ export function BF_resource(props: any) {
         _map[_posY][_posX].state++;
       }
       updateMapBlock(_map);
-      // executeHarvest(_posX, _posY, _state + 1, 1, _inventoryUpdated);
 
-      // ? Request : update inventory, update fullMap array, update nb harvest
-
-      // TODO add action
-      // Store action in DB : storeAction(entrypoint, calldata);
-      // Update inventory
-      // update fullMap array
-      // update nb of harvest
-      const _isHarvested = await harvestAction(entrypoint, calldata);
-      console.log("_isHarvested", _isHarvested);
-
-      // case tree has been harvested three times
+      // ? Send request
+      // TODO add fullMap converted to string in request
+      const _isHarvested = await harvestAction(
+        wallet.account.address,
+        entrypoint,
+        calldata,
+        inventory
+      );
     } else {
-      console.log("cannot harvest or missing tokenId");
+      console.log("Cannot harvest or missing tokenId");
     }
-
-    //     // const tx_hash = harvestingInvoke(
-    //     //   tokenId,
-    //     //   pos_start,
-    //     //   parseInt(frameData?.unique_id as string),
-    //     //   type_id,
-    //     //   level,
-    //     //   pos_x,
-    //     //   pos_y,
-    //     //   nonceValue
-    //     // );
-
-    //     // tx_hash.then((res) => {
-    //     //   console.log("res", res);
-    //     //   if (res != 0) {
-    //     //     updateNonce(nonceValue);
-    //     //     // Change status of harvesting to 0
-    //     //     setHarvesting(pos_x, pos_y, 0);
-    //     //   }
-    //     // });
   };
 
   return (

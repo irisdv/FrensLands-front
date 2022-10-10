@@ -18,7 +18,14 @@ import { useResourcesContract } from "../../hooks/contracts/resources";
 
 export function MenuBar() {
   const { data: block } = useStarknetBlock();
-  const { addAction, payloadActions, wallet, inventory } = useNewGameContext();
+  const {
+    addAction,
+    payloadActions,
+    wallet,
+    inventory,
+    counters,
+    playerBuilding,
+  } = useNewGameContext();
   const { zoomMode, updateZoom } = useSelectContext();
   const {
     tokenId,
@@ -451,11 +458,12 @@ export function MenuBar() {
             className="fontHpxl_JuicySmall absolute"
             style={{ marginTop: "16px", marginLeft: "268px" }}
           >
-            {buildingData != null &&
+            {/* {buildingData != null &&
             buildingData.total &&
             buildingData.total > 0
               ? buildingData.total
-              : 0}
+              : 0} */}
+            {playerBuilding.length}
           </div>
           <div
             className="fontHpxl_JuicySmall absolute"

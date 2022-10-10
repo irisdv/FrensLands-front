@@ -18,13 +18,17 @@ import { useSelectContext } from "../hooks/useSelectContext";
 export default function Play() {
   const { address, setAddress, updateTokenId, tokenId, fetchMapType } =
     useGameContext();
+  // * new game context
   const {
     wallet,
+    biomeId,
     initPlayer,
     initGameSession,
     fullMap,
+    inventory,
     staticBuildings,
     staticResources,
+    counters,
   } = useNewGameContext();
   const { initSettings } = useSelectContext();
   const [worldType, setWorldType] = useState(-1);
@@ -125,7 +129,7 @@ export default function Play() {
   const frontBlockArray = useMemo(() => {
     if (mapArray != null && Object.keys(mapArray).length > 0) {
       const frontArray: any[] = [];
-      console.log("mapArray received", mapArray);
+      // console.log("mapArray received", mapArray);
       // Decompose array
       let indexI = 1;
       let indexJ = 1;
@@ -267,36 +271,22 @@ export default function Play() {
 
   return (
     <>
-      {frontBlockArray?.frontArray != null &&
-      Object.keys(frontBlockArray.frontArray).length > 0 ? (
+      {inventory && fullMapValue && biomeId && fullMapValue.length > 0 ? (
         <>
           <MenuBar />
-          <Achievements level={level} />
+          <Achievements level={inventory[11]} />
           <div style={{ height: "100vh", width: "100vw", zIndex: "0" }}>
-            {frontBlockArray &&
-            Object.keys(frontBlockArray).length > 0 &&
-            worldType != null &&
-            worldType != -1 ? (
-              <Scene
-                mapArray={frontBlockArray.frontArray}
-                textArrRef={textArrRef}
-                rightBuildingType={rightBuildingType}
-                worldType={worldType}
-                UBlockIDs={UBlockIDs}
-              />
-            ) : (
-              <></>
-            )}
-          </div>
-          {frontBlockArray && Object.keys(frontBlockArray).length > 0 ? (
-            <BuildingFrame
-              frontBlockArray={frontBlockArray.frontArray}
-              level={level}
+            <Scene
+              mapArray={fullMap}
+              textArrRef={textArrRef}
+              rightBuildingType={rightBuildingType}
+              worldType={biomeId}
+              // TODO add last buildingIds in counters array
+              UBlockIDs={counters["buildings" as any]}
             />
-          ) : (
-            <></>
-          )}
-          <BottomBar level={level} />
+          </div>
+          <BuildingFrame frontBlockArray={fullMap} level={inventory[11]} />
+          <BottomBar level={inventory[11]} />
         </>
       ) : (
         <div

@@ -20,6 +20,8 @@ import { Frens } from "./Frens";
 import { useNotifTransactionManager } from "../../providers/transactions";
 import useBuild from "../../hooks/invoke/useBuild";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
+import { addToBuildingArray, createBuildingPay } from "../../utils/building";
+import { buildAction } from "../../api/player";
 const { promises: Fs } = require("fs");
 
 export interface ISelectObject {
@@ -50,8 +52,18 @@ export const Map = (props: any) => {
   // const [listener] = useState(() => new AudioListener());
 
   // Context
-  const { wallet, fullMap, staticBuildings, staticResources, updateMapBlock } =
-    useNewGameContext();
+  const {
+    wallet,
+    fullMap,
+    staticBuildings,
+    staticResources,
+    updateMapBlock,
+    inventory,
+    updateInventory,
+    addAction,
+    playerBuilding,
+    updatePlayerBuilding,
+  } = useNewGameContext();
   const {
     tokenId,
     nonce,
@@ -208,9 +220,9 @@ export const Map = (props: any) => {
           // frontBlockArray[currBlockPos.y][currBlockPos.x] != null &&
           // frontBlockArray[currBlockPos.y][currBlockPos.x][3] != null &&
           // frontBlockArray[currBlockPos.y][currBlockPos.x][3] != 0
-          fullMap[currBlockPos.y][currBlockPos.x] != null &&
-          fullMap[currBlockPos.y][currBlockPos.x].type != null &&
-          fullMap[currBlockPos.y][currBlockPos.x].type != 0
+          frontBlockArray[currBlockPos.y][currBlockPos.x] != null &&
+          frontBlockArray[currBlockPos.y][currBlockPos.x].type != null &&
+          frontBlockArray[currBlockPos.y][currBlockPos.x].type != 0
         ) {
           var pos: THREE.Vector2 = new Vector2();
           pos.x = currBlockPos.x;
@@ -219,9 +231,10 @@ export const Map = (props: any) => {
           setObjectSelected(1);
           const obj: ISelectObject = {
             pos,
-            infraType: fullMap[currBlockPos.y][currBlockPos.x].infraType,
-            type_id: fullMap[currBlockPos.y][currBlockPos.x].type,
-            unique_id: fullMap[currBlockPos.y][currBlockPos.x].id,
+            infraType:
+              frontBlockArray[currBlockPos.y][currBlockPos.x].infraType,
+            type_id: frontBlockArray[currBlockPos.y][currBlockPos.x].type,
+            unique_id: frontBlockArray[currBlockPos.y][currBlockPos.x].id,
           };
           setSelectedObj(obj);
         }
@@ -252,12 +265,12 @@ export const Map = (props: any) => {
       if (objectSelected == 1 && mouseLeftPressed == 1) {
         // OPEN POPUP BUILDING WITH INFORMATION - NOT SELECTED
         updateBuildingFrame(true, {
-          infraType: fullMap[rayY][rayX].infraType,
+          infraType: frontBlockArray[rayY][rayX].infraType,
           typeId: selectedObj?.type_id, // resource_type_id
           unique_id: selectedObj?.unique_id,
-          state: fullMap[rayY][rayX].state,
-          posX: fullMap[rayY][rayX].posX,
-          posY: fullMap[rayY][rayX].posY,
+          state: frontBlockArray[rayY][rayX].state,
+          posX: frontBlockArray[rayY][rayX].posX,
+          posY: frontBlockArray[rayY][rayX].posY,
           selected: 0,
         });
       }
@@ -300,7 +313,7 @@ export const Map = (props: any) => {
     });
   });
 
-  const updateTempBuildMesh = (currBlockPos: Vector2) => {
+  const updateTempBuildMesh = async (currBlockPos: Vector2) => {
     const blockRightPos = new Vector2();
     blockRightPos.x = currBlockPos.x;
     blockRightPos.y = currBlockPos.y;
@@ -314,7 +327,12 @@ export const Map = (props: any) => {
     }
 
     // BUILD
-    if (mouseLeftPressed == 1 && spaceValid == 1 && placementActive == 1) {
+    if (
+      mouseLeftPressed == 1 &&
+      spaceValid == 1 &&
+      placementActive == 1 &&
+      frameData?.typeId
+    ) {
       // NEED TO DO IT WITH RIGHT CLICK
       const pos = new Vector2();
       pos.x = tempBuildMesh.x;
@@ -322,21 +340,61 @@ export const Map = (props: any) => {
 
       console.log("create building on Map", frameData?.typeId);
 
-      // Update frontBlockArray to update mesh on map
-      fullMapValue[pos.y][pos.x - 0.5].infraType = frameData?.infraType;
-      fullMapValue[pos.y][pos.x - 0.5].type = frameData?.typeId;
-      fullMapValue[pos.y][pos.x - 0.5].status = 1; // status to 0 for building
-      fullMapValue[pos.y][pos.x - 0.5].state = 1;
+      // Update frontBlockArray
+      frontBlockArray[pos.y][pos.x - 0.5].infraType = frameData?.infraType;
+      frontBlockArray[pos.y][pos.x - 0.5].type = frameData?.typeId;
+      frontBlockArray[pos.y][pos.x - 0.5].status = 1; // status to 0 for building
+      frontBlockArray[pos.y][pos.x - 0.5].state = 1;
       // TODO add right id of building
-      fullMapValue[pos.y][pos.x - 0.5].id = UBlockIDs + 1;
+      console.log("UBlockIDs", UBlockIDs);
+      frontBlockArray[pos.y][pos.x - 0.5].id = UBlockIDs + 1;
+      updateMapBlock(frontBlockArray);
 
-      // Update context : map block, inventory
-      updateMapBlock(fullMapValue);
+      // update player inventory
+      let _inventoryPay = createBuildingPay(
+        frameData.typeId - 1,
+        inventory,
+        staticBuildings
+      );
+      console.log("_inventoryPay", _inventoryPay);
+      // TODO Check if it changes level of player and update _inventoryPay accordingly
+      updateInventory(_inventoryPay);
 
-      // TEST
-      // fullMap[pos.y][pos.x - 0.5].status = 1; // status : was built
-      // buildTx(UBlockIDs + 1, frameData?.typeId as number, pos.x - 0.5, pos.y);
-      // END TEST
+      // Store on-chain action in context
+      const calldata =
+        tokenId +
+        "|" +
+        0 +
+        "|" +
+        (pos.x - 0.5) +
+        "|" +
+        pos.y +
+        "|" +
+        frameData.typeId;
+      const entrypoint = "build";
+      addAction(entrypoint, calldata);
+
+      // Create entry in player building & save to context
+      const newBuilding: any[] = addToBuildingArray(
+        playerBuilding,
+        frameData.typeId,
+        pos.x - 0.5,
+        pos.y,
+        pos.x - 0.5,
+        pos.y,
+        UBlockIDs + 1
+      );
+      updatePlayerBuilding(newBuilding);
+
+      // ? send request DB
+      // TODO add fullMap updated converted to string
+      const _action = await buildAction(
+        wallet.account.address,
+        entrypoint,
+        calldata,
+        inventory,
+        newBuilding[newBuilding.length - 1]
+      );
 
       // Update global variables
       setUBlockIDs(UBlockIDs + 1);
@@ -360,30 +418,30 @@ export const Map = (props: any) => {
     if (pos.x >= 1 && pos.x <= 40 && pos.y >= 1 && pos.y <= 16) {
       if (numB == 1) {
         if (
-          fullMap[pos.y][pos.x].type != null &&
-          fullMap[pos.y][pos.x].type == 0
+          frontBlockArray[pos.y][pos.x].type != null &&
+          frontBlockArray[pos.y][pos.x].type == 0
         ) {
           return 1;
         }
       } else if (numB == 2) {
         if (
-          fullMap[pos.y][pos.x].type != null &&
-          fullMap[pos.y][pos.x].type == 0 &&
-          fullMap[pos.y][pos.x + 1] != null &&
-          fullMap[pos.y][pos.x + 1].type == 0
+          frontBlockArray[pos.y][pos.x].type != null &&
+          frontBlockArray[pos.y][pos.x].type == 0 &&
+          frontBlockArray[pos.y][pos.x + 1] != null &&
+          frontBlockArray[pos.y][pos.x + 1].type == 0
         ) {
           return 1;
         }
       } else if (pos.y - 1 != 0 && numB == 4) {
         if (
-          fullMap[pos.y][pos.x] != null &&
-          fullMap[pos.y][pos.x].type == 0 &&
-          fullMap[pos.y][pos.x + 1] != null &&
-          fullMap[pos.y][pos.x + 1].type == 0 &&
-          fullMap[pos.y - 1][pos.x] != null &&
-          fullMap[pos.y - 1][pos.x].type == 0 &&
-          fullMap[pos.y - 1][pos.x + 1] != null &&
-          fullMap[pos.y - 1][pos.x + 1].type == 0
+          frontBlockArray[pos.y][pos.x] != null &&
+          frontBlockArray[pos.y][pos.x].type == 0 &&
+          frontBlockArray[pos.y][pos.x + 1] != null &&
+          frontBlockArray[pos.y][pos.x + 1].type == 0 &&
+          frontBlockArray[pos.y - 1][pos.x] != null &&
+          frontBlockArray[pos.y - 1][pos.x].type == 0 &&
+          frontBlockArray[pos.y - 1][pos.x + 1] != null &&
+          frontBlockArray[pos.y - 1][pos.x + 1].type == 0
         ) {
           return 1;
         }
@@ -545,15 +603,15 @@ export const Map = (props: any) => {
   const frenTexture = useMemo(() => {
     if (textArrRef && textArrRef.length > 0) {
       let textObj;
-      if (worldType == 1) {
+      if (worldType == 2) {
         textObj = new TextureLoader().load(
           "resources/textures/Matchbox_Tiles_Objects_nogrid_1.png"
         );
-      } else if (worldType == 2) {
+      } else if (worldType == 3) {
         textObj = new TextureLoader().load(
           "resources/textures/Matchbox_Tiles_Objects_nogrid_2.png"
         );
-      } else if (worldType == 3) {
+      } else if (worldType == 4) {
         textObj = new TextureLoader().load(
           "resources/textures/Matchbox_Tiles_Objects_nogrid_3.png"
         );
@@ -580,7 +638,7 @@ export const Map = (props: any) => {
         frontBlockArray &&
         Object.keys(frontBlockArray).length > 0 && (
           <Resources
-            frontBlockArray={fullMap}
+            frontBlockArray={frontBlockArray}
             textArrRef={textArrRef}
             rightBuildingType={rightBuildingType}
             position={currBlockPosState}

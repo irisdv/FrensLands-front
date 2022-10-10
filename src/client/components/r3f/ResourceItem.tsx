@@ -99,7 +99,7 @@ export const ResourceItem = memo<IBlock>(
         if (block.type == 1) {
           // tree
           textureType = findTextByID(
-            treeTextures[worldType][block.randType - 1][block.state - 1]
+            treeTextures[worldType - 1][block.randType - 1][block.state - 1]
           );
         } else if (block.type == 2) {
           // rock
@@ -113,10 +113,10 @@ export const ResourceItem = memo<IBlock>(
         if (block.type == 1 && block.state == 1) {
           textureType = findTextByID(2);
         } else {
-          console.log(
-            "SPRITE BUILDING",
-            staticBuildings[block.type - 1].sprite[0]
-          );
+          // console.log(
+          //   "SPRITE BUILDING",
+          //   staticBuildings[block.type - 1].sprite[0]
+          // );
           textureType = findTextByID(staticBuildings[block.type - 1].sprite[0]);
         }
       }
@@ -147,7 +147,7 @@ export const ResourceItem = memo<IBlock>(
         if (block.type == 1) {
           // tree
           textureType = findTextByID(
-            treeTextures[worldType][block.randType - 1][block.state - 1]
+            treeTextures[worldType - 1][block.randType - 1][block.state - 1]
           );
         } else if (block.type == 2) {
           // rock
@@ -161,10 +161,10 @@ export const ResourceItem = memo<IBlock>(
         if (block.type == 1 && block.state == 1) {
           textureType = findTextByID(2);
         } else {
-          console.log(
-            "SPRITE BUILDING",
-            staticBuildings[block.type - 1].sprite[0]
-          );
+          // console.log(
+          //   "SPRITE BUILDING",
+          //   staticBuildings[block.type - 1].sprite[0]
+          // );
           textureType = findTextByID(staticBuildings[block.type - 1].sprite[0]);
         }
       }
@@ -331,6 +331,7 @@ export const ResourceItem = memo<IBlock>(
               blockValue.status == 1 &&
               harvestArrValue != null &&
               harvestArrValue[blockValue.posY] &&
+              harvestArrValue[blockValue.posY][blockValue.posX] &&
               harvestArrValue[blockValue.posY][blockValue.posX].status == 0
             ) {
               meshRef.current.material.map = underConstructionSelect;
@@ -350,6 +351,7 @@ export const ResourceItem = memo<IBlock>(
               blockValue.status == 1 &&
               harvestArrValue != null &&
               harvestArrValue[blockValue.posY] &&
+              harvestArrValue[blockValue.posY][blockValue.posX] &&
               harvestArrValue[blockValue.posY][blockValue.posX].status == 0
             ) {
               meshRef.current.material.map = underConstruction;

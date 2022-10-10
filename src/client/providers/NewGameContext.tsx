@@ -49,8 +49,7 @@ export interface INewGameState {
   fullMap: any[];
   inventory: any[];
   playerBuilding: any[];
-  counterBuilding: number;
-  counterRS: any[];
+  counters: any[];
   payloadActions: any[];
   initPlayer: (wallet: IStarknetWindowObject) => void;
   initGameSession: (
@@ -61,6 +60,7 @@ export interface INewGameState {
   ) => void;
   addAction: (entrypoint: string, calldata: string) => void;
   updateInventory: (inventory: any[]) => void;
+  updatePlayerBuilding: (_playerBuilding: any[]) => void;
   // Harvest actions
   harvestActions: any[];
   updateHarvestActions: (
@@ -93,13 +93,13 @@ export const NewGameState: INewGameState = {
   fullMap: [],
   inventory: [],
   playerBuilding: [],
-  counterBuilding: 0,
-  counterRS: [],
+  counters: [],
   payloadActions: [],
   initPlayer: (wallet) => {},
   initGameSession: (inventory, land, playerActions, playerBuildings) => {},
   addAction: (entrypoint, calldata) => {},
   updateInventory: (inventory) => {},
+  updatePlayerBuilding: (_playerBuilding) => {},
   // Harvest actions
   harvestActions: [],
   updateHarvestActions: (posX, posY, uid, time, status) => {},
@@ -127,6 +127,7 @@ interface SetGameSession {
   inventory: any[];
   staticResources: any[];
   staticBuildings: any[];
+  counters: any[];
 }
 
 interface SetPayloadAction {
@@ -138,6 +139,10 @@ interface SetPayloadAction {
 interface SetInventory {
   type: "set_inventory";
   inventory: any[];
+}
+interface SetPlayerBuildings {
+  type: "set_playerBuilding";
+  playerBuilding: any[];
 }
 interface SetHarvestAction {
   type: "set_harvestAction";
@@ -169,6 +174,7 @@ type Action =
   | SetError
   | SetPayloadAction
   | SetInventory
+  | SetPlayerBuildings
   | SetHarvestAction
   | SetFullMap
   | SetExecuteHarvest;
@@ -193,6 +199,7 @@ function reducer(state: INewGameState, action: Action): INewGameState {
         playerBuilding: action.playerBuilding,
         staticBuildings: action.staticBuildings,
         staticResources: action.staticResources,
+        counters: action.counters,
       };
     }
     case "set_payloadAction": {
@@ -213,6 +220,13 @@ function reducer(state: INewGameState, action: Action): INewGameState {
       return {
         ...state,
         inventory: action.inventory,
+      };
+    }
+    case "set_playerBuilding": {
+      console.log("updating playerBuilding", state.playerBuilding);
+      return {
+        ...state,
+        playerBuilding: action.playerBuilding,
       };
     }
     case "set_harvestAction": {
@@ -310,7 +324,8 @@ export const NewAppStateProvider: React.FC<
       inventoryArray[8] = 100;
       inventoryArray[9] = 100;
       inventoryArray[10] = inventory.timeSpent;
-      inventoryArray[11] = inventory.level;
+      // inventoryArray[11] = inventory.level;
+      inventoryArray[11] = 11;
 
       console.log("inventoryArray = ", inventoryArray);
 
@@ -326,8 +341,9 @@ export const NewAppStateProvider: React.FC<
         mapBuildingArray[i].blockY = mapBuildingTemp[i].blockY;
         mapBuildingArray[i].posX = mapBuildingTemp[i].posX;
         mapBuildingArray[i].posY = mapBuildingTemp[i].posY;
-        mapBuildingArray[i].id = mapBuildingTemp[i].fk_buildingid;
+        mapBuildingArray[i].type = mapBuildingTemp[i].fk_buildingid;
         mapBuildingArray[i].decay = mapBuildingTemp[i].decay;
+        mapBuildingArray[i].gameUid = mapBuildingTemp[i].gameUid;
 
         i++;
       }
@@ -347,6 +363,14 @@ export const NewAppStateProvider: React.FC<
 
       const harvestIncoming: any[] = [];
 
+      //  - - - - - - COUNTERS - - - - - -
+
+      const buildingCounter = mapBuildingArray.length;
+      console.log("buildingCounter", buildingCounter);
+
+      var counters: any[] = [];
+      counters["buildings" as any] = buildingCounter;
+
       //  - - - - - - DATA IN ARRAYS - - - - - - END
 
       dispatch({
@@ -359,6 +383,7 @@ export const NewAppStateProvider: React.FC<
         playerBuilding: mapBuildingArray,
         staticBuildings: fixBuildVal,
         staticResources: fixResVal,
+        counters: counters,
       });
     },
     []
@@ -417,6 +442,14 @@ export const NewAppStateProvider: React.FC<
     });
   }, []);
 
+  const updatePlayerBuilding = React.useCallback((_playerBuilding: any[]) => {
+    console.log("_playerBuilding", _playerBuilding);
+    dispatch({
+      type: "set_playerBuilding",
+      playerBuilding: _playerBuilding,
+    });
+  }, []);
+
   const executeHarvest = React.useCallback(
     (
       _posX: number,
@@ -468,9 +501,9 @@ export const NewAppStateProvider: React.FC<
         biomeId: state.biomeId,
         fullMap: state.fullMap,
         inventory: state.inventory,
+        updatePlayerBuilding,
         playerBuilding: state.playerBuilding,
-        counterBuilding: state.counterBuilding,
-        counterRS: state.counterRS,
+        counters: state.counters,
         payloadActions: state.payloadActions,
         harvestActions: state.harvestActions,
         initPlayer,

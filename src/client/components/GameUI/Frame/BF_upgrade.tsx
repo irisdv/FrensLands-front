@@ -1,5 +1,8 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useGameContext } from "../../../hooks/useGameContext";
+import { useNewGameContext } from "../../../hooks/useNewGameContext";
 import { useSelectContext } from "../../../hooks/useSelectContext";
+import { checkResRepairMsg, repairBuildingPay } from "../../../utils/building";
 import { FrameItem } from "../FrameItem";
 
 export function BF_upgrade(props: any) {
@@ -13,20 +16,58 @@ export function BF_upgrade(props: any) {
     decay,
     _msg,
     staticBuildingsData,
-    inventory,
   } = props;
+
+  const {
+    updateInventory,
+    updateHarvestActions,
+    updateMapBlock,
+    fullMap,
+    addAction,
+    inventory,
+    wallet,
+  } = useNewGameContext();
   const { showFrame, frameData, updateBuildingFrame } = useSelectContext();
+  const { tokenId } = useGameContext();
   const [showNotif, setShowNotif] = useState(false);
 
   //   Function to upgrade building
   const upgradeBuilding = (
-    type_id: number,
-    pos_x: number,
-    pos_y: number,
-    level: number
+    _typeId: number,
+    _posX: number,
+    _posY: number,
+    _state: number
   ) => {
-    const pos_start = (pos_y - 1) * 40 + pos_x;
-    console.log("pos_start", pos_start);
+    const _check = checkResRepairMsg(
+      _typeId - 1,
+      inventory,
+      staticBuildingsData
+    );
+    if (_check && tokenId) {
+      const _inventory = repairBuildingPay(
+        _typeId - 1,
+        inventory,
+        staticBuildingsData
+      );
+      console.log("inventory", _inventory);
+      updateInventory(_inventory);
+
+      // Store on-chain action in context
+      const calldata = tokenId + "|" + 0 + "|" + _posX + "|" + _posY;
+      const entrypoint = "repair_building";
+      addAction(entrypoint, calldata);
+
+      // ? repair timer has passed
+      // receive resources after upgrade
+      // updateInventory(_inventoryUpdated);
+      // Update playerBuilding decay value
+
+      // ? send request to db
+    } else {
+      console.log("Cannot repair or missing tokenId");
+    }
+    // const pos_start = (pos_y - 1) * 40 + pos_x;
+    // console.log("pos_start", pos_start);
     // if (tokenId) {
     //   const tx_hash = upgradingInvoke(
     //     tokenId,
