@@ -1,17 +1,47 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useGameContext } from "../../../hooks/useGameContext";
+import { useNewGameContext } from "../../../hooks/useNewGameContext";
 import { useSelectContext } from "../../../hooks/useSelectContext";
+import { destroyBuilding_ } from "../../../utils/building";
 import { FrameItem } from "../FrameItem";
 
 export function BF_maintain(props: any) {
   const { uid, typeId, state, posX, posY, staticBuildingsData, inventory } =
     props;
-  const { showFrame, frameData, updateBuildingFrame } = useSelectContext();
-  const [showNotif, setShowNotif] = useState(false);
+  const { frameData, updateBuildingFrame } = useSelectContext();
+  const { updateInventory, fullMap, addAction, updateMapBlock } =
+    useNewGameContext();
+  const { tokenId } = useGameContext();
+  // const [showNotif, setShowNotif] = useState(false);
   const [inputFuel, setInputFuel] = useState(1);
 
-  const destroyBuilding = (type_id: number, pos_x: number, pos_y: number) => {
-    const pos_start = (pos_y - 1) * 40 + pos_x;
-    console.log("pos_start", pos_start);
+  const destroyBuilding = (_typeId: number, _posX: number, _posY: number) => {
+    if (tokenId) {
+      console.log("inventory before destroy", inventory);
+      let _inventory = destroyBuilding_(
+        _typeId - 1,
+        inventory,
+        staticBuildingsData
+      );
+      console.log("inventory after destroy", _inventory);
+      updateInventory(_inventory);
+
+      // Update map block
+      const _map = fullMap;
+      _map[_posY][_posX].state = 0;
+      _map[_posY][_posX].infraType = 0;
+      _map[_posY][_posX].type = 0;
+      _map[_posY][_posX].id = 0;
+      updateMapBlock(_map);
+
+      // ? Send request DB
+      // w/ new inventory, uid of building destroyed, new fullMap string
+    } else {
+      console.log("Missing tokenId");
+    }
+
+    // const pos_start = (pos_y - 1) * 40 + pos_x;
+    // console.log("pos_start", pos_start);
     // if (tokenId) {
     //   const tx_hash = detroyingInvoke(
     //     tokenId,
@@ -74,6 +104,7 @@ export function BF_maintain(props: any) {
   // TODO check can pay maintain costs depending on inventory
   // + build error msg checkResMaintainMsg function
 
+  // TODO find max input fuel possible
   const updateInputFuel = () => {
     if (inputFuel == 1) {
       setInputFuel(10);

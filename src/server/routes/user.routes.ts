@@ -24,4 +24,6 @@ module.exports = (app) => {
   app.post("/api/users/build", [authJwt.verifyToken], users.build);
 
   app.post("/api/users/move", [authJwt.verifyToken], users.move);
+
+  app.post("/api/users/destroy", [authJwt.verifyToken], users.destroy);
 };

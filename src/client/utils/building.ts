@@ -378,7 +378,7 @@ export const deleteFromBuildingArray = (mapBuildingArray: any, uid: number) => {
 };
 
 /**
- * destroyBuilding
+ * destroyBuilding_
  * * Delete a building from player's building array
  * ? check right way to delete an element
  * @param uid {[]}
@@ -388,22 +388,22 @@ export const deleteFromBuildingArray = (mapBuildingArray: any, uid: number) => {
  * ? return array w/ [inventory, mapBuildingArray]
  * @return inventory {[]} updated
  */
-export const destroyBuilding = (
-  uid: number,
+export const destroyBuilding_ = (
+  // uid: number,
   id: number,
-  mapBuildingArray: any,
+  // mapBuildingArray: any,
   inventory: any,
   fixBuildVal: any
 ) => {
   let i: number = 0;
-  // NEED TO DO THE SPECIAL DIVISION LIKE IT IS ON CHAIN
-  // get quotient & reste from createCost / 2
-  // give back quotient to player
-  while (i < fixBuildVal[id].createCost) {
-    inventory[i] += fixBuildVal[id].createCost[i];
+  while (i < fixBuildVal[id].createCost.length) {
+    var quotient =
+      (fixBuildVal[id].createCost[i] - (fixBuildVal[id].createCost[i] % 2)) / 2;
+    console.log("resources back from destroy", quotient);
+    inventory[i] += quotient;
     i++;
   }
-  mapBuildingArray = deleteFromBuildingArray(mapBuildingArray, uid);
+  // mapBuildingArray = deleteFromBuildingArray(mapBuildingArray, uid);
   // NEED TO RETURN MAPBUILDINGARRAY AS WELL
   return inventory;
 };

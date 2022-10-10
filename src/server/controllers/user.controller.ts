@@ -529,6 +529,112 @@ exports.build = (req, res) => {
     });
 };
 
+// TODO update fullMap string
+// Update user data after destroy action
+exports.destroy = (req, res) => {
+  const account = req.userData.account;
+  const destroyAction = req.userData.action;
+  const inventory = req.userData.inventory;
+  const uid = req.userData.uid;
+  const fullMap = req.userData.fullMap;
+
+  var current_user;
+
+  // Fetch player information
+  User.findOne({
+    where: { account: account },
+    include: [
+      {
+        model: PlayerLand,
+        attributes: ["id"],
+      },
+    ],
+  })
+    .then((user: any) => {
+      current_user = user;
+
+      // Add action entry
+      const action_entry = {
+        entrypoint: destroyAction.entrypoint,
+        calldata: destroyAction.calldata,
+        validated: false,
+        fk_userid: user.id,
+        fk_landid: user.land.id,
+      };
+      PlayerAction.create(action_entry)
+        .then((data) => {
+          // Update player data
+          const update_player = {
+            nbActions: current_user.nbActions + 1,
+          };
+
+          User.update(update_player, {
+            where: { account: account },
+          })
+            .then((data: any) => {
+              PlayerBuilding.destroy({
+                where: {
+                  fk_userid: current_user.id,
+                  fk_landid: current_user.land.id,
+                  gameUid: uid,
+                },
+              })
+                .then((data: any) => {
+                  // Update player inventory
+                  var current_inventory = {
+                    wood: inventory[0],
+                    rock: inventory[1],
+                    food: inventory[2],
+                    metal: inventory[3],
+                    coal: inventory[4],
+                    energy: inventory[5],
+                    coin: inventory[6],
+                    gold: inventory[7],
+                    freePop: inventory[8],
+                    totalPop: inventory[9],
+                    level: inventory[11],
+                  };
+
+                  PlayerInventory.update(current_inventory, {
+                    where: { fk_userid: current_user.id },
+                  })
+                    .then((data: any) => {
+                      // TODO update fullMap
+                      res.send({ success: 1 });
+                    })
+                    .catch((err: any) => {
+                      res.status(500).send({
+                        message:
+                          "Error updating user inventory with account=" +
+                          account,
+                      });
+                    });
+                })
+                .catch((err: any) => {
+                  res.status(500).send({
+                    message: "Error updating user land with account=" + account,
+                  });
+                });
+            })
+            .catch((err) => {
+              res.status(500).send({
+                message: "Error while adding action to player",
+              });
+            });
+        })
+        .catch((err) => {
+          res.status(500).send({
+            message: "Error while adding action to player",
+          });
+        });
+    })
+    .catch((err: any) => {
+      res.status(500).send({
+        message: "Error finding user with account=" + account,
+      });
+    });
+};
+
 // Update user data after move action
 exports.move = (req, res) => {
   const account = req.userData.account;
