@@ -20,6 +20,7 @@ export const revComposeD = (compMap: string) => {
   let x: number = 1;
   let y: number = 1;
   let i: number = 0;
+  var specIndex: number = 1; // ! THIS NEEDS TO BE GLOBAL
 
   tempArray[y] = [];
   const compMapSplit = compMap.split("|");
@@ -58,13 +59,22 @@ export const revComposeD = (compMap: string) => {
 
     // * Additional values
     // Rand for trees and rocks
-    if (
-      tempArray[y][x].infraType == 1 &&
-      (tempArray[y][x].type == 1 || tempArray[y][x].type == 2)
-    ) {
-      tempArray[y][x].randType = parseInt(
-        (Math.random() * (3 - 1) + 1).toFixed(0)
-      );
+
+    if (tempArray[y][x].infraType == 1) {
+      if (tempArray[y][x].type == 1) {
+        var randomNum: number = random(specIndex) * (3 - 1) + 1;
+        randomNum = parseInt(randomNum.toFixed(0));
+        tempArray[y][x].randType = randomNum;
+        specIndex++;
+        console.log("tempArray[y][x].randType = ", tempArray[y][x].randType);
+      } else if (tempArray[y][x].type == 2) {
+        var randomNum: number = random(specIndex) * (3 - 1) + 1; //! TEMPORARY
+        //var randomNum : number = (random(specIndex) * (6 - 4) + 4); // ! CRASH WITH RIGH VALUE
+        randomNum = parseInt(randomNum.toFixed(0));
+        tempArray[y][x].randType = randomNum;
+        specIndex++;
+        console.log("tempArray[y][x].randType = ", tempArray[y][x].randType);
+      }
     }
 
     tempArray[y][x].status = 1; // status (0: harvesting / building ongoing)
@@ -75,6 +85,32 @@ export const revComposeD = (compMap: string) => {
     i++;
   }
   return tempArray;
+};
+
+export const random = (spec: number) => {
+  // ! USE CLIENT'S WALLET
+  var x =
+    Math.sin(
+      seedFromWallet(
+        "0x00a7a315c7463b4bc491239e1d995fe736fe4830d3345d109a25182fb918ddd2"
+      ) + spec
+    ) * 10000;
+
+  return x - Math.floor(x);
+};
+
+export const seedFromWallet = (wallet: string) => {
+  var i: number = 3;
+  var seed: number = 0;
+  var seedStr: string = "";
+
+  while (i < 20) {
+    seedStr = seedStr + wallet[i].charCodeAt(0).toString();
+    i = i + 3;
+  }
+
+  seed = parseInt(seedStr);
+  return seed;
 };
 
 /**
