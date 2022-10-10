@@ -18,4 +18,10 @@ module.exports = (app) => {
   app.post("/api/users/init", [authJwt.verifyToken], users.initGame);
 
   app.post("/api/users/harvest", [authJwt.verifyToken], users.harvest);
+
+  app.post("/api/users/repair", [authJwt.verifyToken], users.repair);
+
+  app.post("/api/users/build", [authJwt.verifyToken], users.build);
+
+  app.post("/api/users/move", [authJwt.verifyToken], users.move);
 };

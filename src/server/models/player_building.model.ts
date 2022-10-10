@@ -1,5 +1,9 @@
 module.exports = (sequelize, Sequelize) => {
   const PlayerBuilding = sequelize.define("player_building", {
+    gameUid: {
+      type: Sequelize.SMALLINT,
+      field: "gameUid",
+    },
     spriteId: {
       type: Sequelize.SMALLINT,
       field: "spriteId",

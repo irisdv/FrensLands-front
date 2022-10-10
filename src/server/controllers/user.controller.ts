@@ -45,6 +45,7 @@ exports.findOne = (req, res) => {
           "blockY",
           "fk_buildingid",
           "decay",
+          "gameUid",
         ],
       },
       {
@@ -138,6 +139,7 @@ exports.initGame = (req, res) => {
               landId = data.id;
               // Init cabin
               const cabin = {
+                gameUid: 1,
                 fk_userid: current_user.id,
                 fk_landid: data.id,
                 fk_buildingid: 1,
@@ -204,73 +206,99 @@ exports.initGame = (req, res) => {
 // Update user data after harvest
 exports.harvest = (req, res) => {
   const account = req.userData.account;
-  const landId = req.userData.biomeId;
+  const harvestAction = req.userData.action;
   const inventory = req.userData.inventory;
   const fullMap = req.userData.fullMap;
 
   var current_user;
-  var user_id;
 
+  // Fetch player information
   User.findOne({
     where: { account: account },
+    include: [
+      {
+        model: PlayerLand,
+        attributes: ["id"],
+      },
+    ],
   })
     .then((user: any) => {
-      user_id = user.id;
-      current_user = {
-        nbActions: user.nbActions + 1,
-        totalHarvest: user.nbActions + 1,
-      };
+      current_user = user;
 
-      User.update(current_user, {
-        where: { account: account },
-      })
-        .then((data: any) => {
-          var current_land = {
-            fullMap: fullMap,
-            // TODO add nbResourcesLeft
+      // Add action entry
+      const action_entry = {
+        entrypoint: harvestAction.entrypoint,
+        calldata: harvestAction.calldata,
+        validated: false,
+        fk_userid: user.id,
+        fk_landid: user.land.id,
+      };
+      PlayerAction.create(action_entry)
+        .then((data) => {
+          // Update player data
+          const update_player = {
+            nbActions: current_user.nbActions + 1,
+            totalHarvest: user.totalHarvest + 1,
           };
-          // Update land full Map
-          PlayerLand.update(current_land, {
-            where: { fk_userid: user_id },
+
+          User.update(update_player, {
+            where: { account: account },
           })
             .then((data: any) => {
-              var current_inventory = {
-                wood: inventory[0],
-                rock: inventory[1],
-                food: inventory[2],
-                metal: inventory[3],
-                coal: inventory[4],
-                energy: inventory[5],
-                coin: inventory[6],
-                gold: inventory[7],
-                freePop: inventory[8],
-                totalPop: inventory[9],
-                level: inventory[11],
+              // Update fullMap
+              var current_land = {
+                fullMap: fullMap,
+                // TODO add nbResourcesLeft
               };
 
-              PlayerInventory.update(current_inventory, {
-                where: { fk_userid: user_id },
+              PlayerLand.update(current_land, {
+                where: { fk_userid: current_user.id },
               })
                 .then((data: any) => {
-                  // ? add actions here
-                  res.send({ success: 1 });
+                  // Update player inventory
+                  var current_inventory = {
+                    wood: inventory[0],
+                    rock: inventory[1],
+                    food: inventory[2],
+                    metal: inventory[3],
+                    coal: inventory[4],
+                    energy: inventory[5],
+                    coin: inventory[6],
+                    gold: inventory[7],
+                    freePop: inventory[8],
+                    totalPop: inventory[9],
+                    level: inventory[11],
+                  };
+
+                  PlayerInventory.update(current_inventory, {
+                    where: { fk_userid: current_user.id },
+                  })
+                    .then((data: any) => {
+                      res.send({ success: 1 });
+                    })
+                    .catch((err: any) => {
+                      res.status(500).send({
+                        message:
+                          "Error updating user inventory with account=" +
+                          account,
+                      });
+                    });
                 })
                 .catch((err: any) => {
                   res.status(500).send({
-                    message:
-                      "Error updating user inventory with account=" + account,
+                    message: "Error updating user land with account=" + account,
                   });
                 });
             })
-            .catch((err: any) => {
+            .catch((err) => {
               res.status(500).send({
-                message: "Error updating user land with account=" + account,
+                message: "Error while adding action to player",
               });
             });
         })
-        .catch((err: any) => {
+        .catch((err) => {
           res.status(500).send({
-            message: "Error updating user with account=" + account,
+            message: "Error while adding action to player",
           });
         });
     })
@@ -280,3 +308,319 @@ exports.harvest = (req, res) => {
       });
     });
 };
+
+// Update user data after repair action
+exports.repair = (req, res) => {
+  const account = req.userData.account;
+  const repairAction = req.userData.action;
+  const inventory = req.userData.inventory;
+  const fullMap = req.userData.fullMap;
+
+  var current_user;
+
+  // Fetch player information
+  User.findOne({
+    where: { account: account },
+    include: [
+      {
+        model: PlayerLand,
+        attributes: ["id"],
+      },
+    ],
+  })
+    .then((user: any) => {
+      console.log("user fetched in DB", user);
+      current_user = user;
+
+      // Add action entry
+      const action_entry = {
+        entrypoint: repairAction.entrypoint,
+        calldata: repairAction.calldata,
+        validated: false,
+        fk_userid: user.id,
+        fk_landid: user.land.id,
+      };
+      PlayerAction.create(action_entry)
+        .then((data) => {
+          // Update player data
+          const update_player = {
+            nbActions: current_user.nbActions + 1,
+          };
+
+          User.update(update_player, {
+            where: { account: account },
+          })
+            .then((data: any) => {
+              // TODO update player building entry
+              var current_building = {
+                decay: 0,
+              };
+
+              PlayerBuilding.update(current_building, {
+                where: {
+                  fk_userid: current_user.id,
+                  fk_landid: current_user.land.id,
+                },
+              })
+                .then((data: any) => {
+                  // Update player inventory
+                  var current_inventory = {
+                    wood: inventory[0],
+                    rock: inventory[1],
+                    food: inventory[2],
+                    metal: inventory[3],
+                    coal: inventory[4],
+                    energy: inventory[5],
+                    coin: inventory[6],
+                    gold: inventory[7],
+                    freePop: inventory[8],
+                    totalPop: inventory[9],
+                    level: inventory[11],
+                  };
+
+                  PlayerInventory.update(current_inventory, {
+                    where: { fk_userid: current_user.id },
+                  })
+                    .then((data: any) => {
+                      res.send({ success: 1 });
+                    })
+                    .catch((err: any) => {
+                      res.status(500).send({
+                        message:
+                          "Error updating user inventory with account=" +
+                          account,
+                      });
+                    });
+                })
+                .catch((err: any) => {
+                  res.status(500).send({
+                    message: "Error updating user land with account=" + account,
+                  });
+                });
+            })
+            .catch((err) => {
+              res.status(500).send({
+                message: "Error while adding action to player",
+              });
+            });
+        })
+        .catch((err) => {
+          res.status(500).send({
+            message: "Error while adding action to player",
+          });
+        });
+    })
+    .catch((err: any) => {
+      res.status(500).send({
+        message: "Error finding user with account=" + account,
+      });
+    });
+};
+
+// Update user data after build action
+// TODO add recharge of building newly created
+exports.build = (req, res) => {
+  const account = req.userData.account;
+  const buildAction = req.userData.action;
+  const inventory = req.userData.inventory;
+  const newBuilding = req.userData.newBuilding;
+  const fullMap = req.userData.fullMap;
+
+  var current_user;
+
+  // Fetch player information
+  User.findOne({
+    where: { account: account },
+    include: [
+      {
+        model: PlayerLand,
+        attributes: ["id"],
+      },
+    ],
+  })
+    .then((user: any) => {
+      console.log("user fetched in DB", user);
+      current_user = user;
+
+      // Add action entry
+      const action_entry = {
+        entrypoint: buildAction.entrypoint,
+        calldata: buildAction.calldata,
+        validated: false,
+        fk_userid: user.id,
+        fk_landid: user.land.id,
+      };
+      PlayerAction.create(action_entry)
+        .then((data) => {
+          // Update player data
+          const update_player = {
+            nbActions: current_user.nbActions + 1,
+            totalBuild: current_user.totalBuild + 1,
+          };
+
+          User.update(update_player, {
+            where: { account: account },
+          })
+            .then((data: any) => {
+              // Add building entry in db
+              const new_building = {
+                fk_userid: current_user.id,
+                fk_landid: current_user.land.id,
+                fk_buildingid: newBuilding.type,
+                blockX: newBuilding.blockX,
+                blockY: newBuilding.blockY,
+                posX: newBuilding.posX,
+                posY: newBuilding.posY,
+                decay: newBuilding.decay,
+                gameUid: newBuilding.gameUid,
+              };
+              PlayerBuilding.create(new_building)
+                .then((data: any) => {
+                  // Update player inventory
+                  var current_inventory = {
+                    wood: inventory[0],
+                    rock: inventory[1],
+                    food: inventory[2],
+                    metal: inventory[3],
+                    coal: inventory[4],
+                    energy: inventory[5],
+                    coin: inventory[6],
+                    gold: inventory[7],
+                    freePop: inventory[8],
+                    totalPop: inventory[9],
+                    level: inventory[11],
+                  };
+
+                  PlayerInventory.update(current_inventory, {
+                    where: { fk_userid: current_user.id },
+                  })
+                    .then((data: any) => {
+                      res.send({ success: 1 });
+                    })
+                    .catch((err: any) => {
+                      res.status(500).send({
+                        message:
+                          "Error updating user inventory with account=" +
+                          account,
+                      });
+                    });
+                })
+                .catch((err: any) => {
+                  res.status(500).send({
+                    message: "Error updating user land with account=" + account,
+                  });
+                });
+            })
+            .catch((err) => {
+              res.status(500).send({
+                message: "Error while adding action to player",
+              });
+            });
+        })
+        .catch((err) => {
+          res.status(500).send({
+            message: "Error while adding action to player",
+          });
+        });
+    })
+    .catch((err: any) => {
+      res.status(500).send({
+        message: "Error finding user with account=" + account,
+      });
+    });
+};
+
+// Update user data after move action
+exports.move = (req, res) => {
+  const account = req.userData.account;
+  const moveAction = req.userData.action;
+  const fullMap = req.userData.fullMap;
+  const buildingUpdated = req.userData.buildingUpdated;
+
+  var current_user;
+
+  // Fetch player information
+  User.findOne({
+    where: { account: account },
+    include: [
+      {
+        model: PlayerLand,
+        attributes: ["id"],
+      },
+    ],
+  })
+    .then((user: any) => {
+      console.log("user fetched in DB", user);
+      current_user = user;
+
+      // Add action entry
+      const action_entry = {
+        entrypoint: moveAction.entrypoint,
+        calldata: moveAction.calldata,
+        validated: false,
+        fk_userid: user.id,
+        fk_landid: user.land.id,
+      };
+      PlayerAction.create(action_entry)
+        .then((data) => {
+          // Update player data
+          const update_player = {
+            nbActions: current_user.nbActions + 1,
+          };
+
+          User.update(update_player, {
+            where: { account: account },
+          })
+            .then((data: any) => {
+              // Add building entry in db
+              const new_building = {
+                blockX: buildingUpdated.posX,
+                blockY: buildingUpdated.posY,
+              };
+              PlayerBuilding.update(new_building, {
+                where: {
+                  id: buildingUpdated.uid,
+                  fk_userid: current_user.id,
+                  fk_landid: current_user.land.id,
+                  fk_buildingid: buildingUpdated.id,
+                },
+              })
+                .then((data: any) => {
+                  res.send({ success: 1 });
+                })
+                .catch((err: any) => {
+                  res.status(500).send({
+                    message:
+                      "Error updating user inventory with account=" + account,
+                  });
+                })
+                .catch((err: any) => {
+                  res.status(500).send({
+                    message: "Error updating user land with account=" + account,
+                  });
+                });
+            })
+            .catch((err) => {
+              res.status(500).send({
+                message: "Error while adding action to player",
+              });
+            });
+        })
+        .catch((err) => {
+          res.status(500).send({
+            message: "Error while adding action to player",
+          });
+        });
+    })
+    .catch((err: any) => {
+      res.status(500).send({
+        message: "Error finding user with account=" + account,
+      });
+    });
+};
+
+// move
+// destroy
+// fuelProd
+// claim
+// reinit land
