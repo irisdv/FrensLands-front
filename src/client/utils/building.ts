@@ -8,7 +8,7 @@
 
 // FUNCTION TO DO
 
-// ||||||- enough to harvest : resources / population (type of resource spawned)
+// ||||||-  enough to harvest : resources / population (type of resource spawned)
 // ||||||- enough to build : resources / population (type of building)
 // ||||||- enough to repair
 // ||||||- get resource / population back from destroying (type of building) ---> unsigned_div_rem keep just quotient | full pop
