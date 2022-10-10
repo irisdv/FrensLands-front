@@ -38,11 +38,18 @@ exports.findOne = (req, res) => {
       },
       {
         model: PlayerBuilding,
-        attributes: ["posX", "posY", "blockX", "blockY", "fk_buildingid"],
+        attributes: [
+          "posX",
+          "posY",
+          "blockX",
+          "blockY",
+          "fk_buildingid",
+          "decay",
+        ],
       },
       {
         model: PlayerLand,
-        attributes: ["id", "biomeId", "fullMap"],
+        attributes: ["id", "biomeId", "fullMap", "nbResourceSpawned"],
       },
       {
         model: PlayerAction,
@@ -138,6 +145,7 @@ exports.initGame = (req, res) => {
                 posY: 1.2,
                 blockX: 11,
                 blockY: 8,
+                decay: 100,
                 unitTimeCreatedAt: 0,
               };
 
@@ -189,6 +197,86 @@ exports.initGame = (req, res) => {
     .catch((err: any) => {
       res.status(500).send({
         message: "Error initializing game for account=" + account,
+      });
+    });
+};
+
+// Update user data after harvest
+exports.harvest = (req, res) => {
+  const account = req.userData.account;
+  const landId = req.userData.biomeId;
+  const inventory = req.userData.inventory;
+  const fullMap = req.userData.fullMap;
+
+  var current_user;
+  var user_id;
+
+  User.findOne({
+    where: { account: account },
+  })
+    .then((user: any) => {
+      user_id = user.id;
+      current_user = {
+        nbActions: user.nbActions + 1,
+        totalHarvest: user.nbActions + 1,
+      };
+
+      User.update(current_user, {
+        where: { account: account },
+      })
+        .then((data: any) => {
+          var current_land = {
+            fullMap: fullMap,
+            // TODO add nbResourcesLeft
+          };
+          // Update land full Map
+          PlayerLand.update(current_land, {
+            where: { fk_userid: user_id },
+          })
+            .then((data: any) => {
+              var current_inventory = {
+                wood: inventory[0],
+                rock: inventory[1],
+                food: inventory[2],
+                metal: inventory[3],
+                coal: inventory[4],
+                energy: inventory[5],
+                coin: inventory[6],
+                gold: inventory[7],
+                freePop: inventory[8],
+                totalPop: inventory[9],
+                level: inventory[11],
+              };
+
+              PlayerInventory.update(current_inventory, {
+                where: { fk_userid: user_id },
+              })
+                .then((data: any) => {
+                  // ? add actions here
+                  res.send({ success: 1 });
+                })
+                .catch((err: any) => {
+                  res.status(500).send({
+                    message:
+                      "Error updating user inventory with account=" + account,
+                  });
+                });
+            })
+            .catch((err: any) => {
+              res.status(500).send({
+                message: "Error updating user land with account=" + account,
+              });
+            });
+        })
+        .catch((err: any) => {
+          res.status(500).send({
+            message: "Error updating user with account=" + account,
+          });
+        });
+    })
+    .catch((err: any) => {
+      res.status(500).send({
+        message: "Error finding user with account=" + account,
       });
     });
 };

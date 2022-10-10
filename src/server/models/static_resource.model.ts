@@ -21,6 +21,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       field: "name",
     },
+    description: {
+      type: Sequelize.STRING,
+      field: "description",
+    },
     locked: {
       type: Sequelize.BOOLEAN,
       field: "locked",
@@ -38,9 +42,9 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.SMALLINT,
       field: "fertilityNeed",
     },
-    nbLevel: {
+    nbLevels: {
       type: Sequelize.SMALLINT,
-      field: "nbLevel",
+      field: "nbLevels",
     },
     harvestCost: {
       type: Sequelize.STRING,

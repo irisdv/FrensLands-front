@@ -16,4 +16,6 @@ module.exports = (app) => {
   app.post("/api/users/settings", [authJwt.verifyToken], users.updateSettings);
 
   app.post("/api/users/init", [authJwt.verifyToken], users.initGame);
+
+  app.post("/api/users/harvest", [authJwt.verifyToken], users.harvest);
 };

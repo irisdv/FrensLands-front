@@ -8,6 +8,11 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       field: "spriteId",
     },
+    animated: {
+      type: Sequelize.BOOLEAN,
+      field: "animated",
+      defaultValue: true,
+    },
     biomeId: {
       type: Sequelize.STRING,
       field: "biomeId",
@@ -16,9 +21,13 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       field: "name",
     },
-    levelToUnlock: {
+    description: {
+      type: Sequelize.STRING,
+      field: "description",
+    },
+    pLevelToUnlock: {
       type: Sequelize.SMALLINT,
-      field: "levelToUnlock",
+      field: "pLevelToUnlock",
     },
     locked: {
       type: Sequelize.BOOLEAN,
@@ -47,9 +56,9 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.SMALLINT,
       field: "nbLevel",
     },
-    maintain: {
+    needMaintain: {
       type: Sequelize.BOOLEAN,
-      field: "maintain",
+      field: "needMaintain",
       defaultValue: true,
     },
     createCost: {

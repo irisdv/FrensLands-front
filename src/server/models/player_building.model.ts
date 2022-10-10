@@ -24,6 +24,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.SMALLINT,
       field: "blockY",
     },
+    decay: {
+      type: Sequelize.SMALLINT,
+      field: "decay",
+    },
     unitTimeCreatedAt: {
       type: Sequelize.INTEGER,
       field: "unitTimeCreatedAt",
