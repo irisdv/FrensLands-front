@@ -1725,11 +1725,10 @@ Lab = 24 */
   background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
   height: calc(64px * 2);
   width: calc(64px * 2);
-  background-position: calc(1 * 2 * 64px) calc(4 * 2 * 64px);
+  background-position: calc(2 * 2 * 64px) calc(4 * 2 * 64px);
   background-size: calc(1664px * 1) calc(640px * 1);
   pointer-events: none;
 }
-/* Rocks */
 .resource2 {
   display: inline-block;
   background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
@@ -1744,11 +1743,51 @@ Lab = 24 */
   background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
   height: calc(64px * 2);
   width: calc(64px * 2);
+  background-position: calc(2 * 2 * 64px) calc(4 * 2 * 64px);
+  background-size: calc(1664px * 1) calc(640px * 1);
+  pointer-events: none;
+}
+/* Rocks */
+.resource4 {
+  display: inline-block;
+  background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+  height: calc(64px * 2);
+  width: calc(64px * 2);
+  background-position: calc(1 * 2 * 64px) calc(4 * 2 * 64px);
+  background-size: calc(1664px * 1) calc(640px * 1);
+  pointer-events: none;
+}
+.resource5 {
+  display: inline-block;
+  background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+  height: calc(64px * 2);
+  width: calc(64px * 2);
+  background-position: calc(1 * 2 * 64px) calc(4 * 2 * 64px);
+  background-size: calc(1664px * 1) calc(640px * 1);
+  pointer-events: none;
+}
+.resource6 {
+  display: inline-block;
+  background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+  height: calc(64px * 2);
+  width: calc(64px * 2);
+  background-position: calc(1 * 2 * 64px) calc(4 * 2 * 64px);
+  background-size: calc(1664px * 1) calc(640px * 1);
+  pointer-events: none;
+}
+
+/* Bush */
+.resource7 {
+  display: inline-block;
+  background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
+  height: calc(64px * 2);
+  width: calc(64px * 2);
   background-position: calc(13 * 2 * 64px) calc(2 * 2 * 64px);
   background-size: calc(1664px * 1) calc(640px * 1);
   pointer-events: none;
 }
-.resource4 {
+/* Mine */
+.resource8 {
   display: inline-block;
   background-image: url("resources/front/Matchbox_UI_MenuBuildings.png");
   height: calc(64px * 2);

@@ -69,8 +69,10 @@ export const fillStaticResources = (staticResources: any) => {
     fixResVal[i].size = staticResources[i].size;
     fixResVal[i].level = staticResources[i].nbLevels;
     fixResVal[i].fertility = staticResources[i].fertilityNeed;
+
     fixResVal[i].sprites = parseResToArray(tempSpriteArray[0]);
-    fixResVal[i].harvestSprites = parseResToArray(tempSpriteArray[1]);
+    if (tempSpriteArray[1])
+      fixResVal[i].harvestSprites = parseResToArray(tempSpriteArray[1]);
 
     const _harvestCosts = parseResToArray(staticResources[i].harvestCost);
     fixResVal[i].harvestCost = _harvestCosts.map((val) => parseInt(val));

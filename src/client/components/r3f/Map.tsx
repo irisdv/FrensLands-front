@@ -267,6 +267,7 @@ export const Map = (props: any) => {
         updateBuildingFrame(true, {
           infraType: frontBlockArray[rayY][rayX].infraType,
           typeId: selectedObj?.type_id, // resource_type_id
+          randType: frontBlockArray[rayY][rayX].randType,
           unique_id: selectedObj?.unique_id,
           state: frontBlockArray[rayY][rayX].state,
           posX: frontBlockArray[rayY][rayX].posX,

@@ -165,6 +165,8 @@ export function BuildingFrame(props: any) {
     return <></>;
   }
 
+  console.log("frameData", frameData);
+
   return (
     <>
       {frameDataValue != null && frameDataValue.infraType == 1 && (
@@ -172,6 +174,7 @@ export function BuildingFrame(props: any) {
           <BF_resource
             uid={frameDataValue.unique_id}
             typeId={frameDataValue.typeId}
+            randType={frameDataValue.randType}
             state={fullMap[frameDataValue.posY][frameDataValue.posX].state}
             posX={frameDataValue.posX}
             posY={frameDataValue.posY}

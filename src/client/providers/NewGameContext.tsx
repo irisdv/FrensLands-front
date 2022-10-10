@@ -355,7 +355,7 @@ export const NewAppStateProvider: React.FC<
       console.log("fixBuildVal = ", fixBuildVal);
 
       //  - - - - - - STATIC RESOURCES - - - - - -
-      const staticResources: any = await getStaticResources();
+      const staticResources: any = await getStaticResources(land.biomeId);
       const fixResVal: any[] = fillStaticResources(staticResources);
       console.log("fixResVal = ", fixResVal);
 

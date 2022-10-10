@@ -66,14 +66,17 @@ export const revComposeD = (compMap: string) => {
         randomNum = parseInt(randomNum.toFixed(0));
         tempArray[y][x].randType = randomNum;
         specIndex++;
-        console.log("tempArray[y][x].randType = ", tempArray[y][x].randType);
+        // console.log("tempArray[y][x].randType = ", tempArray[y][x].randType);
       } else if (tempArray[y][x].type == 2) {
-        var randomNum: number = random(specIndex) * (3 - 1) + 1; //! TEMPORARY
-        //var randomNum : number = (random(specIndex) * (6 - 4) + 4); // ! CRASH WITH RIGH VALUE
+        var randomNum: number = random(specIndex) * (6 - 4) + 4;
         randomNum = parseInt(randomNum.toFixed(0));
         tempArray[y][x].randType = randomNum;
         specIndex++;
-        console.log("tempArray[y][x].randType = ", tempArray[y][x].randType);
+        // console.log("tempArray[y][x].randType = ", tempArray[y][x].randType);
+      } else if (tempArray[y][x].type == 3) {
+        tempArray[y][x].randType = 7;
+      } else if (tempArray[y][x].type == 4) {
+        tempArray[y][x].randType = 8;
       }
     }
 

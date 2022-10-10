@@ -3,6 +3,7 @@ import React, { useReducer } from "react";
 export interface IFrame {
   infraType?: number;
   typeId?: number;
+  randType?: number;
   unique_id?: number;
   state?: number;
   posX?: any;

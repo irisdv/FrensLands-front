@@ -12,6 +12,11 @@ module.exports = (app) => {
   app.get("/api/static_resources_spawned", static_resources_spawned.findAll);
 
   app.get(
+    "/api/static_resources_spawned/:biomeId",
+    static_resources_spawned.findAllByBiome
+  );
+
+  app.get(
     "/api/static_resources_spawned/:id",
     static_resources_spawned.findOne
   );

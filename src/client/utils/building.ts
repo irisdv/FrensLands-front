@@ -76,7 +76,7 @@ export const checkResHarvestMsg = (
     }
     i++;
   }
-  console.log("lacking resources to harvest ", res);
+  // console.log("lacking resources to harvest ", res);
   return res;
 };
 

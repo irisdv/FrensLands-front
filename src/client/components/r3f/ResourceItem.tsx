@@ -40,38 +40,6 @@ export const ResourceItem = memo<IBlock>(
     // const [localTextureClock, setLocalTextureClock] = useState<any>(null);
     const { frameData, updateBuildingFrame } = useSelectContext();
     const { harvestActions } = useNewGameContext();
-    const rockTextures = [
-      [177, 171, 172],
-      [180, 174, 175],
-      [179, 171, 173],
-    ];
-    const treeTextures = [
-      [
-        [15, 126, 128],
-        [16, 119, 127],
-        [30, 120, 127],
-      ],
-      [
-        [46, 206, 207],
-        [47, 110, 111],
-        [48, 222, 223],
-      ],
-      [
-        [95, 124, 127],
-        [96, 125, 128],
-        [30, 120, 127],
-      ],
-      [
-        [63, 121, 127],
-        [64, 122, 128],
-        [78, 123, 127],
-      ],
-      [
-        [15, 126, 128],
-        [16, 119, 127],
-        [30, 120, 127],
-      ],
-    ];
 
     const frameDataValue = useMemo(() => {
       if (frameData != null && clicked) {
@@ -97,43 +65,41 @@ export const ResourceItem = memo<IBlock>(
       let textureType: Vector2 = new Vector2(0, 0);
       if (block.infraType == 1) {
         if (block.type == 1) {
-          // tree
-          textureType = findTextByID(
-            treeTextures[worldType - 1][block.randType - 1][block.state - 1]
-          );
+          if (block.state == 1) {
+            textureType = findTextByID(
+              staticResources[block.randType - 1].sprites[0]
+            );
+          } else {
+            textureType = findTextByID(
+              staticResources[block.randType - 1].harvestSprites[
+                block.state - 1
+              ]
+            );
+          }
         } else if (block.type == 2) {
-          // rock
-          textureType = findTextByID(
-            rockTextures[block.randType - 1][block.state - 1]
-          );
+          if (block.state == 1) {
+            textureType = findTextByID(
+              staticResources[block.randType - 1].sprites[0]
+            );
+          } else {
+            textureType = findTextByID(
+              staticResources[block.randType - 1].harvestSprites[
+                block.state - 1
+              ]
+            );
+          }
         } else {
-          textureType = findTextByID(rightBuildingType[block.type]);
+          textureType = findTextByID(
+            staticResources[block.randType - 1].sprites[0]
+          );
         }
       } else if (block.infraType == 2) {
         if (block.type == 1 && block.state == 1) {
           textureType = findTextByID(2);
         } else {
-          // console.log(
-          //   "SPRITE BUILDING",
-          //   staticBuildings[block.type - 1].sprite[0]
-          // );
           textureType = findTextByID(staticBuildings[block.type - 1].sprite[0]);
         }
       }
-
-      // // if (block[9] > 0) {
-      // //   if (block[3] == 2) {
-      // //     textureType = findTextByID(rockTextures[block[9] - 1][block[7] - 1]);
-      // //   } else {
-      // //     textureType = findTextByID(
-      // //       treeTextures[worldType][block[9] - 1][block[7] - 1]
-      // //     );
-      // //   }
-      // // } else if (block[3] == 1 && block[7] == 1) {
-      // //   textureType = findTextByID(2);
-      // // } else {
-      // //   textureType = findTextByID(rightBuildingType[block[3]]);
-      // // }
       const localT = textureLoader.clone();
       localT.needsUpdate = true;
       localT.offset.set(textureType.x, textureType.y);
@@ -145,42 +111,41 @@ export const ResourceItem = memo<IBlock>(
       let textureType: Vector2 = new Vector2(0, 0);
       if (block.infraType == 1) {
         if (block.type == 1) {
-          // tree
-          textureType = findTextByID(
-            treeTextures[worldType - 1][block.randType - 1][block.state - 1]
-          );
+          if (block.state == 1) {
+            textureType = findTextByID(
+              staticResources[block.randType - 1].sprites[0]
+            );
+          } else {
+            textureType = findTextByID(
+              staticResources[block.randType - 1].harvestSprites[
+                block.state - 1
+              ]
+            );
+          }
         } else if (block.type == 2) {
-          // rock
-          textureType = findTextByID(
-            rockTextures[block.randType - 1][block.state - 1]
-          );
+          if (block.state == 1) {
+            textureType = findTextByID(
+              staticResources[block.randType - 1].sprites[0]
+            );
+          } else {
+            textureType = findTextByID(
+              staticResources[block.randType - 1].harvestSprites[
+                block.state - 1
+              ]
+            );
+          }
         } else {
-          textureType = findTextByID(rightBuildingType[block.type]);
+          textureType = findTextByID(
+            staticResources[block.randType - 1].sprites[0]
+          );
         }
       } else if (block.infraType == 2) {
         if (block.type == 1 && block.state == 1) {
           textureType = findTextByID(2);
         } else {
-          // console.log(
-          //   "SPRITE BUILDING",
-          //   staticBuildings[block.type - 1].sprite[0]
-          // );
           textureType = findTextByID(staticBuildings[block.type - 1].sprite[0]);
         }
       }
-      // // if (block[9] > 0) {
-      // //   if (block[3] == 2) {
-      // //     textureType = findTextByID(rockTextures[block[9] - 1][block[7] - 1]);
-      // //   } else {
-      // //     textureType = findTextByID(
-      // //       treeTextures[worldType][block[9] - 1][block[7] - 1]
-      // //     );
-      // //   }
-      // // } else if (block[3] == 1 && block[7] == 1) {
-      // //   textureType = findTextByID(2);
-      // // } else {
-      // //   textureType = findTextByID(rightBuildingType[block[3]]);
-      // // }
       const localT = textureSelected.clone();
       localT.needsUpdate = true;
       localT.offset.set(textureType.x, textureType.y);
@@ -236,7 +201,7 @@ export const ResourceItem = memo<IBlock>(
 
     const clockEmpty = useMemo(() => {
       if (textureLoader) {
-        const textureType = findTextByID(196);
+        const textureType = findTextByID(256);
         const localT = textureLoader.clone();
         localT.needsUpdate = true;
         localT.offset.set(textureType.x, textureType.y);

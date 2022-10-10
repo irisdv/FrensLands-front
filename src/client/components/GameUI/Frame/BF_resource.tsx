@@ -14,6 +14,7 @@ export function BF_resource(props: any) {
   const {
     uid,
     typeId,
+    randType,
     state,
     posX,
     posY,
@@ -45,7 +46,7 @@ export function BF_resource(props: any) {
     const _check = checkResHarvest(_typeId - 1, inventory, staticResourcesData);
     if (_check && tokenId) {
       const _inventory = harvestResPay(
-        _typeId - 1,
+        randType - 1,
         inventory,
         staticResourcesData
       );
@@ -60,7 +61,7 @@ export function BF_resource(props: any) {
 
       // ? harvest timer has passed
       const _inventoryUpdated = receiveResHarvest(
-        _typeId - 1,
+        randType - 1,
         inventory,
         staticResourcesData
       );
@@ -101,6 +102,7 @@ export function BF_resource(props: any) {
           onClick={() =>
             updateBuildingFrame(false, {
               infraType: 0,
+              randType: 0,
               type_id: 0,
               state: 0,
               posX: 0,
@@ -119,20 +121,20 @@ export function BF_resource(props: any) {
             style={{ height: "20px" }}
           >
             {/* // * Resource name */}
-            {staticResourcesData[typeId - 1].name}
+            {staticResourcesData[randType - 1].name}
           </div>
           <div
             className="relative flex jutify-center items-center inline-block"
             style={{ paddingLeft: "8px" }}
           >
             {/* // * Population Required to harvest */}
-            {staticResourcesData[typeId - 1].harvestCost[8] > 0 ? (
+            {staticResourcesData[randType - 1].harvestCost[8] > 0 ? (
               <div className="flex flex-row justify-center inline-block relative">
                 <div
                   className="fontHPxl-sm"
                   style={{ position: "absolute", top: "-9px", left: "46px" }}
                 >
-                  {staticResourcesData[typeId - 1].harvestCost[8]}
+                  {staticResourcesData[randType - 1].harvestCost[8]}
                 </div>
                 <div
                   className={"mb-3 small12"}
@@ -156,7 +158,7 @@ export function BF_resource(props: any) {
             >
               {/* Resource miniature image */}
               <div
-                className={"resource" + `${typeId}`}
+                className={"resource" + `${randType}`}
                 style={{ left: "-26px", top: "-39px", position: "absolute" }}
               ></div>
             </div>
@@ -165,7 +167,7 @@ export function BF_resource(props: any) {
               style={{ fontSize: "12px", paddingTop: "34px", width: "85px" }}
             >
               {/* resource name  */}
-              {staticResourcesData[typeId - 1].type}
+              {staticResourcesData[randType - 1].type}
             </div>
             <div
               className="font04B mx-auto text-center"
@@ -201,7 +203,7 @@ export function BF_resource(props: any) {
             pointerEvents: "all",
           }}
         >
-          {staticResourcesData[typeId - 1].description}
+          {staticResourcesData[randType - 1].description}
         </div>
 
         {/* // * Btn Harvest enabled / disabled  */}
@@ -255,15 +257,15 @@ export function BF_resource(props: any) {
             className="relative flex justify-end items-center inline-block"
             style={{ width: "115px", marginTop: "-21px" }}
           >
-            {Object.keys(staticResourcesData[typeId - 1].harvestCost).map(
+            {Object.keys(staticResourcesData[randType - 1].harvestCost).map(
               (elem: any) => {
                 return (
                   elem < 7 &&
-                  staticResourcesData[typeId - 1].harvestCost[elem] > 0 && (
+                  staticResourcesData[randType - 1].harvestCost[elem] > 0 && (
                     <FrameItem
                       key={elem}
                       index={elem}
-                      cost={staticResourcesData[typeId - 1].harvestCost[elem]}
+                      cost={staticResourcesData[randType - 1].harvestCost[elem]}
                       inventory={inventory[elem]}
                       option={1}
                     />
@@ -279,16 +281,15 @@ export function BF_resource(props: any) {
             className="relative flex justify-end items-center inline-block"
             style={{ width: "122px", marginTop: "-22px" }}
           >
-            {Object.keys(staticResourcesData[typeId - 1].production).map(
+            {Object.keys(staticResourcesData[randType - 1].production).map(
               (elem: any) => {
                 return (
                   elem < 7 &&
-                  typeId &&
-                  staticResourcesData[typeId - 1].production[elem] > 0 && (
+                  staticResourcesData[randType - 1].production[elem] > 0 && (
                     <FrameItem
                       key={elem}
                       index={elem}
-                      cost={staticResourcesData[typeId - 1].production[elem]}
+                      cost={staticResourcesData[randType - 1].production[elem]}
                       option={0}
                     />
                   )

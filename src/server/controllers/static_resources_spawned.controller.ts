@@ -44,3 +44,25 @@ exports.findAll = (req, res) => {
       });
     });
 };
+
+// Retrieve all static resources spawned information
+exports.findAllByBiome = (req, res) => {
+  console.log("req.params", req.params);
+  const biomeId = req.params.biomeId;
+  StaticResources.findAll({ where: { biomeId: biomeId } })
+    .then((data) => {
+      if (data) {
+        res.send(data);
+      } else {
+        res.status(404).send({
+          status: "not_found",
+          message: `Cannot fetch all static resources spawned.`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error retrieving all static resources spawned",
+      });
+    });
+};
