@@ -18,7 +18,7 @@ import { useResourcesContract } from "../../hooks/contracts/resources";
 
 export function MenuBar() {
   const { data: block } = useStarknetBlock();
-  const { addAction, payloadActions, player } = useNewGameContext();
+  const { addAction, payloadActions, wallet, inventory } = useNewGameContext();
   const { zoomMode, updateZoom } = useSelectContext();
   const {
     tokenId,
@@ -31,18 +31,7 @@ export function MenuBar() {
     counterResources,
     accountContract,
   } = useGameContext();
-  const {
-    energy,
-    frensCoins,
-    wood,
-    rock,
-    coal,
-    metal,
-    populationBusy,
-    populationFree,
-    meat,
-    cereal,
-  } = useResourcesContext();
+
   const { contract: resourcesContract } = useResourcesContract();
 
   const reinitializeInvoke = useReinitialize();
@@ -58,25 +47,25 @@ export function MenuBar() {
   // }, [zoomMode])
 
   useEffect(() => {
-    if (player && player.isConnected) setAddress(player.account.address);
-  }, [player]);
+    if (wallet && wallet.isConnected) setAddress(wallet.account.address);
+  }, [wallet]);
 
   useEffect(() => {
-    if (player && player.isConnected && !tokenId) {
-      updateTokenId(player.account.address);
+    if (wallet && wallet.isConnected && !tokenId) {
+      updateTokenId(wallet.account.address);
     }
-  }, [player, tokenId]);
+  }, [wallet, tokenId]);
 
   // Invoke claim resources
   const claimResources = () => {
     // Multicall
     console.log("actions = ", payloadActions);
 
-    let _calls: any[] = [];
+    const _calls: any[] = [];
     payloadActions.forEach((action) => {
       // Build calldata
-      var _calldata: any[] = [];
-      var _data = action.calldata.split("|");
+      const _calldata: any[] = [];
+      const _data = action.calldata.split("|");
       _data.forEach((elem: any) => {
         _calldata.push(elem);
       });
@@ -87,9 +76,9 @@ export function MenuBar() {
       });
     });
 
-    player.account.getNonce().then((nonce: any) => {
+    wallet.account.getNonce().then((nonce: any) => {
       console.log("nonce", nonce);
-      player.account.execute(_calls);
+      wallet.account.execute(_calls);
       // TODO : add nounce in execute multicall
     });
 
@@ -118,12 +107,12 @@ export function MenuBar() {
     if (tokenId) {
       const tx_hash = reinitializeInvoke(tokenId, nonceValue);
 
-      tx_hash.then((res) => {
-        console.log("res", res);
-        if (res != 0) {
-          updateNonce(nonceValue);
-        }
-      });
+      //     tx_hash.then((res) => {
+      //       console.log("res", res);
+      //       if (res != 0) {
+      //         updateNonce(nonceValue);
+      //       }
+      //     });
     } else {
       console.log("Missing tokenId");
     }
@@ -185,7 +174,7 @@ export function MenuBar() {
 
   const zoomValue = useMemo(() => {
     return zoomMode;
-  }, [zoomMode, player]);
+  }, [zoomMode, wallet]);
 
   return (
     <>
@@ -234,7 +223,7 @@ export function MenuBar() {
                 className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
                 style={{ marginTop: "-2px", marginLeft: "-10px" }}
               >
-                {frensCoins || 0}
+                {inventory[6]}
               </div>
               <div
                 className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
@@ -257,7 +246,7 @@ export function MenuBar() {
                 className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
                 style={{ marginTop: "-2px", marginLeft: "-10px" }}
               >
-                {wood || 0}
+                {inventory[0]}
               </div>
               <div
                 className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
@@ -280,7 +269,7 @@ export function MenuBar() {
                 className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
                 style={{ marginTop: "-2px", marginLeft: "-10px" }}
               >
-                {rock || 0}
+                {inventory[1]}
               </div>
               <div
                 className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
@@ -303,7 +292,7 @@ export function MenuBar() {
                 className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
                 style={{ marginTop: "-2px", marginLeft: "-10px" }}
               >
-                {metal || 0}
+                {inventory[3]}
               </div>
               <div
                 className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
@@ -326,7 +315,7 @@ export function MenuBar() {
                 className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
                 style={{ marginTop: "-2px", marginLeft: "-10px" }}
               >
-                {coal || 0}
+                {inventory[4]}
               </div>
               <div
                 className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
@@ -349,7 +338,7 @@ export function MenuBar() {
                 className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
                 style={{ marginTop: "-2px", marginLeft: "-10px" }}
               >
-                {populationBusy || 0}
+                {inventory[9] - inventory[8]}
               </div>
             </div>
             <div
@@ -361,7 +350,7 @@ export function MenuBar() {
                 className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
                 style={{ marginTop: "-2px", marginLeft: "-10px" }}
               >
-                {populationFree || 0}
+                {inventory[8]}
               </div>
             </div>
             <div
@@ -373,7 +362,7 @@ export function MenuBar() {
                 className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
                 style={{ marginTop: "-2px", marginLeft: "-10px" }}
               >
-                {meat || 0}
+                {inventory[2]}
               </div>
               <div
                 className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
@@ -396,7 +385,7 @@ export function MenuBar() {
                 className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
                 style={{ marginTop: "-2px", marginLeft: "-10px" }}
               >
-                {energy || 0}
+                {inventory[5]}
               </div>
               <div
                 className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
@@ -421,7 +410,7 @@ export function MenuBar() {
               ></div>
               {/* ) : (
               //   <div className="btnClaimDisabled pixelated"></div>
-              // )}*/}
+              // )} */}
             </div>
             <div
               className="flex jutify-center relative mx-auto"
@@ -444,7 +433,7 @@ export function MenuBar() {
         </div>
       </div>
       <div
-        onClick={() => updateZoom(!zoomValue, player.account.address as string)}
+        onClick={() => updateZoom(!zoomValue, wallet.account.address as string)}
       >
         {zoomValue ? (
           <div className="checkZoom1 pixelated"></div>

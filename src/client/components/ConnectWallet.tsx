@@ -93,7 +93,7 @@ export function ConnectWallet(props: any) {
               available.map((connector) => (
                 <div className="mt-5 flex justify-center" key={connector.id()}>
                   <button
-                    onClick={() => connectWallet()}
+                    onClick={async () => await connectWallet()}
                     style={{
                       display: "flex",
                       alignItems: "center",

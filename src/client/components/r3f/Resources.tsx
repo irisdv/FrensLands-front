@@ -19,7 +19,8 @@ export default function Resources({
   rightBuildingType,
   position,
   worldType,
-  gallery,
+  staticBuildings,
+  staticResources,
 }: any): any {
   const frontBlockArrayValue = useMemo(() => {
     if (frontBlockArray && Object.keys(frontBlockArray).length > 0) {
@@ -94,6 +95,8 @@ export default function Resources({
           textureSelected={textureLoaderSelected}
           position={position}
           worldType={worldType}
+          staticBuildings={staticBuildings}
+          staticResources={staticResources}
         />
       );
     })

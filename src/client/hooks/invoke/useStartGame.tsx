@@ -24,13 +24,12 @@ export default function useStartGame() {
 
       return await contract
         .invoke("start_game", [uint256.bnToUint256(tokenId), biomeId], {
-          nonce: nonce,
+          nonce,
           maxFee: 1618293576158800,
         })
         // .then((tx: AddTransactionResponse) => {
-          .then((tx: InvokeFunctionResponse) => {
+        .then((tx: InvokeFunctionResponse) => {
           console.log("Transaction hash: ", tx);
-
 
           // addTransaction({
           //   status: tx.status,

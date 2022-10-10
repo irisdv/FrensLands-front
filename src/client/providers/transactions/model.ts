@@ -16,7 +16,7 @@ export interface TransactionSubmitted {
 export interface TransactionReceived {
   status: Status;
   // transaction: NotifTransaction;
-  transaction: any
+  transaction: any;
   transactionHash: string;
   lastUpdatedAt: number;
   show?: boolean;

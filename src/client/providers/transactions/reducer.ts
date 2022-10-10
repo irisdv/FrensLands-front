@@ -71,14 +71,11 @@ export function transactionManagerReducer(
     // const entry = state.transactions.findEntry(
     //   (tx) => tx.transactionHash === action.transactionHash
     // );
-
     // if (entry == null) {
     //   return state;
     // }
-
     // const [transactionIndex, transaction] = entry;
     // const description = transaction.metadata;
-
     // const newTransaction: Transaction = {
     //   status: action.transactionResponse.status,
     //   transaction: action.transactionResponse.transaction,
@@ -87,47 +84,40 @@ export function transactionManagerReducer(
     //   show: action.show,
     //   metadata: description,
     // };
-
     // return {
     //   ...state,
     //   transactions: state.transactions.set(transactionIndex, newTransaction),
     // };
-
     // return {
     //   ...state,
     //   transactions: state.transactions.filter(
     //     (tx) => tx.transactionHash !== action.transactionHash
     //   ),
     // }
-  // } else if (action.type === "update_transaction") {
-  //   if (action.transactionResponse.status === "NOT_RECEIVED") {
-  //     return state;
-  //   }
-
-  //   const entry = state.transactions.findEntry(
-  //     (tx) => tx.transactionHash === action.transactionHash
-  //   );
-
-  //   if (entry == null) {
-  //     return state;
-  //   }
-
-  //   const [transactionIndex, transaction] = entry;
-  //   const description = transaction.metadata;
-
-  //   const newTransaction: Transaction = {
-  //     status: action.transactionResponse.status,
-  //     transaction: action.transactionResponse.transaction,
-  //     transactionHash: action.transactionHash,
-  //     lastUpdatedAt: action.lastUpdatedAt,
-  //     show: action.show,
-  //     metadata: description,
-  //   };
-
-  //   return {
-  //     ...state,
-  //     transactions: state.transactions.set(transactionIndex, newTransaction),
-  //   };
+    // } else if (action.type === "update_transaction") {
+    //   if (action.transactionResponse.status === "NOT_RECEIVED") {
+    //     return state;
+    //   }
+    //   const entry = state.transactions.findEntry(
+    //     (tx) => tx.transactionHash === action.transactionHash
+    //   );
+    //   if (entry == null) {
+    //     return state;
+    //   }
+    //   const [transactionIndex, transaction] = entry;
+    //   const description = transaction.metadata;
+    //   const newTransaction: Transaction = {
+    //     status: action.transactionResponse.status,
+    //     transaction: action.transactionResponse.transaction,
+    //     transactionHash: action.transactionHash,
+    //     lastUpdatedAt: action.lastUpdatedAt,
+    //     show: action.show,
+    //     metadata: description,
+    //   };
+    //   return {
+    //     ...state,
+    //     transactions: state.transactions.set(transactionIndex, newTransaction),
+    //   };
   } else if (action.type === "add_notification") {
     const { key, content } = action.notifItem;
 

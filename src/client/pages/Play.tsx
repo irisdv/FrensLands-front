@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useStarknet } from "@starknet-react/core";
+// import { useStarknet } from '@starknet-react/core'
 import useInGameContext from "../hooks/useInGameContext";
 import { Scene } from "../components/r3f/Scene";
 import { MenuBar } from "../components/GameUI/MenuBar";
@@ -18,7 +18,14 @@ import { useSelectContext } from "../hooks/useSelectContext";
 export default function Play() {
   const { address, setAddress, updateTokenId, tokenId, fetchMapType } =
     useGameContext();
-  const { player, initPlayer, initGameSession } = useNewGameContext();
+  const {
+    wallet,
+    initPlayer,
+    initGameSession,
+    fullMap,
+    staticBuildings,
+    staticResources,
+  } = useNewGameContext();
   const { initSettings } = useSelectContext();
   const [worldType, setWorldType] = useState(-1);
   const navigate = useNavigate();
@@ -37,6 +44,11 @@ export default function Play() {
   const [UBlockIDs, setUBlockIDs] = useState(0);
   const [buildingCounters, setBuildingCounters] = useState<any[]>([]);
   const [level, setLevel] = useState(1);
+
+  const fullMapValue = useMemo(() => {
+    console.log("fullMap in Play.tsx", fullMap);
+    return fullMap;
+  }, [fullMap]);
 
   const getUserInfo = async (account: string) => {
     await fetch(`http://localhost:3001/api/users/${account}`, {
@@ -62,7 +74,7 @@ export default function Play() {
   };
 
   useEffect(() => {
-    if (!player) {
+    if (!wallet) {
       const _wallet = getStarknet();
       _wallet.enable().then((data: any) => {
         console.log("_wallet", _wallet);
@@ -75,7 +87,7 @@ export default function Play() {
         }
       });
     }
-  }, [player]);
+  }, [wallet]);
 
   useEffect(() => {
     if (address && !tokenId) {
@@ -90,13 +102,6 @@ export default function Play() {
       setWorldType(_metadata[0].biome);
     }
   }, [tokenId]);
-
-  // useEffect(() => {
-  //   if (player && player.isConnected) {
-  //     // fetch user information and init game
-
-  //   }
-  // }, [player])
 
   useEffect(() => {
     let x = 0;
@@ -269,23 +274,27 @@ export default function Play() {
           <Achievements level={level} />
           <div style={{ height: "100vh", width: "100vw", zIndex: "0" }}>
             {frontBlockArray &&
-              Object.keys(frontBlockArray).length > 0 &&
-              worldType != null &&
-              worldType != -1 && (
-                <Scene
-                  mapArray={frontBlockArray.frontArray}
-                  textArrRef={textArrRef}
-                  rightBuildingType={rightBuildingType}
-                  worldType={worldType}
-                  UBlockIDs={UBlockIDs}
-                />
-              )}
+            Object.keys(frontBlockArray).length > 0 &&
+            worldType != null &&
+            worldType != -1 ? (
+              <Scene
+                mapArray={frontBlockArray.frontArray}
+                textArrRef={textArrRef}
+                rightBuildingType={rightBuildingType}
+                worldType={worldType}
+                UBlockIDs={UBlockIDs}
+              />
+            ) : (
+              <></>
+            )}
           </div>
-          {frontBlockArray && Object.keys(frontBlockArray).length > 0 && (
+          {frontBlockArray && Object.keys(frontBlockArray).length > 0 ? (
             <BuildingFrame
               frontBlockArray={frontBlockArray.frontArray}
               level={level}
             />
+          ) : (
+            <></>
           )}
           <BottomBar level={level} />
         </>

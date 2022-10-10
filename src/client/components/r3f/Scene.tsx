@@ -42,10 +42,10 @@ export const Scene = (props: any) => {
   const [mouseRightPressed, setMouseRightPressed] = useState(0);
   const [mouseMiddlePressed, setMouseMiddlePressed] = useState(0);
   const [frontBlockArray, setFrontBlockArray] = useState([]);
-  const { player } = useNewGameContext();
+  const { wallet } = useNewGameContext();
 
   const getStaticBuildings = async () => {
-    await fetch(`http://localhost:3001/api/static_buildings`)
+    await fetch("http://localhost:3001/api/static_buildings")
       .then(async (response) => {
         return await response.json();
       })
@@ -59,10 +59,10 @@ export const Scene = (props: any) => {
   }, []);
 
   const zoomValue = useMemo(() => {
-    if (player.isConnected && zoomMode != undefined) {
+    if (wallet.isConnected && zoomMode != undefined) {
       return zoomMode;
     }
-  }, [zoomMode, player]);
+  }, [zoomMode, wallet]);
 
   const [keyMap, setKeyMap] = useState({
     Escape: false,

@@ -1,39 +1,29 @@
-import React, {
-  memo,
-  ReactElement,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { Canvas, useThree, useFrame, useLoader } from "@react-three/fiber";
+import React, { useMemo, useRef, useState } from "react";
+import { useThree, useFrame } from "@react-three/fiber";
 import {
   TextureLoader,
   RepeatWrapping,
   NearestFilter,
-  PlaneGeometry,
   Vector2,
   Vector3,
-  AudioLoader,
 } from "three";
-
 import { useGameContext } from "../../hooks/useGameContext";
 import { useBVH } from "@react-three/drei";
 import { useSelectContext } from "../../hooks/useSelectContext";
 import { BuildingTemp } from "./BuildingTemp";
 import Resources from "./Resources";
 import { Frens } from "./Frens";
-import useTest from "../../hooks/invoke/useTest";
-import { useStarknet } from "@starknet-react/core";
+// import useTest from "../../hooks/invoke/useTest";
+// import { useStarknet } from "@starknet-react/core";
 
-import useTxGame from "../../hooks/useTxGame";
+// import useTxGame from "../../hooks/useTxGame";
 import { useNotifTransactionManager } from "../../providers/transactions";
 import useBuild from "../../hooks/invoke/useBuild";
+import { useNewGameContext } from "../../hooks/useNewGameContext";
 const { promises: Fs } = require("fs");
 
 export interface ISelectObject {
+  infraType: any;
   unique_id?: any;
   type_id: any;
   pos?: Vector2;
@@ -47,28 +37,27 @@ export const Map = (props: any) => {
     worldType,
     mouseLeftPressed,
     mouseMiddlePressed,
-    mouseRightPressed,
     buildingsIDs,
   } = props;
 
   const mapRef = useRef<any>();
   useBVH(mapRef);
-  const musicRef = useRef<THREE.Audio>();
-  const { scene, raycaster, camera } = useThree();
+  // const musicRef = useRef<THREE.Audio>();
+  const { scene } = useThree();
 
   // Audio
   // const menuTheme = useLoader(AudioLoader, "resources/sounds/ogg/FrensLand_MenuTheme.ogg");
   // const [listener] = useState(() => new AudioListener());
 
   // Context
-  const { account } = useStarknet();
+  const { wallet, fullMap, staticBuildings, staticResources, updateMapBlock } =
+    useNewGameContext();
   const {
     tokenId,
     nonce,
     updateNonce,
     populationBusy,
     populationFree,
-    harvestingArr,
     setHarvesting,
   } = useGameContext();
   const { transactions, removeTransaction } = useNotifTransactionManager();
@@ -89,9 +78,12 @@ export const Map = (props: any) => {
   const [currBlockPosState, setCurrBlockPosState] = useState(new Vector2());
 
   const nonceValue = useMemo(() => {
-    console.log("new nonce value", nonce);
     return nonce;
   }, [nonce]);
+
+  const fullMapValue = useMemo(() => {
+    return fullMap;
+  }, [fullMap]);
 
   // Frens
   const frensArray = useMemo(() => {
@@ -213,9 +205,12 @@ export const Map = (props: any) => {
           currBlockPos.x < 40 &&
           currBlockPos.y > 0 &&
           currBlockPos.y < 16 &&
-          frontBlockArray[currBlockPos.y][currBlockPos.x] != null &&
-          frontBlockArray[currBlockPos.y][currBlockPos.x][3] != null &&
-          frontBlockArray[currBlockPos.y][currBlockPos.x][3] != 0
+          // frontBlockArray[currBlockPos.y][currBlockPos.x] != null &&
+          // frontBlockArray[currBlockPos.y][currBlockPos.x][3] != null &&
+          // frontBlockArray[currBlockPos.y][currBlockPos.x][3] != 0
+          fullMap[currBlockPos.y][currBlockPos.x] != null &&
+          fullMap[currBlockPos.y][currBlockPos.x].type != null &&
+          fullMap[currBlockPos.y][currBlockPos.x].type != 0
         ) {
           var pos: THREE.Vector2 = new Vector2();
           pos.x = currBlockPos.x;
@@ -224,8 +219,9 @@ export const Map = (props: any) => {
           setObjectSelected(1);
           const obj: ISelectObject = {
             pos,
-            type_id: frontBlockArray[currBlockPos.y][currBlockPos.x][3],
-            unique_id: frontBlockArray[currBlockPos.y][currBlockPos.x][4],
+            infraType: fullMap[currBlockPos.y][currBlockPos.x].infraType,
+            type_id: fullMap[currBlockPos.y][currBlockPos.x].type,
+            unique_id: fullMap[currBlockPos.y][currBlockPos.x].id,
           };
           setSelectedObj(obj);
         }
@@ -245,6 +241,7 @@ export const Map = (props: any) => {
 
           const obj: ISelectObject = {
             pos: new Vector2(0, 0),
+            infraType: 0,
             type_id: 0,
             unique_id: 0,
           };
@@ -255,11 +252,12 @@ export const Map = (props: any) => {
       if (objectSelected == 1 && mouseLeftPressed == 1) {
         // OPEN POPUP BUILDING WITH INFORMATION - NOT SELECTED
         updateBuildingFrame(true, {
-          id: selectedObj?.type_id,
-          level: frontBlockArray[rayY][rayX][7],
+          infraType: fullMap[rayY][rayX].infraType,
+          typeId: selectedObj?.type_id, // resource_type_id
           unique_id: selectedObj?.unique_id,
-          posX: frontBlockArray[rayY][rayX][0],
-          posY: frontBlockArray[rayY][rayX][1],
+          state: fullMap[rayY][rayX].state,
+          posX: fullMap[rayY][rayX].posX,
+          posY: fullMap[rayY][rayX].posY,
           selected: 0,
         });
       }
@@ -322,15 +320,22 @@ export const Map = (props: any) => {
       pos.x = tempBuildMesh.x;
       pos.y = tempBuildMesh.z;
 
-      console.log("create building on Map", frameData?.id);
+      console.log("create building on Map", frameData?.typeId);
+
       // Update frontBlockArray to update mesh on map
-      frontBlockArray[pos.y][pos.x - 0.5][3] = frameData?.id;
-      frontBlockArray[pos.y][pos.x - 0.5][4] = UBlockIDs + 1;
-      frontBlockArray[pos.y][pos.x - 0.5][10] = 1;
+      fullMapValue[pos.y][pos.x - 0.5].infraType = frameData?.infraType;
+      fullMapValue[pos.y][pos.x - 0.5].type = frameData?.typeId;
+      fullMapValue[pos.y][pos.x - 0.5].status = 1; // status to 0 for building
+      fullMapValue[pos.y][pos.x - 0.5].state = 1;
+      // TODO add right id of building
+      fullMapValue[pos.y][pos.x - 0.5].id = UBlockIDs + 1;
+
+      // Update context : map block, inventory
+      updateMapBlock(fullMapValue);
 
       // TEST
-      frontBlockArray[pos.y][pos.x - 0.5][10] = 0; // status : building
-      buildTx(UBlockIDs + 1, frameData?.id as number, pos.x - 0.5, pos.y);
+      // fullMap[pos.y][pos.x - 0.5].status = 1; // status : was built
+      // buildTx(UBlockIDs + 1, frameData?.typeId as number, pos.x - 0.5, pos.y);
       // END TEST
 
       // Update global variables
@@ -340,6 +345,7 @@ export const Map = (props: any) => {
     if (mouseMiddlePressed == 1 && placementActive == 1) {
       // NEED TO TEST THE KEY
       updateBuildingFrame(false, {
+        infraType: selectedObj?.infraType,
         id: selectedObj?.type_id,
         unique_id: selectedObj?.unique_id,
         posX: selectedObj?.pos?.x,
@@ -354,30 +360,30 @@ export const Map = (props: any) => {
     if (pos.x >= 1 && pos.x <= 40 && pos.y >= 1 && pos.y <= 16) {
       if (numB == 1) {
         if (
-          frontBlockArray[pos.y][pos.x][3] != null &&
-          frontBlockArray[pos.y][pos.x][3] == 0
+          fullMap[pos.y][pos.x].type != null &&
+          fullMap[pos.y][pos.x].type == 0
         ) {
           return 1;
         }
       } else if (numB == 2) {
         if (
-          frontBlockArray[pos.y][pos.x][3] != null &&
-          frontBlockArray[pos.y][pos.x][3] == 0 &&
-          frontBlockArray[pos.y][pos.x + 1] != null &&
-          frontBlockArray[pos.y][pos.x + 1][3] == 0
+          fullMap[pos.y][pos.x].type != null &&
+          fullMap[pos.y][pos.x].type == 0 &&
+          fullMap[pos.y][pos.x + 1] != null &&
+          fullMap[pos.y][pos.x + 1].type == 0
         ) {
           return 1;
         }
       } else if (pos.y - 1 != 0 && numB == 4) {
         if (
-          frontBlockArray[pos.y][pos.x] != null &&
-          frontBlockArray[pos.y][pos.x][3] == 0 &&
-          frontBlockArray[pos.y][pos.x + 1] != null &&
-          frontBlockArray[pos.y][pos.x + 1][3] == 0 &&
-          frontBlockArray[pos.y - 1][pos.x] != null &&
-          frontBlockArray[pos.y - 1][pos.x][3] == 0 &&
-          frontBlockArray[pos.y - 1][pos.x + 1] != null &&
-          frontBlockArray[pos.y - 1][pos.x + 1][3] == 0
+          fullMap[pos.y][pos.x] != null &&
+          fullMap[pos.y][pos.x].type == 0 &&
+          fullMap[pos.y][pos.x + 1] != null &&
+          fullMap[pos.y][pos.x + 1].type == 0 &&
+          fullMap[pos.y - 1][pos.x] != null &&
+          fullMap[pos.y - 1][pos.x].type == 0 &&
+          fullMap[pos.y - 1][pos.x + 1] != null &&
+          fullMap[pos.y - 1][pos.x + 1].type == 0
         ) {
           return 1;
         }
@@ -394,7 +400,7 @@ export const Map = (props: any) => {
     posX: number,
     posY: number
   ) => {
-    if (account && tokenId) {
+    if (wallet && tokenId) {
       const pos_start: number = (posY - 1) * 40 + posX;
       const tx_hash = await generateBuild(
         tokenId,
@@ -408,132 +414,132 @@ export const Map = (props: any) => {
       );
       console.log("tx hash", tx_hash);
 
-      if (tx_hash == 0) {
-        // In case tx rejected
-        frontBlockArray[posY][posX][3] = 0;
-        frontBlockArray[posY][posX][4] = 0;
-        frontBlockArray[posY][posX][10] = 0;
-        setUBlockIDs(UBlockIDs - 1);
-      } else {
-        updateNonce(nonceValue);
-      }
+      // if (tx_hash == 0) {
+      //   // In case tx rejected
+      //   frontBlockArray[posY][posX][3] = 0;
+      //   frontBlockArray[posY][posX][4] = 0;
+      //   frontBlockArray[posY][posX][10] = 0;
+      //   setUBlockIDs(UBlockIDs - 1);
+      // } else {
+      //   updateNonce(nonceValue);
+      // }
     }
   };
 
-  useEffect(() => {
-    // HANDLE ACCEPTED TX
-    const txList = transactions.filter((tx) => tx.status == "ACCEPTED_ON_L2");
-    if (txList) {
-      txList.map((tx) => {
-        // console.log('tx map', tx)
+  // useEffect(() => {
+  //   // HANDLE ACCEPTED TX
+  //   const txList = transactions.filter((tx) => tx.status == "ACCEPTED_ON_L2");
+  //   if (txList) {
+  //     txList.map((tx) => {
+  //       // console.log('tx map', tx)
 
-        if (
-          tx.status == "ACCEPTED_ON_L2" &&
-          tx.metadata.posY &&
-          tx.metadata.posX
-        ) {
-          let _txExists: {} = {};
-          if (
-            Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11])
-              .length > 0
-          ) {
-            _txExists = frontBlockArray[tx.metadata.posY][
-              tx.metadata.posX
-            ][11].includes(tx.transactionHash);
-          }
+  //       if (
+  //         tx.status == "ACCEPTED_ON_L2" &&
+  //         tx.metadata.posY &&
+  //         tx.metadata.posX
+  //       ) {
+  //         let _txExists: {} = {};
+  //         if (
+  //           Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11])
+  //             .length > 0
+  //         ) {
+  //           _txExists = frontBlockArray[tx.metadata.posY][
+  //             tx.metadata.posX
+  //           ][11].includes(tx.transactionHash);
+  //         }
 
-          if (
-            Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11])
-              .length == 0 ||
-            !_txExists
-          ) {
-            frontBlockArray[tx.metadata.posY][tx.metadata.posX][11].push(
-              tx.transactionHash
-            );
+  //         if (
+  //           Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11])
+  //             .length == 0 ||
+  //           !_txExists
+  //         ) {
+  //           frontBlockArray[tx.metadata.posY][tx.metadata.posX][11].push(
+  //             tx.transactionHash
+  //           );
 
-            if (tx.metadata.method == "build") {
-              if (
-                frontBlockArray[tx.metadata.posY][tx.metadata.posX] &&
-                frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] == 0
-              ) {
-                frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
-              }
-            } else if (tx.metadata.method == "harvest_resources") {
-              setHarvesting(tx.metadata.posX, tx.metadata.posY, 1);
-              if (frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] == 3) {
-                frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0;
-                frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0;
-                frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] = 1;
-                frontBlockArray[tx.metadata.posY][tx.metadata.posX][9] = 0;
-                frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
-              } else {
-                frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] += 1;
-                frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
-              }
-            } else if (tx.metadata.method == "destroy_building") {
-              setHarvesting(tx.metadata.posX, tx.metadata.posY, 1);
-              frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0;
-              frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0;
-              frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] = 1;
-              frontBlockArray[tx.metadata.posY][tx.metadata.posX][9] = 0;
-            } else if (tx.metadata.method == "upgrade") {
-              setHarvesting(tx.metadata.posX, tx.metadata.posY, 1);
-              frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] += 1;
-            }
-          }
-        }
-      });
-    }
+  //           if (tx.metadata.method == "build") {
+  //             if (
+  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX] &&
+  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] == 0
+  //             ) {
+  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
+  //             }
+  //           } else if (tx.metadata.method == "harvest_resources") {
+  //             setHarvesting(tx.metadata.posX, tx.metadata.posY, 1);
+  //             if (frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] == 3) {
+  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0;
+  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0;
+  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] = 1;
+  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][9] = 0;
+  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
+  //             } else {
+  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] += 1;
+  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
+  //             }
+  //           } else if (tx.metadata.method == "destroy_building") {
+  //             setHarvesting(tx.metadata.posX, tx.metadata.posY, 1);
+  //             frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0;
+  //             frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0;
+  //             frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] = 1;
+  //             frontBlockArray[tx.metadata.posY][tx.metadata.posX][9] = 0;
+  //           } else if (tx.metadata.method == "upgrade") {
+  //             setHarvesting(tx.metadata.posX, tx.metadata.posY, 1);
+  //             frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] += 1;
+  //           }
+  //         }
+  //       }
+  //     });
+  //   }
 
-    // HANDLE REJECTED TX
-    const rejectedTxList = transactions.filter((tx) => tx.status == "REJECTED");
-    if (rejectedTxList) {
-      txList.map((tx) => {
-        // TX for upgrades
-        if (tx.status == "REJECTED") {
-          let _txExists: {} = {};
-          if (
-            Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11])
-              .length > 0
-          ) {
-            _txExists = frontBlockArray[tx.metadata.posY][
-              tx.metadata.posX
-            ][11].includes(tx.transactionHash);
-          }
+  //   // HANDLE REJECTED TX
+  //   const rejectedTxList = transactions.filter((tx) => tx.status == "REJECTED");
+  //   if (rejectedTxList) {
+  //     txList.map((tx) => {
+  //       // TX for upgrades
+  //       if (tx.status == "REJECTED") {
+  //         let _txExists: {} = {};
+  //         if (
+  //           Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11])
+  //             .length > 0
+  //         ) {
+  //           _txExists = frontBlockArray[tx.metadata.posY][
+  //             tx.metadata.posX
+  //           ][11].includes(tx.transactionHash);
+  //         }
 
-          if (
-            Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11])
-              .length == 0 ||
-            !_txExists
-          ) {
-            frontBlockArray[tx.metadata.posY][tx.metadata.posX][11].push(
-              tx.transactionHash
-            );
+  //         if (
+  //           Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11])
+  //             .length == 0 ||
+  //           !_txExists
+  //         ) {
+  //           frontBlockArray[tx.metadata.posY][tx.metadata.posX][11].push(
+  //             tx.transactionHash
+  //           );
 
-            if (tx.metadata.method == "build") {
-              if (
-                frontBlockArray[tx.metadata.posY][tx.metadata.posX] &&
-                frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] == 0
-              ) {
-                frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
-                frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0;
-                frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0;
-              }
-            } else if (tx.metadata.method == "harvest_resources") {
-              setHarvesting(tx.metadata.posX, tx.metadata.posY, 1);
-              frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
-            } else if (tx.metadata.method == "destroy_building") {
-              setHarvesting(tx.metadata.posX, tx.metadata.posY, 1);
-              frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
-            } else if (tx.metadata.method == "upgrade") {
-              setHarvesting(tx.metadata.posX, tx.metadata.posY, 1);
-              frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
-            }
-          }
-        }
-      });
-    }
-  }, [transactions]);
+  //           if (tx.metadata.method == "build") {
+  //             if (
+  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX] &&
+  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] == 0
+  //             ) {
+  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
+  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0;
+  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0;
+  //             }
+  //           } else if (tx.metadata.method == "harvest_resources") {
+  //             setHarvesting(tx.metadata.posX, tx.metadata.posY, 1);
+  //             frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
+  //           } else if (tx.metadata.method == "destroy_building") {
+  //             setHarvesting(tx.metadata.posX, tx.metadata.posY, 1);
+  //             frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
+  //           } else if (tx.metadata.method == "upgrade") {
+  //             setHarvesting(tx.metadata.posX, tx.metadata.posY, 1);
+  //             frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
+  //           }
+  //         }
+  //       }
+  //     });
+  //   }
+  // }, [transactions]);
 
   // Load Frens texture
   const frenTexture = useMemo(() => {
@@ -574,32 +580,37 @@ export const Map = (props: any) => {
         frontBlockArray &&
         Object.keys(frontBlockArray).length > 0 && (
           <Resources
-            frontBlockArray={frontBlockArray}
+            frontBlockArray={fullMap}
             textArrRef={textArrRef}
             rightBuildingType={rightBuildingType}
             position={currBlockPosState}
             worldType={worldType}
+            staticBuildings={staticBuildings}
+            staticResources={staticResources}
           />
         )}
 
       {frameDataValue != null &&
-        frameDataValue.id != 0 &&
-        frameDataValue.selected == 1 &&
-        placementActive == 1 && (
-          <BuildingTemp
-            frontBlockArray={frontBlockArray}
-            type={frameDataValue.id}
-            name={9898}
-            rightBuildingType={rightBuildingType}
-            textArrRef={textArrRef}
-            size={1}
-            id={UBlockIDs}
-            spaceValid={spaceValid}
-            position={tempBuildMesh}
-          />
-        )}
+      frameDataValue.typeId &&
+      frameDataValue.typeId != 0 &&
+      frameDataValue.selected == 1 &&
+      placementActive == 1 ? (
+        <BuildingTemp
+          frontBlockArray={fullMap}
+          type={frameDataValue.typeId}
+          name={9898}
+          sprite={staticBuildings[frameDataValue.typeId - 1].sprite}
+          textArrRef={textArrRef}
+          size={1}
+          id={UBlockIDs}
+          spaceValid={spaceValid}
+          position={tempBuildMesh}
+        />
+      ) : (
+        <></>
+      )}
 
-      {frensArray &&
+      {/* {frensArray &&
         Object.keys(frensArray).length > 0 &&
         frensArray.map((fren: any, index: number) => {
           return (
@@ -611,7 +622,7 @@ export const Map = (props: any) => {
               frenTexture={frenTexture}
             />
           );
-        })}
+        })} */}
     </>
   );
 };

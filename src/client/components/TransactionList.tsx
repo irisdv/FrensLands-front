@@ -1,7 +1,6 @@
-import {
-  // Transaction,
-  // useStarknetTransactionManager,
-} from "@starknet-react/core";
+import // Transaction,
+// useStarknetTransactionManager,
+"@starknet-react/core";
 import React from "react";
 
 function TransactionItem({ transaction }: { transaction: any }) {

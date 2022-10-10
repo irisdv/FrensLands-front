@@ -1,54 +1,17 @@
-import React, {
-  memo,
-  ReactElement,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { Canvas, useThree, useFrame, useLoader } from "@react-three/fiber";
-import {
-  TextureLoader,
-  RepeatWrapping,
-  NearestFilter,
-  PlaneGeometry,
-  Vector2,
-  Vector3,
-} from "three";
-import * as fs from "fs";
-
-import useInGameContext from "../../hooks/useInGameContext";
-import { useGameContext } from "../../hooks/useGameContext";
-import { ResourceItem } from "./ResourceItem";
+import React, { useMemo, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import { TextureLoader, RepeatWrapping, NearestFilter, Vector2 } from "three";
 import { useBVH } from "@react-three/drei";
-import { useSelectContext } from "../../hooks/useSelectContext";
-import { useBuildingContext } from "../../hooks/useBuildingContext";
 const { promises: Fs } = require("fs");
 
-interface Imaps {
-  compArray?: any[];
-}
-
 export const BuildingTemp = (props: any) => {
-  const { type, name, rightBuildingType, textArrRef, spaceValid, position } =
-    props;
+  const { type, name, sprite, textArrRef, spaceValid, position } = props;
   const buildTempRef = useRef<any>();
   useBVH(buildTempRef);
-  const { viewport, scene, raycaster } = useThree();
 
   const redText = "Matchbox_Tiles_Objects_RedVersion";
   const greenText = "Matchbox_Tiles_Objects_GreenVersion";
   const worldType = 1;
-
-  const { frameData, updateBuildingFrame } = useSelectContext();
-  const { addBuilding } = useBuildingContext();
-
-  const currBlockPos = new Vector2(0, 0);
-
-  // this.createObject_FindSpace(1, 9898, this.typeTest, 1, this.redText);
-  // (size : number, name : number, type : number, progress : number, nameText : String)
 
   function exists(path: String) {
     try {
@@ -84,7 +47,7 @@ export const BuildingTemp = (props: any) => {
     }
 
     let textureType = new Vector2();
-    textureType = findTextByID(rightBuildingType[type]);
+    textureType = findTextByID(sprite);
 
     textObj.repeat.set(0.0625, 0.0625);
     textObj.offset.set(textureType.x, textureType.y);
@@ -120,7 +83,7 @@ export const BuildingTemp = (props: any) => {
     }
 
     let textureType = new Vector2();
-    textureType = findTextByID(rightBuildingType[type]);
+    textureType = findTextByID(sprite);
     textObj.repeat.set(0.0625, 0.0625);
     textObj.offset.set(textureType.x, textureType.y);
     textObj.magFilter = NearestFilter;

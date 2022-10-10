@@ -16,12 +16,14 @@ export function BottomBar(props: any) {
   const [displayFrame, setDisplayFrame] = useState(false);
   const [oldFrame, setOldFrame] = useState<any>();
 
+  const playerLevel = 10;
+
   // 0 : build a new building
   // 1: update a building
 
   const frameValue = useMemo(() => {
     if (frameData != null) {
-      setOldFrame(frameData.id);
+      setOldFrame(frameData.typeId);
       return { frameValue: frameData };
     }
   }, [frameData]);
@@ -30,26 +32,55 @@ export function BottomBar(props: any) {
     if (frameValue != null && id == oldFrame) {
       if (displayFrame) {
         updateBuildingFrame(false, {
-          id,
-          level,
+          infraType: 0,
+          typeId: id,
+          state: level,
           posX: 0,
           posY: 0,
           selected: 0,
         });
       }
       if (!displayFrame) {
-        updateBuildingFrame(true, { id, level, posX: 0, posY: 0, selected: 0 });
+        updateBuildingFrame(true, {
+          infraType: 2,
+          typeId: id,
+          state: level,
+          posX: 0,
+          posY: 0,
+          selected: 0,
+        });
       }
       setDisplayFrame(!displayFrame);
     } else if (id == 0) {
       setDisplayFrame(false);
-      updateBuildingFrame(false, { id, level, posX: 0, posY: 0, selected: 0 });
+      updateBuildingFrame(false, {
+        infraType: 0,
+        typeId: id,
+        state: level,
+        posX: 0,
+        posY: 0,
+        selected: 0,
+      });
     } else {
       if (displayFrame) {
-        updateBuildingFrame(true, { id, level, posX: 0, posY: 0, selected: 0 });
+        updateBuildingFrame(true, {
+          infraType: 2,
+          typeId: id,
+          state: level,
+          posX: 0,
+          posY: 0,
+          selected: 0,
+        });
         setDisplayFrame(true);
       } else {
-        updateBuildingFrame(true, { id, level, posX: 0, posY: 0, selected: 0 });
+        updateBuildingFrame(true, {
+          infraType: 2,
+          typeId: id,
+          state: level,
+          posX: 0,
+          posY: 0,
+          selected: 0,
+        });
         setDisplayFrame(true);
       }
     }
@@ -77,10 +108,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[16 - 1].level as any) ? (
             <div
               className="btnCategory pixelated relative"
-              onClick={() => setDisplayingFrame(1, 16)}
+              onClick={() => setDisplayingFrame(1, 14)}
             >
               <div
-                className="building16 pixelated absolute"
+                className="building14 pixelated absolute"
                 style={{ bottom: "-29px", left: "-29px" }}
               ></div>
             </div>
@@ -91,10 +122,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[18 - 1].level as any) ? (
             <div
               className="btnCategory pixelated"
-              onClick={() => setDisplayingFrame(1, 18)}
+              onClick={() => setDisplayingFrame(1, 16)}
             >
               <div
-                className="building18 pixelated absolute"
+                className="building16 pixelated absolute"
                 style={{ bottom: "-25px", left: "31px" }}
               ></div>
             </div>
@@ -105,10 +136,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[19 - 1].level as any) ? (
             <div
               className="btnCategory pixelated"
-              onClick={() => setDisplayingFrame(1, 19)}
+              onClick={() => setDisplayingFrame(1, 17)}
             >
               <div
-                className="building19 pixelated absolute"
+                className="building17 pixelated absolute"
                 style={{ bottom: "-34px", left: "95px" }}
               ></div>
             </div>
@@ -119,10 +150,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[17 - 1].level as any) ? (
             <div
               className="btnCategory pixelated"
-              onClick={() => setDisplayingFrame(1, 17)}
+              onClick={() => setDisplayingFrame(1, 15)}
             >
               <div
-                className="building17 pixelated absolute"
+                className="building15 pixelated absolute"
                 style={{ bottom: "-30px", left: "161px" }}
               ></div>
             </div>
@@ -133,10 +164,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[21 - 1].level as any) ? (
             <div
               className="btnCategory pixelated"
-              onClick={() => setDisplayingFrame(1, 21)}
+              onClick={() => setDisplayingFrame(1, 18)}
             >
               <div
-                className="building21 pixelated absolute"
+                className="building18 pixelated absolute"
                 style={{ bottom: "-33px", left: "218px" }}
               ></div>
             </div>
@@ -147,10 +178,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[25 - 1].level as any) ? (
             <div
               className="btnCategory pixelated"
-              onClick={() => setDisplayingFrame(1, 25)}
+              onClick={() => setDisplayingFrame(1, 22)}
             >
               <div
-                className="building25 pixelated absolute"
+                className="building22 pixelated absolute"
                 style={{ bottom: "-34px", right: "35px" }}
               ></div>
             </div>
@@ -161,10 +192,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[26 - 1].level as any) ? (
             <div
               className="btnCategory pixelated"
-              onClick={() => setDisplayingFrame(1, 26)}
+              onClick={() => setDisplayingFrame(1, 23)}
             >
               <div
-                className="building26 pixelated absolute"
+                className="building23 pixelated absolute"
                 style={{ bottom: "-34px", right: "-33px" }}
               ></div>
             </div>
@@ -189,10 +220,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[22 - 1].level as any) ? (
             <div
               className="btnCategory pixelated"
-              onClick={() => setDisplayingFrame(1, 22)}
+              onClick={() => setDisplayingFrame(1, 19)}
             >
               <div
-                className="building22 pixelated absolute"
+                className="building19 pixelated absolute"
                 style={{ bottom: "-30px", left: "-30px" }}
               ></div>
             </div>
@@ -203,10 +234,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[23 - 1].level as any) ? (
             <div
               className="btnCategory pixelated"
-              onClick={() => setDisplayingFrame(1, 23)}
+              onClick={() => setDisplayingFrame(1, 20)}
             >
               <div
-                className="building23 pixelated absolute"
+                className="building20 pixelated absolute"
                 style={{ bottom: "-31px", left: "34px" }}
               ></div>
             </div>
@@ -217,10 +248,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[24 - 1].level as any) ? (
             <div
               className="btnCategory pixelated"
-              onClick={() => setDisplayingFrame(1, 24)}
+              onClick={() => setDisplayingFrame(1, 21)}
             >
               <div
-                className="building24 pixelated absolute"
+                className="building21 pixelated absolute"
                 style={{ bottom: "-28px", right: "-30px" }}
               ></div>
             </div>
@@ -246,10 +277,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[11 - 1].level as any) ? (
             <div
               className="btnCategory pixelated"
-              onClick={() => setDisplayingFrame(1, 11)}
+              onClick={() => setDisplayingFrame(1, 9)}
             >
               <div
-                className="building11 pixelated absolute"
+                className="building9 pixelated absolute"
                 style={{ bottom: "-30px", left: "-31px" }}
               ></div>
             </div>
@@ -260,10 +291,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[12 - 1].level as any) ? (
             <div
               className="btnCategory pixelated"
-              onClick={() => setDisplayingFrame(1, 12)}
+              onClick={() => setDisplayingFrame(1, 10)}
             >
               <div
-                className="building12 pixelated absolute"
+                className="building10 pixelated absolute"
                 style={{ bottom: "-31px", left: "31px" }}
               ></div>
             </div>
@@ -274,10 +305,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[13 - 1].level as any) ? (
             <div
               className="btnCategory pixelated"
-              onClick={() => setDisplayingFrame(1, 13)}
+              onClick={() => setDisplayingFrame(1, 11)}
             >
               <div
-                className="building13 pixelated absolute"
+                className="building11 pixelated absolute"
                 style={{ bottom: "-31px", right: "34px" }}
               ></div>
             </div>
@@ -288,10 +319,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[14 - 1].level as any) ? (
             <div
               className="btnCategory pixelated"
-              onClick={() => setDisplayingFrame(1, 14)}
+              onClick={() => setDisplayingFrame(1, 12)}
             >
               <div
-                className="building14 pixelated absolute"
+                className="building12 pixelated absolute"
                 style={{ bottom: "-31px", right: "-33px" }}
               ></div>
             </div>
@@ -316,10 +347,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[4 - 1].level as any) ? (
             <div
               className="btnCategory pixelated relative"
-              onClick={() => setDisplayingFrame(1, 4)}
+              onClick={() => setDisplayingFrame(1, 2)}
             >
               <div
-                className="building4 pixelated absolute"
+                className="building2 pixelated absolute"
                 style={{ bottom: "-35px", left: "-32px" }}
               ></div>
             </div>
@@ -329,10 +360,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[5 - 1].level as any) ? (
             <div
               className="btnCategory pixelated"
-              onClick={() => setDisplayingFrame(1, 5)}
+              onClick={() => setDisplayingFrame(1, 3)}
             >
               <div
-                className="building5 pixelated absolute"
+                className="building3 pixelated absolute"
                 style={{ bottom: "-29px", left: "33px" }}
               ></div>
             </div>
@@ -342,10 +373,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[6 - 1].level as any) ? (
             <div
               className="btnCategory pixelated"
-              onClick={() => setDisplayingFrame(1, 6)}
+              onClick={() => setDisplayingFrame(1, 4)}
             >
               <div
-                className="building6 pixelated absolute"
+                className="building4 pixelated absolute"
                 style={{ bottom: "-32px", left: "95px" }}
               ></div>
             </div>
@@ -367,10 +398,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[7 - 1].level as any) ? (
             <div
               className="btnCategory pixelated relative"
-              onClick={() => setDisplayingFrame(1, 7)}
+              onClick={() => setDisplayingFrame(1, 5)}
             >
               <div
-                className="building7 pixelated absolute"
+                className="building5 pixelated absolute"
                 style={{ bottom: "-33px", left: "-32px" }}
               ></div>
             </div>
@@ -381,10 +412,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[8 - 1].level as any) ? (
             <div
               className="btnCategory pixelated"
-              onClick={() => setDisplayingFrame(1, 8)}
+              onClick={() => setDisplayingFrame(1, 6)}
             >
               <div
-                className="building8 pixelated absolute"
+                className="building6 pixelated absolute"
                 style={{ bottom: "-32px", left: "31px" }}
               ></div>
             </div>
@@ -395,10 +426,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[9 - 1].level as any) ? (
             <div
               className="btnCategory pixelated"
-              onClick={() => setDisplayingFrame(1, 9)}
+              onClick={() => setDisplayingFrame(1, 7)}
             >
               <div
-                className="building9 pixelated absolute"
+                className="building7 pixelated absolute"
                 style={{ bottom: "-32px", right: "95px" }}
               ></div>
             </div>
@@ -409,10 +440,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[15 - 1].level as any) ? (
             <div
               className="btnCategory pixelated"
-              onClick={() => setDisplayingFrame(1, 15)}
+              onClick={() => setDisplayingFrame(1, 13)}
             >
               <div
-                className="building15 pixelated absolute"
+                className="building13 pixelated absolute"
                 style={{ bottom: "-25px", right: "22px" }}
               ></div>
             </div>
@@ -423,10 +454,10 @@ export function BottomBar(props: any) {
           {level >= (allBuildings[10 - 1].level as any) ? (
             <div
               className="btnCategory pixelated"
-              onClick={() => setDisplayingFrame(1, 10)}
+              onClick={() => setDisplayingFrame(1, 8)}
             >
               <div
-                className="building10 pixelated absolute"
+                className="building8 pixelated absolute"
                 style={{ bottom: "-30px", right: "-34px" }}
               ></div>
             </div>

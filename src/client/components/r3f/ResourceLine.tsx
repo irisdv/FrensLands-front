@@ -1,29 +1,5 @@
-import React, {
-  memo,
-  ReactElement,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { Canvas, useThree, useFrame, useLoader } from "@react-three/fiber";
-import { PerspectiveCamera } from "@react-three/drei";
-import {
-  TextureLoader,
-  RepeatWrapping,
-  NearestFilter,
-  PlaneGeometry,
-  Vector2,
-} from "three";
-
-import useInGameContext from "../../hooks/useInGameContext";
-import { useGameContext } from "../../hooks/useGameContext";
+import React, { useMemo } from "react";
 import { ResourceItem } from "./ResourceItem";
-
-interface Imaps {
-  compArray?: any[];
-}
 
 export const ResourceLine = (props: any) => {
   const {
@@ -35,6 +11,8 @@ export const ResourceLine = (props: any) => {
     frontBlockArray,
     textureSelected,
     worldType,
+    staticBuildings,
+    staticResources,
   } = props;
 
   const lineValue = useMemo(() => {
@@ -44,10 +22,10 @@ export const ResourceLine = (props: any) => {
   return (
     lineValue &&
     lineValue.map((elem: any, key: any) => {
-      if (elem && elem[3] && elem[3] != 0) {
+      if (elem && elem.type && elem.type != 0) {
         return (
           <ResourceItem
-            key={elem[4]}
+            key={elem.infraType + "_" + elem.id}
             block={elem}
             textArrRef={textArrRef}
             rightBuildingType={rightBuildingType}
@@ -56,7 +34,9 @@ export const ResourceLine = (props: any) => {
             textureLoader={textureLoader}
             textureSelected={textureSelected}
             worldType={worldType}
-            level={elem[7]}
+            level={elem.state}
+            staticBuildings={staticBuildings}
+            staticResources={staticResources}
           />
         );
       }

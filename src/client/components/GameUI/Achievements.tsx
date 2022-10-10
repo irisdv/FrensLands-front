@@ -6,7 +6,7 @@ import { Achievement } from "../../model/achievement";
 import UI_Frames from "../../style/resources/front/Ui_Frames3.svg";
 
 export function Achievements(props: any) {
-  const { player } = useNewGameContext();
+  const { wallet } = useNewGameContext();
   const { tutoMode, updateTuto } = useSelectContext();
   const [lastAchievement, setLastAchievement] = useState<Achievement>();
   const [showGoal, setShowGoal] = useState(false);
@@ -39,14 +39,14 @@ export function Achievements(props: any) {
           <div
             className="btnShowTuto0 pixelated selectDisable"
             onClick={() =>
-              updateTuto(!showTutorial, player.account.address as string)
+              updateTuto(!showTutorial, wallet.account.address as string)
             }
           ></div>
         ) : (
           <div
             className="btnShowTuto1 pixelated selectDisable"
             onClick={() =>
-              updateTuto(!showTutorial, player.account.address as string)
+              updateTuto(!showTutorial, wallet.account.address as string)
             }
           ></div>
         )

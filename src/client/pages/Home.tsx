@@ -98,7 +98,7 @@ export default function Home() {
         "x-access-token": localStorage.getItem("user") as string,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ account: account, biomeId: biomeId }),
+      body: JSON.stringify({ account, biomeId }),
     })
       .then(async (response) => {
         return await response.json();
@@ -148,8 +148,9 @@ export default function Home() {
 
       console.log("balance NFT", balance);
 
-      if (balance == 1 && wallet?.account.address)
+      if (balance == 1 && wallet?.account.address) {
         updateTokenId(wallet?.account.address);
+      }
 
       return { NFTbalance: balance };
     }
@@ -174,23 +175,23 @@ export default function Home() {
   //   }
   // }, [fetchGameStatus, tokenId]);
 
-  // get_owner call avec land_id > if returns == 0 alors not initialized, if biomeId == correct biomeId alors ça a été init 
+  // get_owner call avec land_id > if returns == 0 alors not initialized, if biomeId == correct biomeId alors ça a été init
 
   const checkWasInit = (_wallet: any, token: number) => {
     // _wallet.account.
     // const provider = new starknet.Provider()
-    _wallet.account.callContract(
-        {
-          contractAddress: "0x060363b467a2b8d409234315babe6be180020e0bb65d708c0d09be6fd3691a2f",
-          entrypoint: 'get_owner',
-          calldata: [number.toFelt(token)]
-        }
-      )
-      .then((res : any) => {
-        console.log('res', res);
-        return res;
+    _wallet.account
+      .callContract({
+        contractAddress:
+          "0x060363b467a2b8d409234315babe6be180020e0bb65d708c0d09be6fd3691a2f",
+        entrypoint: "get_owner",
+        calldata: [number.toFelt(token)],
       })
-  }
+      .then((res: any) => {
+        console.log("res", res);
+        return res;
+      });
+  };
 
   // Invoke Starting game
   const startGame = async (biomeId: number) => {
@@ -199,12 +200,11 @@ export default function Home() {
     // Send tx to init game on-chain
     console.log("tokenId of owner", tokenId);
 
-    if (wallet && tokenId && !hasInit) {
+    if (wallet != null && tokenId && !hasInit) {
+      wallet.account.callContract;
 
-      wallet.account.callContract
-
-      let wasInit = await checkWasInit(wallet, tokenId as number);
-      console.log('wasInit', wasInit);
+      const wasInit = await checkWasInit(wallet, tokenId);
+      console.log("wasInit", wasInit);
 
       // let nonce = await wallet.account.getNonce();
       // const result = await wallet.account.execute(
@@ -225,7 +225,7 @@ export default function Home() {
     }
 
     // Init game in DB
-    // await initGame(wallet?.account.address as string, biomeId);
+    await initGame(wallet?.account.address as string, biomeId);
 
     //   if (tokenId && !settingUp) {
     //     const tx_hash = initializeGame(tokenId, nonceValue);
@@ -282,7 +282,7 @@ export default function Home() {
             </div>
 
             <button
-              onClick={() => startGame(2)}
+              onClick={async () => await startGame(2)}
               style={{ position: "absolute", zIndex: 100 }}
             >
               START GAME
@@ -307,7 +307,7 @@ export default function Home() {
               style={{ width: "100vw", top: "0" }}
             >
               {/* Player is already registered and has a land */}
-              {wallet?.isConnected && hasLand && signedIn && (
+              {wallet?.isConnected && hasLand != null && signedIn && (
                 <>
                   <img
                     className="relative mx-auto pixelated nftImg"
@@ -324,54 +324,54 @@ export default function Home() {
               )}
               {/* User is connected, has an NFT but doesn't have a land  */}
               {wallet?.isConnected &&
-                !hasLand &&
+                hasLand == null &&
                 BalanceNFTValue != null &&
                 BalanceNFTValue.NFTbalance == 1 && (
                   <>
                     <div className="grid grid-cols-5 px-8">
                       <div
                         className="cursor-pointer px-5"
-                        onClick={() => startGame(1)}
+                        onClick={async () => await startGame(1)}
                       >
                         <img
                           className="relative mx-auto pixelated nftImg hover:scale-110"
-                          src={`resources/maps/FrensLand_NFTs_1.png`}
+                          src={"resources/maps/FrensLand_NFTs_1.png"}
                         />
                       </div>
                       <div
                         className="cursor-pointer px-5"
-                        onClick={() => startGame(2)}
+                        onClick={async () => await startGame(2)}
                       >
                         <img
                           className="relative mx-auto pixelated nftImg hover:scale-110"
-                          src={`resources/maps/FrensLand_NFTs_2.png`}
+                          src={"resources/maps/FrensLand_NFTs_2.png"}
                         />
                       </div>
                       <div
                         className="cursor-pointer px-5"
-                        onClick={() => startGame(0)}
+                        onClick={async () => await startGame(0)}
                       >
                         <img
                           className="relative mx-auto pixelated nftImg hover:scale-110"
-                          src={`resources/maps/FrensLand_NFTs_0.png`}
+                          src={"resources/maps/FrensLand_NFTs_0.png"}
                         />
                       </div>
                       <div
                         className="cursor-pointer px-5"
-                        onClick={() => startGame(3)}
+                        onClick={async () => await startGame(3)}
                       >
                         <img
                           className="relative mx-auto pixelated nftImg hover:scale-110"
-                          src={`resources/maps/FrensLand_NFTs_3.png`}
+                          src={"resources/maps/FrensLand_NFTs_3.png"}
                         />
                       </div>
                       <div
                         className="cursor-pointer px-5"
-                        onClick={() => startGame(4)}
+                        onClick={async () => await startGame(4)}
                       >
                         <img
                           className="relative mx-auto pixelated nftImg hover:scale-110"
-                          src={`resources/maps/FrensLand_NFTs_4.png`}
+                          src={"resources/maps/FrensLand_NFTs_4.png"}
                         />
                       </div>
                     </div>
@@ -392,18 +392,18 @@ export default function Home() {
                 )}
               {/* User is connected and does not have a land and doesn't have a NFT either  */}
               {wallet?.isConnected &&
-                !hasLand &&
+                hasLand == null &&
                 BalanceNFTValue != null &&
                 BalanceNFTValue.NFTbalance == 0 && (
                   <>
                     <div className="grid grid-col-1 px-8">
                       <div
                         className="cursor-pointer px-5"
-                        onClick={() => startGame(0)}
+                        onClick={async () => await startGame(0)}
                       >
                         <img
                           className="relative mx-auto pixelated nftImg hover:scale-110"
-                          src={`resources/maps/FrensLand_NFTs_0.png`}
+                          src={"resources/maps/FrensLand_NFTs_0.png"}
                         />
                       </div>
                     </div>
@@ -474,7 +474,7 @@ export default function Home() {
               {/* Connect Wallet */}
               {!wallet?.isConnected && (
                 <button
-                  onClick={() => connectWallet()}
+                  onClick={async () => await connectWallet()}
                   className="relative mx-auto btnPlay pixelated"
                   style={{ marginTop: "300px" }}
                 ></button>

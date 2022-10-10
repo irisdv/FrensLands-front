@@ -1,9 +1,10 @@
 import React, { useReducer } from "react";
 
 export interface IFrame {
-  id?: number;
-  unique_id?: string;
-  level?: number;
+  infraType?: number;
+  typeId?: number;
+  unique_id?: number;
+  state?: number;
   posX?: any;
   posY?: any;
   selected?: any;
@@ -11,7 +12,7 @@ export interface IFrame {
 
 export interface IPopUp {
   id?: number; // id of bat_type
-  unique_id?: string;
+  unique_id?: number;
   type?: number;
   posX?: any;
   posY?: any;
@@ -126,6 +127,7 @@ export const SelectStateProvider: React.FC<
   const [state, dispatch] = useReducer(reducer, SelectState);
 
   const updateBuildingFrame = React.useCallback((show: boolean, data: {}) => {
+    console.log("data update building frame", data);
     dispatch({
       type: "set_showFrame",
       showFrame: show,

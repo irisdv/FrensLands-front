@@ -1,31 +1,24 @@
-import React, { useMemo, useState, useRef, useEffect } from "react";
-import useResourcesContext from "../../hooks/useResourcesContext";
+import React from "react";
 
 export function FrameItem(props: any) {
-  const { resources, energy, frensCoins } = useResourcesContext();
-
-  if (props.option == 1) {
-    resources[10] = frensCoins as number;
-    resources[11] = energy as number;
-  }
+  const { index, cost, inventory, option, inputFuel } = props;
 
   return (
     <div className="flex flex-row justify-center inline-block relative">
       <div
-        className={"mb-3 small" + `${props.content[0]}`}
+        className={"mb-3 small" + `${index}`}
         style={{ marginLeft: "-15px" }}
       ></div>
       <div
         className={`fontHPxl-sm ${
-          resources[props.content[0]] < props.content[1] && props.option == 1
-            ? "fontRed"
-            : ""
+          option == 1 && inventory < cost ? "fontRed" : ""
         }`}
-        style={{ marginTop: "25px", marginLeft: "-20px" }}
+        style={{
+          marginTop: "25px",
+          marginLeft: "-20px",
+        }}
       >
-        {props.inputFuel
-          ? props.content[1] * props.inputFuel
-          : props.content[1]}
+        {inputFuel ? cost * inputFuel : cost}
       </div>
     </div>
   );

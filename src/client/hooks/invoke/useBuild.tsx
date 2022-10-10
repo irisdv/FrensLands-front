@@ -4,8 +4,6 @@ import { useCallback } from "react";
 import { useNotifTransactionManager } from "../../providers/transactions";
 import { useBuildingsContract } from "../contracts/buildings";
 
-
-
 export default function useBuild() {
   const { account } = useStarknet();
   const { contract } = useBuildingsContract();
