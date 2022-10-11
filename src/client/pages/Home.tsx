@@ -147,8 +147,9 @@ export default function Home() {
     if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
       _url = "http://localhost:3001/api/signin";
     } else {
-      _url = "https://" + process.env.REACT_APP_URL + process.env.PORT + "/api/signin";
+      _url = "https://" + process.env.REACT_APP_URL + ':' + process.env.PORT + "/api/signin";
     }
+    console.log('port', process.env.PORT);
     // const _url: string =
     //   ((_pre + process.env.REACT_APP_URL) as string) + "/api/signin";
 
