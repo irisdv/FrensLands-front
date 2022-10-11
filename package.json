@@ -80,5 +80,8 @@
     "net": false,
     "stream": false,
     "tls": false
+  },
+  "engines": {
+    "node": "14.x"
   }
 }
