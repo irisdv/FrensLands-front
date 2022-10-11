@@ -34,16 +34,12 @@ import { Vec2 } from "three";
 // ||||||- Calculate how many refill you can do on a prod building
 // ||||||- get id from position X|Y
 
-
 export const cancelCreate = (id: number, inventory: any, fixBuildVal: any) => {
-  
   let i: number = 0;
 
-  while (i < fixBuildVal[id].createCost.length)
-  {
-    if (i != 9)
-    {
-    inventory[i] += fixBuildVal[id].createCost[i];
+  while (i < fixBuildVal[id].createCost.length) {
+    if (i != 9) {
+      inventory[i] += fixBuildVal[id].createCost[i];
     }
     i++;
   }
@@ -90,13 +86,12 @@ export const cancelHarvestRes = (
   let i: number = 0;
 
   while (i < fixResVal[id].harvestCost.length) {
-    if (i != 9)
-    {
+    if (i != 9) {
       inventory[i] += fixResVal[id].harvestCost[i];
     }
     i++;
   }
-  // deleteFromHarvestArray(id, uid, harvestIncoming); // ! call to function with elem
+  // deleteFromHarvestArray(id, uid, harvestIncoming, elem); // ! call to function with elem
   console.log("inventory after loop", inventory);
   return inventory;
 };
@@ -119,9 +114,8 @@ export const cancelReceiveResHarvest = (
 ) => {
   let i: number = 0;
 
-   while (i < fixResVal[id].production.length) {
-    if (i != 9)
-    {
+  while (i < fixResVal[id].production.length) {
+    if (i != 9) {
       inventory[i] -= fixResVal[id].production[i];
     }
     i++;
@@ -129,27 +123,22 @@ export const cancelReceiveResHarvest = (
   return inventory;
 };
 
-export const getIdFromPos = (fullmap: any, posY : number, posX: number) => {
-
-  let     id : number = 0;
+export const getIdFromPos = (fullmap: any, posY: number, posX: number) => {
+  let id: number = 0;
 
   id = fullmap[posY][posX].id;
 
-  return(id);
+  return id;
 };
 
-export const getPosFromId = (fullmap: any, id : number) => {
+export const getPosFromId = (fullmap: any, id: number) => {
+  let vecYX: any[] = [];
+  let j: number = 1;
+  let i: number = 1;
 
-  let     vecYX : any[] = [];
-  let     j : number = 1;
-  let     i : number = 1;
-
-  while (i < fullmap.length)
-  {
-    while (j < 41)
-    { 
-      if (fullmap[i][j].id == id)
-      {
+  while (i < fullmap.length) {
+    while (j < 41) {
+      if (fullmap[i][j].id == id) {
         vecYX[0] = fullmap[i][j].posY;
         vecYX[1] = fullmap[i][j].posX;
       }
@@ -158,22 +147,18 @@ export const getPosFromId = (fullmap: any, id : number) => {
     j = 1;
     i++;
   }
-  return(vecYX); 
+  return vecYX;
 };
 
 export const refillMax = (id: number, inventory: any, fixBuildVal: any) => {
-  
-  let   i: number = 0;
-  let   numRefill: number = 0;
+  let i: number = 0;
+  let numRefill: number = 0;
 
-  while (numRefill)
-  {
-    while (i < fixBuildVal[id].maintainCost.length) 
-    {
-      if (inventory[i] < (fixBuildVal[id].maintainCost[i] * (numRefill + 1))) 
-      {
-        console.log("maximum refill of", refillMax," for ", id);
-        return (numRefill);
+  while (numRefill) {
+    while (i < fixBuildVal[id].maintainCost.length) {
+      if (inventory[i] < fixBuildVal[id].maintainCost[i] * (numRefill + 1)) {
+        console.log("maximum refill of", refillMax, " for ", id);
+        return numRefill;
       }
     }
     i = 0;
@@ -466,11 +451,9 @@ export const createBuildingPay = (
 ) => {
   let i: number = 0;
 
-   while (i < fixBuildVal[id].createCost.length)
-   {
-    if (i != 9)
-    {
-    inventory[i] -= fixBuildVal[id].createCost[i];
+  while (i < fixBuildVal[id].createCost.length) {
+    if (i != 9) {
+      inventory[i] -= fixBuildVal[id].createCost[i];
     }
     i++;
   }

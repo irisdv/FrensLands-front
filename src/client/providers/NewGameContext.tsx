@@ -310,14 +310,11 @@ export const NewAppStateProvider: React.FC<
 
       // - - - - - - - TEST CALL FUNCTION - - - - - - - - //
 
+      //const test = getIdFromPos(fullMapArray, 8, 21);
+      //const test2 = getPosFromId(fullMapArray, 97);
 
-      const test = getIdFromPos(fullMapArray, 8, 21);
-      const test2 = getPosFromId(fullMapArray, 97);
-
-      console.log("test = ", test);
-      console.log("test2 = ", test2);
-
-
+      //console.log("test = ", test);
+      //console.log("test2 = ", test2);
 
       //  - - - - - - INVENTORY - - - - - -
       const inventoryArray: any[] = [];
