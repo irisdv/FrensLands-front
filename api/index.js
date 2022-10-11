@@ -55,7 +55,7 @@ app.post("/api/signin", async (req, res) => {
       process.env.REACT_APP_SUPABASE_JWT
     );
 
-    res.send({ user: user, token: token });
+    res.json({ user: user, token: token });
   } catch (error) {
     var errMessage = `${error}`;
     processErrorResponse(res, 500, errMessage);
