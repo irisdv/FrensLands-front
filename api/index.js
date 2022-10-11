@@ -31,16 +31,16 @@ app.post("/api/signin", async (req, res) => {
       .select()
       .eq("account", account)
       .single();
-    // console.log('user found', user);
+    console.log('user found', user);
 
     if (!user) {
       const response = await supabase
         .from("users")
         .insert([{ account: account }]);
-      // console.log('response', response)
+      console.log('response', response)
       user = response.data;
     }
-    // console.log('user after added to DB', user);
+    console.log('user after added to DB', user);
 
     const token = jwt.sign(
       {
