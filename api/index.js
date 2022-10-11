@@ -73,7 +73,7 @@ function processErrorResponse(res, statusCode, message) {
 
 app.listen(app.get("port"), function () {
   console.log(
-    "Express app zeit-buttons-serverless is running on port",
+    "Express app is running on port",
     app.get("port")
   );
 });

@@ -143,14 +143,14 @@ export default function Home() {
   };
 
   const connectUser = (_account: string) => {
-    var _pre: string;
+    var _url: string;
     if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
-      _pre = "http://";
+      _url = "http://localhost:3001/api/signin";
     } else {
-      _pre = "https://";
+      _url = "https://" + process.env.REACT_APP_URL + process.env.PORT + "/api/signin";
     }
-    const _url: string =
-      ((_pre + process.env.REACT_APP_URL) as string) + "/api/signin";
+    // const _url: string =
+    //   ((_pre + process.env.REACT_APP_URL) as string) + "/api/signin";
 
     fetch(_url, {
       method: "POST",
