@@ -14,6 +14,7 @@ import { allMetadata } from "../data/metadata";
 import { useNewGameContext } from "../hooks/useNewGameContext";
 import { getStarknet } from "get-starknet";
 import { useSelectContext } from "../hooks/useSelectContext";
+import getPlayer from "../api/player";
 
 export default function Play() {
   const { address, setAddress, updateTokenId, tokenId, fetchMapType } =
@@ -21,7 +22,7 @@ export default function Play() {
   // * new game context
   const {
     wallet,
-    biomeId,
+    player,
     initPlayer,
     initGameSession,
     fullMap,
@@ -54,28 +55,28 @@ export default function Play() {
     return fullMap;
   }, [fullMap]);
 
-  const getUserInfo = async (account: string) => {
-    await fetch(`http://localhost:3001/api/users/${account}`, {
-      headers: { "x-access-token": localStorage.getItem("user") as string },
-    })
-      .then(async (response) => {
-        return await response.json();
-      })
-      .then((data) => {
-        console.log("data of player retrieved", data);
-        if (data) {
-          initSettings(data.setting);
-          // Init player new game session
-          initGameSession(
-            data.inventory,
-            data.land,
-            data.player_actions,
-            data.player_buildings
-          );
-        }
-        return data;
-      });
-  };
+  // const getUserInfo = async (account: string) => {
+  //   await fetch(`http://localhost:3001/api/users/${account}`, {
+  //     headers: { "x-access-token": localStorage.getItem("user") as string },
+  //   })
+  //     .then(async (response) => {
+  //       return await response.json();
+  //     })
+  //     .then((data) => {
+  //       console.log("data of player retrieved", data);
+  //       if (data) {
+  //         initSettings(data.setting);
+  //         // Init player new game session
+  //         initGameSession(
+  //           data.inventory,
+  //           data.land,
+  //           data.player_actions,
+  //           data.player_buildings
+  //         );
+  //       }
+  //       return data;
+  //     });
+  // };
 
   useEffect(() => {
     if (!wallet) {
@@ -84,8 +85,32 @@ export default function Play() {
         console.log("_wallet", _wallet);
         if (_wallet.isConnected) {
           initPlayer(_wallet);
-          setAddress(_wallet.account.address); // ancien game context
-          getUserInfo(_wallet.account.address);
+          setAddress(_wallet.account.address); // ! ancien game context
+          // getUserInfo(_wallet.account.address);
+
+          getPlayer(_wallet.account.address).then((data) => {
+            console.log("data", data);
+            if (
+              data &&
+              data.inventories &&
+              data.lands &&
+              data.player_actions &&
+              data.player_buildings
+            ) {
+              initSettings({
+                zoom: data.invZoom,
+                tutorial: data.tutorial,
+                sound: data.sound,
+              });
+              // Init player new game session
+              initGameSession(
+                data.inventories,
+                data.lands,
+                data.player_actions,
+                data.player_buildings as []
+              );
+            }
+          });
         } else {
           navigate("/");
         }
@@ -271,7 +296,10 @@ export default function Play() {
 
   return (
     <>
-      {inventory && fullMapValue && biomeId && fullMapValue.length > 0 ? (
+      {inventory &&
+      fullMapValue &&
+      player["biomeId" as any] &&
+      fullMapValue.length > 0 ? (
         <>
           <MenuBar />
           <Achievements level={inventory[11]} />
@@ -280,7 +308,7 @@ export default function Play() {
               mapArray={fullMap}
               textArrRef={textArrRef}
               rightBuildingType={rightBuildingType}
-              worldType={biomeId}
+              worldType={player["biomeId" as any]}
               // TODO add last buildingIds in counters array
               UBlockIDs={counters["buildings" as any]}
             />

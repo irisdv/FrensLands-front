@@ -44,20 +44,6 @@ export const Scene = (props: any) => {
   const [frontBlockArray, setFrontBlockArray] = useState([]);
   const { wallet } = useNewGameContext();
 
-  const getStaticBuildings = async () => {
-    await fetch("http://localhost:3001/api/static_buildings")
-      .then(async (response) => {
-        return await response.json();
-      })
-      .then((data) => {
-        console.log("data static building", data);
-      });
-  };
-
-  useEffect(() => {
-    getStaticBuildings();
-  }, []);
-
   const zoomValue = useMemo(() => {
     if (wallet.isConnected && zoomMode != undefined) {
       return zoomMode;

@@ -25,6 +25,7 @@ export function MenuBar() {
     inventory,
     counters,
     playerBuilding,
+    player,
   } = useNewGameContext();
   const { zoomMode, updateZoom } = useSelectContext();
   const {
@@ -440,7 +441,7 @@ export function MenuBar() {
         </div>
       </div>
       <div
-        onClick={() => updateZoom(!zoomValue, wallet.account.address as string)}
+        onClick={() => updateZoom(!zoomValue, player["id" as any] as string)}
       >
         {zoomValue ? (
           <div className="checkZoom1 pixelated"></div>

@@ -11,12 +11,12 @@ module.exports = merge(common, {
     },
     watchFiles: path.join(__dirname, "../../dist/client"),
     hot: true,
-    proxy: {
-      "/socket.io": {
-        target: "http://127.0.0.1:3001",
-        ws: true,
-      },
-    },
+    // proxy: {
+    //   "/socket.io": {
+    //     target: "http://127.0.0.1:3001",
+    //     ws: true,
+    //   },
+    // },
     historyApiFallback: true,
     liveReload: true,
     compress: true,

@@ -18,10 +18,8 @@ import { gsap } from "gsap";
 import UI_Frames from "../style/resources/front/Ui_Frames3.svg";
 import useStartGame from "../hooks/invoke/useStartGame";
 import { useFLContract } from "../hooks/contracts/frenslands";
-
-// import socketService from "../services/socketService";
-// import { io } from "socket.io-client";
-// let socket: any;
+import { supabase, createSupabase } from "../supabaseClient";
+import { initMap } from "../utils/constant";
 
 export default function Home() {
   const [wallet, setWallet] = useState<IStarknetWindowObject>();
@@ -44,71 +42,95 @@ export default function Home() {
   const [watch, setWatch] = useState(true);
   const [canPlay, setCanPlay] = useState(0);
   const [approved, setApproved] = useState<any>(null);
-  const initializeGame = useStartGame();
-
-  // const connectSocket = async (account: string) => {
-  //   const socket = socketService
-  //     .connect("http://localhost:8008/", account)
-  //     .then((result) => {
-  //       setConnected(true);
-  //     })
-  //     .catch((err) => {
-  //       console.log("Error", err);
-  //     });
-  // };
-
-  // useEffect(() => {
-  //   if (!connected && account) {
-  //     connectSocket(account);
-  //   }
-  // });
+  // const initializeGame = useStartGame();
 
   // ------------------------------------- START: Fetch DB --------------------------------------------
-  // Connexion du user
-  const getUserInfo = async (account: string) => {
-    fetch("http://localhost:3001/api/auth/signin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ account }),
-    })
-      .then(async (response) => {
-        return await response.json();
-      })
-      .then((data) => {
-        console.log(
-          "userData received, ready to initialize game session withat data : ",
-          data
-        );
-        if (data && data.token) localStorage.setItem("user", data.token);
-        setSignedIn(true);
-        if (data.land == 0) {
-          console.log("user has no land, need to initialize");
-        } else {
-          setHasLand(data.land);
-        }
-      });
-  };
 
   const initGame = async (account: string, biomeId: number) => {
-    fetch("http://localhost:3001/api/users/init", {
-      method: "POST",
-      headers: {
-        "x-access-token": localStorage.getItem("user") as string,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ account, biomeId }),
-    })
-      .then(async (response) => {
-        return await response.json();
-      })
-      .then((data) => {
-        console.log("userData", data);
-        if (data && data.success) {
-          navigate("/play");
-        }
-      });
+    const _supabase = createSupabase(localStorage.getItem("user") as string);
+
+    const response = await _supabase
+      .from("users")
+      .select(`id, account, lands (fk_userid, id, biomeId)`)
+      .eq("account", wallet?.account.address)
+      .single();
+
+    console.log("response query 2", response);
+    if (
+      response &&
+      response.data?.lands &&
+      Object.keys(response.data?.lands).length > 0
+    ) {
+      console.log(
+        "user already has a land initialized",
+        Object.keys(response.data?.lands).length
+      );
+
+      navigate("/play");
+
+      // Need to ensure that it's the right owner based on tokenId that was fetched
+    } else {
+      console.log("user need to initialize its land");
+      // TODO init w/ data fetched from chain (if land has not been already initialized)
+
+      var land_id;
+      const { data: inventory_data, error: inventory_error } = await _supabase
+        .from("inventories")
+        .insert([
+          {
+            fk_userid: response.data?.id,
+          },
+        ]);
+      console.log("inventory", inventory_data);
+
+      const { data: land_data, error: land_error } = await _supabase
+        .from("lands")
+        .insert([
+          {
+            fk_userid: response.data?.id,
+            biomeId: biomeId,
+            fullMap: initMap,
+            nbResourcesSpawned: 196,
+            nbResourcesLeft: 196,
+            nbBuilding: 1,
+          },
+        ])
+        .select();
+      console.log("land_data", land_data);
+      if (land_data) land_id = land_data[0].id;
+
+      const { data: building_data, error: building_error } = await _supabase
+        .from("player_buildings")
+        .insert([
+          {
+            fk_userid: response.data?.id,
+            fk_landid: land_id,
+            fk_buildingid: 1,
+            gameUid: 1,
+            posX: 1.2,
+            posY: 1.2,
+            blockX: 11,
+            blockY: 8,
+            decay: 100,
+            unitTimeCreatedAt: 0,
+          },
+        ]);
+
+      const { data: actions_data, error: actions_error } = await _supabase
+        .from("player_actions")
+        .insert([
+          {
+            entrypoint: "start_game",
+            calldata: biomeId,
+            validated: false,
+            fk_userid: response.data?.id,
+            fk_landid: land_id,
+          },
+        ]);
+
+      if (!inventory_error && !land_error && !building_error && !actions_error)
+        navigate("/play");
+    }
   };
 
   // ------------------------------------- END: Fetch DB --------------------------------------------
@@ -120,10 +142,40 @@ export default function Home() {
     setWallet(_wallet);
   };
 
-  // Sign in player after wallet connect
+  const connectUser = (_account: string) => {
+    var _pre: string;
+    if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+      _pre = "http://";
+    } else {
+      _pre = "https://";
+    }
+    const _url: string =
+      ((_pre + process.env.REACT_APP_URL) as string) + "/api/signin";
+
+    fetch(_url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ _account }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("data received from server ", data);
+
+        if (data && data.user) {
+          if (data && data.token) {
+            localStorage.setItem("user", data.token);
+          }
+          setSignedIn(true);
+        }
+      });
+  };
+
+  // Sign in player
   useEffect(() => {
     if (wallet?.isConnected && !signedIn) {
-      getUserInfo(wallet.account.address);
+      connectUser(wallet.account.address);
     }
   }, [wallet]);
 

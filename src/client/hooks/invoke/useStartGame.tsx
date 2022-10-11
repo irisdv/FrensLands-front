@@ -1,12 +1,12 @@
 import { useStarknet } from "@starknet-react/core";
 import React, { useCallback } from "react";
-import { uint256, InvokeFunctionResponse } from "starknet";
+import { uint256 } from "starknet";
+// InvokeFunctionResponse
 // AddTransactionResponse
 import { useNotifTransactionManager } from "../../providers/transactions";
 import { useFLContract } from "../contracts/frenslands";
 
 export default function useStartGame() {
-  // const { account } = useStarknet();
   const { contract } = useFLContract();
 
   const { addTransaction } = useNotifTransactionManager();
@@ -28,7 +28,7 @@ export default function useStartGame() {
           maxFee: 1618293576158800,
         })
         // .then((tx: AddTransactionResponse) => {
-        .then((tx: InvokeFunctionResponse) => {
+        .then((tx: any) => {
           console.log("Transaction hash: ", tx);
 
           // addTransaction({

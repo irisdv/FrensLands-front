@@ -33,6 +33,7 @@ export function BF_resource(props: any) {
     addAction,
     inventory,
     wallet,
+    player,
   } = useNewGameContext();
   const { tokenId } = useGameContext();
   const [showNotif, setShowNotif] = useState(false);
@@ -82,8 +83,8 @@ export function BF_resource(props: any) {
 
       // ? Send request
       // TODO add fullMap converted to string in request
-      const _isHarvested = await harvestAction(
-        wallet.account.address,
+      const _isHarvested = harvestAction(
+        player,
         entrypoint,
         calldata,
         inventory

@@ -44,8 +44,7 @@ export interface INewGameState {
   // Player data
   timeSpent: number;
   wallet: any;
-  landId: number;
-  biomeId: number;
+  player: any[];
   fullMap: any[];
   inventory: any[];
   playerBuilding: any[];
@@ -53,10 +52,10 @@ export interface INewGameState {
   payloadActions: any[];
   initPlayer: (wallet: IStarknetWindowObject) => void;
   initGameSession: (
-    inventory: IInventory,
-    land: ILand,
-    playerActions: [],
-    playerBuildings: IPlayerBuilding
+    inventory: any,
+    land: any,
+    playerActions: any,
+    playerBuildings: []
   ) => void;
   addAction: (entrypoint: string, calldata: string) => void;
   updateInventory: (inventory: any[]) => void;
@@ -88,8 +87,7 @@ export const NewGameState: INewGameState = {
   // Player data
   timeSpent: 0,
   wallet: null,
-  landId: 0,
-  biomeId: 0,
+  player: [],
   fullMap: [],
   inventory: [],
   playerBuilding: [],
@@ -119,8 +117,7 @@ interface SetPlayer {
 interface SetGameSession {
   type: "set_gameSession";
   address?: string;
-  landId: number;
-  biomeId: number;
+  player: any[];
   fullMap: any[];
   actions: any[];
   playerBuilding: any[];
@@ -191,8 +188,7 @@ function reducer(state: INewGameState, action: Action): INewGameState {
       console.log("action received", action);
       return {
         ...state,
-        landId: action.landId,
-        biomeId: action.biomeId,
+        player: action.player,
         fullMap: action.fullMap,
         payloadActions: action.actions,
         inventory: action.inventory,
@@ -289,73 +285,64 @@ export const NewAppStateProvider: React.FC<
 
   const initGameSession = React.useCallback(
     async (
-      inventory: IInventory,
-      land: ILand,
-      playerActions: [],
-      playerBuildings: IPlayerBuilding
+      inventory: any,
+      land: any,
+      playerActions: any,
+      playerBuildings: []
     ) => {
-      // console.log("inventory received = ", inventory);
-      // console.log("player land received = ", land);
-      // console.log("playerBuildings received = ", playerBuildings);
-      // console.log("playerActions received = ", playerActions);
-
       //  - - - - - - PLAYER LAND - - - - - -
       // let test = generateFullMap();
       // console.log("test", test);
 
-      const fullMapArray = revComposeD(land.fullMap);
+      const fullMapArray = revComposeD(land[0].fullMap);
       console.log("fullMapArray = ", fullMapArray);
 
-      //  - - - - - - INVENTORY - - - - - -
+      // //  - - - - - - INVENTORY - - - - - -
       const inventoryArray: any[] = [];
-      // inventoryArray[0] = inventory.wood;
-      // inventoryArray[1] = inventory.rock;
-      // inventoryArray[2] = inventory.food;
+
+      // inventoryArray[0] = inventory[0].wood;
+      // inventoryArray[1] = inventory[0].rock;
+      // inventoryArray[2] = inventory[0].food;
       inventoryArray[0] = 100;
       inventoryArray[1] = 100;
       inventoryArray[2] = 100;
-      inventoryArray[3] = inventory.metal;
-      inventoryArray[4] = inventory.coal;
-      inventoryArray[5] = inventory.energy;
-      inventoryArray[6] = inventory.coin;
-      inventoryArray[7] = inventory.gold;
-      // inventoryArray[8] = inventory.freePop;
-      // inventoryArray[9] = inventory.totalPop;
+      inventoryArray[3] = inventory[0].metal;
+      inventoryArray[4] = inventory[0].coal;
+      inventoryArray[5] = inventory[0].energy;
+      inventoryArray[6] = inventory[0].coin;
+      inventoryArray[7] = inventory[0].gold;
+      // inventoryArray[8] = inventory[0].freePop;
+      // inventoryArray[9] = inventory[0].totalPop;
       inventoryArray[8] = 100;
       inventoryArray[9] = 100;
-      inventoryArray[10] = inventory.timeSpent;
-      // inventoryArray[11] = inventory.level;
-      inventoryArray[11] = 11;
+      inventoryArray[10] = inventory[0].timeSpent;
+      // inventoryArray[11] = inventory[0].level;
+      inventoryArray[11] = 8;
 
       console.log("inventoryArray = ", inventoryArray);
 
       //  - - - - - - PLAYER BUILDINGS - - - - - -
-      let i: number = 0;
       const mapBuildingArray: any[] = [];
-      const mapBuildingTemp = Object.values(playerBuildings);
-
-      while (i < mapBuildingTemp.length) {
-        mapBuildingArray[i] = [];
-
-        mapBuildingArray[i].blockX = mapBuildingTemp[i].blockX;
-        mapBuildingArray[i].blockY = mapBuildingTemp[i].blockY;
-        mapBuildingArray[i].posX = mapBuildingTemp[i].posX;
-        mapBuildingArray[i].posY = mapBuildingTemp[i].posY;
-        mapBuildingArray[i].type = mapBuildingTemp[i].fk_buildingid;
-        mapBuildingArray[i].decay = mapBuildingTemp[i].decay;
-        mapBuildingArray[i].gameUid = mapBuildingTemp[i].gameUid;
-
-        i++;
-      }
+      playerBuildings.map((elem: any, key: number) => {
+        mapBuildingArray[key] = [];
+        mapBuildingArray[key].blockY = elem.blockY;
+        mapBuildingArray[key].posX = elem.posX;
+        mapBuildingArray[key].posY = elem.posY;
+        mapBuildingArray[key].type = elem.fk_buildingid;
+        mapBuildingArray[key].decay = elem.decay;
+        mapBuildingArray[key].gameUid = elem.gameUid;
+      });
       console.log("mapBuildingArray = ", mapBuildingArray);
 
       //  - - - - - - STATIC BUILDINGS - - - - - -
       const staticBuildings: any = await getStaticBuildings();
+      console.log("static buildings", staticBuildings);
+
       const fixBuildVal: any[] = fillStaticBuildings(staticBuildings);
       console.log("fixBuildVal = ", fixBuildVal);
 
       //  - - - - - - STATIC RESOURCES - - - - - -
-      const staticResources: any = await getStaticResources(land.biomeId);
+      const staticResources: any = await getStaticResources(land[0].biomeId);
       const fixResVal: any[] = fillStaticResources(staticResources);
       console.log("fixResVal = ", fixResVal);
 
@@ -371,12 +358,16 @@ export const NewAppStateProvider: React.FC<
       var counters: any[] = [];
       counters["buildings" as any] = buildingCounter;
 
+      const playerArray: any[] = [];
+      playerArray["landId" as any] = land[0].id;
+      playerArray["id" as any] = land[0].fk_userid;
+      playerArray["biomeId" as any] = land[0].biomeId;
+
       //  - - - - - - DATA IN ARRAYS - - - - - - END
 
       dispatch({
         type: "set_gameSession",
-        landId: land.id,
-        biomeId: land.biomeId,
+        player: playerArray,
         fullMap: fullMapArray,
         actions: playerActions,
         inventory: inventoryArray,
@@ -497,8 +488,7 @@ export const NewAppStateProvider: React.FC<
         staticBuildings: state.staticBuildings,
         timeSpent: state.timeSpent,
         wallet: state.wallet,
-        landId: state.landId,
-        biomeId: state.biomeId,
+        player: state.player,
         fullMap: state.fullMap,
         inventory: state.inventory,
         updatePlayerBuilding,

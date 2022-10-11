@@ -1,21 +1,27 @@
-// export default const getUserInfo = async (account: string) => {
+import { equal } from "assert";
+import { supabase } from "../supabaseClient";
+
+/**
+ * getPlayer
+ * * Fetch player information
+ * @param account {string}
+ * @return data {{}}
+ */
 export default async function getPlayer(account: string) {
-  fetch("http://localhost:3001/api/users/signin", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ account }),
-  })
-    .then(async (response) => {
-      return await response.json();
-    })
-    .then((data) => {
-      console.log(
-        "userData received, ready to initialize game session withat data : ",
-        data
-      );
-    });
+  const { data, error } = await supabase
+    .from("users")
+    .select(
+      `id, account, invZoom, tutorial, sound, 
+      lands(fk_userid, id, biomeId, fullMap, nbResourcesSpawned), 
+      inventories(fk_userid, id, wood, rock, food, coal, metal, energy, coin, gold, freePop, totalPop, level, timeSpent),
+      player_buildings(fk_userid, fk_buildingid, posX, posY, blockX, blockY, decay, gameUid),
+      player_actions(fk_userid, fk_landid, id, entrypoint, calldata)
+    `
+    )
+    .eq("account", account)
+    .single();
+
+  return data;
 }
 
 /**
@@ -29,45 +35,66 @@ export default async function getPlayer(account: string) {
  * @return success
  */
 // TODO add fullMap composed in string
-export const buildAction = (
-  account: string,
+export const buildAction = async (
+  player: any[],
   entrypoint: string,
   calldata: string,
   inventory: any,
   newBuilding: any
 ) => {
-  fetch("http://localhost:3001/api/users/build", {
-    method: "POST",
-    headers: {
-      "x-access-token": localStorage.getItem("user") as string,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      account: account,
-      action: {
+  const { data: actionData, error: actionError } = await supabase
+    .from("player_actions")
+    .insert([
+      {
+        fk_userid: player["id" as any],
+        fk_landid: player["landId" as any],
         entrypoint: entrypoint,
         calldata: calldata,
+        validated: false,
       },
-      inventory: inventory,
-      newBuilding: {
-        type: newBuilding["type"],
+    ]);
+
+  if (actionError) throw actionError;
+
+  const { data: inventoryData, error: inventoryError } = await supabase
+    .from("inventories")
+    .update([
+      {
+        wood: inventory[0],
+        rock: inventory[1],
+        food: inventory[2],
+        metal: inventory[3],
+        coal: inventory[4],
+        energy: inventory[5],
+        coin: inventory[6],
+        gold: inventory[7],
+        freePop: inventory[8],
+        totalPop: inventory[9],
+        timeSpent: inventory[10],
+        level: inventory[11],
+      },
+    ])
+    .eq("fk_userid", player["id" as any]);
+
+  if (inventoryError) throw inventoryError;
+
+  // Create entry in db player_buildings
+  const { data: buildingData, error: buildingError } = await supabase
+    .from("player_buildings")
+    .insert([
+      {
+        fk_userid: player["id" as any],
+        fk_landid: player["landId" as any],
+        fk_buildingid: newBuilding["type"],
         gameUid: newBuilding["gameUid"],
-        blockX: newBuilding["blockX"],
-        blockY: newBuilding["blockY"],
         posX: newBuilding["posX"],
         posY: newBuilding["posY"],
-        decay: newBuilding["decay"],
+        blockX: newBuilding["blockX"],
+        blockY: newBuilding["blockY"],
       },
-    }),
-  })
-    .then(async (response) => await response.json())
-    .then((data) => {
-      console.log("build Action was stored in DB successfully", data);
-      return data;
-    })
-    .catch((error) => {
-      console.log("error while storing harvest action in DB", error);
-    });
+    ]);
+
+  if (buildingError) throw buildingError;
 };
 
 /**
@@ -80,78 +107,113 @@ export const buildAction = (
  * @return success
  */
 // TODO translated fullMap into string and add in request
-export const harvestAction = (
-  account: string,
+export const harvestAction = async (
+  player: any[],
   entrypoint: string,
   calldata: string,
   inventory: any
 ) => {
-  fetch("http://localhost:3001/api/users/harvest", {
-    method: "POST",
-    headers: {
-      "x-access-token": localStorage.getItem("user") as string,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      account: account,
-      action: {
+  const { data: actionData, error: actionError } = await supabase
+    .from("player_actions")
+    .insert([
+      {
+        fk_userid: player["id" as any],
+        fk_landid: player["landId" as any],
         entrypoint: entrypoint,
         calldata: calldata,
+        validated: false,
       },
-      inventory: inventory,
-    }),
-  })
-    .then(async (response) => await response.json())
-    .then((data) => {
-      console.log("harvest Action was stored in DB successfully", data);
-      return data;
-    })
-    .catch((error) => {
-      console.log("error while storing harvest action in DB", error);
-    });
+    ]);
+
+  if (actionError) throw actionError;
+
+  const { data: inventoryData, error: inventoryError } = await supabase
+    .from("inventories")
+    .update([
+      {
+        wood: inventory[0],
+        rock: inventory[1],
+        food: inventory[2],
+        metal: inventory[3],
+        coal: inventory[4],
+        energy: inventory[5],
+        coin: inventory[6],
+        gold: inventory[7],
+        freePop: inventory[8],
+        totalPop: inventory[9],
+        timeSpent: inventory[10],
+        level: inventory[11],
+      },
+    ])
+    .eq("fk_userid", player["id" as any]);
+
+  if (inventoryError) throw inventoryError;
 };
 
 /**
  * repairAction
  * * Update after player built
- * @param account {[]} player wallet address
+ * @param player {[]} player information
  * @param entrypoint {string} in contract
  * @param calldata {string}
  * @param inventory {[]} updated player inventory
  * @return success
  */
 // TODO translated fullMap into string and add in request
-export const repairAction = (
-  account: string,
+export const repairAction = async (
+  player: any[],
   entrypoint: string,
   calldata: string,
   inventory: any,
   uid: number
 ) => {
-  fetch("http://localhost:3001/api/users/repair", {
-    method: "POST",
-    headers: {
-      "x-access-token": localStorage.getItem("user") as string,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      account: account,
-      action: {
+  const { data: actionData, error: actionError } = await supabase
+    .from("player_actions")
+    .insert([
+      {
+        fk_userid: player["id" as any],
+        fk_landid: player["landId" as any],
         entrypoint: entrypoint,
         calldata: calldata,
+        validated: false,
       },
-      inventory: inventory,
-      uid: uid,
-    }),
-  })
-    .then(async (response) => await response.json())
-    .then((data) => {
-      console.log("harvest Action was stored in DB successfully", data);
-      return data;
-    })
-    .catch((error) => {
-      console.log("error while storing harvest action in DB", error);
+    ]);
+
+  if (actionError) throw actionError;
+
+  const { data: inventoryData, error: inventoryError } = await supabase
+    .from("inventories")
+    .update([
+      {
+        wood: inventory[0],
+        rock: inventory[1],
+        food: inventory[2],
+        metal: inventory[3],
+        coal: inventory[4],
+        energy: inventory[5],
+        coin: inventory[6],
+        gold: inventory[7],
+        freePop: inventory[8],
+        totalPop: inventory[9],
+        timeSpent: inventory[10],
+        level: inventory[11],
+      },
+    ])
+    .eq("fk_userid", player["id" as any]);
+
+  if (inventoryError) throw inventoryError;
+
+  // Update player_buildings
+  const { data: buildingData, error: buildingError } = await supabase
+    .from("player_buildings")
+    .update([{ decay: 0 }])
+    .match({
+      fk_userid: player["id" as any],
+      fk_landid: player["landId" as any],
+      gameUid: uid,
     });
+
+  if (buildingError) throw buildingError;
 };
 
 /**
@@ -163,51 +225,68 @@ export const repairAction = (
  * @return success
  */
 export const storeAction = async (
-  account: string,
+  player: any[],
   entrypoint: string,
   calldata: string
 ) => {
-  fetch("http://localhost:3001/api/player_action", {
-    method: "POST",
-    headers: {
-      "x-access-token": localStorage.getItem("user") as string,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      account: account,
-      action: {
+  const { data: actionData, error: actionError } = await supabase
+    .from("player_actions")
+    .insert([
+      {
+        fk_userid: player["id" as any],
+        fk_landid: player["landId" as any],
         entrypoint: entrypoint,
         calldata: calldata,
+        validated: false,
       },
-    }),
-  })
-    .then(async (response) => {
-      return await response.json();
-    })
-    .then((data) => {
-      console.log("action was stored in DB successfully", data);
-    });
+    ]);
+
+  if (actionError) throw actionError;
 };
 
-// const getUserSettings = async (account: string) => {
-//   await fetch(`http://localhost:3001/api/users/${account}`, {
-//     headers: { "x-access-token": localStorage.getItem("user") as string },
-//   })
-//     .then(async (response) => {
-//       return await response.json();
-//     })
-//     .then((data) => {
-//       console.log("data of player retrieved", data);
-//       if (data) {
-//         initSettings(data.setting);
-//         // Init player new game session
-//         initGameSession(
-//           data.inventory,
-//           data.land,
-//           data.player_actions,
-//           data.player_buildings
-//         );
-//       }
-//       return data.setting.zoom;
-//     });
-// };
+/**
+ * updateSettings
+ * * Update tutorial setting
+ * @param account {[]} player wallet address
+ * @param entrypoint {string} in contract
+ * @param calldata {string}
+ * @return success
+ */
+export const updateTutorial = async (uid: string, val: boolean) => {
+  const { data: settingData, error: settingError } = await supabase
+    .from("users")
+    .update([{ tutorial: val }])
+    .eq("id", uid);
+
+  if (settingError) {
+    throw settingError;
+  } else {
+    return 1;
+  }
+};
+
+/**
+ * updateZoomRequest
+ * * Update Zoom setting
+ * @param account {[]} player wallet address
+ * @param entrypoint {string} in contract
+ * @param calldata {string}
+ * @return success
+ */
+export const updateZoomRequest = async (uid: string, val: boolean) => {
+  const { data: settingData, error: settingError } = await supabase
+    .from("users")
+    .update([{ invZoom: val }])
+    .eq("id", uid);
+
+  if (settingError) {
+    throw settingError;
+  } else {
+    return 1;
+  }
+};
+
+// Move
+// Destroy
+// Claim
+// Fuel Production

@@ -1,4 +1,5 @@
 import React, { useReducer } from "react";
+import { updateTutorial, updateZoomRequest } from "../api/player";
 
 export interface IFrame {
   infraType?: number;
@@ -146,46 +147,30 @@ export const SelectStateProvider: React.FC<
     });
   }, []);
 
-  const updateZoom = React.useCallback((val: boolean, account: string) => {
-    fetch("http://localhost:3001/api/users/settings", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-access-token": localStorage.getItem("user") as string,
-      },
-      body: JSON.stringify({ account, setting: { zoom: val } }),
-    })
-      .then(async (response) => {
-        return await response.text();
-      })
-      .then((data) => {
-        console.log("Updated user settings successfully");
+  const updateZoom = React.useCallback((val: boolean, uid: string) => {
+    let _zoomUpdate = updateZoomRequest(uid, val);
+
+    _zoomUpdate.then((res) => {
+      if (res) {
         dispatch({
           type: "set_zoom",
           zoomMode: val,
         });
-      });
+      }
+    });
   }, []);
 
-  const updateTuto = React.useCallback((val: boolean, account: string) => {
-    fetch("http://localhost:3001/api/users/settings", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-access-token": localStorage.getItem("user") as string,
-      },
-      body: JSON.stringify({ account, setting: { tutorial: val } }),
-    })
-      .then(async (response) => {
-        return await response.text();
-      })
-      .then((data) => {
-        console.log("Updated user settings successfully");
+  const updateTuto = React.useCallback((val: boolean, uid: string) => {
+    let _tutoUpdate = updateTutorial(uid, val);
+
+    _tutoUpdate.then((res) => {
+      if (res) {
         dispatch({
           type: "set_tuto",
           tutoMode: val,
         });
-      });
+      }
+    });
   }, []);
 
   return (

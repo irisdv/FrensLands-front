@@ -1,27 +1,22 @@
+import { supabase } from "../supabaseClient";
+
 export const getStaticBuildings = async () => {
-  return await fetch(`http://localhost:3001/api/static_buildings`, {
-    headers: { "Content-Type": "application/json" },
-  })
-    .then(async (response) => await response.json())
-    .then((data) => {
-      console.log("static buildings retrieved", data);
-      return data;
-    });
+  let { data, error } = await supabase.from("static_buildings").select("*");
+
+  if (error) console.log("error fetching static_buildings", error);
+
+  return data;
 };
 
 export const getStaticResources = async (biomeId: number) => {
-  return await fetch(
-    `http://localhost:3001/api/static_resources_spawned/${biomeId}`,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  )
-    .then(async (response) => await response.json())
-    .then((data) => {
-      console.log("static resources spawned retrieved", data);
-      return data;
-    })
-    .catch((error) => {
-      console.log("error", error);
-    });
+  let { data, error } = await supabase
+    .from("static_resources")
+    .select("*")
+    .eq("biomeId", biomeId);
+
+  if (error) console.log("error fetching static_resources", error);
+
+  console.log("data resources", data);
+
+  return data;
 };

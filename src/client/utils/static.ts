@@ -10,33 +10,49 @@ export const fillStaticBuildings = (staticBuildings: any) => {
   const fixBuildVal: any[] = [];
 
   while (i < staticBuildings.length) {
-    fixBuildVal[i] = [];
-    fixBuildVal[i].id = staticBuildings[i].id;
-    fixBuildVal[i].type = staticBuildings[i].type;
-    fixBuildVal[i].biome = staticBuildings[i].biomeId;
-    fixBuildVal[i].name = staticBuildings[i].name;
-    fixBuildVal[i].description = staticBuildings[i].description;
-    fixBuildVal[i].sprite = parseResToArray(staticBuildings[i].spriteId);
-    fixBuildVal[i].canMove = staticBuildings[i].canMove;
-    fixBuildVal[i].canDestroy = staticBuildings[i].canDestroy;
-    fixBuildVal[i].level = staticBuildings[i].nbLevel;
-    fixBuildVal[i].needMaintain = staticBuildings[i].needMaintain;
-    fixBuildVal[i].animated = staticBuildings[i].animated;
-    fixBuildVal[i].pLevelToUnlock = staticBuildings[i].pLevelToUnlock;
-    fixBuildVal[i].locked = staticBuildings[i].locked;
-    fixBuildVal[i].fertility = staticBuildings[i].fertilityNeed;
+    fixBuildVal[staticBuildings[i].id - 1] = [];
+    fixBuildVal[staticBuildings[i].id - 1].id = staticBuildings[i].id;
+    fixBuildVal[staticBuildings[i].id - 1].type = staticBuildings[i].type;
+    fixBuildVal[staticBuildings[i].id - 1].biome = staticBuildings[i].biomeId;
+    fixBuildVal[staticBuildings[i].id - 1].name = staticBuildings[i].name;
+    fixBuildVal[staticBuildings[i].id - 1].description =
+      staticBuildings[i].description;
+    fixBuildVal[staticBuildings[i].id - 1].sprite = parseResToArray(
+      staticBuildings[i].spriteId
+    );
+    fixBuildVal[staticBuildings[i].id - 1].canMove = staticBuildings[i].canMove;
+    fixBuildVal[staticBuildings[i].id - 1].canDestroy =
+      staticBuildings[i].canDestroy;
+    fixBuildVal[staticBuildings[i].id - 1].level = staticBuildings[i].nbLevel;
+    fixBuildVal[staticBuildings[i].id - 1].needMaintain =
+      staticBuildings[i].needMaintain;
+    fixBuildVal[staticBuildings[i].id - 1].animated =
+      staticBuildings[i].animated;
+    fixBuildVal[staticBuildings[i].id - 1].pLevelToUnlock =
+      staticBuildings[i].pLevelToUnlock;
+    fixBuildVal[staticBuildings[i].id - 1].locked = staticBuildings[i].locked;
+    fixBuildVal[staticBuildings[i].id - 1].fertility =
+      staticBuildings[i].fertilityNeed;
 
     const _createCost = parseResToArray(staticBuildings[i].createCost);
-    fixBuildVal[i].createCost = _createCost.map((val) => parseInt(val));
+    fixBuildVal[staticBuildings[i].id - 1].createCost = _createCost.map((val) =>
+      parseInt(val)
+    );
 
     const _repairCost = parseResToArray(staticBuildings[i].repairCost);
-    fixBuildVal[i].repairCost = _repairCost.map((val) => parseInt(val));
+    fixBuildVal[staticBuildings[i].id - 1].repairCost = _repairCost.map((val) =>
+      parseInt(val)
+    );
 
     const _maintainCost = parseResToArray(staticBuildings[i].maintainCost);
-    fixBuildVal[i].maintainCost = _maintainCost.map((val) => parseInt(val));
+    fixBuildVal[staticBuildings[i].id - 1].maintainCost = _maintainCost.map(
+      (val) => parseInt(val)
+    );
 
     const _production = parseResToArray(staticBuildings[i].production);
-    fixBuildVal[i].production = _production.map((val) => parseInt(val));
+    fixBuildVal[staticBuildings[i].id - 1].production = _production.map((val) =>
+      parseInt(val)
+    );
 
     i++;
   }

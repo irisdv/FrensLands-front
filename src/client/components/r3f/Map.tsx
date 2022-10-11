@@ -54,6 +54,7 @@ export const Map = (props: any) => {
   // Context
   const {
     wallet,
+    player,
     fullMap,
     staticBuildings,
     staticResources,
@@ -389,8 +390,8 @@ export const Map = (props: any) => {
 
       // ? send request DB
       // TODO add fullMap updated converted to string
-      const _action = await buildAction(
-        wallet.account.address,
+      const _action = buildAction(
+        player,
         entrypoint,
         calldata,
         inventory,
