@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack serve --config ./src/client/webpack.dev.js --hot",
-    "build": "webpack --config ./src/client/webpack.prod.js",
+    "build": "webpack --config ./src/client/webpack.prod.js --env production --env VERCEL_ENV=$VERCEL_ENV",
     "lint": "eslint . --ext .ts --ext .tsx --fix",
     "prettier": "prettier --write .",
     "server-start-dev": "export NODE_ENV=DEV || set NODE_ENV=DEV && concurrently -k \"tsc -p ./src/server -w\" \"nodemon ./dist/server/server.js\" \"webpack serve --config ./src/client/webpack.dev.js\" --env development --hot --watch",
