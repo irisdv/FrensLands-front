@@ -18,7 +18,7 @@ const supabase = createClient.createClient(
   process.env.REACT_APP_SERVICE
 );
 
-app.get("api/test", async (req, res) => {  
+app.get("/api/test", async (req, res) => {  
   res.send('it worked')
 })
 
