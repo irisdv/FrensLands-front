@@ -168,7 +168,10 @@ export default function Home() {
           }
           setSignedIn(true);
         }
-      });
+      })
+      .catch((error) => {
+        console.log('error', error);
+      })
   };
 
   // Sign in player
