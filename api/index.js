@@ -18,7 +18,11 @@ const supabase = createClient.createClient(
   process.env.REACT_APP_SERVICE
 );
 
-app.post("/api/signin", async (req, res) => {
+app.get("api/test", async (req, res) => {  
+  res.send('it worked')
+})
+
+app.post("/api/signin", async (req, res) => {  
   const account = req.body._account;
 
   try {

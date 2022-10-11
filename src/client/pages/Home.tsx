@@ -150,8 +150,6 @@ export default function Home() {
       _url = "https://" + process.env.REACT_APP_URL + ':' + process.env.PORT + "/api/signin";
     }
     console.log('port', process.env.PORT);
-    // const _url: string =
-    //   ((_pre + process.env.REACT_APP_URL) as string) + "/api/signin";
 
     fetch(_url, {
       method: "POST",
