@@ -6,6 +6,8 @@
 // mat_type : 1             [block mat type]
 // fertility: 2
 
+import { Vec2 } from "three";
+
 // FUNCTION TO DO
 
 // ||||||-  enough to harvest : resources / population (type of resource spawned)
@@ -22,13 +24,162 @@
 // ||||||- maintain building
 // ||||||- destroy building
 // ||||||- harvest resources
-// - receive resources from harvest (with timer)  ----> Need to create a Special Incoming array (checked often)
-// - levelManagement (increase/decrease)
-// - REV_cancelCreate
-// - REV_cancelHarvest
-// - REV_cancelRepair
-// - REV_cancelMaintain
+// ||||||- receive resources from harvest (with timer)  ----> Need to create a Special Incoming array (checked often)
+// ||||||- levelManagement (increase/decrease)
+// ||||||- REV_cancelCreate
+// ||||||- REV_cancelHarvest
+// ||||||- REV_cancelRepair
+// ||||||- REV_cancelMaintain
 // - REV_cancelMove
+// ||||||- Calculate how many refill you can do on a prod building
+// ||||||- get id from position X|Y
+
+
+export const cancelCreate = (id: number, inventory: any, fixBuildVal: any) => {
+  
+  let i: number = 0;
+
+  while (i < fixBuildVal[id].createCost.length)
+  {
+    if (i != 9)
+    {
+    inventory[i] += fixBuildVal[id].createCost[i];
+    }
+    i++;
+  }
+  //deleteFromBuildingArray(mapBuildingArray, id); // ! DELETE FROM BUILDING ARRAY WHEN WE PUT mapBuildingArray BACK
+
+  return inventory;
+};
+
+export const cancelRepairBuilding = (
+  id: number,
+  inventory: any,
+  fixBuildVal: any
+) => {
+  let i: number = 0;
+
+  while (i < fixBuildVal[id].repairCost.length) {
+    inventory[i] += fixBuildVal[id].repairCost[i];
+    i++;
+  }
+  return inventory;
+};
+
+export const cancelMaintainBuilding = (
+  id: number,
+  inventory: any,
+  fixBuildVal: any
+) => {
+  let i: number = 0;
+
+  while (i < fixBuildVal[id].maintainCost) {
+    inventory[i] += fixBuildVal[id].maintainCost[i];
+    i++;
+  }
+  return inventory;
+};
+
+export const cancelHarvestRes = (
+  id: number,
+  // uid: number,
+  inventory: any,
+  fixResVal: any
+  // harvestIncoming: any
+) => {
+  let i: number = 0;
+
+  while (i < fixResVal[id].harvestCost.length) {
+    if (i != 9)
+    {
+      inventory[i] += fixResVal[id].harvestCost[i];
+    }
+    i++;
+  }
+  // deleteFromHarvestArray(id, uid, harvestIncoming); // ! call to function with elem
+  console.log("inventory after loop", inventory);
+  return inventory;
+};
+
+export const deleteFromHarvestArray = (
+  id: number,
+  uid: number,
+  harvestIncoming: any,
+  elem: number
+) => {
+  harvestIncoming[elem] = [];
+
+  return harvestIncoming;
+};
+
+export const cancelReceiveResHarvest = (
+  id: number,
+  inventory: any,
+  fixResVal: any
+) => {
+  let i: number = 0;
+
+   while (i < fixResVal[id].production.length) {
+    if (i != 9)
+    {
+      inventory[i] -= fixResVal[id].production[i];
+    }
+    i++;
+  }
+  return inventory;
+};
+
+export const getIdFromPos = (fullmap: any, posY : number, posX: number) => {
+
+  let     id : number = 0;
+
+  id = fullmap[posY][posX].id;
+
+  return(id);
+};
+
+export const getPosFromId = (fullmap: any, id : number) => {
+
+  let     vecYX : any[] = [];
+  let     j : number = 1;
+  let     i : number = 1;
+
+  while (i < fullmap.length)
+  {
+    while (j < 41)
+    { 
+      if (fullmap[i][j].id == id)
+      {
+        vecYX[0] = fullmap[i][j].posY;
+        vecYX[1] = fullmap[i][j].posX;
+      }
+      j++;
+    }
+    j = 1;
+    i++;
+  }
+  return(vecYX); 
+};
+
+export const refillMax = (id: number, inventory: any, fixBuildVal: any) => {
+  
+  let   i: number = 0;
+  let   numRefill: number = 0;
+
+  while (numRefill)
+  {
+    while (i < fixBuildVal[id].maintainCost.length) 
+    {
+      if (inventory[i] < (fixBuildVal[id].maintainCost[i] * (numRefill + 1))) 
+      {
+        console.log("maximum refill of", refillMax," for ", id);
+        return (numRefill);
+      }
+    }
+    i = 0;
+    numRefill++;
+  }
+};
 
 /**
  * checkResHarvest
@@ -315,9 +466,12 @@ export const createBuildingPay = (
 ) => {
   let i: number = 0;
 
-  // while (i < fixBuildVal[id].createCost.length) {
-  while (i < 9) {
+   while (i < fixBuildVal[id].createCost.length)
+   {
+    if (i != 9)
+    {
     inventory[i] -= fixBuildVal[id].createCost[i];
+    }
     i++;
   }
   // mapBuildingArray = addToBuildingArray(mapBuildingArray, id, 0, 0, 0, 0);

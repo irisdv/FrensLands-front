@@ -7,6 +7,8 @@ import { revComposeD, generateFullMap } from "../utils/land";
 import { parsePipeResToArray, parseResToArray } from "../utils/utils";
 import { fillStaticBuildings, fillStaticResources } from "../utils/static";
 import { getStaticBuildings, getStaticResources } from "../api/static";
+import { getIdFromPos } from "../utils/building";
+import { getPosFromId } from "../utils/building";
 
 export interface ILand {
   id: number;
@@ -304,7 +306,18 @@ export const NewAppStateProvider: React.FC<
       // console.log("test", test);
 
       const fullMapArray = revComposeD(land.fullMap);
-      console.log("fullMapArray = ", fullMapArray);
+      //console.log("fullMapArray = ", fullMapArray);
+
+      // - - - - - - - TEST CALL FUNCTION - - - - - - - - //
+
+
+      const test = getIdFromPos(fullMapArray, 8, 21);
+      const test2 = getPosFromId(fullMapArray, 97);
+
+      console.log("test = ", test);
+      console.log("test2 = ", test2);
+
+
 
       //  - - - - - - INVENTORY - - - - - -
       const inventoryArray: any[] = [];
