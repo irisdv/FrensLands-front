@@ -35,6 +35,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/client/index.html",
+      favicon: "./dist/client/resources/front/FL.ico",
     }),
     new Dotenv({
       systemvars: true,
