@@ -353,6 +353,58 @@ export const destroyAction = async (
   if (buildingError) throw buildingError;
 };
 
+/**
+ * moveAction
+ * * Update after player moved a building
+ * @param player {[]} player information
+ * @param entrypoint {string} in contract
+ * @param calldata {string}
+ * @param inventory {[]} updated player inventory
+ * @return success
+ */
+// TODO translated fullMap into string and add in request
+export const moveAction = async (
+  player: any[],
+  entrypoint: string,
+  calldata: string,
+  playerBuilding: any
+) => {
+  const { data: actionData, error: actionError } = await supabase
+    .from("player_actions")
+    .insert([
+      {
+        fk_userid: player["id" as any],
+        fk_landid: player["landId" as any],
+        entrypoint: entrypoint,
+        calldata: calldata,
+        validated: false,
+      },
+    ]);
+
+  if (actionError) throw actionError;
+
+  // Update player_buildings
+  const { data: buildingData, error: buildingError } = await supabase
+    .from("player_buildings")
+    .update([
+      {
+        posX: playerBuilding.posX,
+        posY: playerBuilding.posY,
+        blockX: playerBuilding.blockX,
+        blockY: playerBuilding.blockY,
+      },
+    ])
+    .match({
+      fk_userid: player["id" as any],
+      fk_landid: player["landId" as any],
+      gameUid: playerBuilding.gameUid,
+    });
+
+  if (buildingError) throw buildingError;
+
+  // TODO update fullMap
+};
+
 // Move
 // Claim
 // Fuel Production
