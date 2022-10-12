@@ -11,3 +11,4 @@ dist/server/*
 python_server/
 
 src/server/config/
+src/_server

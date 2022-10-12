@@ -47,7 +47,8 @@ export default function Home() {
   // ------------------------------------- START: Fetch DB --------------------------------------------
 
   const initGame = async (account: string, biomeId: number) => {
-    const _supabase = createSupabase(localStorage.getItem("user") as string);
+    var _user : string = localStorage.getItem("user") as string
+    const _supabase = createSupabase(_user);
 
     const response = await _supabase
       .from("users")
@@ -149,7 +150,6 @@ export default function Home() {
     } else {
       _url = "https://" + process.env.REACT_APP_URL + "/api/signin";
     }
-    console.log('port', process.env.PORT);
 
     fetch(_url, {
       method: "POST",
@@ -165,8 +165,10 @@ export default function Home() {
         if (data && data.user) {
           if (data && data.token) {
             localStorage.setItem("user", data.token);
+            setTimeout(function(){
+              setSignedIn(true);
+            }, 50);
           }
-          setSignedIn(true);
         }
       })
       .catch((error) => {
