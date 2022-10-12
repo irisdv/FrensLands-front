@@ -1,7 +1,7 @@
 import { IStarknetWindowObject } from "get-starknet";
 import React, { useReducer, useEffect, useState, useCallback } from "react";
 import * as starknet from "starknet";
-import uint256, { AccountInterface } from "starknet";
+import uint256, { AccountInterface, GetBlockResponse } from "starknet";
 
 import { revComposeD, generateFullMap } from "../utils/land";
 import { parsePipeResToArray, parseResToArray } from "../utils/utils";
@@ -271,8 +271,44 @@ export const NewAppStateProvider: React.FC<
 > = (props: React.PropsWithChildren<{ children: any }>): React.ReactElement => {
   const [state, dispatch] = useReducer(reducer, NewGameState);
   const value = React.useMemo(() => [state, dispatch], [state]);
+  const [block, setBlock] = useState<GetBlockResponse | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean | undefined>(undefined);
   // const [fixBuildVal, setFixBuildVal] = useState<any[]>([]);
   // const [fixResVal, setFixResVal] = useState<any[]>([]);
+
+  const fetchBlock = useCallback(() => {
+    if (state.wallet) {
+      state.wallet.account
+        .getBlock()
+        .then((newBlock: any) => {
+          setBlock((oldBlock) => {
+            if (oldBlock?.block_hash === newBlock.block_hash) {
+              return oldBlock;
+            }
+            // Reset error and return new block.
+            console.log("new block", newBlock);
+            return newBlock;
+          });
+        })
+        .catch((error: any) => {
+          console.log("failed fetching block", error);
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [setBlock, state.wallet, setLoading]);
+
+  useEffect(() => {
+    setLoading(true);
+
+    // Fetch block immediately
+    fetchBlock();
+
+    const intervalId = setInterval(() => {
+      fetchBlock();
+    }, 10000);
+
+    return () => clearInterval(intervalId);
+  }, [fetchBlock]);
 
   const addAction = React.useCallback(
     (entrypoint: string, calldata: string) => {

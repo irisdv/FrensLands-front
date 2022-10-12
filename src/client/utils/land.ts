@@ -25,6 +25,8 @@ export const revComposeD = (compMap: string, account: string) => {
   tempArray[y] = [];
   const compMapSplit = compMap.split("|");
 
+  console.log("compMapSplit", compMapSplit);
+
   while (i < compMapSplit.length) {
     if (x > 40) {
       y++;
@@ -104,7 +106,7 @@ export const ComposeD = (fullMap: any) => {
   while (y < 17) {
     while (x < 41) {
       if (fullMap[y][x].type == 0) {
-        compStr = compStr + "|" + "0";
+        compStr = compStr + "0";
       } else {
         var _id = "";
 
@@ -127,15 +129,27 @@ export const ComposeD = (fullMap: any) => {
           _type = fullMap[y][x].type;
         }
 
-        compStr =
-          compStr +
-          "|" +
-          fullMap[y][x].infraType +
-          _type +
-          _id +
-          fullMap[y][x].state +
-          fullMap[y][x].blockType +
-          fullMap[y][x].blockFertility;
+        if (x == 1 && y == 1) {
+          console.log("test");
+          compStr =
+            compStr +
+            fullMap[y][x].infraType +
+            _type +
+            _id +
+            fullMap[y][x].state +
+            fullMap[y][x].blockType +
+            fullMap[y][x].blockFertility;
+        } else {
+          compStr =
+            compStr +
+            "|" +
+            fullMap[y][x].infraType +
+            _type +
+            _id +
+            fullMap[y][x].state +
+            fullMap[y][x].blockType +
+            fullMap[y][x].blockFertility;
+        }
       }
       x++;
     }
