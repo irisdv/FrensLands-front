@@ -107,7 +107,8 @@ export default function Play() {
                 data.inventories,
                 data.lands,
                 data.player_actions,
-                data.player_buildings as []
+                data.player_buildings as [],
+                data.account
               );
             }
           });

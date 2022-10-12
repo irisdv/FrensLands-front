@@ -14,7 +14,7 @@
  * @param compMap {string}
  * @return tempArray {[]}
  */
-export const revComposeD = (compMap: string) => {
+export const revComposeD = (compMap: string, account: string) => {
   const tempArray: any[] = [];
 
   let x: number = 1;
@@ -59,16 +59,15 @@ export const revComposeD = (compMap: string) => {
 
     // * Additional values
     // Rand for trees and rocks
-
     if (tempArray[y][x].infraType == 1) {
       if (tempArray[y][x].type == 1) {
-        var randomNum: number = random(specIndex) * (3 - 1) + 1;
+        var randomNum: number = random(specIndex, account) * (3 - 1) + 1;
         randomNum = parseInt(randomNum.toFixed(0));
         tempArray[y][x].randType = randomNum;
         specIndex++;
         //console.log("tempArray[y][x].randType = ", tempArray[y][x].randType);
       } else if (tempArray[y][x].type == 2) {
-        var randomNum: number = random(specIndex) * (6 - 4) + 4;
+        var randomNum: number = random(specIndex, account) * (6 - 4) + 4;
         randomNum = parseInt(randomNum.toFixed(0));
         tempArray[y][x].randType = randomNum;
         specIndex++;
@@ -89,14 +88,8 @@ export const revComposeD = (compMap: string) => {
   return tempArray;
 };
 
-export const random = (spec: number) => {
-  // ! USE CLIENT'S WALLET
-  var x =
-    Math.sin(
-      seedFromWallet(
-        "0x00a7a315c7463b4bc491239e1d995fe736fe4830d3345d109a25182fb918ddd2"
-      ) + spec
-    ) * 10000;
+export const random = (spec: number, account: string) => {
+  var x = Math.sin(seedFromWallet(account) + spec) * 10000;
 
   return x - Math.floor(x);
 };

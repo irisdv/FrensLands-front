@@ -18,7 +18,7 @@ export function FrameItem(props: any) {
           marginLeft: "-20px",
         }}
       >
-        {inputFuel ? cost * inputFuel : cost}
+        {cost}
       </div>
     </div>
   );

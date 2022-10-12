@@ -57,7 +57,8 @@ export interface INewGameState {
     inventory: any,
     land: any,
     playerActions: any,
-    playerBuildings: []
+    playerBuildings: [],
+    account: string
   ) => void;
   addAction: (entrypoint: string, calldata: string) => void;
   updateInventory: (inventory: any[]) => void;
@@ -96,7 +97,13 @@ export const NewGameState: INewGameState = {
   counters: [],
   payloadActions: [],
   initPlayer: (wallet) => {},
-  initGameSession: (inventory, land, playerActions, playerBuildings) => {},
+  initGameSession: (
+    inventory,
+    land,
+    playerActions,
+    playerBuildings,
+    account
+  ) => {},
   addAction: (entrypoint, calldata) => {},
   updateInventory: (inventory) => {},
   updatePlayerBuilding: (_playerBuilding) => {},
@@ -290,13 +297,14 @@ export const NewAppStateProvider: React.FC<
       inventory: any,
       land: any,
       playerActions: any,
-      playerBuildings: []
+      playerBuildings: [],
+      account: string
     ) => {
       //  - - - - - - PLAYER LAND - - - - - -
       // let test = generateFullMap();
       // console.log("test", test);
 
-      const fullMapArray = revComposeD(land[0].fullMap);
+      const fullMapArray = revComposeD(land[0].fullMap, account);
       console.log("fullMapArray = ", fullMapArray);
       // const fullMapArray = revComposeD(land.fullMap);
       //console.log("fullMapArray = ", fullMapArray);
@@ -446,7 +454,7 @@ export const NewAppStateProvider: React.FC<
   }, []);
 
   const updatePlayerBuilding = React.useCallback((_playerBuilding: any[]) => {
-    console.log("_playerBuilding", _playerBuilding);
+    console.log("_playerBuilding updating", _playerBuilding);
     dispatch({
       type: "set_playerBuilding",
       playerBuilding: _playerBuilding,
