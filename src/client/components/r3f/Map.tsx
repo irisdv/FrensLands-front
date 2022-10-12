@@ -22,6 +22,7 @@ import useBuild from "../../hooks/invoke/useBuild";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
 import { addToBuildingArray, createBuildingPay } from "../../utils/building";
 import { buildAction } from "../../api/player";
+import { ComposeD } from "../../utils/land";
 const { promises: Fs } = require("fs");
 
 export interface ISelectObject {
@@ -389,13 +390,14 @@ export const Map = (props: any) => {
       updatePlayerBuilding(newBuilding);
 
       // ? send request DB
-      // TODO add fullMap updated converted to string
+      const _mapComposed = ComposeD(frontBlockArray);
       const _action = buildAction(
         player,
         entrypoint,
         calldata,
         inventory,
-        newBuilding[newBuilding.length - 1]
+        newBuilding[newBuilding.length - 1],
+        _mapComposed
       );
 
       // Update global variables

@@ -9,6 +9,7 @@ import {
 } from "../../../utils/building";
 import { FrameItem } from "../FrameItem";
 import { harvestAction } from "../../../api/player";
+import { ComposeD } from "../../../utils/land";
 
 export function BF_resource(props: any) {
   const {
@@ -82,12 +83,13 @@ export function BF_resource(props: any) {
       updateMapBlock(_map);
 
       // ? Send request
-      // TODO add fullMap converted to string in request
+      const _mapComposed = ComposeD(_map);
       const _isHarvested = harvestAction(
         player,
         entrypoint,
         calldata,
-        inventory
+        inventory,
+        _mapComposed
       );
     } else {
       console.log("Cannot harvest or missing tokenId");

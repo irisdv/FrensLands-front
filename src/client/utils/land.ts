@@ -106,12 +106,33 @@ export const ComposeD = (fullMap: any) => {
       if (fullMap[y][x].type == 0) {
         compStr = compStr + "|" + "0";
       } else {
+        var _id = "";
+
+        // 4 characters for id
+        if (fullMap[y][x].id < 10) {
+          _id = "000" + fullMap[y][x].id;
+        } else if (fullMap[y][x].id < 100) {
+          _id = "00" + fullMap[y][x].id;
+        } else if (fullMap[y][x].id < 1000) {
+          _id = "0" + fullMap[y][x].id;
+        } else {
+          _id = fullMap[y][x].id;
+        }
+
+        // 2 characters for type
+        var _type = "";
+        if (fullMap[y][x].type < 10) {
+          _type = "0" + fullMap[y][x].type;
+        } else {
+          _type = fullMap[y][x].type;
+        }
+
         compStr =
           compStr +
           "|" +
           fullMap[y][x].infraType +
-          fullMap[y][x].type +
-          fullMap[y][x].id +
+          _type +
+          _id +
           fullMap[y][x].state +
           fullMap[y][x].blockType +
           fullMap[y][x].blockFertility;

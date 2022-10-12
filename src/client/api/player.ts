@@ -103,16 +103,23 @@ export const updateZoomRequest = async (uid: string, val: boolean) => {
  * @param calldata {string}
  * @param inventory {[]} updated player inventory
  * @param newBuilding {[]} building data
+ * @param mapComposed {string} full map composed into string
  * @return success
  */
-// TODO add fullMap composed in string
 export const buildAction = async (
   player: any[],
   entrypoint: string,
   calldata: string,
   inventory: any,
-  newBuilding: any
+  newBuilding: any,
+  mapComposed: string
 ) => {
+  const { data: landData, error: landError } = await supabase
+    .from("lands")
+    .update([{ fullMap: mapComposed }])
+    .eq("id", player["landId" as any]);
+  if (landError) throw landError;
+
   const { data: actionData, error: actionError } = await supabase
     .from("player_actions")
     .insert([
@@ -175,15 +182,22 @@ export const buildAction = async (
  * @param entrypoint {string} in contract
  * @param calldata {string}
  * @param inventory {[]} updated player inventory
+ * @param mapComposed {string} full map composed into string
  * @return success
  */
-// TODO translated fullMap into string and add in request
 export const harvestAction = async (
   player: any[],
   entrypoint: string,
   calldata: string,
-  inventory: any
+  inventory: any,
+  mapComposed: string
 ) => {
+  const { data: landData, error: landError } = await supabase
+    .from("lands")
+    .update([{ fullMap: mapComposed }])
+    .eq("id", player["landId" as any]);
+  if (landError) throw landError;
+
   const { data: actionData, error: actionError } = await supabase
     .from("player_actions")
     .insert([
@@ -294,16 +308,23 @@ export const repairAction = async (
  * @param entrypoint {string} in contract
  * @param calldata {string}
  * @param inventory {[]} updated player inventory
+ * @param mapComposed {string}
  * @return success
  */
-// TODO translated fullMap into string and add in request
 export const destroyAction = async (
   player: any[],
   entrypoint: string,
   calldata: string,
   inventory: any,
-  uid: number
+  uid: number,
+  mapComposed: string
 ) => {
+  const { data: landData, error: landError } = await supabase
+    .from("lands")
+    .update([{ fullMap: mapComposed }])
+    .eq("id", player["landId" as any]);
+  if (landError) throw landError;
+
   const { data: actionData, error: actionError } = await supabase
     .from("player_actions")
     .insert([
@@ -360,15 +381,22 @@ export const destroyAction = async (
  * @param entrypoint {string} in contract
  * @param calldata {string}
  * @param inventory {[]} updated player inventory
+ * @param mapComposed {string}
  * @return success
  */
-// TODO translated fullMap into string and add in request
 export const moveAction = async (
   player: any[],
   entrypoint: string,
   calldata: string,
-  playerBuilding: any
+  playerBuilding: any,
+  mapComposed: string
 ) => {
+  const { data: landData, error: landError } = await supabase
+    .from("lands")
+    .update([{ fullMap: mapComposed }])
+    .eq("id", player["landId" as any]);
+  if (landError) throw landError;
+
   const { data: actionData, error: actionError } = await supabase
     .from("player_actions")
     .insert([
@@ -380,7 +408,6 @@ export const moveAction = async (
         validated: false,
       },
     ]);
-
   if (actionError) throw actionError;
 
   // Update player_buildings
@@ -399,10 +426,7 @@ export const moveAction = async (
       fk_landid: player["landId" as any],
       gameUid: playerBuilding.gameUid,
     });
-
   if (buildingError) throw buildingError;
-
-  // TODO update fullMap
 };
 
 // Move

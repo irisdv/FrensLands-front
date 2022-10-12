@@ -8,6 +8,7 @@ import {
   destroyBuilding_,
   refillMax,
 } from "../../../utils/building";
+import { ComposeD } from "../../../utils/land";
 import { buildErrorMsg } from "../../../utils/utils";
 import { FrameItem } from "../FrameItem";
 
@@ -64,12 +65,14 @@ export function BF_maintain(props: any) {
       addAction(entrypoint, calldata);
 
       // ? Send request DB
+      const _mapComposed = ComposeD(_map);
       let _destroy = destroyAction(
         player,
         entrypoint,
         calldata,
         inventory,
-        uid
+        uid,
+        _mapComposed
       );
 
       updateBuildingFrame(false, {

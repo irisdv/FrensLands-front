@@ -199,9 +199,11 @@ export default function Home() {
       const elem = uint256.uint256ToBN(fetchBalanceNFTResult[0]);
       const balance = elem.toNumber();
 
+      console.log("fetchBalanceNFTResult", fetchBalanceNFTResult);
+
       console.log("balance NFT", balance);
 
-      if (balance == 1 && wallet?.account.address) {
+      if (balance > 0 && wallet?.account.address) {
         updateTokenId(wallet?.account.address);
       }
 
@@ -209,41 +211,14 @@ export default function Home() {
     }
   }, [fetchBalanceNFTResult]);
 
-  // Fetch gameStatus
-  // const { data: fetchGameStatus } = useStarknetCall({
-  //   contract: worlds,
-  //   method: "get_game_status",
-  //   args: [uint256.bnToUint256(tokenId as number)],
-  //   options: { watch },
-  // });
-  // const GameStatusValue = useMemo(() => {
-  //   if (fetchGameStatus != null && fetchGameStatus.length > 0) {
-  //     const status = toBN(fetchGameStatus[0]).toNumber();
-
-  //     console.log("status game", status);
-
-  //     if (status == 1) setCanPlay(1);
-
-  //     return { gameStatus: status };
-  //   }
-  // }, [fetchGameStatus, tokenId]);
-
-  // get_owner call avec land_id > if returns == 0 alors not initialized, if biomeId == correct biomeId alors ça a été init
-
-  const checkWasInit = (_wallet: any, token: number) => {
-    // _wallet.account.
-    // const provider = new starknet.Provider()
-    _wallet.account
-      .callContract({
-        contractAddress:
-          "0x060363b467a2b8d409234315babe6be180020e0bb65d708c0d09be6fd3691a2f",
-        entrypoint: "get_owner",
-        calldata: [number.toFelt(token)],
-      })
-      .then((res: any) => {
-        console.log("res", res);
-        return res;
-      });
+  const checkWasInit = async (_wallet: any, token: number) => {
+    const _res = await _wallet.account.callContract({
+      contractAddress:
+        "0x060363b467a2b8d409234315babe6be180020e0bb65d708c0d09be6fd3691a2f",
+      entrypoint: "get_owner",
+      calldata: [number.toFelt(token)],
+    });
+    return _res.result[0];
   };
 
   // Invoke Starting game
@@ -254,51 +229,35 @@ export default function Home() {
     console.log("tokenId of owner", tokenId);
 
     if (wallet != null && tokenId && !hasInit) {
-      wallet.account.callContract;
-
+      // TODO update depending on changes to db + indexer
+      // returns 0x0 if not init
       const wasInit = await checkWasInit(wallet, tokenId);
-      console.log("wasInit", wasInit);
+      console.log("wasInit ? ", wasInit);
 
-      // let nonce = await wallet.account.getNonce();
-      // const result = await wallet.account.execute(
-      //   [
-      //     {
-      //       contractAddress: frenslands?.address as string,
-      //       entrypoint: "start_game",
-      //       calldata: [tokenId, 0, biomeId],
-      //     },
-      //   ],
-      //   undefined,
-      //   { maxFee: 500, nonce }
-      // );
+      if (wasInit == "0x0") {
+        let nonce = await wallet.account.getNonce();
+        const result = await wallet.account.execute(
+          [
+            {
+              contractAddress: frenslands?.address as string,
+              entrypoint: "start_game",
+              calldata: [tokenId, 0, biomeId],
+            },
+          ],
+          undefined,
+          { maxFee: 500, nonce }
+        );
+        console.log("result", result);
+        // TODO keep tx hash for notif
+      }
 
       // const tx_hash = await initializeGame(wallet, tokenId, biomeId, nonce);
       // console.log('tx_hash', tx_hash);
-      // setHasInit(1);
+      setHasInit(1);
     }
 
     // Init game in DB
     await initGame(wallet?.account.address as string, biomeId);
-
-    //   if (tokenId && !settingUp) {
-    //     const tx_hash = initializeGame(tokenId, nonceValue);
-    //     console.log("tx hash", tx_hash);
-    //     setSettingUp(tx_hash);
-
-    //     tx_hash.then((res) => {
-    //       console.log("res", res);
-    //       if (res != 0) {
-    //         updateNonce(nonceValue);
-    //       } else {
-    //         setSettingUp(null);
-    //       }
-    //     });
-    //   } else if (!tokenId) {
-    //     console.log("Missing tokenId");
-    //     setMessage("You need to own a Frens Lands map to initialize a game.");
-    //   } else {
-    //     console.log("Already Setting Up");
-    //   }
   };
 
   // --------------------- STYLE ------------------------------
@@ -376,10 +335,11 @@ export default function Home() {
                 </>
               )}
               {/* User is connected, has an NFT but doesn't have a land  */}
+              {/* // TODO show list of owned lands  */}
               {wallet?.isConnected &&
                 hasLand == null &&
                 BalanceNFTValue != null &&
-                BalanceNFTValue.NFTbalance == 1 && (
+                BalanceNFTValue.NFTbalance > 0 && (
                   <>
                     <div className="grid grid-cols-5 px-8">
                       <div
