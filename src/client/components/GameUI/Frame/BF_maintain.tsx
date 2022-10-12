@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { destroyAction } from "../../../api/player";
 import { useGameContext } from "../../../hooks/useGameContext";
 import { useNewGameContext } from "../../../hooks/useNewGameContext";
@@ -91,33 +91,7 @@ export function BF_maintain(props: any) {
     pos_x: number,
     pos_y: number,
     uniqueId: number
-  ) => {
-    const pos_start = (pos_y - 1) * 40 + pos_x;
-    // console.log("pos_start", pos_start);
-    // if (tokenId) {
-    //   // tokenId : number, pos_start: number, nb_days: number, building_type_id: number, posX: number, posY: number, uniqueId: number
-    //   const tx_hash = rechargingInvoke(
-    //     tokenId,
-    //     pos_start,
-    //     nb_days,
-    //     type_id,
-    //     pos_x,
-    //     pos_y,
-    //     uniqueId,
-    //     nonceValue
-    //   );
-    //   console.log("tx hash recharging", tx_hash);
-
-    //   // tx_hash.then((res) => {
-    //   //   console.log("res", res);
-    //   //   if (res != 0) {
-    //   //     updateNonce(nonceValue);
-    //   //   }
-    //   // });
-    // } else {
-    //   console.log("Missing tokenId");
-    // }
-  };
+  ) => {};
 
   const updateInputFuel = () => {
     var _msg = "";
