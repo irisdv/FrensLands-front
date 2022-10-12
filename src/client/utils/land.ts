@@ -88,9 +88,45 @@ export const revComposeD = (compMap: string, account: string) => {
   return tempArray;
 };
 
+/**
+ * ComposeD
+ * * Compose land block into string
+ * @param fullMap {[]}
+ * @return comp {string}
+ */
+export const ComposeD = (fullMap: any) => {
+  
+  let compStr: string = "";
+
+  let x: number = 1;
+  let y: number = 1;
+  let i: number = 0;
+
+  while (y < 17)
+  {
+    while (x < 41)
+    {
+      if (fullMap[y][x].type == 0)
+      {
+        compStr = compStr + "|" + "0";
+      }
+      else
+      {
+        compStr = compStr + "|" + fullMap[y][x].infraType + fullMap[y][x].type + fullMap[y][x].id + fullMap[y][x].state +
+                    fullMap[y][x].blockType + fullMap[y][x].blockFertility;
+      }
+      x++;
+    }
+    x = 1;
+    y++;
+  }
+
+  console.log("Composition = ", compStr);
+  return (compStr);
+};
+
 export const random = (spec: number, account: string) => {
   var x = Math.sin(seedFromWallet(account) + spec) * 10000;
-
   return x - Math.floor(x);
 };
 
