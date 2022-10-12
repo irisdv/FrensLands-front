@@ -37,7 +37,7 @@ module.exports = {
       template: "./src/client/index.html",
     }),
     new Dotenv({
-      systemvars: true
+      systemvars: true,
     }),
   ],
 };

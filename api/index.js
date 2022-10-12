@@ -18,11 +18,11 @@ const supabase = createClient.createClient(
   process.env.REACT_APP_SERVICE
 );
 
-app.get("/api/test", async (req, res) => {  
-  res.send('it worked')
-})
+app.get("/api/test", async (req, res) => {
+  res.send("it worked");
+});
 
-app.post("/api/signin", async (req, res) => {  
+app.post("/api/signin", async (req, res) => {
   const account = req.body._account;
 
   try {
@@ -31,16 +31,16 @@ app.post("/api/signin", async (req, res) => {
       .select()
       .eq("account", account)
       .single();
-    console.log('user found', user);
+    console.log("user found", user);
 
     if (!user) {
       const response = await supabase
         .from("users")
         .insert([{ account: account }]);
-      console.log('response', response)
+      console.log("response", response);
       user = response.data;
     }
-    console.log('user after added to DB', user);
+    console.log("user after added to DB", user);
 
     const token = jwt.sign(
       {
@@ -76,10 +76,7 @@ function processErrorResponse(res, statusCode, message) {
 }
 
 app.listen(app.get("port"), function () {
-  console.log(
-    "Express app is running on port",
-    app.get("port")
-  );
+  console.log("Express app is running on port", app.get("port"));
 });
 
 module.exports = app;

@@ -47,7 +47,7 @@ export default function Home() {
   // ------------------------------------- START: Fetch DB --------------------------------------------
 
   const initGame = async (account: string, biomeId: number) => {
-    var _user : string = localStorage.getItem("user") as string
+    var _user: string = localStorage.getItem("user") as string;
     const _supabase = createSupabase(_user);
 
     const response = await _supabase
@@ -165,15 +165,15 @@ export default function Home() {
         if (data && data.user) {
           if (data && data.token) {
             localStorage.setItem("user", data.token);
-            setTimeout(function(){
+            setTimeout(function () {
               setSignedIn(true);
             }, 50);
           }
         }
       })
       .catch((error) => {
-        console.log('error', error);
-      })
+        console.log("error", error);
+      });
   };
 
   // Sign in player
