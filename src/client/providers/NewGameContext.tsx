@@ -308,10 +308,7 @@ export const NewAppStateProvider: React.FC<
       const fullMapArray = revComposeD(land[0].fullMap, account);
       console.log("fullMapArray = ", fullMapArray);
 
-
       const composition = ComposeD(fullMapArray);
-      
-
 
       // const fullMapArray = revComposeD(land.fullMap);
       //console.log("fullMapArray = ", fullMapArray);

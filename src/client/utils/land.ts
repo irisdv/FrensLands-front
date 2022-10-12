@@ -95,25 +95,26 @@ export const revComposeD = (compMap: string, account: string) => {
  * @return comp {string}
  */
 export const ComposeD = (fullMap: any) => {
-  
   let compStr: string = "";
 
   let x: number = 1;
   let y: number = 1;
   let i: number = 0;
 
-  while (y < 17)
-  {
-    while (x < 41)
-    {
-      if (fullMap[y][x].type == 0)
-      {
+  while (y < 17) {
+    while (x < 41) {
+      if (fullMap[y][x].type == 0) {
         compStr = compStr + "|" + "0";
-      }
-      else
-      {
-        compStr = compStr + "|" + fullMap[y][x].infraType + fullMap[y][x].type + fullMap[y][x].id + fullMap[y][x].state +
-                    fullMap[y][x].blockType + fullMap[y][x].blockFertility;
+      } else {
+        compStr =
+          compStr +
+          "|" +
+          fullMap[y][x].infraType +
+          fullMap[y][x].type +
+          fullMap[y][x].id +
+          fullMap[y][x].state +
+          fullMap[y][x].blockType +
+          fullMap[y][x].blockFertility;
       }
       x++;
     }
@@ -122,7 +123,7 @@ export const ComposeD = (fullMap: any) => {
   }
 
   console.log("Composition = ", compStr);
-  return (compStr);
+  return compStr;
 };
 
 export const random = (spec: number, account: string) => {
