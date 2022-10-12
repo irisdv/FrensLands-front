@@ -9,6 +9,7 @@ import { fillStaticBuildings, fillStaticResources } from "../utils/static";
 import { getStaticBuildings, getStaticResources } from "../api/static";
 import { getIdFromPos } from "../utils/building";
 import { getPosFromId } from "../utils/building";
+import { ComposeD } from "../utils/land";
 
 export interface ILand {
   id: number;
@@ -298,6 +299,12 @@ export const NewAppStateProvider: React.FC<
 
       const fullMapArray = revComposeD(land[0].fullMap);
       console.log("fullMapArray = ", fullMapArray);
+
+
+      const composition = ComposeD(fullMapArray);
+      
+
+
       // const fullMapArray = revComposeD(land.fullMap);
       //console.log("fullMapArray = ", fullMapArray);
 
