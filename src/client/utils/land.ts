@@ -25,8 +25,6 @@ export const revComposeD = (compMap: string, account: string) => {
   tempArray[y] = [];
   const compMapSplit = compMap.split("|");
 
-  console.log("compMapSplit", compMapSplit);
-
   while (i < compMapSplit.length) {
     if (x > 40) {
       y++;
