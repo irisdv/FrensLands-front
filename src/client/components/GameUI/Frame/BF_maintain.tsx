@@ -6,7 +6,7 @@ import { useSelectContext } from "../../../hooks/useSelectContext";
 import {
   checkResMaintainMsg,
   destroyBuilding_,
-  refillMax,
+  maintainMax,
 } from "../../../utils/building";
 import { ComposeD } from "../../../utils/land";
 import { buildErrorMsg } from "../../../utils/utils";
@@ -105,7 +105,7 @@ export function BF_maintain(props: any) {
     } else if (inputFuel == 10) {
       fuel = 100;
     } else if (inputFuel == 100) {
-      let _max = refillMax(typeId - 1, inventory, staticBuildingsData);
+      let _max = maintainMax(typeId - 1, inventory, staticBuildingsData);
       fuel = _max as number;
     }
 

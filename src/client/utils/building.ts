@@ -33,6 +33,63 @@ import { Vec2 } from "three";
 // - REV_cancelMove
 // ||||||- Calculate how many refill you can do on a prod building
 // ||||||- get id from position X|Y
+// ||||||-check if all buildings are still fueled on this cycle and decrement the cycles
+// ||||||-add a number of cycles per building when fueled
+// ||||||-composeD of buildings registers to send to DB
+
+export const cycleRegisterCompose = (mapBuildingArray: any) => {
+  let i: number = 0;
+  let cycleReg: string = "";
+
+  while (i < mapBuildingArray.length) {
+    cycleReg =
+      cycleReg +
+      mapBuildingArray[i].id +
+      "-" +
+      mapBuildingArray[i].cycleRegister +
+      "|";
+    i++;
+  }
+  return cycleReg;
+};
+
+export const refillBuilding = (
+  id: number,
+  mapBuildingArray: any,
+  cycles: number
+) => {
+  let i: number = 0;
+
+  while (i < mapBuildingArray.length) {
+    if (mapBuildingArray[i].id == id) {
+      mapBuildingArray[i].activeCycles += cycles;
+    }
+    i++;
+  }
+  return mapBuildingArray;
+};
+
+export const checkFuelBuildings = (mapBuildingArray: any) => {
+  let i: number = 0;
+
+  while (i < mapBuildingArray.length) {
+    if (mapBuildingArray[i].activeCycles > 0) {
+      if (mapBuildingArray[i].activeCycles == 1) {
+        mapBuildingArray[i].activeCycles = 0;
+        mapBuildingArray[i].cycleRegister =
+          mapBuildingArray[i].cycleRegister + "0";
+      } else if (mapBuildingArray[i].activeCycles > 1) {
+        mapBuildingArray[i].activeCycles -= 1;
+        mapBuildingArray[i].cycleRegister =
+          mapBuildingArray[i].cycleRegister + "1";
+      }
+    } else if (mapBuildingArray[i].activeCycles == 0) {
+      mapBuildingArray[i].cycleRegister =
+        mapBuildingArray[i].cycleRegister + "0";
+    }
+  }
+  return mapBuildingArray;
+};
 
 export const cancelCreate = (id: number, inventory: any, fixBuildVal: any) => {
   let i: number = 0;
@@ -65,12 +122,13 @@ export const cancelRepairBuilding = (
 export const cancelMaintainBuilding = (
   id: number,
   inventory: any,
-  fixBuildVal: any
+  fixBuildVal: any,
+  cycles: number
 ) => {
   let i: number = 0;
 
   while (i < fixBuildVal[id].maintainCost) {
-    inventory[i] += fixBuildVal[id].maintainCost[i];
+    inventory[i] += fixBuildVal[id].maintainCost[i] * cycles;
     i++;
   }
   return inventory;
@@ -150,14 +208,14 @@ export const getPosFromId = (fullmap: any, id: number) => {
   return vecYX;
 };
 
-export const refillMax = (id: number, inventory: any, fixBuildVal: any) => {
+export const maintainMax = (id: number, inventory: any, fixBuildVal: any) => {
   let i: number = 0;
   let numRefill: number = 0;
 
   while (numRefill == 0 || numRefill) {
     while (i < fixBuildVal[id].maintainCost.length) {
       if (inventory[i] < fixBuildVal[id].maintainCost[i] * (numRefill + 1)) {
-        console.log("maximum refill of", refillMax, " for ", id);
+        console.log("maximum refill of", numRefill, " for ", id);
         return numRefill;
       }
       i++;
@@ -566,14 +624,19 @@ export const repairBuildingPay = (
 export const maintainBuildingPay = (
   id: number,
   inventory: any,
-  fixBuildVal: any
+  fixBuildVal: any,
+  mapBuildingArray: any,
+  cycles: number
 ) => {
   let i: number = 0;
 
   while (i < fixBuildVal[id].maintainCost) {
-    inventory[i] -= fixBuildVal[id].maintainCost[i];
+    inventory[i] -= fixBuildVal[id].maintainCost[i] * cycles;
     i++;
   }
+
+  refillBuilding(id, mapBuildingArray, cycles);
+
   return inventory;
 };
 
