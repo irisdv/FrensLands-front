@@ -119,7 +119,7 @@ export const cancelRepairBuilding = (
   return inventory;
 };
 
-export const cancelRefillBuilding = (
+export const cancelMaintainBuilding = (
   id: number,
   inventory: any,
   fixBuildVal: any,
@@ -208,14 +208,14 @@ export const getPosFromId = (fullmap: any, id: number) => {
   return vecYX;
 };
 
-export const refillMax = (id: number, inventory: any, fixBuildVal: any) => {
+export const maintainMax = (id: number, inventory: any, fixBuildVal: any) => {
   let i: number = 0;
   let numRefill: number = 0;
 
   while (numRefill == 0 || numRefill) {
     while (i < fixBuildVal[id].maintainCost.length) {
       if (inventory[i] < fixBuildVal[id].maintainCost[i] * (numRefill + 1)) {
-        console.log("maximum refill of", refillMax, " for ", id);
+        console.log("maximum refill of", numRefill, " for ", id);
         return numRefill;
       }
       i++;
@@ -283,7 +283,7 @@ export const checkResHarvestMsg = (
  * @param fixBuildVal {[]} building static data
  * @return success {number} 0 or 1
  */
-export const checkResRefill = (
+export const checkResMaintain = (
   id: number,
   inventory: any,
   fixBuildVal: any
@@ -309,7 +309,7 @@ export const checkResRefill = (
  * @param multiplier {number}
  * @return res {[]} array of resources lacking
  */
-export const checkResRefillMsg = (
+export const checkResMaintainMsg = (
   id: number,
   inventory: any,
   fixBuildVal: any,
@@ -621,7 +621,7 @@ export const repairBuildingPay = (
   return inventory;
 };
 
-export const refillBuildingPay = (
+export const maintainBuildingPay = (
   id: number,
   inventory: any,
   fixBuildVal: any,
