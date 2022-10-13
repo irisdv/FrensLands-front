@@ -287,6 +287,7 @@ export const NewAppStateProvider: React.FC<
             }
             // Reset error and return new block.
             console.log("new block", newBlock);
+            // TODO call functions when block is updated
             return newBlock;
           });
         })

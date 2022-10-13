@@ -105,8 +105,12 @@ export const ComposeD = (fullMap: any) => {
 
   while (y < 17) {
     while (x < 41) {
-      if (fullMap[y][x].type == 0) {
-        compStr = compStr + "0";
+      if (fullMap[y][x].infraType == 0) {
+        if (x == 1 && y == 1) {
+          compStr = compStr + "0";
+        } else {
+          compStr = compStr + "|" + "0";
+        }
       } else {
         var _id = "";
 
@@ -128,28 +132,15 @@ export const ComposeD = (fullMap: any) => {
         } else {
           _type = fullMap[y][x].type;
         }
-
-        if (x == 1 && y == 1) {
-          console.log("test");
-          compStr =
-            compStr +
-            fullMap[y][x].infraType +
-            _type +
-            _id +
-            fullMap[y][x].state +
-            fullMap[y][x].blockType +
-            fullMap[y][x].blockFertility;
-        } else {
-          compStr =
-            compStr +
-            "|" +
-            fullMap[y][x].infraType +
-            _type +
-            _id +
-            fullMap[y][x].state +
-            fullMap[y][x].blockType +
-            fullMap[y][x].blockFertility;
-        }
+        compStr =
+          compStr +
+          "|" +
+          fullMap[y][x].infraType +
+          _type +
+          _id +
+          fullMap[y][x].state +
+          fullMap[y][x].blockType +
+          fullMap[y][x].blockFertility;
       }
       x++;
     }
