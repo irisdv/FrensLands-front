@@ -37,62 +37,59 @@ import { Vec2 } from "three";
 // ||||||-add a number of cycles per building when fueled
 // ||||||-composeD of buildings registers to send to DB
 
-
-export const cycleRegisterBuildingActivity = (mapBuildingArray : any) => {
-
+export const cycleRegisterCompose = (mapBuildingArray: any) => {
   let i: number = 0;
   let cycleReg: string = "";
 
-  while (i < mapBuildingArray.length)
-  {
-    cycleReg = cycleReg + mapBuildingArray[i].id + "-" + mapBuildingArray[i].cycleRegister + "|";
+  while (i < mapBuildingArray.length) {
+    cycleReg =
+      cycleReg +
+      mapBuildingArray[i].id +
+      "-" +
+      mapBuildingArray[i].cycleRegister +
+      "|";
     i++;
   }
-  return (cycleReg);
-}
+  return cycleReg;
+};
 
-export const refillBuilding = (id: number, mapBuildingArray : any, cycles: number) =>
-{
-
+export const refillBuilding = (
+  id: number,
+  mapBuildingArray: any,
+  cycles: number
+) => {
   let i: number = 0;
 
-  while (i < mapBuildingArray.length)
-  {
-    if (mapBuildingArray[i].id == id)
-    {
+  while (i < mapBuildingArray.length) {
+    if (mapBuildingArray[i].id == id) {
       mapBuildingArray[i].activeCycles += cycles;
     }
     i++;
   }
-  return (mapBuildingArray);
-}
+  return mapBuildingArray;
+};
 
 export const checkFuelBuildings = (mapBuildingArray: any) => {
-
   let i: number = 0;
 
-  while (i < mapBuildingArray.length)
-  {
-    if (mapBuildingArray[i].activeCycles > 0)
-    {
-      if (mapBuildingArray[i].activeCycles == 1)
-      {
+  while (i < mapBuildingArray.length) {
+    if (mapBuildingArray[i].activeCycles > 0) {
+      if (mapBuildingArray[i].activeCycles == 1) {
         mapBuildingArray[i].activeCycles = 0;
-        mapBuildingArray[i].cycleRegister = mapBuildingArray[i].cycleRegister + "0";
-      }
-      else if (mapBuildingArray[i].activeCycles > 1)
-      {
+        mapBuildingArray[i].cycleRegister =
+          mapBuildingArray[i].cycleRegister + "0";
+      } else if (mapBuildingArray[i].activeCycles > 1) {
         mapBuildingArray[i].activeCycles -= 1;
-        mapBuildingArray[i].cycleRegister = mapBuildingArray[i].cycleRegister + "1";
+        mapBuildingArray[i].cycleRegister =
+          mapBuildingArray[i].cycleRegister + "1";
       }
-    }
-    else if (mapBuildingArray[i].activeCycles == 0)
-    {
-      mapBuildingArray[i].cycleRegister = mapBuildingArray[i].cycleRegister + "0";
+    } else if (mapBuildingArray[i].activeCycles == 0) {
+      mapBuildingArray[i].cycleRegister =
+        mapBuildingArray[i].cycleRegister + "0";
     }
   }
-  return (mapBuildingArray);
-}
+  return mapBuildingArray;
+};
 
 export const cancelCreate = (id: number, inventory: any, fixBuildVal: any) => {
   let i: number = 0;
@@ -215,12 +212,13 @@ export const refillMax = (id: number, inventory: any, fixBuildVal: any) => {
   let i: number = 0;
   let numRefill: number = 0;
 
-  while (numRefill) {
+  while (numRefill == 0 || numRefill) {
     while (i < fixBuildVal[id].maintainCost.length) {
       if (inventory[i] < fixBuildVal[id].maintainCost[i] * (numRefill + 1)) {
         console.log("maximum refill of", refillMax, " for ", id);
         return numRefill;
       }
+      i++;
     }
     i = 0;
     numRefill++;
@@ -308,19 +306,21 @@ export const checkResRefill = (
  * @param id {number} type id of building to maintain
  * @param inventory {[]} player inventory
  * @param fixBuildVal {[]} building static data
+ * @param multiplier {number}
  * @return res {[]} array of resources lacking
  */
 export const checkResRefillMsg = (
   id: number,
   inventory: any,
-  fixBuildVal: any
+  fixBuildVal: any,
+  multiplier: number
 ) => {
   let i: number = 0;
   const res: any = [];
 
   // while (i < fixBuildVal[id].maintainCost.length) {
   while (i < 9) {
-    if (inventory[i] < fixBuildVal[id].maintainCost[i]) {
+    if (inventory[i] < fixBuildVal[id].maintainCost[i] * multiplier) {
       console.log("not enough resources to maintain ", i);
       res.push(i);
     }

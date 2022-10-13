@@ -11,13 +11,12 @@ import { BF_resource } from "./Frame/BF_resource";
 import { BF_noID } from "./Frame/BF_noID";
 import { BF_upgrade } from "./Frame/BF_upgrade";
 import { BF_maintain } from "./Frame/BF_maintain";
+import { buildErrorMsg } from "../../utils/utils";
 
 export function BuildingFrame(props: any) {
   const { tokenId, setAddress, updateTokenId } = useGameContext();
 
   const {
-    addAction,
-    payloadActions,
     wallet,
     inventory,
     staticBuildings,
@@ -25,18 +24,6 @@ export function BuildingFrame(props: any) {
     fullMap,
     playerBuilding,
   } = useNewGameContext();
-
-  const ResArrCorresp = [
-    "wood",
-    "rock",
-    "food",
-    "metal",
-    "coal",
-    "energy",
-    "coin",
-    "gold",
-    "frens",
-  ];
 
   const { showFrame, frameData } = useSelectContext();
   const [msg, setMsg] = useState("");
@@ -74,25 +61,6 @@ export function BuildingFrame(props: any) {
       updateTokenId(wallet.account.address);
     }
   }, [wallet, tokenId]);
-
-  const buildErrorMsg = (resArr: [], name: string) => {
-    let _msg = "";
-    _msg += "Not enough ";
-    let i = 0;
-
-    while (i < resArr.length) {
-      _msg += ResArrCorresp[resArr[i]];
-      if (i == resArr.length - 2) {
-        _msg += " & ";
-      } else if (i < resArr.length - 2) {
-        _msg += ", ";
-      }
-      i++;
-    }
-    _msg += " to " + name + ".";
-
-    return _msg;
-  };
 
   // Update costs/production for focused infrastructure in building frame
   useEffect(() => {

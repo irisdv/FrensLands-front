@@ -4,10 +4,8 @@ import { useNavigate } from "react-router-dom";
 import starknet, { uint256, number } from "starknet";
 import { getStarknet, IStarknetWindowObject } from "get-starknet";
 import { useStarknetCall } from "@starknet-react/core";
-
 import Notifications from "../components/Notifications";
 import MenuHome from "../components/MenuHome";
-
 import { useMapsContract } from "../hooks/contracts/maps";
 import { useGameContext } from "../hooks/useGameContext";
 import { useERC1155Contract } from "../hooks/contracts/erc1155";
@@ -18,7 +16,7 @@ import { gsap } from "gsap";
 import UI_Frames from "../style/resources/front/Ui_Frames3.svg";
 import useStartGame from "../hooks/invoke/useStartGame";
 import { useFLContract } from "../hooks/contracts/frenslands";
-import { supabase, createSupabase } from "../supabaseClient";
+import { createSupabase } from "../supabaseClient";
 import { initMap } from "../utils/constant";
 
 export default function Home() {
@@ -56,7 +54,6 @@ export default function Home() {
       .eq("account", wallet?.account.address)
       .single();
 
-    console.log("response query 2", response);
     if (
       response &&
       response.data?.lands &&

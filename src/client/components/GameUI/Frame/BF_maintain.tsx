@@ -1,19 +1,35 @@
 import React, { useState } from "react";
+import { destroyAction } from "../../../api/player";
 import { useGameContext } from "../../../hooks/useGameContext";
 import { useNewGameContext } from "../../../hooks/useNewGameContext";
 import { useSelectContext } from "../../../hooks/useSelectContext";
-import { destroyBuilding_ } from "../../../utils/building";
+import {
+  checkResMaintainMsg,
+  destroyBuilding_,
+  refillMax,
+} from "../../../utils/building";
+import { buildErrorMsg } from "../../../utils/utils";
 import { FrameItem } from "../FrameItem";
 
 export function BF_maintain(props: any) {
   const { uid, typeId, state, posX, posY, staticBuildingsData, inventory } =
     props;
   const { frameData, updateBuildingFrame } = useSelectContext();
-  const { updateInventory, fullMap, addAction, updateMapBlock } =
-    useNewGameContext();
+  const {
+    updateInventory,
+    fullMap,
+    addAction,
+    updateMapBlock,
+    player,
+    playerBuilding,
+    updatePlayerBuilding,
+  } = useNewGameContext();
   const { tokenId } = useGameContext();
-  // const [showNotif, setShowNotif] = useState(false);
+
   const [inputFuel, setInputFuel] = useState(1);
+  const [canMaintain, setCanMaintain] = useState(1);
+  const [msg, setMsg] = useState("");
+  const [showNotif, setShowNotif] = useState(false);
 
   const destroyBuilding = (_typeId: number, _posX: number, _posY: number) => {
     if (tokenId) {
@@ -26,6 +42,14 @@ export function BF_maintain(props: any) {
       console.log("inventory after destroy", _inventory);
       updateInventory(_inventory);
 
+      // update buildings array
+      console.log("playerBuilding before", playerBuilding);
+      var _newPlayerB = playerBuilding.filter(
+        (item: any) => item.gameUid !== uid
+      );
+      console.log("_newPlayerB before", playerBuilding);
+      updatePlayerBuilding(_newPlayerB);
+
       // Update map block
       const _map = fullMap;
       _map[_posY][_posX].state = 0;
@@ -34,37 +58,31 @@ export function BF_maintain(props: any) {
       _map[_posY][_posX].id = 0;
       updateMapBlock(_map);
 
+      // Update action in context
+      const entrypoint = "destroy_building";
+      const calldata = tokenId + "|" + 0 + "|" + _posX + "|" + _posY;
+      addAction(entrypoint, calldata);
+
       // ? Send request DB
-      // w/ new inventory, uid of building destroyed, new fullMap string
+      let _destroy = destroyAction(
+        player,
+        entrypoint,
+        calldata,
+        inventory,
+        uid
+      );
+
+      updateBuildingFrame(false, {
+        infraType: 0,
+        type_id: 0,
+        state: 0,
+        posX: 0,
+        posY: 0,
+        selected: 0,
+      });
     } else {
       console.log("Missing tokenId");
     }
-
-    // const pos_start = (pos_y - 1) * 40 + pos_x;
-    // console.log("pos_start", pos_start);
-    // if (tokenId) {
-    //   const tx_hash = detroyingInvoke(
-    //     tokenId,
-    //     pos_start,
-    //     type_id,
-    //     pos_x,
-    //     pos_y,
-    //     frameData?.unique_id as number,
-    //     nonceValue
-    //   );
-    //   console.log("tx hash destroy", tx_hash);
-    //   // setDestroying(tx_hash);
-
-    //   // tx_hash.then((res) => {
-    //   //   console.log("res", res);
-    //   //   if (res != 0) {
-    //   //     updateNonce(nonceValue);
-    //   //     setHarvesting(pos_x, pos_y, 0);
-    //   //   }
-    //   // });
-    // } else {
-    //   console.log("Missing tokenId");
-    // }
   };
 
   const fuelProd = (
@@ -73,83 +91,35 @@ export function BF_maintain(props: any) {
     pos_x: number,
     pos_y: number,
     uniqueId: number
-  ) => {
-    const pos_start = (pos_y - 1) * 40 + pos_x;
-    // console.log("pos_start", pos_start);
-    // if (tokenId) {
-    //   // tokenId : number, pos_start: number, nb_days: number, building_type_id: number, posX: number, posY: number, uniqueId: number
-    //   const tx_hash = rechargingInvoke(
-    //     tokenId,
-    //     pos_start,
-    //     nb_days,
-    //     type_id,
-    //     pos_x,
-    //     pos_y,
-    //     uniqueId,
-    //     nonceValue
-    //   );
-    //   console.log("tx hash recharging", tx_hash);
+  ) => {};
 
-    //   // tx_hash.then((res) => {
-    //   //   console.log("res", res);
-    //   //   if (res != 0) {
-    //   //     updateNonce(nonceValue);
-    //   //   }
-    //   // });
-    // } else {
-    //   console.log("Missing tokenId");
-    // }
-  };
-
-  // TODO check can pay maintain costs depending on inventory
-  // + build error msg checkResMaintainMsg function
-
-  // TODO find max input fuel possible
   const updateInputFuel = () => {
+    var _msg = "";
+    var fuel = 1;
+
     if (inputFuel == 1) {
-      setInputFuel(10);
+      fuel = 10;
     } else if (inputFuel == 10) {
-      setInputFuel(100);
+      fuel = 100;
     } else if (inputFuel == 100) {
-      // let max = 100000000;
-      // dailyCosts.forEach((element: any) => {
-      //   if (element[0] == 1 && wood != null) {
-      //     var res = parseInt((wood / element[1]).toFixed(0));
-      //     if (res < max) max = res;
-      //   }
-      //   if (element[0] == 2 && rock != null) {
-      //     var res = parseInt((rock / element[1]).toFixed(0));
-      //     if (res < max) max = res;
-      //   }
-      //   if (element[0] == 3 && meat != null) {
-      //     var res = parseInt((meat / element[1]).toFixed(0));
-      //     if (res < max) max = res;
-      //   }
-      //   if (element[0] == 5 && cereal != null) {
-      //     var res = parseInt((10 / element[1]).toFixed(0));
-      //     if (res < max) max = res;
-      //   }
-      //   if (element[0] == 6 && metal != null) {
-      //     var res = parseInt((metal / element[1]).toFixed(0));
-      //     if (res < max) max = res;
-      //   }
-      //   if (element[0] == 8 && coal != null) {
-      //     var res = parseInt((coal / element[1]).toFixed(0));
-      //     if (res < max) max = res;
-      //   }
-      //   if (element[0] == 10 && frensCoins != null) {
-      //     var res = parseInt((frensCoins / element[1]).toFixed(0));
-      //     if (res < max) max = res;
-      //   }
-      //   if (element[0] == 11 && energy != null) {
-      //     var res = parseInt((energy / element[1]).toFixed(0));
-      //     if (res < max) max = res;
-      //   }
-      // });
-      setInputFuel(1);
-    } else {
-      setInputFuel(1);
+      let _max = refillMax(typeId - 1, inventory, staticBuildingsData);
+      fuel = _max as number;
     }
+
+    setInputFuel(fuel);
+    const _canMaintain = checkResMaintainMsg(
+      typeId - 1,
+      inventory,
+      staticBuildingsData,
+      fuel
+    );
+    if (_canMaintain.length > 0) {
+      setCanMaintain(0);
+      _msg = buildErrorMsg(_canMaintain, "fuel prod");
+    } else {
+      setCanMaintain(1);
+    }
+    setMsg(_msg);
   };
 
   return (
@@ -312,8 +282,7 @@ export function BF_maintain(props: any) {
           </div>
         </div>
 
-        {/* Buildings rechargeables */}
-
+        {/* Buildings production / block */}
         <div className="grid grid-cols-2 l2R">
           <div
             className="relative flex justify-end items-center inline-block"
@@ -339,7 +308,7 @@ export function BF_maintain(props: any) {
           </div>
         </div>
 
-        {/* Pour les buildings qui sont rechargeables */}
+        {/* Buildings maintenance costs / block */}
         <div
           className="grid grid-cols-2"
           style={{
@@ -371,16 +340,31 @@ export function BF_maintain(props: any) {
           className="grid grid-cols-2"
           style={{ height: "55px", marginLeft: "0px", pointerEvents: "all" }}
         >
-          {/* // TODO show btn fuel / start prod /disabled  */}
           {/* {buildingData && buildingData.active && buildingData.active[frameData.unique_id as any] ?  */}
           <div>
-            <div
-              className="btnFuelProd pixelated"
-              onClick={() =>
-                fuelProd(inputFuel, typeId as number, posX, posY, uid)
-              }
-              style={{ marginTop: "-9px", marginLeft: "-18px" }}
-            ></div>
+            {canMaintain ? (
+              <div
+                className="btnFuelProd pixelated"
+                onClick={() =>
+                  fuelProd(inputFuel, typeId as number, posX, posY, uid)
+                }
+                style={{ marginTop: "-9px", marginLeft: "-18px" }}
+              ></div>
+            ) : (
+              <>
+                <div
+                  className="btnFuelProdInactive pixelated"
+                  onMouseOver={() => setShowNotif(true)}
+                  onMouseOut={() => setShowNotif(false)}
+                  style={{ marginTop: "-9px", marginLeft: "-18px" }}
+                ></div>
+                {showNotif && !canMaintain && (
+                  <div className="popUpMaintenance fontHPxl-sm pixelated">
+                    {msg}
+                  </div>
+                )}
+              </>
+            )}
             {inputFuel == 1 || inputFuel == 10 || inputFuel == 100 ? (
               <div
                 style={{
@@ -429,7 +413,6 @@ export function BF_maintain(props: any) {
             className="relative flex justify-end items-center inline-block"
             style={{ width: "145px", marginTop: "-30px" }}
           >
-            {/* {staticBuildingsData[typeId - 1].maintainCost.map((elem: any) => { */}
             {Object.keys(staticBuildingsData[typeId - 1].maintainCost).map(
               (elem: any) => {
                 return (
@@ -438,7 +421,10 @@ export function BF_maintain(props: any) {
                     <FrameItem
                       key={"maintain_" + elem}
                       index={elem}
-                      cost={staticBuildingsData[typeId - 1].maintainCost[elem]}
+                      cost={
+                        staticBuildingsData[typeId - 1].maintainCost[elem] *
+                        inputFuel
+                      }
                       inventory={inventory[elem]}
                       option={1}
                       inputFuel={inputFuel}

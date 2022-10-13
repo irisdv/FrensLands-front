@@ -869,6 +869,20 @@ body {
   background-position: calc(12 * 1 * 64px) calc(19 * 1 * 64px);
   background-size: calc(1408px * 1) calc(768px * 1);
 }
+.popUpMaintenance {
+  background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+  height: calc(64px * 2);
+  width: calc(64px * 2);
+  background-position: calc(19 * 1 * 64px) calc(2 * 1 * 64px);
+  background-size: calc(1408px * 1) calc(768px * 1);
+  position: absolute;
+  margin-top: -125px;
+  margin-left: 140px;
+  padding-left: 23px;
+  padding-top: 20px;
+  padding-right: 15px;
+}
+
 .popUpBuild {
   background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
   height: calc(64px * 2);
@@ -890,6 +904,7 @@ body {
   width: calc(64px * 2);
   background-position: calc(17 * 1 * 64px) calc(13 * 1 * 64px);
   background-size: calc(1408px * 1) calc(768px * 1);
+  cursor: pointer;
 }
 .btnHarvest:hover {
   display: inline-block;
@@ -898,6 +913,7 @@ body {
   width: calc(64px * 2);
   background-position: calc(15 * 1 * 64px) calc(13 * 1 * 64px);
   background-size: calc(1408px * 1) calc(768px * 1);
+  cursor: pointer;
 }
 .btnHarvest:active {
   display: inline-block;
@@ -906,6 +922,7 @@ body {
   width: calc(64px * 2);
   background-position: calc(13 * 1 * 64px) calc(13 * 1 * 64px);
   background-size: calc(1408px * 1) calc(768px * 1);
+  cursor: pointer;
 }
 .btnHarvestDisabled {
   display: inline-block;
@@ -923,6 +940,7 @@ body {
   width: calc(64px * 2);
   background-position: calc(22 * 1 * 64px) calc(20 * 1 * 64px);
   background-size: calc(1408px * 1) calc(768px * 1);
+  cursor: pointer;
 }
 .btnUpgrade:hover {
   display: inline-block;
@@ -931,6 +949,7 @@ body {
   width: calc(64px * 2);
   background-position: calc(18 * 1 * 64px) calc(20 * 1 * 64px);
   background-size: calc(1408px * 1) calc(768px * 1);
+  cursor: pointer;
 }
 .btnUpgrade:active {
   display: inline-block;
@@ -939,6 +958,7 @@ body {
   width: calc(64px * 2);
   background-position: calc(22 * 1 * 64px) calc(19 * 1 * 64px);
   background-size: calc(1408px * 1) calc(768px * 1);
+  cursor: pointer;
 }
 
 .btnUpgradeRed {
@@ -957,6 +977,7 @@ body {
   width: calc(64px * 3);
   background-position: calc(10 * 1 * 64px) calc(19 * 1 * 64px);
   background-size: calc(1408px * 1) calc(768px * 1);
+  cursor: pointer;
 }
 .btnStartProd:hover {
   display: inline-block;
@@ -965,6 +986,7 @@ body {
   width: calc(64px * 3);
   background-position: calc(10 * 1 * 64px) calc(20 * 1 * 64px);
   background-size: calc(1408px * 1) calc(768px * 1);
+  cursor: pointer;
 }
 .btnStartProdInactive {
   display: inline-block;
@@ -983,6 +1005,7 @@ body {
   background-position: calc(7 * 1 * 64px) calc(19 * 1 * 64px);
   background-size: calc(1408px * 1) calc(768px * 1);
   pointer-events: all;
+  cursor: pointer;
 }
 .btnFuelProd:hover {
   display: inline-block;
@@ -992,6 +1015,7 @@ body {
   background-position: calc(7 * 1 * 64px) calc(20 * 1 * 64px);
   background-size: calc(1408px * 1) calc(768px * 1);
   pointer-events: all;
+  cursor: pointer;
 }
 .btnFuelProdInactive {
   display: inline-block;
