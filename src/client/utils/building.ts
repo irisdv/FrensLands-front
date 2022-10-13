@@ -33,6 +33,66 @@ import { Vec2 } from "three";
 // - REV_cancelMove
 // ||||||- Calculate how many refill you can do on a prod building
 // ||||||- get id from position X|Y
+// ||||||-check if all buildings are still fueled on this cycle and decrement the cycles
+// ||||||-add a number of cycles per building when fueled
+// ||||||-composeD of buildings registers to send to DB
+
+
+export const cycleRegisterBuildingActivity = (mapBuildingArray : any) => {
+
+  let i: number = 0;
+  let cycleReg: string = "";
+
+  while (i < mapBuildingArray.length)
+  {
+    cycleReg = cycleReg + mapBuildingArray[i].id + "-" + mapBuildingArray[i].cycleRegister + "|";
+    i++;
+  }
+  return (cycleReg);
+}
+
+export const refillBuilding = (id: number, mapBuildingArray : any, cycles: number) =>
+{
+
+  let i: number = 0;
+
+  while (i < mapBuildingArray.length)
+  {
+    if (mapBuildingArray[i].id == id)
+    {
+      mapBuildingArray[i].activeCycles += cycles;
+    }
+    i++;
+  }
+  return (mapBuildingArray);
+}
+
+export const checkFuelBuildings = (mapBuildingArray: any) => {
+
+  let i: number = 0;
+
+  while (i < mapBuildingArray.length)
+  {
+    if (mapBuildingArray[i].activeCycles > 0)
+    {
+      if (mapBuildingArray[i].activeCycles == 1)
+      {
+        mapBuildingArray[i].activeCycles = 0;
+        mapBuildingArray[i].cycleRegister = mapBuildingArray[i].cycleRegister + "0";
+      }
+      else if (mapBuildingArray[i].activeCycles > 1)
+      {
+        mapBuildingArray[i].activeCycles -= 1;
+        mapBuildingArray[i].cycleRegister = mapBuildingArray[i].cycleRegister + "1";
+      }
+    }
+    else if (mapBuildingArray[i].activeCycles == 0)
+    {
+      mapBuildingArray[i].cycleRegister = mapBuildingArray[i].cycleRegister + "0";
+    }
+  }
+  return (mapBuildingArray);
+}
 
 export const cancelCreate = (id: number, inventory: any, fixBuildVal: any) => {
   let i: number = 0;
@@ -62,15 +122,16 @@ export const cancelRepairBuilding = (
   return inventory;
 };
 
-export const cancelMaintainBuilding = (
+export const cancelRefillBuilding = (
   id: number,
   inventory: any,
-  fixBuildVal: any
+  fixBuildVal: any,
+  cycles: number
 ) => {
   let i: number = 0;
 
   while (i < fixBuildVal[id].maintainCost) {
-    inventory[i] += fixBuildVal[id].maintainCost[i];
+    inventory[i] += fixBuildVal[id].maintainCost[i] * cycles;
     i++;
   }
   return inventory;
@@ -224,7 +285,7 @@ export const checkResHarvestMsg = (
  * @param fixBuildVal {[]} building static data
  * @return success {number} 0 or 1
  */
-export const checkResMaintain = (
+export const checkResRefill = (
   id: number,
   inventory: any,
   fixBuildVal: any
@@ -249,7 +310,7 @@ export const checkResMaintain = (
  * @param fixBuildVal {[]} building static data
  * @return res {[]} array of resources lacking
  */
-export const checkResMaintainMsg = (
+export const checkResRefillMsg = (
   id: number,
   inventory: any,
   fixBuildVal: any
@@ -560,17 +621,22 @@ export const repairBuildingPay = (
   return inventory;
 };
 
-export const maintainBuildingPay = (
+export const refillBuildingPay = (
   id: number,
   inventory: any,
-  fixBuildVal: any
+  fixBuildVal: any,
+  mapBuildingArray: any,
+  cycles: number
 ) => {
   let i: number = 0;
 
   while (i < fixBuildVal[id].maintainCost) {
-    inventory[i] -= fixBuildVal[id].maintainCost[i];
+    inventory[i] -= fixBuildVal[id].maintainCost[i] * cycles;
     i++;
   }
+
+  refillBuilding(id, mapBuildingArray, cycles);
+
   return inventory;
 };
 

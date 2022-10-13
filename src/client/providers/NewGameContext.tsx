@@ -302,7 +302,7 @@ export const NewAppStateProvider: React.FC<
 
 
       const composition = ComposeD(fullMapArray);
-      
+
 
 
       // const fullMapArray = revComposeD(land.fullMap);
@@ -344,7 +344,10 @@ export const NewAppStateProvider: React.FC<
       const mapBuildingArray: any[] = [];
       playerBuildings.map((elem: any, key: number) => {
         mapBuildingArray[key] = [];
+        mapBuildingArray[key].blockX = elem.blockX;
         mapBuildingArray[key].blockY = elem.blockY;
+        mapBuildingArray[key].activeCycles = elem.activeCycles;
+        mapBuildingArray[key].cycleRegister = elem.cycleRegister;
         mapBuildingArray[key].posX = elem.posX;
         mapBuildingArray[key].posY = elem.posY;
         mapBuildingArray[key].type = elem.fk_buildingid;
