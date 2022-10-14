@@ -7,7 +7,12 @@ import { revComposeD, generateFullMap } from "../utils/land";
 import { parsePipeResToArray, parseResToArray } from "../utils/utils";
 import { fillStaticBuildings, fillStaticResources } from "../utils/static";
 import { getStaticBuildings, getStaticResources } from "../api/static";
-import { getIdFromPos, getPosFromId, cycleRegisterCompose, cycleRegisterComposeD} from "../utils/building";
+import {
+  getIdFromPos,
+  getPosFromId,
+  cycleRegisterCompose,
+  cycleRegisterComposeD,
+} from "../utils/building";
 import { ComposeD } from "../utils/land";
 
 export interface ILand {
