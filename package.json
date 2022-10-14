@@ -10,13 +10,15 @@
     "lint": "eslint . --ext .ts --ext .tsx --fix",
     "prettier": "prettier --write .",
     "server-start-dev": "export NODE_ENV=DEV || set NODE_ENV=DEV && concurrently -k \"tsc -p ./src/server -w\" \"nodemon ./dist/server/server.js\" \"webpack serve --config ./src/client/webpack.dev.js\" --env development --hot --watch",
-    "server-start": "nodemon src/server/server.ts"
+    "server-start": "nodemon src/server/server.ts",
+    "codegen": "graphql-codegen --config codegen.ts"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/irisdv/hackathon-front.git"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.0",
     "@react-three/drei": "^9.17.1",
     "@react-three/fiber": "^8.2.0",
     "@starknet-react/core": "^0.13.3",
@@ -25,6 +27,7 @@
     "cors": "^2.8.5",
     "express": "^4.18.1",
     "fast-csv": "^4.3.6",
+    "graphql": "^16.6.0",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.8.0",
     "pg-hstore": "^2.3.4",

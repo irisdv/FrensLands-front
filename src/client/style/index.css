@@ -112,6 +112,22 @@ body {
   border-width: 18px;
   padding: 8px 5px;
 }
+.messageNotifParentNoLand {
+  z-index: 1;
+  height: 128px;
+  width: 256px;
+  margin: auto;
+}
+.messageNotifNoLand {
+  margin-top: 350px;
+  position: absolute;
+  width: calc(256px);
+  height: calc(180px);
+  box-sizing: border-box;
+  border-style: solid;
+  border-width: 18px;
+  padding: 10px;
+}
 .messageNotifInit {
   margin-top: 8px;
   position: absolute;

@@ -5,7 +5,8 @@ import starknet, { uint256, number } from "starknet";
 import { getStarknet, IStarknetWindowObject } from "get-starknet";
 import { useStarknetCall } from "@starknet-react/core";
 import Notifications from "../components/Notifications";
-import MenuHome from "../components/MenuHome";
+import MenuHome from "../components/Home/MenuHome";
+import LandList from "../components/Home/LandList";
 import { useMapsContract } from "../hooks/contracts/maps";
 import { useGameContext } from "../hooks/useGameContext";
 import { useERC1155Contract } from "../hooks/contracts/erc1155";
@@ -199,8 +200,6 @@ export default function Home() {
       const elem = uint256.uint256ToBN(fetchBalanceNFTResult[0]);
       const balance = elem.toNumber();
 
-      console.log("fetchBalanceNFTResult", fetchBalanceNFTResult);
-
       console.log("balance NFT", balance);
 
       if (balance > 0 && wallet?.account.address) {
@@ -293,12 +292,12 @@ export default function Home() {
               </div>
             </div>
 
-            <button
+            {/* <button
               onClick={async () => await startGame(2)}
               style={{ position: "absolute", zIndex: 100 }}
             >
               START GAME
-            </button>
+            </button> */}
 
             <div className="absolute" style={{ width: "100vw", top: "0" }}>
               <img
@@ -335,7 +334,6 @@ export default function Home() {
                 </>
               )}
               {/* User is connected, has an NFT but doesn't have a land  */}
-              {/* // TODO show list of owned lands  */}
               {wallet?.isConnected &&
                 hasLand == null &&
                 BalanceNFTValue != null &&
@@ -401,6 +399,7 @@ export default function Home() {
                         <p>Chose a land to start playing!</p>
                       </div>
                     </div>
+                    {/* <LandList account={wallet.account.address} /> */}
                   </>
                 )}
               {/* User is connected and does not have a land and doesn't have a NFT either  */}
@@ -409,28 +408,29 @@ export default function Home() {
                 BalanceNFTValue != null &&
                 BalanceNFTValue.NFTbalance == 0 && (
                   <>
-                    <div className="grid grid-col-1 px-8">
+                    <div className="messageNotifParentNoLand">
                       <div
-                        className="cursor-pointer px-5"
-                        onClick={async () => await startGame(0)}
-                      >
-                        <img
-                          className="relative mx-auto pixelated nftImg hover:scale-110"
-                          src={"resources/maps/FrensLand_NFTs_0.png"}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="messageNotifParent">
-                      <div
-                        className="messageNotif fontHPxl-sm mx-auto text-center"
+                        className="messageNotifNoLand fontHPxl-sm mx-auto text-center"
                         style={{
                           borderImage: `url(data:image/svg+xml;base64,${btoa(
                             UI_Frames
                           )}) 18 fill stretch`,
                         }}
                       >
-                        <p>Chose a land to start playing!</p>
+                        <p>You don't own a map... </p>
+                        <br />
+                        <p>
+                          Join the{" "}
+                          <a
+                            className="cursor-pointer"
+                            style={{ color: "#964489" }}
+                            href="https://discord.gg/gehYZU9Trf"
+                            target="_blank"
+                          >
+                            Frens Lands discord server
+                          </a>{" "}
+                          to take part in the next testing sessions.
+                        </p>
                       </div>
                     </div>
                   </>
