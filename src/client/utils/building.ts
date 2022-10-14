@@ -10,7 +10,7 @@ import { Vec2 } from "three";
 
 // FUNCTION TO DO
 
-// ||||||-  enough to harvest : resources / population (type of resource spawned)
+// ||||||- enough to harvest : resources / population (type of resource spawned)
 // ||||||- enough to build : resources / population (type of building)
 // ||||||- enough to repair
 // ||||||- get resource / population back from destroying (type of building) ---> unsigned_div_rem keep just quotient | full pop
@@ -33,9 +33,9 @@ import { Vec2 } from "three";
 // - REV_cancelMove
 // ||||||- Calculate how many refill you can do on a prod building
 // ||||||- get id from position X|Y
-// ||||||-check if all buildings are still fueled on this cycle and decrement the cycles
-// ||||||-add a number of cycles per building when fueled
-// ||||||-composeD of buildings registers to send to DB
+// ||||||- check if all buildings are still fueled on this cycle and decrement the cycles
+// ||||||- add a number of cycles per building when fueled
+// ||||||- composeD of buildings registers to send to DB
 
 // COMPOSE ALL BUILDING'S CYCLE REGISTER FOR DB
 export const cycleRegisterCompose = (mapBuildingArray: any) => {
@@ -80,23 +80,6 @@ export const cycleRegisterComposeD = (
   return mapBuildingArray;
 };
 
-// REFILL BUILDING (CALLED BY REFILL BUILDING PAY)
-export const refillBuilding = (
-  id: number,
-  mapBuildingArray: any,
-  cycles: number
-) => {
-  let i: number = 0;
-
-  while (i < mapBuildingArray.length) {
-    if (mapBuildingArray[i].id == id) {
-      mapBuildingArray[i].activeCycles += cycles;
-    }
-    i++;
-  }
-  return mapBuildingArray;
-};
-
 // CHECK AT EVERY CYCLE THE ACTIVE CYCLES LEFT AND UPDATE MAPBUILDING ARRAY ACCORDINGLY
 export const checkFuelBuildings = (mapBuildingArray: any) => {
   let i: number = 0;
@@ -118,6 +101,131 @@ export const checkFuelBuildings = (mapBuildingArray: any) => {
     }
   }
   return mapBuildingArray;
+};
+
+// MAXIMUM REFILL YOU CAN DO TO A BUILDING
+export const maintainMax = (id: number, inventory: any, fixBuildVal: any) => {
+  let i: number = 0;
+  let numRefill: number = 0;
+
+  while (numRefill == 0 || numRefill) {
+    while (i < fixBuildVal[id].maintainCost.length) {
+      if (inventory[i] < fixBuildVal[id].maintainCost[i] * (numRefill + 1)) {
+        console.log("maximum refill of", numRefill, " for ", id);
+        return numRefill;
+      }
+      i++;
+    }
+    i = 0;
+    numRefill++;
+  }
+};
+
+/**
+ * checkResMaintain
+ *  * Checks if a player can pay production cost of a given building
+ * @param id {number} type id of building to maintain
+ * @param inventory {[]} player inventory
+ * @param fixBuildVal {[]} building static data
+ * @return success {number} 0 or 1
+ */
+export const checkResMaintain = (
+  id: number,
+  inventory: any,
+  fixBuildVal: any
+) => {
+  const i: number = 0;
+
+  while (i < fixBuildVal[id].maintainCost.length) {
+    if (inventory[i] < fixBuildVal[id].maintainCost[i]) {
+      console.log("not enough resources to maintain ", id);
+      return 0;
+    }
+  }
+  console.log("enough resources to maintain ", id);
+  return 1;
+};
+
+export const maintainBuildingPay = (
+  id: number,
+  inventory: any,
+  fixBuildVal: any,
+  mapBuildingArray: any,
+  cycles: number
+) => {
+  let i: number = 0;
+
+  while (i < fixBuildVal[id].maintainCost) {
+    inventory[i] -= fixBuildVal[id].maintainCost[i] * cycles;
+    i++;
+  }
+
+  refillBuilding(id, mapBuildingArray, cycles);
+
+  return inventory;
+};
+
+// REFILL BUILDING (CALLED BY REFILL BUILDING PAY)
+export const refillBuilding = (
+  id: number,
+  mapBuildingArray: any,
+  cycles: number
+) => {
+  let i: number = 0;
+
+  while (i < mapBuildingArray.length) {
+    if (mapBuildingArray[i].id == id) {
+      mapBuildingArray[i].activeCycles += cycles;
+    }
+    i++;
+  }
+  return mapBuildingArray;
+};
+
+// CANCEL THE MAINTENANCE/REFILL OF A BUILDING
+export const cancelMaintainBuilding = (
+  id: number,
+  inventory: any,
+  fixBuildVal: any,
+  cycles: number
+) => {
+  let i: number = 0;
+
+  while (i < fixBuildVal[id].maintainCost) {
+    inventory[i] += fixBuildVal[id].maintainCost[i] * cycles;
+    i++;
+  }
+  return inventory;
+};
+
+// /** // ! Not sure we need to use this fonction
+//  * checkResMaintainMsg
+//  *  * Checks if a player can pay production cost of a given building and returns resources lacking
+//  * @param id {number} type id of building to maintain
+//  * @param inventory {[]} player inventory
+//  * @param fixBuildVal {[]} building static data
+//  * @param multiplier {number}
+//  * @return res {[]} array of resources lacking
+//  */
+export const checkResMaintainMsg = (
+  id: number,
+  inventory: any,
+  fixBuildVal: any,
+  multiplier: number
+) => {
+  let i: number = 0;
+  const res: any = [];
+
+  // while (i < fixBuildVal[id].maintainCost.length) {
+  while (i < 9) {
+    if (inventory[i] < fixBuildVal[id].maintainCost[i] * multiplier) {
+      console.log("not enough resources to maintain ", i);
+      res.push(i);
+    }
+    i++;
+  }
+  console.log("enough resources to maintain ", res);
+  return res;
 };
 
 // CANCEL THE CREATION OF A BUILDING
@@ -145,22 +253,6 @@ export const cancelRepairBuilding = (
 
   while (i < fixBuildVal[id].repairCost.length) {
     inventory[i] += fixBuildVal[id].repairCost[i];
-    i++;
-  }
-  return inventory;
-};
-
-// CANCEL THE MAINTENANCE/REFILL OF A BUILDING
-export const cancelMaintainBuilding = (
-  id: number,
-  inventory: any,
-  fixBuildVal: any,
-  cycles: number
-) => {
-  let i: number = 0;
-
-  while (i < fixBuildVal[id].maintainCost) {
-    inventory[i] += fixBuildVal[id].maintainCost[i] * cycles;
     i++;
   }
   return inventory;
@@ -245,24 +337,6 @@ export const getPosFromId = (fullmap: any, id: number) => {
   return vecYX;
 };
 
-// MAXIMUM REFILL YOU CAN DO TO A BUILDING
-export const maintainMax = (id: number, inventory: any, fixBuildVal: any) => {
-  let i: number = 0;
-  let numRefill: number = 0;
-
-  while (numRefill == 0 || numRefill) {
-    while (i < fixBuildVal[id].maintainCost.length) {
-      if (inventory[i] < fixBuildVal[id].maintainCost[i] * (numRefill + 1)) {
-        console.log("maximum refill of", numRefill, " for ", id);
-        return numRefill;
-      }
-      i++;
-    }
-    i = 0;
-    numRefill++;
-  }
-};
-
 /**
  * checkResHarvest
  *  * Check if a resource spawned can be harvested by a player
@@ -310,61 +384,6 @@ export const checkResHarvestMsg = (
     i++;
   }
   // console.log("lacking resources to harvest ", res);
-  return res;
-};
-
-/**
- * checkResMaintain
- *  * Checks if a player can pay production cost of a given building
- * @param id {number} type id of building to maintain
- * @param inventory {[]} player inventory
- * @param fixBuildVal {[]} building static data
- * @return success {number} 0 or 1
- */
-export const checkResMaintain = (
-  id: number,
-  inventory: any,
-  fixBuildVal: any
-) => {
-  const i: number = 0;
-
-  while (i < fixBuildVal[id].maintainCost.length) {
-    if (inventory[i] < fixBuildVal[id].maintainCost[i]) {
-      console.log("not enough resources to maintain ", id);
-      return 0;
-    }
-  }
-  console.log("enough resources to maintain ", id);
-  return 1;
-};
-
-/**
- * checkResMaintainMsg
- *  * Checks if a player can pay production cost of a given building and returns resources lacking
- * @param id {number} type id of building to maintain
- * @param inventory {[]} player inventory
- * @param fixBuildVal {[]} building static data
- * @param multiplier {number}
- * @return res {[]} array of resources lacking
- */
-export const checkResMaintainMsg = (
-  id: number,
-  inventory: any,
-  fixBuildVal: any,
-  multiplier: number
-) => {
-  let i: number = 0;
-  const res: any = [];
-
-  // while (i < fixBuildVal[id].maintainCost.length) {
-  while (i < 9) {
-    if (inventory[i] < fixBuildVal[id].maintainCost[i] * multiplier) {
-      console.log("not enough resources to maintain ", i);
-      res.push(i);
-    }
-    i++;
-  }
-  console.log("enough resources to maintain ", res);
   return res;
 };
 
@@ -770,25 +789,6 @@ export const repairBuildingPay = (
     inventory[i] -= fixBuildVal[id].repairCost[i];
     i++;
   }
-  return inventory;
-};
-
-export const maintainBuildingPay = (
-  id: number,
-  inventory: any,
-  fixBuildVal: any,
-  mapBuildingArray: any,
-  cycles: number
-) => {
-  let i: number = 0;
-
-  while (i < fixBuildVal[id].maintainCost) {
-    inventory[i] -= fixBuildVal[id].maintainCost[i] * cycles;
-    i++;
-  }
-
-  refillBuilding(id, mapBuildingArray, cycles);
-
   return inventory;
 };
 
