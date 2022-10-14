@@ -37,8 +37,6 @@ import { Vec2 } from "three";
 // ||||||-add a number of cycles per building when fueled
 // ||||||-composeD of buildings registers to send to DB
 
-
-
 // COMPOSE ALL BUILDING'S CYCLE REGISTER FOR DB
 export const cycleRegisterCompose = (mapBuildingArray: any) => {
   let i: number = 0;
@@ -476,38 +474,31 @@ export const checkIsMovable = (id: number, fixBuildVal: any) => {
 };
 
 //FIND THE LAST CYCLE WHEN CLAIMING HAS BEEN INITIATED
-export const calculateLastClaim = (playerArray: any) =>
-{
+export const calculateLastClaim = (playerArray: any) => {
   let lastClaim: number = 0;
   let strIndex: number = playerArray.claimRegister.length;
   let found: number = 0;
   let tempStr: string = "";
 
   // CALCULATE LAST CLAIM BASE ON CLAIM REGISTER
-  if (playerArray.claimRegister.length == 0)
-  {
+  if (playerArray.claimRegister.length == 0) {
     lastClaim = 0;
-    return (lastClaim);
-  }
-  else
-  {
-    while (found != 1)
-    {
-      if (playerArray.claimRegister[strIndex] == "-")
-      {
-        while (playerArray.claimRegister[strIndex] != "|")
-        {
-        tempStr = tempStr + playerArray.claimRegister[strIndex];
-        strIndex++;
+    return lastClaim;
+  } else {
+    while (found != 1) {
+      if (playerArray.claimRegister[strIndex] == "-") {
+        while (playerArray.claimRegister[strIndex] != "|") {
+          tempStr = tempStr + playerArray.claimRegister[strIndex];
+          strIndex++;
         }
         found = 1;
         lastClaim = parseInt(tempStr);
-        return (lastClaim);
+        return lastClaim;
       }
       strIndex--;
     }
   }
-}
+};
 
 /**
  * claim
@@ -522,7 +513,7 @@ export const claim = (
   fixBuildVal: any,
   inventory: any,
   playerArray: any,
-  currenCycle: any,
+  currenCycle: any
 ) => {
   let i: number = 0;
   let j: number = 0;
@@ -532,72 +523,66 @@ export const claim = (
   let lastClaim: number = calculateLastClaim(playerArray) as number;
 
   // CALCULATE THE CLAIM
-  while (i < mapBuildingArray.length)
-  {
-
+  while (i < mapBuildingArray.length) {
     k = lastClaim + 1;
-    while (k < mapBuildingArray[i].cycleRegister.length)
-    {
-      if (mapBuildingArray[i].cycleRegister[k] == "1")
-      {
+    while (k < mapBuildingArray[i].cycleRegister.length) {
+      if (mapBuildingArray[i].cycleRegister[k] == "1") {
         totalActive += 1;
       }
       k++;
     }
 
-    while (j < fixBuildVal[mapBuildingArray[i].id].production.length)
-    {
-      inventory[j] += fixBuildVal[mapBuildingArray[i].id].production[j] * totalActive;
+    while (j < fixBuildVal[mapBuildingArray[i].id].production.length) {
+      inventory[j] +=
+        fixBuildVal[mapBuildingArray[i].id].production[j] * totalActive;
       j++;
     }
     j = 0;
     i++;
   }
   // UPDATE CLAIM REGISTER
-  playerArray.claimRegister = playerArray.claimRegister + lastClaim.toString() + "-" + currenCycle.toString() + "|";
+  playerArray.claimRegister =
+    playerArray.claimRegister +
+    lastClaim.toString() +
+    "-" +
+    currenCycle.toString() +
+    "|";
 
   return inventory;
 };
 
 //FIND THE FIST CYCLE OF THE LAST CLAIM
-export const calculateLastClaimFirstCycle = (playerArray: any) =>
-{
+export const calculateLastClaimFirstCycle = (playerArray: any) => {
   let lastClaim: number = 0;
   let strIndex: number = playerArray.claimRegister.length;
   let found: number = 0;
   let tempStr: string = "";
 
   // CALCULATE LAST CLAIM BASE ON CLAIM REGISTER
-  if (playerArray.claimRegister.length == 0)
-  {
+  if (playerArray.claimRegister.length == 0) {
     lastClaim = 0;
-    return (lastClaim);
-  }
-  else
-  {
-    while (found != 1)
-    {
-      if (playerArray.claimRegister[strIndex] == "|")
-      {
-        while (playerArray.claimRegister[strIndex] != "-")
-        {
-        tempStr = tempStr + playerArray.claimRegister[strIndex];
-        strIndex++;
+    return lastClaim;
+  } else {
+    while (found != 1) {
+      if (playerArray.claimRegister[strIndex] == "|") {
+        while (playerArray.claimRegister[strIndex] != "-") {
+          tempStr = tempStr + playerArray.claimRegister[strIndex];
+          strIndex++;
         }
         found = 1;
         lastClaim = parseInt(tempStr);
-        return (lastClaim);
+        return lastClaim;
       }
       strIndex--;
     }
   }
-}
+};
 
- export const cancelClaim = (
+export const cancelClaim = (
   mapBuildingArray: any,
   fixBuildVal: any,
   inventory: any,
-  playerArray: any,
+  playerArray: any
   //currenCycle: any,
 ) => {
   let i: number = 0;
@@ -605,26 +590,24 @@ export const calculateLastClaimFirstCycle = (playerArray: any) =>
   let k: number = 0;
   let totalActive: number = 0;
 
-  let lastClaimFirstCycle: number = calculateLastClaimFirstCycle(playerArray) as number;
-  let lastClaim : number = calculateLastClaim(playerArray) as number;
+  let lastClaimFirstCycle: number = calculateLastClaimFirstCycle(
+    playerArray
+  ) as number;
+  let lastClaim: number = calculateLastClaim(playerArray) as number;
 
   // CALCULATE THE CLAIM
-  while (i < mapBuildingArray.length)
-  {
-
+  while (i < mapBuildingArray.length) {
     k = lastClaimFirstCycle + 1;
-    while (k < (lastClaimFirstCycle - lastClaim))
-    {
-      if (mapBuildingArray[i].cycleRegister[k] == "1")
-      {
+    while (k < lastClaimFirstCycle - lastClaim) {
+      if (mapBuildingArray[i].cycleRegister[k] == "1") {
         totalActive += 1;
       }
       k++;
     }
 
-    while (j < fixBuildVal[mapBuildingArray[i].id].production.length)
-    {
-      inventory[j] -= fixBuildVal[mapBuildingArray[i].id].production[j] * totalActive;
+    while (j < fixBuildVal[mapBuildingArray[i].id].production.length) {
+      inventory[j] -=
+        fixBuildVal[mapBuildingArray[i].id].production[j] * totalActive;
       j++;
     }
     j = 0;
@@ -634,9 +617,7 @@ export const calculateLastClaimFirstCycle = (playerArray: any) =>
   //playerArray.claimRegister =// ! DELETE LAST CLAIM
 
   return inventory;
-}
-
-
+};
 
 /**
  * createBuildingPay
