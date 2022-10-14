@@ -1,5 +1,5 @@
 import React from "react";
-import MenuHome from "../components/MenuHome";
+import MenuHome from "../components/Home/MenuHome";
 
 export default function Team() {
   return (
