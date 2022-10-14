@@ -37,6 +37,9 @@ import { Vec2 } from "three";
 // ||||||-add a number of cycles per building when fueled
 // ||||||-composeD of buildings registers to send to DB
 
+
+
+// COMPOSE ALL BUILDING'S CYCLE REGISTER FOR DB
 export const cycleRegisterCompose = (mapBuildingArray: any) => {
   let i: number = 0;
   let cycleReg: string = "";
@@ -53,6 +56,7 @@ export const cycleRegisterCompose = (mapBuildingArray: any) => {
   return cycleReg;
 };
 
+// REFILL BUILDING (CALLED BY REFILL BUILDING PAY)
 export const refillBuilding = (
   id: number,
   mapBuildingArray: any,
@@ -69,6 +73,7 @@ export const refillBuilding = (
   return mapBuildingArray;
 };
 
+// CHECK AT EVERY CYCLE THE ACTIVE CYCLES LEFT AND UPDATE MAPBUILDING ARRAY ACCORDINGLY
 export const checkFuelBuildings = (mapBuildingArray: any) => {
   let i: number = 0;
 
@@ -91,6 +96,7 @@ export const checkFuelBuildings = (mapBuildingArray: any) => {
   return mapBuildingArray;
 };
 
+// CANCEL THE CREATION OF A BUILDING
 export const cancelCreate = (id: number, inventory: any, fixBuildVal: any) => {
   let i: number = 0;
 
@@ -105,6 +111,7 @@ export const cancelCreate = (id: number, inventory: any, fixBuildVal: any) => {
   return inventory;
 };
 
+// CANCEL THE REPAIR OF A BUILDING
 export const cancelRepairBuilding = (
   id: number,
   inventory: any,
@@ -119,6 +126,7 @@ export const cancelRepairBuilding = (
   return inventory;
 };
 
+// CANCEL THE MAINTENANCE/REFILL OF A BUILDING
 export const cancelMaintainBuilding = (
   id: number,
   inventory: any,
@@ -134,6 +142,7 @@ export const cancelMaintainBuilding = (
   return inventory;
 };
 
+// CANCEL AN HARVEST COST (WHAT YOU PAY TO HARVEST)
 export const cancelHarvestRes = (
   id: number,
   // uid: number,
@@ -154,6 +163,7 @@ export const cancelHarvestRes = (
   return inventory;
 };
 
+// DELETE FORM INCOMING HARVEST ARRAY
 export const deleteFromHarvestArray = (
   id: number,
   uid: number,
@@ -165,6 +175,7 @@ export const deleteFromHarvestArray = (
   return harvestIncoming;
 };
 
+// CANCEL THE RESOURCES YOU RECEIVED FROM AN HARVEST
 export const cancelReceiveResHarvest = (
   id: number,
   inventory: any,
@@ -181,6 +192,7 @@ export const cancelReceiveResHarvest = (
   return inventory;
 };
 
+// GET UID OF ENTITY BASED ON POSX AND POSY
 export const getIdFromPos = (fullmap: any, posY: number, posX: number) => {
   let id: number = 0;
 
@@ -189,6 +201,7 @@ export const getIdFromPos = (fullmap: any, posY: number, posX: number) => {
   return id;
 };
 
+// GET POS OF ENTITY BASED ON ITS UID
 export const getPosFromId = (fullmap: any, id: number) => {
   let vecYX: any[] = [];
   let j: number = 1;
@@ -208,6 +221,7 @@ export const getPosFromId = (fullmap: any, id: number) => {
   return vecYX;
 };
 
+// MAXIMUM REFILL YOU CAN DO TO A BUILDING
 export const maintainMax = (id: number, inventory: any, fixBuildVal: any) => {
   let i: number = 0;
   let numRefill: number = 0;
@@ -461,6 +475,40 @@ export const checkIsMovable = (id: number, fixBuildVal: any) => {
   }
 };
 
+//FIND THE LAST CYCLE WHEN CLAIMING HAS BEEN INITIATED
+export const calculateLastClaim = (playerArray: any) =>
+{
+  let lastClaim: number = 0;
+  let strIndex: number = playerArray.claimRegister.length;
+  let found: number = 0;
+  let tempStr: string = "";
+
+  // CALCULATE LAST CLAIM BASE ON CLAIM REGISTER
+  if (playerArray.claimRegister.length == 0)
+  {
+    lastClaim = 0;
+    return (lastClaim);
+  }
+  else
+  {
+    while (found != 1)
+    {
+      if (playerArray.claimRegister[strIndex] == "-")
+      {
+        while (playerArray.claimRegister[strIndex] != "|")
+        {
+        tempStr = tempStr + playerArray.claimRegister[strIndex];
+        strIndex++;
+        }
+        found = 1;
+        lastClaim = parseInt(tempStr);
+        return (lastClaim);
+      }
+      strIndex--;
+    }
+  }
+}
+
 /**
  * claim
  *  * Claim resources from production
@@ -472,26 +520,123 @@ export const checkIsMovable = (id: number, fixBuildVal: any) => {
 export const claim = (
   mapBuildingArray: any,
   fixBuildVal: any,
-  inventory: any
+  inventory: any,
+  playerArray: any,
+  currenCycle: any,
 ) => {
   let i: number = 0;
   let j: number = 0;
-  const cycles: number = 1;
+  let k: number = 0;
+  let totalActive: number = 0;
 
-  // CALCULATE THE NUMBER OF CYCLES
+  let lastClaim: number = calculateLastClaim(playerArray) as number;
 
-  while (i < mapBuildingArray.length) {
-    while (j < fixBuildVal[mapBuildingArray[i].id].production.length) {
-      inventory[j] +=
-        fixBuildVal[mapBuildingArray[i].id].production[j] * cycles;
+  // CALCULATE THE CLAIM
+  while (i < mapBuildingArray.length)
+  {
+
+    k = lastClaim + 1;
+    while (k < mapBuildingArray[i].cycleRegister.length)
+    {
+      if (mapBuildingArray[i].cycleRegister[k] == "1")
+      {
+        totalActive += 1;
+      }
+      k++;
+    }
+
+    while (j < fixBuildVal[mapBuildingArray[i].id].production.length)
+    {
+      inventory[j] += fixBuildVal[mapBuildingArray[i].id].production[j] * totalActive;
       j++;
     }
     j = 0;
     i++;
   }
-  // NEED TO RETURN MAPBUILDINGARRAY TOO WITH THE LAST CLAIMED BLOCK UPDATED
+  // UPDATE CLAIM REGISTER
+  playerArray.claimRegister = playerArray.claimRegister + lastClaim.toString() + "-" + currenCycle.toString() + "|";
+
   return inventory;
 };
+
+//FIND THE FIST CYCLE OF THE LAST CLAIM
+export const calculateLastClaimFirstCycle = (playerArray: any) =>
+{
+  let lastClaim: number = 0;
+  let strIndex: number = playerArray.claimRegister.length;
+  let found: number = 0;
+  let tempStr: string = "";
+
+  // CALCULATE LAST CLAIM BASE ON CLAIM REGISTER
+  if (playerArray.claimRegister.length == 0)
+  {
+    lastClaim = 0;
+    return (lastClaim);
+  }
+  else
+  {
+    while (found != 1)
+    {
+      if (playerArray.claimRegister[strIndex] == "|")
+      {
+        while (playerArray.claimRegister[strIndex] != "-")
+        {
+        tempStr = tempStr + playerArray.claimRegister[strIndex];
+        strIndex++;
+        }
+        found = 1;
+        lastClaim = parseInt(tempStr);
+        return (lastClaim);
+      }
+      strIndex--;
+    }
+  }
+}
+
+ export const cancelClaim = (
+  mapBuildingArray: any,
+  fixBuildVal: any,
+  inventory: any,
+  playerArray: any,
+  //currenCycle: any,
+) => {
+  let i: number = 0;
+  let j: number = 0;
+  let k: number = 0;
+  let totalActive: number = 0;
+
+  let lastClaimFirstCycle: number = calculateLastClaimFirstCycle(playerArray) as number;
+  let lastClaim : number = calculateLastClaim(playerArray) as number;
+
+  // CALCULATE THE CLAIM
+  while (i < mapBuildingArray.length)
+  {
+
+    k = lastClaimFirstCycle + 1;
+    while (k < (lastClaimFirstCycle - lastClaim))
+    {
+      if (mapBuildingArray[i].cycleRegister[k] == "1")
+      {
+        totalActive += 1;
+      }
+      k++;
+    }
+
+    while (j < fixBuildVal[mapBuildingArray[i].id].production.length)
+    {
+      inventory[j] -= fixBuildVal[mapBuildingArray[i].id].production[j] * totalActive;
+      j++;
+    }
+    j = 0;
+    i++;
+  }
+  // UPDATE CLAIM REGISTER
+  //playerArray.claimRegister =// ! DELETE LAST CLAIM
+
+  return inventory;
+}
+
+
 
 /**
  * createBuildingPay

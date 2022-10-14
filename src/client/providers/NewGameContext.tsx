@@ -428,6 +428,7 @@ export const NewAppStateProvider: React.FC<
       playerArray["landId" as any] = land[0].id;
       playerArray["id" as any] = land[0].fk_userid;
       playerArray["biomeId" as any] = land[0].biomeId;
+      playerArray["claimRegister" as any] = []; // ! TEMPORARY (NEED TO GET DATA FROM DB)
 
       //  - - - - - - DATA IN ARRAYS - - - - - - END
 
