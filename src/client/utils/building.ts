@@ -54,6 +54,32 @@ export const cycleRegisterCompose = (mapBuildingArray: any) => {
   return cycleReg;
 };
 
+// DECOMPOSE CYCLE REGISTER FROM DB TO PUT BACK IN MAPBUILDINGARRAY
+export const cycleRegisterComposeD = (cycleReg: string, mapBuildingArray: any) => 
+{
+  let i: number = 0;
+  let tempId : string = "";
+  let id : number = 0;
+
+  while (i < cycleReg.length) 
+  {
+    if (cycleReg[i] == "-")
+    {
+      id = parseInt(tempId);
+      tempId = "";
+      while (cycleReg[i] != "|")
+      {
+        mapBuildingArray[id].cycleRegister = mapBuildingArray[id].cycleRegister + cycleReg[i];
+        i++;
+      }
+      i++;
+    }
+    tempId = tempId + cycleReg; 
+    i++;
+  }
+  return mapBuildingArray;
+};
+
 // REFILL BUILDING (CALLED BY REFILL BUILDING PAY)
 export const refillBuilding = (
   id: number,
