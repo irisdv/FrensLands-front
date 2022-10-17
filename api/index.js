@@ -53,7 +53,7 @@ app.post("/api/signin", async (req, res) => {
     );
 
     // Fetch info from graphql
-    const endpoint = "http://goerli.indexer.frenslands.xyz:8080/graphql";
+    const endpoint = "https://goerli.indexer.frenslands.xyz/graphql";
     // process.env.REACT_APP_GRAPHQL_URL
     const headers = {
       "content-type": "application/json",
