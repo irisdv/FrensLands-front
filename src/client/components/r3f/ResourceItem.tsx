@@ -303,6 +303,16 @@ export const ResourceItem = memo<IBlock>(
               {
                 harvestArrValue[blockValue.posY][blockValue.posX].status = 1;
                 updateIncomingActions(1, blockValue.posX, blockValue.posY, blockValue.id, 0, 1);
+
+                  // ! Add inventory update after harvest + DB update
+                  // ? harvest timer has passed
+                  // const _inventoryUpdated = receiveResHarvest(
+                  //   randType - 1,
+                  //   inventory,
+                  //   staticResourcesData
+                  // );
+                  // updateInventory(_inventoryUpdated);
+
               }
               clockRef.current.material.map = clockTexture;
             }
