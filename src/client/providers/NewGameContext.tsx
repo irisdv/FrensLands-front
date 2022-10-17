@@ -7,8 +7,12 @@ import { revComposeD, generateFullMap } from "../utils/land";
 import { parsePipeResToArray, parseResToArray } from "../utils/utils";
 import { fillStaticBuildings, fillStaticResources } from "../utils/static";
 import { getStaticBuildings, getStaticResources } from "../api/static";
-import { getIdFromPos } from "../utils/building";
-import { getPosFromId } from "../utils/building";
+import {
+  getIdFromPos,
+  getPosFromId,
+  cycleRegisterCompose,
+  cycleRegisterComposeD,
+} from "../utils/building";
 import { ComposeD } from "../utils/land";
 
 export interface ILand {
@@ -426,6 +430,7 @@ export const NewAppStateProvider: React.FC<
       playerArray["landId" as any] = land[0].id;
       playerArray["id" as any] = land[0].fk_userid;
       playerArray["biomeId" as any] = land[0].biomeId;
+      playerArray["claimRegister" as any] = []; // ! TEMPORARY (NEED TO GET DATA FROM DB)
 
       //  - - - - - - DATA IN ARRAYS - - - - - - END
 
