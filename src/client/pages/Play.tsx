@@ -91,11 +91,12 @@ export default function Play() {
           getPlayer(_wallet.account.address).then((data) => {
             console.log("data", data);
             if (
-              data &&
-              data.inventories &&
-              data.lands &&
-              data.player_actions &&
-              data.player_buildings
+              data
+              // &&
+              // data.inventories &&
+              // data.lands &&
+              // data.player_actions &&
+              // data.player_buildings
             ) {
               initSettings({
                 zoom: data.invZoom,
@@ -103,13 +104,13 @@ export default function Play() {
                 sound: data.sound,
               });
               // Init player new game session
-              initGameSession(
-                data.inventories,
-                data.lands,
-                data.player_actions,
-                data.player_buildings as [],
-                data.account
-              );
+              // initGameSession(
+              //   data.inventories,
+              //   data.lands,
+              //   data.player_actions,
+              //   data.player_buildings as [],
+              //   data.account
+              // );
             }
           });
         } else {

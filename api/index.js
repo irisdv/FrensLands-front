@@ -3,6 +3,7 @@ const cors = require("cors");
 const createClient = require("@supabase/supabase-js");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const fetch = require("node-fetch");
 
 const app = express();
 
@@ -31,20 +32,16 @@ app.post("/api/signin", async (req, res) => {
       .select()
       .eq("account", account)
       .single();
-    // console.log("user found", user);
 
     if (!user) {
       const response = await supabase
         .from("users")
         .insert([{ account: account }]);
-      // console.log("response", response);
       user = response.data;
     }
-    // console.log("user after added to DB", user);
 
     const token = jwt.sign(
       {
-        // ...user,
         aud: "authenticated",
         role: "authenticated",
         app_metadata: {
@@ -55,15 +52,49 @@ app.post("/api/signin", async (req, res) => {
       process.env.REACT_APP_SUPABASE_JWT
     );
 
-    res.json({ user: user, token: token });
+    // Fetch info from graphql
+    const endpoint = "http://goerli.indexer.frenslands.xyz:8080/graphql"
+    // process.env.REACT_APP_GRAPHQL_URL
+    const headers = {
+      "content-type": "application/json",
+    };
+    const graphqlQuery = {
+      operationName: "tokens",
+      query: `query tokens($owner: HexValue) { tokens(owner: $owner) { tokenId owner } }`,
+      variables: { owner: account },
+    };
+    const options = {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(graphqlQuery),
+    };
+
+    var _lands;
+    fetch(endpoint, options).then((response) =>
+      response.json().then((data) => {
+        _lands = data.data;
+        if (data.data.tokens && data.data.tokens.length > 0) {
+          data.data.tokens.forEach((land) => {
+            supabase
+              .from("lands_duplicate")
+              .update([{ fk_userid: user.id }])
+              .eq("tokenId", parseInt(land.tokenId))
+              .then((data) => {})
+              .catch((error) => {
+                var errMessage = `${error}`;
+                processErrorResponse(res, 500, errMessage);
+              });
+          });
+        }
+
+        res.json({ user: user, token: token, lands: _lands });
+      })
+    );
   } catch (error) {
     var errMessage = `${error}`;
     processErrorResponse(res, 500, errMessage);
   }
 });
-
-// const https = require('https');
-// const http = require('http');
 
 function processErrorResponse(res, statusCode, message) {
   console.log(`${statusCode} ${message}`);

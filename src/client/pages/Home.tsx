@@ -25,6 +25,8 @@ export default function Home() {
   const [signedIn, setSignedIn] = useState(false);
   const [hasLand, setHasLand] = useState<ILand>();
   const [hasInit, setHasInit] = useState(0);
+  const [userId, setUserId] = useState("");
+  const [userLands, setUserLands] = useState<any[]>([]);
   const navigate = useNavigate();
   const {
     updateTokenId,
@@ -163,6 +165,8 @@ export default function Home() {
         if (data && data.user) {
           if (data && data.token) {
             localStorage.setItem("user", data.token);
+            setUserId(data.user.id);
+            if (data.lands && data.lands.tokens) setUserLands(data.lands.tokens)
             setTimeout(function () {
               setSignedIn(true);
             }, 50);
@@ -339,7 +343,7 @@ export default function Home() {
                 BalanceNFTValue != null &&
                 BalanceNFTValue.NFTbalance > 0 && (
                   <>
-                    <div className="grid grid-cols-5 px-8">
+                    {/* <div className="grid grid-cols-5 px-8">
                       <div
                         className="cursor-pointer px-5"
                         onClick={async () => await startGame(2)}
@@ -398,8 +402,12 @@ export default function Home() {
                       >
                         <p>Chose a land to start playing!</p>
                       </div>
-                    </div>
-                    {/* <LandList account={wallet.account.address} /> */}
+                    </div> */}
+                    <LandList
+                      account={wallet.account.address}
+                      userId={userId}
+                      userLands={userLands}
+                    />
                   </>
                 )}
               {/* User is connected and does not have a land and doesn't have a NFT either  */}

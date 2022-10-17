@@ -10,20 +10,106 @@ import { supabase } from "../supabaseClient";
 export default async function getPlayer(account: string) {
   const { data, error } = await supabase
     .from("users")
-    .select(
-      `id, account, invZoom, tutorial, sound, 
-      lands(fk_userid, id, biomeId, fullMap, nbResourcesSpawned), 
-      inventories(fk_userid, id, wood, rock, food, coal, metal, energy, coin, gold, freePop, totalPop, level, timeSpent),
-      player_buildings(fk_userid, fk_buildingid, posX, posY, blockX, blockY, decay, gameUid, isDestroyed),
-      player_actions(fk_userid, fk_landid, id, entrypoint, calldata)
-    `
-    )
+    .select(`id, account, invZoom, tutorial, sound`)
     .eq("account", account)
-    .eq("player_buildings.isDestroyed", false)
     .single();
 
   return data;
 }
+
+/**
+ * getLandInformation
+ * * Fetch player information
+ * @param account {string}
+ * @return data {{}}
+ */
+export const getLandInformation = async (tokenId: string) => {
+  const { data, error } = await supabase
+    .from("lands_duplicate")
+    .select(
+      `id, tokenId, fullMap, isInit, biomeId, nbResourcesSpawned, nbResourcesLeft, nbBuildings
+      inventories_duplicate(fk_landid, id, wood, rock, food, coal, metal, energy, coin, gold, freePop, totalPop, level, timeSpent),
+      player_buildings_duplicate(fk_buildingid, posX, posY, blockX, blockY, decay, gameUid, isDestroyed),
+      player_actions(fk_landid, id, entrypoint, calldata)
+    `
+    )
+    .eq("tokenId", tokenId)
+    .eq("player_buildings.isDestroyed", false)
+    .single();
+
+  return data;
+};
+
+/**
+ * getLandByTokenId
+ * * Fetch lands information by tokenId
+ * @param tokenIds {[]} array of tokenIds
+ * @return data {{}}
+ */
+export const getLandByTokenId = async (tokenIds: any[]) => {
+  let query = supabase
+    .from("lands_duplicate")
+    .select(`id, tokenId, biomeId, isInit`);
+
+  let str = "";
+  tokenIds.map((id: number) => {
+    if (str != "") str += ",";
+    str += "tokenId.eq." + id;
+  });
+  console.log("str query", str);
+
+  query = query.or(str);
+
+  const { data, error } = await query;
+  if (error) throw error;
+
+  return data;
+};
+
+/**
+ * initGame
+ * * Init player land
+ * @param account {string} account initializing game
+ * @param landId {string} land id
+ * @return data {{}}
+ */
+export const initGame = async (landId: string) => {
+  const { data: inventoryData, error: inventoryError } = await supabase
+    .from("inventories_duplicate")
+    .insert([
+      {
+        fk_landid: landId,
+      },
+    ]);
+  if (inventoryError) throw inventoryError;
+  console.log("inventory", inventoryData);
+
+  const { data: buildingData, error: buildingError } = await supabase
+    .from("player_buildings_duplicate")
+    .insert([
+      {
+        fk_landid: landId,
+        fk_buildingid: 1,
+        gameUid: 1,
+        posX: 1.2,
+        posY: 1.2,
+        blockX: 11,
+        blockY: 8,
+        decay: 100,
+        unitTimeCreatedAt: 0,
+      },
+    ]);
+  if (buildingError) throw buildingError;
+
+  // update init land
+  const { data: landData, error: landError } = await supabase
+    .from("lands_duplicate")
+    .update({ isInit: true })
+    .eq("id", landId)
+    .select();
+
+  if (landError) throw landError;
+};
 
 /**
  * storeAction
