@@ -37,6 +37,77 @@ import { Vec2 } from "three";
 // ||||||- add a number of cycles per building when fueled
 // ||||||- composeD of buildings registers to send to DB
 
+let  incomingArr : any[] = [];
+
+export const addElemToIncoming = (incomingArr: any, id: number, timeStamp: number) => 
+{
+  let i: number = incomingArr.length;
+
+  incomingArr[i] = [];
+  incomingArr[i].id = id;
+  incomingArr[i].timeStamp = timeStamp;
+
+  return (incomingArr);
+}
+
+export const deleteElemFromIncoming = (incomingArr: any, id: number) =>
+{
+  let i: number = 0;
+
+  while (i < incomingArr.length)
+  {
+    if (incomingArr[i].id == id)
+    {
+      incomingArr.splice(i);
+    }
+    i++;
+  }
+  return (incomingArr);
+}
+
+export const incomingCompose = (incomingArr: any) =>
+{
+  let i: number = 0;
+  let comp: string = "";
+
+  while (i < incomingArr.length)
+  {
+    comp = incomingArr[i].id + "-" + incomingArr[i].timeStamp + "|";
+    i++;
+  }
+  return (comp);
+}
+
+export const incomingComposeD = (comp : string) =>
+{
+  let i: number = 0;
+  let j: number = 0;
+  let incomingArr: any[] = [];
+  let tempStr: string = "";
+
+  while (i < comp.length)
+  {
+    tempStr = tempStr + comp[i];
+    if (comp[i] == "-")
+    {
+      incomingArr[j].id = parseInt(tempStr);
+      tempStr = "";
+      i++;
+      while (comp[i] != "|")
+      {
+        tempStr = tempStr + comp[i];
+        i++
+      }
+      incomingArr[j].timeStamp = parseInt(tempStr);
+    }
+
+    i++;
+    j++;
+  }
+  return (incomingArr);
+}
+
+
 // COMPOSE ALL BUILDING'S CYCLE REGISTER FOR DB
 export const cycleRegisterCompose = (mapBuildingArray: any) => {
   let i: number = 0;
@@ -184,9 +255,11 @@ export const refillBuilding = (
 
 // CANCEL THE MAINTENANCE/REFILL OF A BUILDING
 export const cancelMaintainBuilding = (
+  uid: number,
   id: number,
   inventory: any,
   fixBuildVal: any,
+  mapBuildingArray: any,
   cycles: number
 ) => {
   let i: number = 0;
@@ -195,6 +268,37 @@ export const cancelMaintainBuilding = (
     inventory[i] += fixBuildVal[id].maintainCost[i] * cycles;
     i++;
   }
+
+  // THAT DOESN"T WORK IF YOU REFILLED AN ALREADY FILLED BUILDING
+  if (mapBuildingArray[uid].activeCycles == 0)
+  {
+    i = mapBuildingArray[uid].cycleRegister.length;
+    while (i > (mapBuildingArray[uid].cycleRegister.length - cycles))
+    {
+      mapBuildingArray[uid].cycleRegister[i] = 0;
+      i--;
+    }
+  }
+  else if (mapBuildingArray[uid].activeCycles > 0)
+  {
+    if (cycles < mapBuildingArray[uid].activeCycles)
+    {
+      mapBuildingArray[uid] = mapBuildingArray[uid].activeCycles - cycles;
+    }
+    else if (cycles > mapBuildingArray[uid].activeCycles)
+    {
+      let cylesLeft : number = cycles - mapBuildingArray[uid].activeCycles;
+      mapBuildingArray[uid].activeCycles = 0;
+
+      i = mapBuildingArray[uid].cycleRegister.length;
+      while (i > (mapBuildingArray[uid].cycleRegister.length - cycles))
+      {
+        mapBuildingArray[uid].cycleRegister[i] = 0;
+        i--;
+      }
+    }
+  }
+
   return inventory;
 };
 
@@ -820,28 +924,6 @@ export const harvestResPay = (
   // addToHarvestArray(id, uid, harvestIncoming);
   console.log("inventory after loop", inventory);
   return inventory;
-};
-
-/**
- * addToHarvestArray
- * * Updated array of resource currently harvested by player
- * @param id {number} type id of resource harvested
- * @param uid {numer} unique id of resource harvested
- * @param harvestIncoming {[]} current harvestIncoming
- * @return harvestIncoming {[]} updated harvestIncoming array
- */
-export const addToHarvestArray = (
-  id: number,
-  uid: number,
-  harvestIncoming: any
-) => {
-  harvestIncoming[harvestIncoming.length] = [];
-  harvestIncoming[harvestIncoming.length].uid = uid;
-  harvestIncoming[harvestIncoming.length].type = id;
-  harvestIncoming[harvestIncoming.length].harvestStartTime = Date.now();
-  harvestIncoming[harvestIncoming.length].harvestDelay = 1000;
-
-  return harvestIncoming;
 };
 
 /**
