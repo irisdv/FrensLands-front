@@ -13,6 +13,7 @@ import { useSelectContext } from "../../hooks/useSelectContext";
 import useReinitialize from "../../hooks/invoke/useReinitialize";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
 import { useResourcesContract } from "../../hooks/contracts/resources";
+import { getPosFromId } from "../../utils/building";
 
 // import { getStarknet } from "get-starknet";
 
@@ -26,6 +27,9 @@ export function MenuBar() {
     counters,
     playerBuilding,
     player,
+    fullMap,
+    staticResources,
+    staticBuildings,
   } = useNewGameContext();
   const { zoomMode, updateZoom } = useSelectContext();
   const {
@@ -47,8 +51,11 @@ export function MenuBar() {
   const [claiming, setClaiming] = useState<any>(null);
   const [btnClaim, setBtnClaim] = useState(false);
   const [popUpInit, setPopUpInit] = useState(false);
+  const [popUpTxCart, setPopUpTxCart] = useState(false);
 
   const [claimableResources, setClaimableResources] = useState<any[]>([]);
+
+  console.log("payload", payloadActions);
 
   // useEffect(() => {
   //   console.log('useEffect zoom menubar', zoomMode)
@@ -183,6 +190,31 @@ export function MenuBar() {
   const zoomValue = useMemo(() => {
     return zoomMode;
   }, [zoomMode, wallet]);
+
+  const buildMulticall = () => {
+    console.log("building multicall w/ actions = ", payloadActions);
+
+    const _calls: any[] = [];
+    payloadActions.forEach((action) => {
+      // Build calldata
+      const _calldata: any[] = [];
+      const _data = action.calldata.split("|");
+      _data.forEach((elem: any) => {
+        _calldata.push(elem);
+      });
+      _calls.push({
+        contractAddress: resourcesContract?.address.toLowerCase() as string,
+        entrypoint: action.entrypoint as string,
+        calldata: _calldata,
+      });
+    });
+
+    wallet.account.getNonce().then((nonce: any) => {
+      console.log("nonce", nonce);
+      wallet.account.execute(_calls);
+      // TODO : add nounce in execute multicall
+    });
+  };
 
   return (
     <>
@@ -431,6 +463,18 @@ export function MenuBar() {
                 ></div>
               )}
             </div>
+
+            <div
+              className="flex jutify-center relative mx-auto"
+              style={{ marginTop: "-13px" }}
+            >
+              {tokenId && (
+                <div
+                  className="btnInit pixelated"
+                  onClick={() => setPopUpTxCart(true)}
+                ></div>
+              )}
+            </div>
           </div>
           {/* <div
               className="btnBottom pixelated"
@@ -541,6 +585,93 @@ export function MenuBar() {
                 className="btnInit pixelated"
                 onClick={() => reinitializeLand()}
               ></div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {popUpTxCart && (
+        <div className="flex justify-center selectDisable">
+          <div className="parentNotifTxCart">
+            <div
+              className="popUpNotifsTxCart pixelated fontHPxl-sm"
+              style={{
+                overflowY: "auto",
+                zIndex: 1,
+                borderImage: `url(data:image/svg+xml;base64,${btoa(
+                  UI_Frames
+                )}) 18 fill stretch`,
+                textAlign: "center",
+              }}
+            >
+              <div
+                className="closeTxCart"
+                onClick={() => setPopUpTxCart(false)}
+              ></div>
+              <p>Your transactions</p>
+              <br />
+              {payloadActions.length > 0 ? (
+                payloadActions.map((action: any, key: number) => {
+                  var calldata = action.calldata.split("|");
+                  var posX = parseInt(calldata[2]);
+                  var posY = parseInt(calldata[3]);
+                  return (
+                    <div className="flex flex-row" key={key}>
+                      <div>
+                        <p>
+                          #{key} :{" "}
+                          <span className="capitalize">
+                            {action.entrypoint}
+                          </span>
+                          {action.entrypoint === "harvest" && (
+                            <>
+                              <span>
+                                {" "}
+                                {
+                                  staticResources[
+                                    fullMap[posY][posX].randType - 1
+                                  ].name
+                                }
+                              </span>
+                              <span>
+                                ({posX}, {posY})
+                              </span>
+                              <span></span>
+                            </>
+                          )}
+                          {action.entrypoint === "build" && (
+                            <>
+                              <span>
+                                {" "}
+                                {
+                                  staticBuildings[parseInt(calldata[4]) - 1]
+                                    .name
+                                }
+                              </span>
+                              <span>
+                                ({posX}, {posY})
+                              </span>
+                            </>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <p>You don't have any actions to validate on-chain yet.</p>
+              )}
+              <div
+                className="btnCustom pixelated relative"
+                onClick={() => buildMulticall()}
+              >
+                <p
+                  className="relative fontHpxl_JuicyXL"
+                  style={{ marginTop: "47px" }}
+                >
+                  Send TX
+                </p>
+              </div>
             </div>
           </div>
         </div>
