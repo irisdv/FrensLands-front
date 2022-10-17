@@ -6,8 +6,6 @@
 // mat_type : 1             [block mat type]
 // fertility: 2
 
-import { Vec2 } from "three";
-
 // FUNCTION TO DO
 
 // ||||||- enough to harvest : resources / population (type of resource spawned)
@@ -36,6 +34,7 @@ import { Vec2 } from "three";
 // ||||||- check if all buildings are still fueled on this cycle and decrement the cycles
 // ||||||- add a number of cycles per building when fueled
 // ||||||- composeD of buildings registers to send to DB
+// incoming id->timestamp
 
 // COMPOSE ALL BUILDING'S CYCLE REGISTER FOR DB
 export const cycleRegisterCompose = (mapBuildingArray: any) => {
@@ -81,6 +80,8 @@ export const cycleRegisterComposeD = (
 };
 
 // CHECK AT EVERY CYCLE THE ACTIVE CYCLES LEFT AND UPDATE MAPBUILDING ARRAY ACCORDINGLY
+// called every block change
+// Adds a 0 or 1 in cycleRegister of each building
 export const checkFuelBuildings = (mapBuildingArray: any) => {
   let i: number = 0;
 
@@ -146,6 +147,8 @@ export const checkResMaintain = (
   return 1;
 };
 
+// Decrement inventory and add cycles to building
+// Called when fueling a building
 export const maintainBuildingPay = (
   id: number,
   inventory: any,
@@ -183,6 +186,7 @@ export const refillBuilding = (
 };
 
 // CANCEL THE MAINTENANCE/REFILL OF A BUILDING
+// updates the inventory
 export const cancelMaintainBuilding = (
   id: number,
   inventory: any,
@@ -518,7 +522,9 @@ export const checkIsMovable = (id: number, fixBuildVal: any) => {
   }
 };
 
-//FIND THE LAST CYCLE WHEN CLAIMING HAS BEEN INITIATED
+// FIND THE LAST CYCLE WHEN CLAIMING HAS BEEN INITIATED
+// playerArray.claimRegister = "dernier block - current block | " where dernier block = lastClaim block
+//// 14-18|18-39|39-45|  -> 45
 export const calculateLastClaim = (playerArray: any) => {
   let lastClaim: number = 0;
   let strIndex: number = playerArray.claimRegister.length;
@@ -596,7 +602,8 @@ export const claim = (
   return inventory;
 };
 
-//FIND THE FIST CYCLE OF THE LAST CLAIM
+//FIND THE FIRST CYCLE OF THE LAST CLAIM
+// 14-18|18-39|39-45|  -> 39
 export const calculateLastClaimFirstCycle = (playerArray: any) => {
   let lastClaim: number = 0;
   let strIndex: number = playerArray.claimRegister.length;
@@ -659,7 +666,7 @@ export const cancelClaim = (
     i++;
   }
   // UPDATE CLAIM REGISTER
-  //playerArray.claimRegister =// ! DELETE LAST CLAIM
+  // playerArray.claimRegister = // ! DELETE LAST CLAIM
 
   return inventory;
 };
