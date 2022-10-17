@@ -28,7 +28,7 @@ export const getLandInformation = async (tokenId: string) => {
     .from("lands_duplicate")
     .select(
       `id, tokenId, fullMap, isInit, biomeId, nbResourcesSpawned, nbResourcesLeft, nbBuildings, 
-      inventories_duplicate(fk_landid, id, wood, rock, food, coal, metal, energy, coin, gold, freePop, totalPop, level, timeSpent),
+      inventories_duplicate(fk_landid, id, wood, rock, food, coal, metal, energy, coin, gold, freePop, totalPop, level, timeSpent, incomingInventories),
       player_buildings_duplicate(fk_buildingid, posX, posY, blockX, blockY, decay, gameUid, isDestroyed),
       player_actions(fk_landid, id, entrypoint, calldata)
     `
@@ -268,6 +268,7 @@ export const buildAction = async (
  * @param calldata {string}
  * @param inventory {[]} updated player inventory
  * @param mapComposed {string} full map composed into string
+ * @param incomingInventories {string}
  * @return success
  */
 export const harvestAction = async (
@@ -276,6 +277,7 @@ export const harvestAction = async (
   calldata: string,
   inventory: any,
   mapComposed: string
+  // TODO add string incomingInventories
 ) => {
   const { data: landData, error: landError } = await supabase
     .from("lands_duplicate")
@@ -313,6 +315,7 @@ export const harvestAction = async (
         totalPop: inventory[9],
         timeSpent: inventory[10],
         level: inventory[11],
+        // incomingInventories: incomingInventories, // TODO uncomment
       },
     ])
     .eq("fk_landid", player["landId" as any]);
@@ -513,3 +516,24 @@ export const moveAction = async (
 // Move
 // Claim
 // Fuel Production
+
+/**
+ * updateIncomingInventories
+ * * Update incomingInventories in player inventory once an action has bee
+ * @param player {[]} player information
+ * @param incomingInventories {string}
+ */
+export const updateIncomingInventories = async (
+  player: any[],
+  incomingInventories: string
+) => {
+  const { data: inventoryData, error: inventoryError } = await supabase
+    .from("inventories_duplicate")
+    .update([
+      {
+        incomingInventories: incomingInventories,
+      },
+    ])
+    .eq("fk_landid", player["landId" as any]);
+  if (inventoryError) throw inventoryError;
+};

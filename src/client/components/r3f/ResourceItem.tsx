@@ -3,6 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import { Vector2 } from "three";
 import { useSelectContext } from "../../hooks/useSelectContext";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
+import { receiveResHarvest } from "../../utils/building";
 
 interface IBlock {
   block: any;
@@ -39,7 +40,15 @@ export const ResourceItem = memo<IBlock>(
     const [localTextureSelected, setLocalTextureSelected] = useState<any>(null);
     // const [localTextureClock, setLocalTextureClock] = useState<any>(null);
     const { frameData, updateBuildingFrame } = useSelectContext();
-    const { harvestActions, playerBuilding, updateIncomingActions } = useNewGameContext();
+    const {
+      harvestActions,
+      playerBuilding,
+      updateIncomingActions,
+      inventory,
+      fullMap,
+      updateInventory,
+      updateMapBlock,
+    } = useNewGameContext();
 
     const frameDataValue = useMemo(() => {
       if (frameData != null && clicked) {
@@ -248,6 +257,38 @@ export const ResourceItem = memo<IBlock>(
       return new Vector2(0, 0);
     }
 
+    const completeHarvest = () => {
+      // update inventory in frontend
+      const _inventoryUpdated = receiveResHarvest(
+        blockValue.randType - 1,
+        inventory,
+        staticResources
+      );
+      console.log("inventoryUpdated ResourceItem", _inventoryUpdated);
+      updateInventory(_inventoryUpdated);
+
+      // Update map block front
+      var _map = fullMap;
+      console.log("_map ResourceItem", _map);
+      if (blockValue.state == 3) {
+        blockValue.state = 0;
+        blockValue.infraType = 0;
+        blockValue.type = 0;
+        blockValue.id = 0;
+      } else {
+        blockValue.state++;
+      }
+      fullMap[blockValue.posY][blockValue.posX].state = blockValue.state;
+      fullMap[blockValue.posY][blockValue.posX].infraType =
+        blockValue.infraType;
+      fullMap[blockValue.posY][blockValue.posX].type = blockValue.type;
+      fullMap[blockValue.posY][blockValue.posX].id = blockValue.id;
+      updateMapBlock(_map);
+
+      // TODO Update string in DB inventories
+      // Call updateIncomingInventories(player, newString incomingInventories)
+    };
+
     useFrame(() => {
       if (!meshRef || !meshRef.current) {
         return;
@@ -281,11 +322,23 @@ export const ResourceItem = memo<IBlock>(
               harvestArrValue[blockValue.posY][blockValue.posX] &&
               harvestArrValue[blockValue.posY][blockValue.posX].status == 0
             ) {
-              console.log('harvestArrValue', harvestArrValue);
-              if (harvestArrValue[blockValue.posY][blockValue.posX].harvestStartTime + harvestArrValue[blockValue.posY][blockValue.posX].harvestDelay < Date.now())
-              {
+              if (
+                harvestArrValue[blockValue.posY][blockValue.posX]
+                  .harvestStartTime +
+                  harvestArrValue[blockValue.posY][blockValue.posX]
+                    .harvestDelay <
+                Date.now()
+              ) {
                 harvestArrValue[blockValue.posY][blockValue.posX].status = 1;
-                updateIncomingActions(1, blockValue.posX, blockValue.posY, blockValue.id, 0, 1);
+                updateIncomingActions(
+                  1,
+                  blockValue.posX,
+                  blockValue.posY,
+                  blockValue.id,
+                  0,
+                  1
+                );
+                completeHarvest();
               }
               clockRef.current.material.map = clockTextureHovered;
             }
@@ -299,20 +352,23 @@ export const ResourceItem = memo<IBlock>(
               harvestArrValue[blockValue.posY][blockValue.posX] &&
               harvestArrValue[blockValue.posY][blockValue.posX].status == 0
             ) {
-              if (harvestArrValue[blockValue.posY][blockValue.posX].harvestStartTime + harvestArrValue[blockValue.posY][blockValue.posX].harvestDelay < Date.now())
-              {
+              if (
+                harvestArrValue[blockValue.posY][blockValue.posX]
+                  .harvestStartTime +
+                  harvestArrValue[blockValue.posY][blockValue.posX]
+                    .harvestDelay <
+                Date.now()
+              ) {
                 harvestArrValue[blockValue.posY][blockValue.posX].status = 1;
-                updateIncomingActions(1, blockValue.posX, blockValue.posY, blockValue.id, 0, 1);
-
-                  // ! Add inventory update after harvest + DB update
-                  // ? harvest timer has passed
-                  // const _inventoryUpdated = receiveResHarvest(
-                  //   randType - 1,
-                  //   inventory,
-                  //   staticResourcesData
-                  // );
-                  // updateInventory(_inventoryUpdated);
-
+                updateIncomingActions(
+                  1,
+                  blockValue.posX,
+                  blockValue.posY,
+                  blockValue.id,
+                  0,
+                  1
+                );
+                completeHarvest();
               }
               clockRef.current.material.map = clockTexture;
             }
@@ -326,19 +382,35 @@ export const ResourceItem = memo<IBlock>(
               blockValue.posY == frameData?.posY)
           ) {
             // building under construction
-            // if (frontBlockArray[blockValue[1]][blockValue[0]][10] == 0) {
-            if (blockValue.status == 0) {
-              meshRef.current.material.map = underConstructionSelect;
-
-              // building upgraded or destroyed
-            } else if (
-              blockValue.status == 1 &&
+            if (
+              // blockValue.status == 0
               harvestArrValue != null &&
               harvestArrValue[blockValue.posY] &&
               harvestArrValue[blockValue.posY][blockValue.posX] &&
               harvestArrValue[blockValue.posY][blockValue.posX].status == 0
             ) {
+              if (
+                harvestArrValue[blockValue.posY][blockValue.posX]
+                  .harvestStartTime +
+                  harvestArrValue[blockValue.posY][blockValue.posX]
+                    .harvestDelay <
+                Date.now()
+              ) {
+                harvestArrValue[blockValue.posY][blockValue.posX].status = 1;
+                updateIncomingActions(
+                  2,
+                  blockValue.posX,
+                  blockValue.posY,
+                  blockValue.id,
+                  0,
+                  1
+                );
+              }
               meshRef.current.material.map = underConstructionSelect;
+
+              // building upgraded or destroyed
+              // } else if ( blockValue.status == 1) {
+              //   meshRef.current.material.map = underConstructionSelect;
             } else {
               meshRef.current.material.map = localTextureSelected;
             }
@@ -346,17 +418,30 @@ export const ResourceItem = memo<IBlock>(
             // building is not selected hovered
           } else {
             // building under construction
-            if (harvestArrValue != null &&
-                harvestArrValue[blockValue.posY] &&
-                harvestArrValue[blockValue.posY][blockValue.posX] &&
-                harvestArrValue[blockValue.posY][blockValue.posX].status == 0) {
-
-                  if (harvestArrValue[blockValue.posY][blockValue.posX].harvestStartTime + harvestArrValue[blockValue.posY][blockValue.posX].harvestDelay < Date.now())
-                  {
-                    harvestArrValue[blockValue.posY][blockValue.posX].status = 1;
-                    updateIncomingActions(2, blockValue.posX, blockValue.posY, blockValue.id, 0, 1);
-                  }
-                  meshRef.current.material.map = underConstruction;
+            if (
+              harvestArrValue != null &&
+              harvestArrValue[blockValue.posY] &&
+              harvestArrValue[blockValue.posY][blockValue.posX] &&
+              harvestArrValue[blockValue.posY][blockValue.posX].status == 0
+            ) {
+              if (
+                harvestArrValue[blockValue.posY][blockValue.posX]
+                  .harvestStartTime +
+                  harvestArrValue[blockValue.posY][blockValue.posX]
+                    .harvestDelay <
+                Date.now()
+              ) {
+                harvestArrValue[blockValue.posY][blockValue.posX].status = 1;
+                updateIncomingActions(
+                  2,
+                  blockValue.posX,
+                  blockValue.posY,
+                  blockValue.id,
+                  0,
+                  1
+                );
+              }
+              meshRef.current.material.map = underConstruction;
 
               // building upgraded destroyed
             } else if (
@@ -365,10 +450,22 @@ export const ResourceItem = memo<IBlock>(
               harvestArrValue[blockValue.posY][blockValue.posX] &&
               harvestArrValue[blockValue.posY][blockValue.posX].status == 0
             ) {
-              if (harvestArrValue[blockValue.posY][blockValue.posX].harvestStartTime + harvestArrValue[blockValue.posY][blockValue.posX].harvestDelay < Date.now())
-              {
+              if (
+                harvestArrValue[blockValue.posY][blockValue.posX]
+                  .harvestStartTime +
+                  harvestArrValue[blockValue.posY][blockValue.posX]
+                    .harvestDelay <
+                Date.now()
+              ) {
                 harvestArrValue[blockValue.posY][blockValue.posX].status = 1;
-                updateIncomingActions(2, blockValue.posX, blockValue.posY, blockValue.id, 0, 1);
+                updateIncomingActions(
+                  2,
+                  blockValue.posX,
+                  blockValue.posY,
+                  blockValue.id,
+                  0,
+                  1
+                );
               }
               meshRef.current.material.map = underConstruction;
             } else {

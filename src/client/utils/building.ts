@@ -867,6 +867,8 @@ export const receiveResHarvest = (
 ) => {
   let i: number = 0;
 
+  console.log("fixResVal[id]", fixResVal[id]);
+
   // while (i < fixResVal[id].production.length) {
   while (i < 8) {
     inventory[i] += fixResVal[id].production[i];

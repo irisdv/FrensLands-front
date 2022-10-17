@@ -3,7 +3,11 @@ import { destroyAction, repairAction } from "../../../api/player";
 import { useGameContext } from "../../../hooks/useGameContext";
 import { useNewGameContext } from "../../../hooks/useNewGameContext";
 import { useSelectContext } from "../../../hooks/useSelectContext";
-import { checkResRepairMsg, destroyBuilding_, repairBuildingPay } from "../../../utils/building";
+import {
+  checkResRepairMsg,
+  destroyBuilding_,
+  repairBuildingPay,
+} from "../../../utils/building";
 import { ComposeD } from "../../../utils/land";
 import { FrameItem } from "../FrameItem";
 
@@ -29,7 +33,7 @@ export function BF_upgrade(props: any) {
     updatePlayerBuilding,
     player,
     fullMap,
-    updateMapBlock
+    updateMapBlock,
   } = useNewGameContext();
   const { updateBuildingFrame } = useSelectContext();
   const { tokenId } = useGameContext();
@@ -148,30 +152,33 @@ export function BF_upgrade(props: any) {
   };
 
   const moveBuilding = (_typeId: number, _posX: number, _posY: number) => {
-    console.log('moving building', _typeId);
+    console.log("moving building", _typeId);
     if (tokenId) {
     }
-  }
+  };
 
   return (
     <>
       <div id="bFrame" className="selectDisable absolute buildingFrame">
+        {staticBuildingsData[typeId - 1].canDestroy ? (
+          <div
+            className="btnDestroy absolute"
+            onClick={() => destroyBuilding(typeId as number, posX, posY)}
+            style={{ right: "135px", bottom: "212px" }}
+          ></div>
+        ) : (
+          <></>
+        )}
 
-        {staticBuildingsData[typeId - 1].canDestroy ?
-        <div
-          className="btnDestroy absolute"
-          onClick={() => destroyBuilding(typeId as number, posX, posY)}
-          style={{ right: "135px", bottom: "212px" }}
-        ></div>
-      : <></>}
-
-        {staticBuildingsData[typeId - 1].canMove ?
-        <div
-          className="btnMove absolute"
-          onClick={() => moveBuilding(typeId as number, posX, posY)}
-          style={{ right: "185px", bottom: "210px" }}
-        ></div>
-        : <></>}
+        {staticBuildingsData[typeId - 1].canMove ? (
+          <div
+            className="btnMove absolute"
+            onClick={() => moveBuilding(typeId as number, posX, posY)}
+            style={{ right: "185px", bottom: "210px" }}
+          ></div>
+        ) : (
+          <></>
+        )}
 
         {/* //* btn close frame */}
         <div

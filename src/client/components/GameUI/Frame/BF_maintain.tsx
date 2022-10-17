@@ -89,10 +89,10 @@ export function BF_maintain(props: any) {
   };
 
   const moveBuilding = (_typeId: number, _posX: number, _posY: number) => {
-    console.log('moving building', _typeId);
+    console.log("moving building", _typeId);
     if (tokenId) {
     }
-  }
+  };
 
   const fuelProd = (
     nb_days: number,

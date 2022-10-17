@@ -50,6 +50,14 @@ export function BuildingFrame(props: any) {
     return frameData;
   }, [frameData]);
 
+  const inventoryValue = useMemo(() => {
+    return inventory;
+  }, [inventory]);
+
+  const fullMapValue = useMemo(() => {
+    return fullMap;
+  }, [fullMap]);
+
   useEffect(() => {
     if (wallet && wallet.isConnected) {
       setAddress(wallet.account.address);
@@ -155,7 +163,8 @@ export function BuildingFrame(props: any) {
             _canHarvest={canHarvest}
             _msg={msg}
             staticResourcesData={staticResources}
-            inventory={inventory}
+            inventory={inventoryValue}
+            fullMap={fullMapValue}
           />
         </>
       )}

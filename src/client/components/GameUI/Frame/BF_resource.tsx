@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useGameContext } from "../../../hooks/useGameContext";
 import { useNewGameContext } from "../../../hooks/useNewGameContext";
 import { useSelectContext } from "../../../hooks/useSelectContext";
@@ -21,23 +21,25 @@ export function BF_resource(props: any) {
     posY,
     _canHarvest,
     _msg,
+    inventory,
     staticResourcesData,
+    fullMap,
   } = props;
 
   //   Contexts
   const { updateBuildingFrame } = useSelectContext();
-  const {
-    updateInventory,
-    updateIncomingActions,
-    updateMapBlock,
-    fullMap,
-    addAction,
-    inventory,
-    wallet,
-    player,
-  } = useNewGameContext();
+  const { updateInventory, updateIncomingActions, addAction, wallet, player } =
+    useNewGameContext();
   const { tokenId } = useGameContext();
   const [showNotif, setShowNotif] = useState(false);
+
+  const inventoryValue = useMemo(() => {
+    return inventory;
+  }, [inventory]);
+
+  const fullMapValue = useMemo(() => {
+    return fullMap;
+  }, [fullMap]);
 
   const harvestingResources = async (
     _typeId: number,
@@ -47,48 +49,48 @@ export function BF_resource(props: any) {
   ) => {
     const _check = checkResHarvest(_typeId - 1, inventory, staticResourcesData);
     if (_check && tokenId) {
-      const _inventory = harvestResPay(
+      var _inventory = harvestResPay(
         randType - 1,
-        inventory,
+        inventoryValue,
         staticResourcesData
       );
       updateInventory(_inventory);
       updateIncomingActions(1, _posX, _posY, uid, Date.now(), 0);
-
       // Store on-chain action in context
       const calldata = tokenId + "|" + 0 + "|" + _posX + "|" + _posY;
       const entrypoint = "harvest";
       addAction(entrypoint, calldata);
 
-      // ? harvest timer has passed
-      // const _inventoryUpdated = receiveResHarvest(
-      //   randType - 1,
-      //   inventory,
-      //   staticResourcesData
-      // );
-      // updateInventory(_inventoryUpdated);
-      // // updateHarvestActions(_posX, _posY, uid, Date.now(), 1);
-      //
-      // // Update map block
-      const _map = fullMap;
+      // Update inventoryIncoming array in context
+      const newInventory = [..._inventory];
+      var _inventoryUpdated = receiveResHarvest(
+        randType - 1,
+        newInventory,
+        staticResourcesData
+      );
+
+      var newMap = [...fullMapValue];
+      newMap[_posY] = [...fullMap[_posY]];
+      newMap[_posY][_posX] = structuredClone(fullMapValue[_posY][_posX]);
       if (_state == 3) {
-        _map[_posY][_posX].state = 0;
-        _map[_posY][_posX].infraType = 0;
-        _map[_posY][_posX].type = 0;
-        _map[_posY][_posX].id = 0;
+        newMap[_posY][_posX].state = 0;
+        newMap[_posY][_posX].infraType = 0;
+        newMap[_posY][_posX].type = 0;
+        newMap[_posY][_posX].id = 0;
       } else {
-        _map[_posY][_posX].state++;
+        newMap[_posY][_posX].state++;
       }
-      updateMapBlock(_map);
-      
-      // ? Send request
-      const _mapComposed = ComposeD(_map);
+      var _mapComposed = ComposeD(newMap);
+
+      // TODO update string incomingInventories
+
       const _isHarvested = harvestAction(
         player,
         entrypoint,
         calldata,
-        inventory,
+        _inventoryUpdated,
         _mapComposed
+        // Send incomingInventories string
       );
     } else {
       console.log("Cannot harvest or missing tokenId");

@@ -12,6 +12,7 @@ import {
   getPosFromId,
   cycleRegisterCompose,
   cycleRegisterComposeD,
+  harvestResPay,
 } from "../utils/building";
 import { ComposeD } from "../utils/land";
 
@@ -80,14 +81,6 @@ export interface INewGameState {
     status: number
   ) => void;
   updateMapBlock: (_map: any[]) => void;
-
-  executeHarvest: (
-    _posX: number,
-    _posY: number,
-    _state: number,
-    _status: number,
-    _inventory: any[]
-  ) => void;
 }
 
 export const NewGameState: INewGameState = {
@@ -119,8 +112,6 @@ export const NewGameState: INewGameState = {
   harvestActions: [],
   updateIncomingActions: (infraType, posX, posY, uid, time, status) => {},
   updateMapBlock: (_map) => {},
-
-  executeHarvest: (_posX, _posY, _state, _status, _inventory) => {},
 };
 
 const NewStateContext = React.createContext(NewGameState);
@@ -480,28 +471,28 @@ export const NewAppStateProvider: React.FC<
       ) {
         const currArr = state.harvestActions;
 
-        if (currArr && currArr[posY] != undefined)
-        {
-            if (!currArr[posY][posX]) currArr[posY][posX] = [];
-            currArr[posY][posX].uid = uid;
-            currArr[posY][posX].status = status;
-            currArr[posY][posX].harvestStartTime = time;
-            if (type == 1) {
-              currArr[posY][posX].harvestDelay = 15000;
-            } else if (type == 2 ) {
-              currArr[posY][posX].harvestDelay = 30000;
-            }
-          } else {
-            currArr[posY] = [];
-            currArr[posY][posX] = [];
-            currArr[posY][posX].uid = uid;
-            currArr[posY][posX].status = status;
-            currArr[posY][posX].harvestStartTime = time;
-            if (type == 1) {
-              currArr[posY][posX].harvestDelay = 15000;
-            } else if (type == 2 ) {
-              currArr[posY][posX].harvestDelay = 30000;}
+        if (currArr && currArr[posY] != undefined) {
+          if (!currArr[posY][posX]) currArr[posY][posX] = [];
+          currArr[posY][posX].uid = uid;
+          currArr[posY][posX].status = status;
+          currArr[posY][posX].harvestStartTime = time;
+          if (type == 1) {
+            currArr[posY][posX].harvestDelay = 15000;
+          } else if (type == 2) {
+            currArr[posY][posX].harvestDelay = 30000;
           }
+        } else {
+          currArr[posY] = [];
+          currArr[posY][posX] = [];
+          currArr[posY][posX].uid = uid;
+          currArr[posY][posX].status = status;
+          currArr[posY][posX].harvestStartTime = time;
+          if (type == 1) {
+            currArr[posY][posX].harvestDelay = 15000;
+          } else if (type == 2) {
+            currArr[posY][posX].harvestDelay = 30000;
+          }
+        }
         dispatch({
           type: "set_harvestAction",
           harvestingArr: currArr,
@@ -527,46 +518,6 @@ export const NewAppStateProvider: React.FC<
     });
   }, []);
 
-  const executeHarvest = React.useCallback(
-    (
-      _posX: number,
-      _posY: number,
-      _state: number,
-      _status: number,
-      _inventory: any[]
-    ) => {
-      // Update land block
-      const _map = state.fullMap;
-      console.log("state.fullMap", state.fullMap);
-      console.log("_map", _map);
-      // console.log('_map block', _map[_posY])
-      // _map[_posY][_posX].state = _state;
-
-      // update harvestingArr
-      const currArr = state.harvestActions;
-      if (currArr && currArr[_posY] != undefined) {
-        if (!currArr[_posY][_posX]) currArr[_posY][_posX] = [];
-        currArr[_posY][_posX].status = _status;
-        currArr[_posY][_posX].harvestStartTime = Date.now();
-        currArr[_posY][_posX].harvestDelay = 1000;
-      } else {
-        currArr[_posY] = [];
-        currArr[_posY][_posX] = [];
-        currArr[_posY][_posX].status = _status;
-        currArr[_posY][_posX].harvestStartTime = Date.now();
-        currArr[_posY][_posX].harvestDelay = 1000;
-      }
-
-      dispatch({
-        type: "set_executeHarvest",
-        map: _map,
-        inventory: _inventory,
-        harvestingArr: currArr,
-      });
-    },
-    []
-  );
-
   return (
     <NewStateContext.Provider
       value={{
@@ -588,7 +539,6 @@ export const NewAppStateProvider: React.FC<
         updateInventory,
         updateIncomingActions,
         updateMapBlock,
-        executeHarvest,
       }}
     >
       {props.children}
