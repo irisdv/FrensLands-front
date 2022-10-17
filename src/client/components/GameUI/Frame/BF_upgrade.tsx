@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { repairAction } from "../../../api/player";
+import { destroyAction, repairAction } from "../../../api/player";
 import { useGameContext } from "../../../hooks/useGameContext";
 import { useNewGameContext } from "../../../hooks/useNewGameContext";
 import { useSelectContext } from "../../../hooks/useSelectContext";
-import { checkResRepairMsg, repairBuildingPay } from "../../../utils/building";
+import { checkResRepairMsg, destroyBuilding_, repairBuildingPay } from "../../../utils/building";
+import { ComposeD } from "../../../utils/land";
 import { FrameItem } from "../FrameItem";
 
 export function BF_upgrade(props: any) {
@@ -27,6 +28,8 @@ export function BF_upgrade(props: any) {
     playerBuilding,
     updatePlayerBuilding,
     player,
+    fullMap,
+    updateMapBlock
   } = useNewGameContext();
   const { updateBuildingFrame } = useSelectContext();
   const { tokenId } = useGameContext();
@@ -88,9 +91,88 @@ export function BF_upgrade(props: any) {
     }
   };
 
+  const destroyBuilding = (_typeId: number, _posX: number, _posY: number) => {
+    if (tokenId) {
+      console.log("inventory before destroy", inventory);
+      let _inventory = destroyBuilding_(
+        _typeId - 1,
+        inventory,
+        staticBuildingsData
+      );
+      console.log("inventory after destroy", _inventory);
+      updateInventory(_inventory);
+
+      // update buildings array
+      console.log("playerBuilding before", playerBuilding);
+      var _newPlayerB = playerBuilding.filter(
+        (item: any) => item.gameUid !== uid
+      );
+      console.log("_newPlayerB before", playerBuilding);
+      updatePlayerBuilding(_newPlayerB);
+
+      // Update map block
+      const _map = fullMap;
+      _map[_posY][_posX].state = 0;
+      _map[_posY][_posX].infraType = 0;
+      _map[_posY][_posX].type = 0;
+      _map[_posY][_posX].id = 0;
+      updateMapBlock(_map);
+
+      // Update action in context
+      const entrypoint = "destroy_building";
+      const calldata = tokenId + "|" + 0 + "|" + _posX + "|" + _posY;
+      addAction(entrypoint, calldata);
+
+      // ? Send request DB
+      const _mapComposed = ComposeD(_map);
+      let _destroy = destroyAction(
+        player,
+        entrypoint,
+        calldata,
+        inventory,
+        uid,
+        _mapComposed
+      );
+
+      updateBuildingFrame(false, {
+        infraType: 0,
+        type_id: 0,
+        state: 0,
+        posX: 0,
+        posY: 0,
+        selected: 0,
+      });
+    } else {
+      console.log("Missing tokenId");
+    }
+  };
+
+  const moveBuilding = (_typeId: number, _posX: number, _posY: number) => {
+    console.log('moving building', _typeId);
+    if (tokenId) {
+    }
+  }
+
   return (
     <>
       <div id="bFrame" className="selectDisable absolute buildingFrame">
+
+        {staticBuildingsData[typeId - 1].canDestroy ?
+        <div
+          className="btnDestroy absolute"
+          onClick={() => destroyBuilding(typeId as number, posX, posY)}
+          style={{ right: "135px", bottom: "212px" }}
+        ></div>
+      : <></>}
+
+        {staticBuildingsData[typeId - 1].canMove ?
+        <div
+          className="btnMove absolute"
+          onClick={() => moveBuilding(typeId as number, posX, posY)}
+          style={{ right: "185px", bottom: "210px" }}
+        ></div>
+        : <></>}
+
         {/* //* btn close frame */}
         <div
           className="btnCloseFrame"

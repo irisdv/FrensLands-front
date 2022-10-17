@@ -88,6 +88,12 @@ export function BF_maintain(props: any) {
     }
   };
 
+  const moveBuilding = (_typeId: number, _posX: number, _posY: number) => {
+    console.log('moving building', _typeId);
+    if (tokenId) {
+    }
+  }
+
   const fuelProd = (
     nb_days: number,
     type_id: number,
@@ -135,6 +141,12 @@ export function BF_maintain(props: any) {
           className="btnDestroy absolute"
           onClick={() => destroyBuilding(typeId as number, posX, posY)}
           style={{ right: "135px", bottom: "280px" }}
+        ></div>
+
+        <div
+          className="btnMove absolute"
+          onClick={() => moveBuilding(typeId as number, posX, posY)}
+          style={{ right: "185px", bottom: "278px" }}
         ></div>
 
         <div

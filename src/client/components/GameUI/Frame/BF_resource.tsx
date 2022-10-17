@@ -28,7 +28,7 @@ export function BF_resource(props: any) {
   const { updateBuildingFrame } = useSelectContext();
   const {
     updateInventory,
-    updateHarvestActions,
+    updateIncomingActions,
     updateMapBlock,
     fullMap,
     addAction,
@@ -53,7 +53,8 @@ export function BF_resource(props: any) {
         staticResourcesData
       );
       updateInventory(_inventory);
-      updateHarvestActions(_posX, _posY, uid, Date.now(), 0);
+      console.log('time', Date.now())
+      updateIncomingActions(1, _posX, _posY, uid, Date.now(), 0);
       // // executeHarvest(_posX, _posY, _state, 0, _inventory);
 
       // Store on-chain action in context
@@ -62,35 +63,35 @@ export function BF_resource(props: any) {
       addAction(entrypoint, calldata);
 
       // ? harvest timer has passed
-      const _inventoryUpdated = receiveResHarvest(
-        randType - 1,
-        inventory,
-        staticResourcesData
-      );
-      updateInventory(_inventoryUpdated);
-      updateHarvestActions(_posX, _posY, uid, Date.now(), 1);
-
-      // Update map block
-      const _map = fullMap;
-      if (_state == 3) {
-        _map[_posY][_posX].state = 0;
-        _map[_posY][_posX].infraType = 0;
-        _map[_posY][_posX].type = 0;
-        _map[_posY][_posX].id = 0;
-      } else {
-        _map[_posY][_posX].state++;
-      }
-      updateMapBlock(_map);
-
-      // ? Send request
-      const _mapComposed = ComposeD(_map);
-      const _isHarvested = harvestAction(
-        player,
-        entrypoint,
-        calldata,
-        inventory,
-        _mapComposed
-      );
+      // const _inventoryUpdated = receiveResHarvest(
+      //   randType - 1,
+      //   inventory,
+      //   staticResourcesData
+      // );
+      // updateInventory(_inventoryUpdated);
+      // // updateHarvestActions(_posX, _posY, uid, Date.now(), 1);
+      //
+      // // Update map block
+      // const _map = fullMap;
+      // if (_state == 3) {
+      //   _map[_posY][_posX].state = 0;
+      //   _map[_posY][_posX].infraType = 0;
+      //   _map[_posY][_posX].type = 0;
+      //   _map[_posY][_posX].id = 0;
+      // } else {
+      //   _map[_posY][_posX].state++;
+      // }
+      // updateMapBlock(_map);
+      //
+      // // ? Send request
+      // const _mapComposed = ComposeD(_map);
+      // const _isHarvested = harvestAction(
+      //   player,
+      //   entrypoint,
+      //   calldata,
+      //   inventory,
+      //   _mapComposed
+      // );
     } else {
       console.log("Cannot harvest or missing tokenId");
     }

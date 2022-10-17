@@ -71,7 +71,8 @@ export interface INewGameState {
   updatePlayerBuilding: (_playerBuilding: any[]) => void;
   // Harvest actions
   harvestActions: any[];
-  updateHarvestActions: (
+  updateIncomingActions: (
+    infraType: number,
     posX: number,
     posY: number,
     uid: number,
@@ -116,7 +117,7 @@ export const NewGameState: INewGameState = {
   updatePlayerBuilding: (_playerBuilding) => {},
   // Harvest actions
   harvestActions: [],
-  updateHarvestActions: (posX, posY, uid, time, status) => {},
+  updateIncomingActions: (infraType, posX, posY, uid, time, status) => {},
   updateMapBlock: (_map) => {},
 
   executeHarvest: (_posX, _posY, _state, _status, _inventory) => {},
@@ -374,10 +375,12 @@ export const NewAppStateProvider: React.FC<
       inventoryArray[0] = 100;
       inventoryArray[1] = 100;
       inventoryArray[2] = 100;
-      inventoryArray[3] = inventory[0].metal;
+      // inventoryArray[3] = inventory[0].metal;
+      inventoryArray[3] = 100;
       inventoryArray[4] = inventory[0].coal;
       inventoryArray[5] = inventory[0].energy;
-      inventoryArray[6] = inventory[0].coin;
+      // inventoryArray[6] = inventory[0].coin;
+      inventoryArray[6] = 100;
       inventoryArray[7] = inventory[0].gold;
       // inventoryArray[8] = inventory[0].freePop;
       // inventoryArray[9] = inventory[0].totalPop;
@@ -460,8 +463,9 @@ export const NewAppStateProvider: React.FC<
     });
   }, []);
 
-  const updateHarvestActions = React.useCallback(
+  const updateIncomingActions = React.useCallback(
     async (
+      type: number,
       posX: number,
       posY: number,
       uid: number,
@@ -475,20 +479,29 @@ export const NewAppStateProvider: React.FC<
         (status == 1 || status == 0)
       ) {
         const currArr = state.harvestActions;
-        if (currArr && currArr[posY] != undefined) {
-          if (!currArr[posY][posX]) currArr[posY][posX] = [];
-          currArr[posY][posX].uid = uid;
-          currArr[posY][posX].status = status;
-          currArr[posY][posX].harvestStartTime = time;
-          currArr[posY][posX].harvestDelay = 1000;
-        } else {
-          currArr[posY] = [];
-          currArr[posY][posX] = [];
-          currArr[posY][posX].uid = uid;
-          currArr[posY][posX].status = status;
-          currArr[posY][posX].harvestStartTime = time;
-          currArr[posY][posX].harvestDelay = 1000;
-        }
+
+        if (currArr && currArr[posY] != undefined)
+        {
+            if (!currArr[posY][posX]) currArr[posY][posX] = [];
+            currArr[posY][posX].uid = uid;
+            currArr[posY][posX].status = status;
+            currArr[posY][posX].harvestStartTime = time;
+            if (type == 1) {
+              currArr[posY][posX].harvestDelay = 15000;
+            } else if (type == 2 ) {
+              currArr[posY][posX].harvestDelay = 30000;
+            }
+          } else {
+            currArr[posY] = [];
+            currArr[posY][posX] = [];
+            currArr[posY][posX].uid = uid;
+            currArr[posY][posX].status = status;
+            currArr[posY][posX].harvestStartTime = time;
+            if (type == 1) {
+              currArr[posY][posX].harvestDelay = 15000;
+            } else if (type == 2 ) {
+              currArr[posY][posX].harvestDelay = 30000;}
+          }
         dispatch({
           type: "set_harvestAction",
           harvestingArr: currArr,
@@ -573,7 +586,7 @@ export const NewAppStateProvider: React.FC<
         initGameSession,
         addAction,
         updateInventory,
-        updateHarvestActions,
+        updateIncomingActions,
         updateMapBlock,
         executeHarvest,
       }}
