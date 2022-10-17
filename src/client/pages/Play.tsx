@@ -9,12 +9,12 @@ import { BuildingFrame } from "../components/GameUI/BuildingFrame";
 // import { BuildingStateProvider } from "../providers/BuildingContext";
 import { useGameContext } from "../hooks/useGameContext";
 import { Achievements } from "../components/GameUI/Achievements";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { allMetadata } from "../data/metadata";
 import { useNewGameContext } from "../hooks/useNewGameContext";
 import { getStarknet } from "get-starknet";
 import { useSelectContext } from "../hooks/useSelectContext";
-import getPlayer from "../api/player";
+import getPlayer, { getLandInformation } from "../api/player";
 
 export default function Play() {
   const { address, setAddress, updateTokenId, tokenId, fetchMapType } =
@@ -50,33 +50,15 @@ export default function Play() {
   const [buildingCounters, setBuildingCounters] = useState<any[]>([]);
   const [level, setLevel] = useState(1);
 
+  const { state } = useLocation();
+  const { landId, initTx, initStatus } = state;
+
+  // TODO add notif when initTx && initStatus are sent
+
   const fullMapValue = useMemo(() => {
     console.log("fullMap in Play.tsx", fullMap);
     return fullMap;
   }, [fullMap]);
-
-  // const getUserInfo = async (account: string) => {
-  //   await fetch(`http://localhost:3001/api/users/${account}`, {
-  //     headers: { "x-access-token": localStorage.getItem("user") as string },
-  //   })
-  //     .then(async (response) => {
-  //       return await response.json();
-  //     })
-  //     .then((data) => {
-  //       console.log("data of player retrieved", data);
-  //       if (data) {
-  //         initSettings(data.setting);
-  //         // Init player new game session
-  //         initGameSession(
-  //           data.inventory,
-  //           data.land,
-  //           data.player_actions,
-  //           data.player_buildings
-  //         );
-  //       }
-  //       return data;
-  //     });
-  // };
 
   useEffect(() => {
     if (!wallet) {
@@ -86,32 +68,36 @@ export default function Play() {
         if (_wallet.isConnected) {
           initPlayer(_wallet);
           setAddress(_wallet.account.address); // ! ancien game context
-          // getUserInfo(_wallet.account.address);
 
           getPlayer(_wallet.account.address).then((data) => {
             console.log("data", data);
-            if (
-              data
-              // &&
-              // data.inventories &&
-              // data.lands &&
-              // data.player_actions &&
-              // data.player_buildings
-            ) {
+            if (data) {
               initSettings({
                 zoom: data.invZoom,
                 tutorial: data.tutorial,
                 sound: data.sound,
               });
-              // Init player new game session
-              // initGameSession(
-              //   data.inventories,
-              //   data.lands,
-              //   data.player_actions,
-              //   data.player_buildings as [],
-              //   data.account
-              // );
             }
+            getLandInformation(landId).then((land: any) => {
+              console.log("data land received", land);
+              if (
+                data &&
+                land &&
+                land.inventories_duplicate &&
+                land.player_actions &&
+                land.player_buildings_duplicate
+              ) {
+                //  ! TODO update db names
+                initGameSession(
+                  land.inventories_duplicate,
+                  land,
+                  land.player_actions,
+                  land.player_buildings_duplicate as [],
+                  data.account,
+                  data.id
+                );
+              }
+            });
           });
         } else {
           navigate("/");
@@ -123,7 +109,6 @@ export default function Play() {
   useEffect(() => {
     if (address && !tokenId) {
       updateTokenId(address);
-      // Fetch player information if none then initGame + store action in DB
     }
   }, [address, tokenId]);
 

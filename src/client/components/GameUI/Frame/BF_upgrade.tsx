@@ -26,6 +26,7 @@ export function BF_upgrade(props: any) {
     wallet,
     playerBuilding,
     updatePlayerBuilding,
+    player,
   } = useNewGameContext();
   const { updateBuildingFrame } = useSelectContext();
   const { tokenId } = useGameContext();
@@ -76,7 +77,7 @@ export function BF_upgrade(props: any) {
 
       // ? send request to db
       let _action = await repairAction(
-        wallet.account.address,
+        player,
         entrypoint,
         calldata,
         inventory,

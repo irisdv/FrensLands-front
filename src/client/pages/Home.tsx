@@ -166,7 +166,8 @@ export default function Home() {
           if (data && data.token) {
             localStorage.setItem("user", data.token);
             setUserId(data.user.id);
-            if (data.lands && data.lands.tokens) setUserLands(data.lands.tokens)
+            if (data.lands && data.lands.tokens)
+              setUserLands(data.lands.tokens);
             setTimeout(function () {
               setSignedIn(true);
             }, 50);

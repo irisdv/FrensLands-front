@@ -75,39 +75,44 @@ export default function MenuHome(props: any) {
     if (initArray && initArray.length > 0) setIsReady(true);
   }, [initArray]);
 
-  const startGame = (_tokenId: number) => {
-    // console.log("starting game for tokendId", _tokenId);
-    // console.log("initArray defined", initArray);
+  const startGame = async (_tokenId: number) => {
+    console.log("starting game for tokendId", _tokenId);
+    console.log("initArray defined", initArray);
 
     if (initArray && initArray[_tokenId]) {
       if (initArray[_tokenId].isInit) {
         console.log("isInit", initArray[_tokenId].isInit);
-        navigate("/play", { state: { id: _tokenId } });
-
-        // ? const {state} = useLocation();
-        // ? const { id, color } = state; // Read values passed on state
-
+        navigate("/play", { state: { landId: _tokenId } });
       } else {
         // If not init onchain send tx
-
         // Send tx to init game onchain
-        // let nonce = await wallet.account.getNonce();
-        // const result = await wallet.account.execute(
-        //   [
-        //     {
-        //       contractAddress: frenslands?.address as string,
-        //       entrypoint: "start_game",
-        //       calldata: [_tokenId, 0, initArray[_tokenId].biomeId],
-        //     },
-        //   ],
-        //   undefined,
-        //   { maxFee: 500, nonce }
-        // );
-        // console.log("result from tx", result);
+        let nonce = await wallet.account.getNonce();
+        const result = await wallet.account.execute(
+          [
+            {
+              contractAddress: frenslands?.address as string,
+              entrypoint: "start_game",
+              calldata: [_tokenId, 0, initArray[_tokenId].biomeId],
+            },
+          ],
+          undefined,
+          { maxFee: 500, nonce }
+        );
+        console.log("result from tx", result);
 
-        // TODO init game in DB
+        // Init game in db
         let _initializeGame = initGame(initArray[_tokenId].id);
         console.log("init", _initializeGame);
+
+        // Go the page play w/ tx ongoing tx information
+        if (result)
+          navigate("/play", {
+            state: {
+              landId: _tokenId,
+              initTx: result.transaction_hash,
+              initStatus: result.status,
+            },
+          });
       }
     }
   };

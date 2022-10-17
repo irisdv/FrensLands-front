@@ -63,7 +63,8 @@ export interface INewGameState {
     land: any,
     playerActions: any,
     playerBuildings: [],
-    account: string
+    account: string,
+    userId: string
   ) => void;
   addAction: (entrypoint: string, calldata: string) => void;
   updateInventory: (inventory: any[]) => void;
@@ -107,7 +108,8 @@ export const NewGameState: INewGameState = {
     land,
     playerActions,
     playerBuildings,
-    account
+    account,
+    userId
   ) => {},
   addAction: (entrypoint, calldata) => {},
   updateInventory: (inventory) => {},
@@ -340,13 +342,14 @@ export const NewAppStateProvider: React.FC<
       land: any,
       playerActions: any,
       playerBuildings: [],
-      account: string
+      account: string,
+      userId: string
     ) => {
       //  - - - - - - PLAYER LAND - - - - - -
       // let test = generateFullMap();
       // console.log("test", test);
 
-      const fullMapArray = revComposeD(land[0].fullMap, account);
+      const fullMapArray = revComposeD(land.fullMap, account);
       console.log("fullMapArray = ", fullMapArray);
 
       //const composition = ComposeD(fullMapArray);
@@ -410,7 +413,7 @@ export const NewAppStateProvider: React.FC<
       console.log("fixBuildVal = ", fixBuildVal);
 
       //  - - - - - - STATIC RESOURCES - - - - - -
-      const staticResources: any = await getStaticResources(land[0].biomeId);
+      const staticResources: any = await getStaticResources(land.biomeId);
       const fixResVal: any[] = fillStaticResources(staticResources);
       console.log("fixResVal = ", fixResVal);
 
@@ -427,11 +430,12 @@ export const NewAppStateProvider: React.FC<
       counters["buildings" as any] = buildingCounter;
 
       const playerArray: any[] = [];
-      playerArray["landId" as any] = land[0].id;
-      playerArray["id" as any] = land[0].fk_userid;
-      playerArray["biomeId" as any] = land[0].biomeId;
+      playerArray["landId" as any] = land.id;
+      playerArray["tokenId" as any] = land.tokenId;
+      playerArray["id" as any] = userId;
+      playerArray["biomeId" as any] = land.biomeId;
       playerArray["claimRegister" as any] = []; // ! TEMPORARY (NEED TO GET DATA FROM DB)
-
+      console.log("playerArray", playerArray);
       //  - - - - - - DATA IN ARRAYS - - - - - - END
 
       dispatch({
