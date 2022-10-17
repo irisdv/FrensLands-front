@@ -480,28 +480,28 @@ export const NewAppStateProvider: React.FC<
       ) {
         const currArr = state.harvestActions;
 
-        if (currArr && currArr[posY] != undefined)
-        {
-            if (!currArr[posY][posX]) currArr[posY][posX] = [];
-            currArr[posY][posX].uid = uid;
-            currArr[posY][posX].status = status;
-            currArr[posY][posX].harvestStartTime = time;
-            if (type == 1) {
-              currArr[posY][posX].harvestDelay = 15000;
-            } else if (type == 2 ) {
-              currArr[posY][posX].harvestDelay = 30000;
-            }
-          } else {
-            currArr[posY] = [];
-            currArr[posY][posX] = [];
-            currArr[posY][posX].uid = uid;
-            currArr[posY][posX].status = status;
-            currArr[posY][posX].harvestStartTime = time;
-            if (type == 1) {
-              currArr[posY][posX].harvestDelay = 15000;
-            } else if (type == 2 ) {
-              currArr[posY][posX].harvestDelay = 30000;}
+        if (currArr && currArr[posY] != undefined) {
+          if (!currArr[posY][posX]) currArr[posY][posX] = [];
+          currArr[posY][posX].uid = uid;
+          currArr[posY][posX].status = status;
+          currArr[posY][posX].harvestStartTime = time;
+          if (type == 1) {
+            currArr[posY][posX].harvestDelay = 15000;
+          } else if (type == 2) {
+            currArr[posY][posX].harvestDelay = 30000;
           }
+        } else {
+          currArr[posY] = [];
+          currArr[posY][posX] = [];
+          currArr[posY][posX].uid = uid;
+          currArr[posY][posX].status = status;
+          currArr[posY][posX].harvestStartTime = time;
+          if (type == 1) {
+            currArr[posY][posX].harvestDelay = 15000;
+          } else if (type == 2) {
+            currArr[posY][posX].harvestDelay = 30000;
+          }
+        }
         dispatch({
           type: "set_harvestAction",
           harvestingArr: currArr,

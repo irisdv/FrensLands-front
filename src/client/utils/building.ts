@@ -36,66 +36,60 @@
 // ||||||- composeD of buildings registers to send to DB
 // incoming id->timestamp
 
-let  incomingArr : any[] = [];
+let incomingArr: any[] = [];
 
-export const addElemToIncoming = (incomingArr: any, id: number, timeStamp: number) => 
-{
+export const addElemToIncoming = (
+  incomingArr: any,
+  id: number,
+  timeStamp: number
+) => {
   let i: number = incomingArr.length;
 
   incomingArr[i] = [];
   incomingArr[i].id = id;
   incomingArr[i].timeStamp = timeStamp;
 
-  return (incomingArr);
-}
+  return incomingArr;
+};
 
-export const deleteElemFromIncoming = (incomingArr: any, id: number) =>
-{
+export const deleteElemFromIncoming = (incomingArr: any, id: number) => {
   let i: number = 0;
 
-  while (i < incomingArr.length)
-  {
-    if (incomingArr[i].id == id)
-    {
+  while (i < incomingArr.length) {
+    if (incomingArr[i].id == id) {
       incomingArr.splice(i);
     }
     i++;
   }
-  return (incomingArr);
-}
+  return incomingArr;
+};
 
-export const incomingCompose = (incomingArr: any) =>
-{
+export const incomingCompose = (incomingArr: any) => {
   let i: number = 0;
   let comp: string = "";
 
-  while (i < incomingArr.length)
-  {
+  while (i < incomingArr.length) {
     comp = incomingArr[i].id + "-" + incomingArr[i].timeStamp + "|";
     i++;
   }
-  return (comp);
-}
+  return comp;
+};
 
-export const incomingComposeD = (comp : string) =>
-{
+export const incomingComposeD = (comp: string) => {
   let i: number = 0;
   let j: number = 0;
   let incomingArr: any[] = [];
   let tempStr: string = "";
 
-  while (i < comp.length)
-  {
+  while (i < comp.length) {
     tempStr = tempStr + comp[i];
-    if (comp[i] == "-")
-    {
+    if (comp[i] == "-") {
       incomingArr[j].id = parseInt(tempStr);
       tempStr = "";
       i++;
-      while (comp[i] != "|")
-      {
+      while (comp[i] != "|") {
         tempStr = tempStr + comp[i];
-        i++
+        i++;
       }
       incomingArr[j].timeStamp = parseInt(tempStr);
     }
@@ -103,9 +97,8 @@ export const incomingComposeD = (comp : string) =>
     i++;
     j++;
   }
-  return (incomingArr);
-}
-
+  return incomingArr;
+};
 
 // COMPOSE ALL BUILDING'S CYCLE REGISTER FOR DB
 export const cycleRegisterCompose = (mapBuildingArray: any) => {
@@ -274,29 +267,21 @@ export const cancelMaintainBuilding = (
   }
 
   // THAT DOESN"T WORK IF YOU REFILLED AN ALREADY FILLED BUILDING
-  if (mapBuildingArray[uid].activeCycles == 0)
-  {
+  if (mapBuildingArray[uid].activeCycles == 0) {
     i = mapBuildingArray[uid].cycleRegister.length;
-    while (i > (mapBuildingArray[uid].cycleRegister.length - cycles))
-    {
+    while (i > mapBuildingArray[uid].cycleRegister.length - cycles) {
       mapBuildingArray[uid].cycleRegister[i] = 0;
       i--;
     }
-  }
-  else if (mapBuildingArray[uid].activeCycles > 0)
-  {
-    if (cycles < mapBuildingArray[uid].activeCycles)
-    {
+  } else if (mapBuildingArray[uid].activeCycles > 0) {
+    if (cycles < mapBuildingArray[uid].activeCycles) {
       mapBuildingArray[uid] = mapBuildingArray[uid].activeCycles - cycles;
-    }
-    else if (cycles > mapBuildingArray[uid].activeCycles)
-    {
-      let cylesLeft : number = cycles - mapBuildingArray[uid].activeCycles;
+    } else if (cycles > mapBuildingArray[uid].activeCycles) {
+      let cylesLeft: number = cycles - mapBuildingArray[uid].activeCycles;
       mapBuildingArray[uid].activeCycles = 0;
 
       i = mapBuildingArray[uid].cycleRegister.length;
-      while (i > (mapBuildingArray[uid].cycleRegister.length - cycles))
-      {
+      while (i > mapBuildingArray[uid].cycleRegister.length - cycles) {
         mapBuildingArray[uid].cycleRegister[i] = 0;
         i--;
       }

@@ -80,7 +80,7 @@ export function BF_resource(props: any) {
         _map[_posY][_posX].state++;
       }
       updateMapBlock(_map);
-      
+
       // ? Send request
       const _mapComposed = ComposeD(_map);
       const _isHarvested = harvestAction(

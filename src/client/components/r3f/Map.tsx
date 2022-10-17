@@ -65,7 +65,7 @@ export const Map = (props: any) => {
     addAction,
     playerBuilding,
     updatePlayerBuilding,
-    updateIncomingActions
+    updateIncomingActions,
   } = useNewGameContext();
   const {
     tokenId,
@@ -344,7 +344,14 @@ export const Map = (props: any) => {
 
       console.log("create building on Map", frameData?.typeId);
 
-      updateIncomingActions(2, pos.x - 0.5, pos.y, UBlockIDs + 1, Date.now(), 0);
+      updateIncomingActions(
+        2,
+        pos.x - 0.5,
+        pos.y,
+        UBlockIDs + 1,
+        Date.now(),
+        0
+      );
 
       // Update frontBlockArray
       frontBlockArray[pos.y][pos.x - 0.5].infraType = frameData?.infraType;
