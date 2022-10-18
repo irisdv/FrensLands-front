@@ -36,7 +36,7 @@ import { HarvestDelay } from "./constant";
 // ||||||- check if all buildings are still fueled on this cycle and decrement the cycles
 // ||||||- add a number of cycles per building when fueled
 // ||||||- composeD of buildings registers to send to DB
-// incoming id->timestamp
+// ||||||incoming id->timestamp
 
 let incomingArr: any[] = [];
 
