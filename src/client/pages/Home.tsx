@@ -9,22 +9,22 @@ import MenuHome from "../components/Home/MenuHome";
 import LandList from "../components/Home/LandList";
 import { useMapsContract } from "../hooks/contracts/maps";
 import { useGameContext } from "../hooks/useGameContext";
-import { useERC1155Contract } from "../hooks/contracts/erc1155";
-import { useResourcesContract } from "../hooks/contracts/resources";
+// import { useERC1155Contract } from "../hooks/contracts/erc1155";
+// import { useResourcesContract } from "../hooks/contracts/resources";
 import { ILand } from "../providers/NewGameContext";
 
 import { gsap } from "gsap";
 import UI_Frames from "../style/resources/front/Ui_Frames3.svg";
-import useStartGame from "../hooks/invoke/useStartGame";
+// import useStartGame from "../hooks/invoke/useStartGame";
 import { useFLContract } from "../hooks/contracts/frenslands";
-import { createSupabase } from "../supabaseClient";
-import { initMap } from "../utils/constant";
+// import { createSupabase } from "../supabaseClient";
+// import { initMap } from "../utils/constant";
 
 export default function Home() {
   const [wallet, setWallet] = useState<IStarknetWindowObject>();
   const [signedIn, setSignedIn] = useState(false);
   const [hasLand, setHasLand] = useState<ILand>();
-  const [hasInit, setHasInit] = useState(0);
+  // const [hasInit, setHasInit] = useState(0);
   const [userId, setUserId] = useState("");
   const [userLands, setUserLands] = useState<any[]>([]);
   const navigate = useNavigate();
@@ -43,96 +43,97 @@ export default function Home() {
   const [watch, setWatch] = useState(true);
   const [canPlay, setCanPlay] = useState(0);
   const [approved, setApproved] = useState<any>(null);
+  const [token, setToken] = useState("");
   // const initializeGame = useStartGame();
 
   // ------------------------------------- START: Fetch DB --------------------------------------------
 
-  const initGame = async (account: string, biomeId: number) => {
-    var _user: string = localStorage.getItem("user") as string;
-    const _supabase = createSupabase(_user);
+  // const initGame = async (account: string, biomeId: number) => {
+  //   var _user: string = localStorage.getItem("user") as string;
+  //   const _supabase = createSupabase(_user);
 
-    const response = await _supabase
-      .from("users")
-      .select(`id, account, lands (fk_userid, id, biomeId)`)
-      .eq("account", wallet?.account.address)
-      .single();
+  //   const response = await _supabase
+  //     .from("users")
+  //     .select(`id, account, lands (fk_userid, id, biomeId)`)
+  //     .eq("account", wallet?.account.address)
+  //     .single();
 
-    if (
-      response &&
-      response.data?.lands &&
-      Object.keys(response.data?.lands).length > 0
-    ) {
-      console.log(
-        "user already has a land initialized",
-        Object.keys(response.data?.lands).length
-      );
+  //   if (
+  //     response &&
+  //     response.data?.lands &&
+  //     Object.keys(response.data?.lands).length > 0
+  //   ) {
+  //     console.log(
+  //       "user already has a land initialized",
+  //       Object.keys(response.data?.lands).length
+  //     );
 
-      navigate("/play");
+  //     navigate("/play");
 
-      // Need to ensure that it's the right owner based on tokenId that was fetched
-    } else {
-      console.log("user need to initialize its land");
-      // TODO init w/ data fetched from chain (if land has not been already initialized)
+  //     // Need to ensure that it's the right owner based on tokenId that was fetched
+  //   } else {
+  //     console.log("user need to initialize its land");
+  //     // TODO init w/ data fetched from chain (if land has not been already initialized)
 
-      var land_id;
-      const { data: inventory_data, error: inventory_error } = await _supabase
-        .from("inventories")
-        .insert([
-          {
-            fk_userid: response.data?.id,
-          },
-        ]);
-      console.log("inventory", inventory_data);
+  //     var land_id;
+  //     const { data: inventory_data, error: inventory_error } = await _supabase
+  //       .from("inventories")
+  //       .insert([
+  //         {
+  //           fk_userid: response.data?.id,
+  //         },
+  //       ]);
+  //     console.log("inventory", inventory_data);
 
-      const { data: land_data, error: land_error } = await _supabase
-        .from("lands")
-        .insert([
-          {
-            fk_userid: response.data?.id,
-            biomeId: biomeId,
-            fullMap: initMap,
-            nbResourcesSpawned: 196,
-            nbResourcesLeft: 196,
-            nbBuilding: 1,
-          },
-        ])
-        .select();
-      console.log("land_data", land_data);
-      if (land_data) land_id = land_data[0].id;
+  //     const { data: land_data, error: land_error } = await _supabase
+  //       .from("lands")
+  //       .insert([
+  //         {
+  //           fk_userid: response.data?.id,
+  //           biomeId: biomeId,
+  //           fullMap: initMap,
+  //           nbResourcesSpawned: 196,
+  //           nbResourcesLeft: 196,
+  //           nbBuilding: 1,
+  //         },
+  //       ])
+  //       .select();
+  //     console.log("land_data", land_data);
+  //     if (land_data) land_id = land_data[0].id;
 
-      const { data: building_data, error: building_error } = await _supabase
-        .from("player_buildings")
-        .insert([
-          {
-            fk_userid: response.data?.id,
-            fk_landid: land_id,
-            fk_buildingid: 1,
-            gameUid: 1,
-            posX: 1.2,
-            posY: 1.2,
-            blockX: 11,
-            blockY: 8,
-            decay: 100,
-            unitTimeCreatedAt: 0,
-          },
-        ]);
+  //     const { data: building_data, error: building_error } = await _supabase
+  //       .from("player_buildings")
+  //       .insert([
+  //         {
+  //           fk_userid: response.data?.id,
+  //           fk_landid: land_id,
+  //           fk_buildingid: 1,
+  //           gameUid: 1,
+  //           posX: 1.2,
+  //           posY: 1.2,
+  //           blockX: 11,
+  //           blockY: 8,
+  //           decay: 100,
+  //           unitTimeCreatedAt: 0,
+  //         },
+  //       ]);
 
-      const { data: actions_data, error: actions_error } = await _supabase
-        .from("player_actions")
-        .insert([
-          {
-            entrypoint: "start_game",
-            calldata: biomeId,
-            validated: false,
-            fk_userid: response.data?.id,
-            fk_landid: land_id,
-          },
-        ]);
+  //     const { data: actions_data, error: actions_error } = await _supabase
+  //       .from("player_actions")
+  //       .insert([
+  //         {
+  //           entrypoint: "start_game",
+  //           calldata: biomeId,
+  //           validated: false,
+  //           fk_userid: response.data?.id,
+  //           fk_landid: land_id,
+  //         },
+  //       ]);
 
-      if (!inventory_error && !land_error && !building_error && !actions_error)
-        navigate("/play");
-    }
-  };
+  //     if (!inventory_error && !land_error && !building_error && !actions_error)
+  //       navigate("/play");
+  //   }
+  // };
 
   // ------------------------------------- END: Fetch DB --------------------------------------------
 
@@ -226,43 +227,43 @@ export default function Home() {
   };
 
   // Invoke Starting game
-  const startGame = async (biomeId: number) => {
-    console.log("startingGame invoke with biomeId", biomeId);
+  // const startGame = async (biomeId: number) => {
+  //   console.log("startingGame invoke with biomeId", biomeId);
 
-    // Send tx to init game on-chain
-    console.log("tokenId of owner", tokenId);
+  //   // Send tx to init game on-chain
+  //   console.log("tokenId of owner", tokenId);
 
-    if (wallet != null && tokenId && !hasInit) {
-      // TODO update depending on changes to db + indexer
-      // returns 0x0 if not init
-      const wasInit = await checkWasInit(wallet, tokenId);
-      console.log("wasInit ? ", wasInit);
+  //   if (wallet != null && tokenId && !hasInit) {
+  //     // TODO update depending on changes to db + indexer
+  //     // returns 0x0 if not init
+  //     const wasInit = await checkWasInit(wallet, tokenId);
+  //     console.log("wasInit ? ", wasInit);
 
-      if (wasInit == "0x0") {
-        let nonce = await wallet.account.getNonce();
-        const result = await wallet.account.execute(
-          [
-            {
-              contractAddress: frenslands?.address as string,
-              entrypoint: "start_game",
-              calldata: [tokenId, 0, biomeId],
-            },
-          ],
-          undefined,
-          { maxFee: 500, nonce }
-        );
-        console.log("result", result);
-        // TODO keep tx hash for notif
-      }
+  //     if (wasInit == "0x0") {
+  //       let nonce = await wallet.account.getNonce();
+  //       const result = await wallet.account.execute(
+  //         [
+  //           {
+  //             contractAddress: frenslands?.address as string,
+  //             entrypoint: "start_game",
+  //             calldata: [tokenId, 0, biomeId],
+  //           },
+  //         ],
+  //         undefined,
+  //         { maxFee: 500, nonce }
+  //       );
+  //       console.log("result", result);
+  //       // TODO keep tx hash for notif
+  //     }
 
-      // const tx_hash = await initializeGame(wallet, tokenId, biomeId, nonce);
-      // console.log('tx_hash', tx_hash);
-      setHasInit(1);
-    }
+  //     // const tx_hash = await initializeGame(wallet, tokenId, biomeId, nonce);
+  //     // console.log('tx_hash', tx_hash);
+  //     setHasInit(1);
+  //   }
 
-    // Init game in DB
-    await initGame(wallet?.account.address as string, biomeId);
-  };
+  //   // Init game in DB
+  //   await initGame(wallet?.account.address as string, biomeId);
+  // };
 
   // --------------------- STYLE ------------------------------
   const executeScroll = () => {
@@ -344,66 +345,6 @@ export default function Home() {
                 BalanceNFTValue != null &&
                 BalanceNFTValue.NFTbalance > 0 && (
                   <>
-                    {/* <div className="grid grid-cols-5 px-8">
-                      <div
-                        className="cursor-pointer px-5"
-                        onClick={async () => await startGame(2)}
-                      >
-                        <img
-                          className="relative mx-auto pixelated nftImg hover:scale-110"
-                          src={"resources/maps/FrensLand_NFTs_1.png"}
-                        />
-                      </div>
-                      <div
-                        className="cursor-pointer px-5"
-                        onClick={async () => await startGame(3)}
-                      >
-                        <img
-                          className="relative mx-auto pixelated nftImg hover:scale-110"
-                          src={"resources/maps/FrensLand_NFTs_2.png"}
-                        />
-                      </div>
-                      <div
-                        className="cursor-pointer px-5"
-                        onClick={async () => await startGame(1)}
-                      >
-                        <img
-                          className="relative mx-auto pixelated nftImg hover:scale-110"
-                          src={"resources/maps/FrensLand_NFTs_0.png"}
-                        />
-                      </div>
-                      <div
-                        className="cursor-pointer px-5"
-                        onClick={async () => await startGame(4)}
-                      >
-                        <img
-                          className="relative mx-auto pixelated nftImg hover:scale-110"
-                          src={"resources/maps/FrensLand_NFTs_3.png"}
-                        />
-                      </div>
-                      <div
-                        className="cursor-pointer px-5"
-                        onClick={async () => await startGame(5)}
-                      >
-                        <img
-                          className="relative mx-auto pixelated nftImg hover:scale-110"
-                          src={"resources/maps/FrensLand_NFTs_4.png"}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="messageNotifParent">
-                      <div
-                        className="messageNotif fontHPxl-sm mx-auto text-center"
-                        style={{
-                          borderImage: `url(data:image/svg+xml;base64,${btoa(
-                            UI_Frames
-                          )}) 18 fill stretch`,
-                        }}
-                      >
-                        <p>Chose a land to start playing!</p>
-                      </div>
-                    </div> */}
                     <LandList
                       account={wallet.account.address}
                       userId={userId}
@@ -444,55 +385,6 @@ export default function Home() {
                     </div>
                   </>
                 )}
-
-              {/* {account?.isConnected &&
-                BalanceNFTValue != null &&
-                BalanceNFTValue.NFTbalance == 1 &&
-                GameStatusValue != null &&
-                GameStatusValue.gameStatus == 0 &&
-                !settingUp && (
-                  <button
-                    className="relative mx-auto pixelated btnPlay"
-                    onClick={() => startGame()}
-                    style={{ marginTop: "-65px" }}
-                  ></button>
-                )} */}
-              {/* {account?.isConnected &&
-              BalanceNFTValue != null &&
-              BalanceNFTValue.NFTbalance == 1 &&
-              GameStatusValue != null &&
-              GameStatusValue.gameStatus == 0 &&
-              settingUp ? (
-                <div className="messageNotifParent">
-                  <div
-                    className="messageNotifInit fontHPxl-sm mx-auto text-center"
-                    style={{
-                      borderImage: `url(data:image/svg+xml;base64,${btoa(
-                        UI_Frames
-                      )}) 18 fill stretch`,
-                    }}
-                  >
-                    <p>Your land is initializing...</p>
-                  </div>
-                </div>
-              ) : (
-                ""
-              )}
-              {account?.isConnected &&
-                BalanceNFTValue != null &&
-                BalanceNFTValue.NFTbalance == 1 &&
-                GameStatusValue != null &&
-                GameStatusValue.gameStatus == 1 &&
-                !approved && (
-                  <button
-                    className="relative mx-auto pixelated btnApproval"
-                    onClick={() => approveM03()}
-                  ></button>
-                )} */}
-              {/* {hasWallet && !account ? (
-                <ConnectWallet close={() => setHasWallet(false)} />
-              ) : null} */}
-
               {/* Connect Wallet */}
               {!wallet?.isConnected && (
                 <button
