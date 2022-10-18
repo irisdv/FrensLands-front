@@ -698,8 +698,7 @@ export const Map = (props: any) => {
       ) : (
         <></>
       )}
-
-      {/* {frensArray &&
+      {frensArray &&
         Object.keys(frensArray).length > 0 &&
         frensArray.map((fren: any, index: number) => {
           return (
@@ -711,7 +710,7 @@ export const Map = (props: any) => {
               frenTexture={frenTexture}
             />
           );
-        })} */}
+        })}
     </>
   );
 };

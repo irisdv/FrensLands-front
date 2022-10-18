@@ -86,7 +86,7 @@ export interface INewGameState {
     status: number
   ) => void;
   updateMapBlock: (_map: any[]) => void;
-  transactions : any[];
+  transactions: any[];
 }
 
 export const NewGameState: INewGameState = {
@@ -443,11 +443,13 @@ export const NewAppStateProvider: React.FC<
       console.log("playerArray", playerArray);
       //  - - - - - - DATA IN ARRAYS - - - - - - END
 
-
       // Build incoming Array and update if action finished
       var time = Date.now();
-      var incomingArray : any[] = incomingComposeD(inventory[0].incomingInventories, time);
-      var incomingArrStr = incomingCompose(incomingArray)
+      var incomingArray: any[] = incomingComposeD(
+        inventory[0].incomingInventories,
+        time
+      );
+      var incomingArrStr = incomingCompose(incomingArray);
       let _updateArr = updateIncomingInventories(playerArray, incomingArrStr);
 
       dispatch({
@@ -559,7 +561,7 @@ export const NewAppStateProvider: React.FC<
         updateInventory,
         updateIncomingActions,
         updateMapBlock,
-        transactions: state.transactions
+        transactions: state.transactions,
       }}
     >
       {props.children}

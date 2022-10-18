@@ -30,12 +30,18 @@ export function BF_resource(props: any) {
   } = props;
   //   Contexts
   const { updateBuildingFrame } = useSelectContext();
-  const { updateInventory, updateIncomingActions, addAction, wallet, player, incomingArray } =
-    useNewGameContext();
+  const {
+    updateInventory,
+    updateIncomingActions,
+    addAction,
+    wallet,
+    player,
+    incomingArray,
+  } = useNewGameContext();
   const { tokenId } = useGameContext();
   const [showNotif, setShowNotif] = useState(false);
 
-  console.log('incoming array in BF', incomingArray)
+  console.log("incoming array in BF", incomingArray);
 
   const inventoryValue = useMemo(() => {
     return inventory;
@@ -87,8 +93,8 @@ export function BF_resource(props: any) {
       }
       var _mapComposed = ComposeD(newMap);
 
-      let _incomingArray = addElemToIncoming(incomingArray, uid, time)
-      var incomingArrStr = incomingCompose(_incomingArray)
+      let _incomingArray = addElemToIncoming(incomingArray, uid, time);
+      var incomingArrStr = incomingCompose(_incomingArray);
 
       const _isHarvested = harvestAction(
         player,
@@ -104,7 +110,7 @@ export function BF_resource(props: any) {
   };
 
   const get_map = async () => {
-    console.log('getting block')
+    console.log("getting block");
     if (wallet.account) {
       const _res = await wallet.account.callContract({
         contractAddress:
@@ -112,16 +118,21 @@ export function BF_resource(props: any) {
         entrypoint: "read_map_block",
         calldata: [number.toFelt(1), number.toFelt(posX), number.toFelt(posY)],
       });
-      console.log('res', _res.result[0])
-      console.log(number.hexToDecimalString(_res.result[0]))
+      console.log("res", _res.result[0]);
+      console.log(number.hexToDecimalString(_res.result[0]));
     }
-  }
+  };
 
   return (
     <>
       <div id="bFrame" className="selectDisable absolute harvestFrame">
         {/* Btn close frame */}
-        <button style={{zIndex: '10', pointerEvents: 'all'}} onClick={() => get_map()}>Get chain block </button>
+        {/* <button
+          style={{ zIndex: "10", pointerEvents: "all" }}
+          onClick={() => get_map()}
+        >
+          Get chain block{" "}
+        </button> */}
         <div
           className="btnCloseFrame"
           onClick={() =>

@@ -94,7 +94,11 @@ export function MenuBar() {
       _calls.push({
         contractAddress: resourcesContract?.address.toLowerCase() as string,
         entrypoint: action.entrypoint as string,
-        calldata: [uint256.bnToUint256(1), number.toFelt(16), number.toFelt(10)],
+        calldata: [
+          uint256.bnToUint256(1),
+          number.toFelt(16),
+          number.toFelt(10),
+        ],
       });
     });
 
@@ -218,11 +222,15 @@ export function MenuBar() {
       _calls.push({
         contractAddress: resourcesContract?.address.toLowerCase() as string,
         entrypoint: action.entrypoint as string,
-        calldata: [uint256.bnToUint256(1), number.toFelt(16), number.toFelt(10)],
+        calldata: [
+          uint256.bnToUint256(1),
+          number.toFelt(16),
+          number.toFelt(10),
+        ],
       });
     });
 
-    console.log('_calls', _calls)
+    console.log("_calls", _calls);
 
     wallet.account.getNonce().then((nonce: any) => {
       console.log("nonce", nonce);

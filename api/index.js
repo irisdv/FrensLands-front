@@ -48,6 +48,7 @@ app.post("/api/signin", async (req, res) => {
           id: user.id,
         },
         exp: Math.floor(Date.now() / 1000) + 7200,
+        iat: undefined,
       },
       process.env.REACT_APP_SUPABASE_JWT
     );

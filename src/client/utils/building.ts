@@ -79,18 +79,18 @@ export const incomingCompose = (incomingArr: any) => {
 
 export const incomingComposeD = (comp: string, time: number) => {
   let incomingArr: any[] = [];
-  let compArr = comp.split('|');
+  let compArr = comp.split("|");
 
   compArr.map((elem: any, index: number) => {
     if (elem.length > 0) {
-      var val = elem.split('-');
+      var val = elem.split("-");
       if (val[1] + HarvestDelay < time) {
         incomingArr[index] = [];
-        incomingArr[index].id = val[0]
-        incomingArr[index].timeStamp = val[1]
+        incomingArr[index].id = val[0];
+        incomingArr[index].timeStamp = val[1];
       }
     }
-  })
+  });
   return incomingArr;
 };
 

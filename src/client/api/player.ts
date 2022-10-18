@@ -285,7 +285,7 @@ export const harvestAction = async (
   calldata: string,
   inventory: any,
   mapComposed: string,
-  incomingInventories : string
+  incomingInventories: string
 ) => {
   const _supabase = createSupabase(localStorage.getItem("user") as string);
   const { data: landData, error: landError } = await _supabase
