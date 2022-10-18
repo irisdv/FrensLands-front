@@ -16,7 +16,7 @@ import {
 } from "@apollo/client";
 
 const httpLink = createHttpLink({
-  uri: "http://goerli.indexer.frenslands.xyz:8080/graphql",
+  uri: "https://goerli.indexer.frenslands.xyz/graphql",
 });
 
 const defaultOptions: DefaultOptions = {
