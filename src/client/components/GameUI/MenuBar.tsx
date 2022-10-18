@@ -14,6 +14,7 @@ import useReinitialize from "../../hooks/invoke/useReinitialize";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
 import { useResourcesContract } from "../../hooks/contracts/resources";
 import { getPosFromId } from "../../utils/building";
+import { number, uint256 } from "starknet";
 
 // import { getStarknet } from "get-starknet";
 
@@ -55,7 +56,7 @@ export function MenuBar() {
 
   const [claimableResources, setClaimableResources] = useState<any[]>([]);
 
-  console.log("payload", payloadActions);
+  // console.log("payload", payloadActions);
 
   // useEffect(() => {
   //   console.log('useEffect zoom menubar', zoomMode)
@@ -79,15 +80,25 @@ export function MenuBar() {
     const _calls: any[] = [];
     payloadActions.forEach((action) => {
       // Build calldata
-      const _calldata: any[] = [];
-      const _data = action.calldata.split("|");
-      _data.forEach((elem: any) => {
-        _calldata.push(elem);
-      });
+      // const _calldata: any[] = [];
+      // const _data = action.calldata.split("|");
+      // _data.forEach((elem: any) => {
+      //   _calldata.push(elem);
+      // });
+      // _calls.push({
+      //   contractAddress: resourcesContract?.address.toLowerCase() as string,
+      //   entrypoint: action.entrypoint as string,
+      //   calldata: _calldata,
+      // });
+
       _calls.push({
         contractAddress: resourcesContract?.address.toLowerCase() as string,
         entrypoint: action.entrypoint as string,
-        calldata: _calldata,
+        calldata: [
+          uint256.bnToUint256(1),
+          number.toFelt(16),
+          number.toFelt(10),
+        ],
       });
     });
 
@@ -196,18 +207,30 @@ export function MenuBar() {
 
     const _calls: any[] = [];
     payloadActions.forEach((action) => {
-      // Build calldata
-      const _calldata: any[] = [];
-      const _data = action.calldata.split("|");
-      _data.forEach((elem: any) => {
-        _calldata.push(elem);
-      });
+      // // Build calldata
+      // const _calldata: any[] = [];
+      // const _data = action.calldata.split("|");
+      // _data.forEach((elem: any) => {
+      //   _calldata.push(elem);
+      // });
+      // _calls.push({
+      //   contractAddress: resourcesContract?.address.toLowerCase() as string,
+      //   entrypoint: action.entrypoint as string,
+      //   calldata: _calldata,
+      // });
+
       _calls.push({
         contractAddress: resourcesContract?.address.toLowerCase() as string,
         entrypoint: action.entrypoint as string,
-        calldata: _calldata,
+        calldata: [
+          uint256.bnToUint256(1),
+          number.toFelt(16),
+          number.toFelt(10),
+        ],
       });
     });
+
+    console.log("_calls", _calls);
 
     wallet.account.getNonce().then((nonce: any) => {
       console.log("nonce", nonce);

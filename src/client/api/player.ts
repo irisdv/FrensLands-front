@@ -284,8 +284,8 @@ export const harvestAction = async (
   entrypoint: string,
   calldata: string,
   inventory: any,
-  mapComposed: string
-  // TODO add string incomingInventories
+  mapComposed: string,
+  incomingInventories: string
 ) => {
   const _supabase = createSupabase(localStorage.getItem("user") as string);
   const { data: landData, error: landError } = await _supabase
@@ -324,7 +324,7 @@ export const harvestAction = async (
         totalPop: inventory[9],
         timeSpent: inventory[10],
         level: inventory[11],
-        // incomingInventories: incomingInventories, // TODO uncomment
+        incomingInventories: incomingInventories,
       },
     ])
     .eq("fk_landid", player["landId" as any]);

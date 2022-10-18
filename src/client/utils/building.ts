@@ -6,6 +6,8 @@
 // mat_type : 1             [block mat type]
 // fertility: 2
 
+import { HarvestDelay } from "./constant";
+
 // FUNCTION TO DO
 
 // ||||||- enough to harvest : resources / population (type of resource spawned)
@@ -75,28 +77,20 @@ export const incomingCompose = (incomingArr: any) => {
   return comp;
 };
 
-export const incomingComposeD = (comp: string) => {
-  let i: number = 0;
-  let j: number = 0;
+export const incomingComposeD = (comp: string, time: number) => {
   let incomingArr: any[] = [];
-  let tempStr: string = "";
+  let compArr = comp.split("|");
 
-  while (i < comp.length) {
-    tempStr = tempStr + comp[i];
-    if (comp[i] == "-") {
-      incomingArr[j].id = parseInt(tempStr);
-      tempStr = "";
-      i++;
-      while (comp[i] != "|") {
-        tempStr = tempStr + comp[i];
-        i++;
+  compArr.map((elem: any, index: number) => {
+    if (elem.length > 0) {
+      var val = elem.split("-");
+      if (val[1] + HarvestDelay < time) {
+        incomingArr[index] = [];
+        incomingArr[index].id = val[0];
+        incomingArr[index].timeStamp = val[1];
       }
-      incomingArr[j].timeStamp = parseInt(tempStr);
     }
-
-    i++;
-    j++;
-  }
+  });
   return incomingArr;
 };
 

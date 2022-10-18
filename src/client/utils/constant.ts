@@ -12,3 +12,6 @@ export const ResArrCorresp = [
   "gold",
   "frens",
 ];
+
+export const HarvestDelay = 15000;
+export const BuildDelay = 30000;

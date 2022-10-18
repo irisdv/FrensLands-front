@@ -22,15 +22,11 @@ export default function Resources({
   const textureLoader = useMemo(() => {
     if (textArrRef && textArrRef.length > 0) {
       let textObj;
-      // if (gallery != undefined && gallery == 1) {
-      //     textObj = new TextureLoader().load("../resources/textures/Matchbox_Tiles_Objects_nogrid_0.png");
-      // } else {
       textObj = new TextureLoader().load(
         "resources/textures/Matchbox_Tiles_Objects_nogrid_" +
-          worldType.toString() +
+          (worldType - 1).toString() +
           ".png"
       );
-      // }
       textObj.repeat = new Vector2(0.0625, 0.0625);
       textObj.magFilter = NearestFilter;
       textObj.wrapS = RepeatWrapping;
@@ -43,15 +39,11 @@ export default function Resources({
   const textureLoaderSelected = useMemo(() => {
     if (textArrRef && textArrRef.length > 0) {
       let textObj;
-      // if (gallery != undefined && gallery == 1) {
-      //     textObj = new TextureLoader().load("../resources/textures/Matchbox_Tiles_Objects_Outlined_nogrid_0.png");
-      // } else {
       textObj = new TextureLoader().load(
         "resources/textures/Matchbox_Tiles_Objects_Outlined_nogrid_" +
-          worldType.toString() +
+          (worldType - 1).toString() +
           ".png"
       );
-      // }
 
       textObj.repeat = new Vector2(0.0625, 0.0625);
       textObj.magFilter = NearestFilter;
@@ -61,45 +53,6 @@ export default function Resources({
       return textObj;
     }
   }, [textArrRef]);
-
-  // const textureLoader = useMemo(() => {
-  //   if (textArrRef && textArrRef.length > 0) {
-  //     let textObj;
-  //     // if (gallery != undefined && gallery == 1) {
-  //     //     textObj = new TextureLoader().load("../resources/textures/Matchbox_Tiles_Objects_nogrid_0.png");
-  //     // } else {
-  //     textObj = new TextureLoader().load(
-  //       "resources/textures/Matchbox_Tiles_Objects_nogrid_0.png"
-  //     );
-  //     // }
-  //     textObj.repeat = new Vector2(0.0625, 0.0625);
-  //     textObj.magFilter = NearestFilter;
-  //     textObj.wrapS = RepeatWrapping;
-  //     textObj.wrapT = RepeatWrapping;
-
-  //     return textObj;
-  //   }
-  // }, [textArrRef]);
-
-  // const textureLoaderSelected = useMemo(() => {
-  //   if (textArrRef && textArrRef.length > 0) {
-  //     let textObj;
-  //     // if (gallery != undefined && gallery == 1) {
-  //     //     textObj = new TextureLoader().load("../resources/textures/Matchbox_Tiles_Objects_Outlined_nogrid_0.png");
-  //     // } else {
-  //     textObj = new TextureLoader().load(
-  //       "resources/textures/Matchbox_Tiles_Objects_Outlined_nogrid_0.png"
-  //     );
-  //     // }
-
-  //     textObj.repeat = new Vector2(0.0625, 0.0625);
-  //     textObj.magFilter = NearestFilter;
-  //     textObj.wrapS = RepeatWrapping;
-  //     textObj.wrapT = RepeatWrapping;
-
-  //     return textObj;
-  //   }
-  // }, [textArrRef]);
 
   function exists(path: String) {
     try {

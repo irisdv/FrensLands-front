@@ -3,13 +3,16 @@ import { useGameContext } from "../../../hooks/useGameContext";
 import { useNewGameContext } from "../../../hooks/useNewGameContext";
 import { useSelectContext } from "../../../hooks/useSelectContext";
 import {
+  addElemToIncoming,
   checkResHarvest,
   harvestResPay,
+  incomingCompose,
   receiveResHarvest,
 } from "../../../utils/building";
 import { FrameItem } from "../FrameItem";
 import { harvestAction } from "../../../api/player";
 import { ComposeD } from "../../../utils/land";
+import { number } from "starknet";
 
 export function BF_resource(props: any) {
   const {
@@ -25,13 +28,20 @@ export function BF_resource(props: any) {
     staticResourcesData,
     fullMap,
   } = props;
-
   //   Contexts
   const { updateBuildingFrame } = useSelectContext();
-  const { updateInventory, updateIncomingActions, addAction, wallet, player } =
-    useNewGameContext();
+  const {
+    updateInventory,
+    updateIncomingActions,
+    addAction,
+    wallet,
+    player,
+    incomingArray,
+  } = useNewGameContext();
   const { tokenId } = useGameContext();
   const [showNotif, setShowNotif] = useState(false);
+
+  console.log("incoming array in BF", incomingArray);
 
   const inventoryValue = useMemo(() => {
     return inventory;
@@ -55,7 +65,8 @@ export function BF_resource(props: any) {
         staticResourcesData
       );
       updateInventory(_inventory);
-      updateIncomingActions(1, _posX, _posY, uid, Date.now(), 0);
+      var time = Date.now();
+      updateIncomingActions(1, _posX, _posY, uid, time, 0);
       // Store on-chain action in context
       const calldata = tokenId + "|" + 0 + "|" + _posX + "|" + _posY;
       const entrypoint = "harvest";
@@ -82,18 +93,33 @@ export function BF_resource(props: any) {
       }
       var _mapComposed = ComposeD(newMap);
 
-      // TODO update string incomingInventories
+      let _incomingArray = addElemToIncoming(incomingArray, uid, time);
+      var incomingArrStr = incomingCompose(_incomingArray);
 
       const _isHarvested = harvestAction(
         player,
         entrypoint,
         calldata,
         _inventoryUpdated,
-        _mapComposed
-        // Send incomingInventories string
+        _mapComposed,
+        incomingArrStr
       );
     } else {
       console.log("Cannot harvest or missing tokenId");
+    }
+  };
+
+  const get_map = async () => {
+    console.log("getting block");
+    if (wallet.account) {
+      const _res = await wallet.account.callContract({
+        contractAddress:
+          "0x060363b467a2b8d409234315babe6be180020e0bb65d708c0d09be6fd3691a2f",
+        entrypoint: "read_map_block",
+        calldata: [number.toFelt(1), number.toFelt(posX), number.toFelt(posY)],
+      });
+      console.log("res", _res.result[0]);
+      console.log(number.hexToDecimalString(_res.result[0]));
     }
   };
 
@@ -101,6 +127,12 @@ export function BF_resource(props: any) {
     <>
       <div id="bFrame" className="selectDisable absolute harvestFrame">
         {/* Btn close frame */}
+        {/* <button
+          style={{ zIndex: "10", pointerEvents: "all" }}
+          onClick={() => get_map()}
+        >
+          Get chain block{" "}
+        </button> */}
         <div
           className="btnCloseFrame"
           onClick={() =>

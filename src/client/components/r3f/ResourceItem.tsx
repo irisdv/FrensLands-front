@@ -3,7 +3,12 @@ import { useFrame } from "@react-three/fiber";
 import { Vector2 } from "three";
 import { useSelectContext } from "../../hooks/useSelectContext";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
-import { receiveResHarvest } from "../../utils/building";
+import {
+  deleteElemFromIncoming,
+  incomingCompose,
+  receiveResHarvest,
+} from "../../utils/building";
+import { updateIncomingInventories } from "../../api/player";
 
 interface IBlock {
   block: any;
@@ -40,7 +45,6 @@ export const ResourceItem = memo<IBlock>(
     const [clicked, setClicked] = useState(false);
     const [localTexture, setLocalTexture] = useState<any>(null);
     const [localTextureSelected, setLocalTextureSelected] = useState<any>(null);
-    // const [localTextureClock, setLocalTextureClock] = useState<any>(null);
     const { frameData, updateBuildingFrame } = useSelectContext();
     const {
       harvestActions,
@@ -50,62 +54,9 @@ export const ResourceItem = memo<IBlock>(
       fullMap,
       updateInventory,
       updateMapBlock,
+      incomingArray,
+      player,
     } = useNewGameContext();
-
-    const animArray: any = [
-      [
-        [199, 200, 201, 202],
-        [215, 216, 217, 218],
-        [231, 232, 233, 234],
-      ],
-      [
-        [199, 200, 201, 202],
-        [215, 216, 217, 218],
-        [231, 232, 233, 234],
-      ],
-      [
-        [199, 200, 201, 202],
-        [215, 216, 217, 218],
-        [231, 232, 233, 234],
-      ],
-      [
-        [199, 200, 201, 202],
-        [215, 216, 217, 218],
-        [231, 232, 233, 234],
-      ],
-      [
-        [199, 200, 201, 202],
-        [215, 216, 217, 218],
-        [231, 232, 233, 234],
-      ],
-    ];
-    const animSelectedArray: any = [
-      [
-        [199, 200, 201, 202],
-        [215, 216, 217, 218],
-        [231, 232, 233, 234],
-      ],
-      [
-        [199, 200, 201, 202],
-        [215, 216, 217, 218],
-        [231, 232, 233, 234],
-      ],
-      [
-        [199, 200, 201, 202],
-        [215, 216, 217, 218],
-        [231, 232, 233, 234],
-      ],
-      [
-        [199, 200, 201, 202],
-        [215, 216, 217, 218],
-        [231, 232, 233, 234],
-      ],
-      [
-        [199, 200, 201, 202],
-        [215, 216, 217, 218],
-        [231, 232, 233, 234],
-      ],
-    ];
 
     const frameDataValue = useMemo(() => {
       if (frameData != null && clicked) {
@@ -304,23 +255,18 @@ export const ResourceItem = memo<IBlock>(
         (Math.random() * (15 - 5) + 5).toFixed(0)
       );
       let randAnim: number = parseInt((Math.random() * (4 - 1) + 1).toFixed(0));
-      console.log("animIndex = ", animIndex);
+      // console.log("animIndex = ", animIndex);
 
       if (randTree < randRatio) {
-        if (block[9] > 0) {
-          if (block[3] == 3) {
-            if (block[7] == 1) {
-              //textureType = findTextByID(animArray[worldType][block[9] - 1][animIndex]) // - 1])
-              textureType = findTextByID(
-                animArray[worldType][block[9] - 1][randAnim - 1]
-              );
-              const localT = textureLoader.clone();
-              localT.needsUpdate = true;
-              localT.offset.set(textureType.x, textureType.y);
-              setLocalTexture(localT);
-              return textureType;
-            }
-          }
+        if (block.infraType == 1 && block.type == 1 && block.state == 1) {
+          textureType = findTextByID(
+            parseInt(staticResources[block.randType - 1].sprites[randAnim - 1])
+          );
+          const localT = textureLoader.clone();
+          localT.needsUpdate = true;
+          localT.offset.set(textureType.x, textureType.y);
+          setLocalTexture(localT);
+          return textureType;
         }
       }
     }, [animIndex]);
@@ -329,22 +275,19 @@ export const ResourceItem = memo<IBlock>(
       let textureType: Vector2 = new Vector2(0, 0);
 
       if (
-        (blockValue[0] == position.x && blockValue[1] == position.y) ||
-        (blockValue[0] == frameData?.posX && blockValue[1] == frameData?.posY)
+        (blockValue.posX == position.x && blockValue.posY == position.y) ||
+        (blockValue.posX == frameData?.posX &&
+          blockValue.posY == frameData?.posY)
       ) {
-        if (block[9] > 0) {
-          if (block[3] == 3) {
-            if (block[7] == 1) {
-              textureType = findTextByID(
-                animSelectedArray[worldType][block[9] - 1][animIndex]
-              ); //- 1])
-              const localT = textureSelected.clone();
-              localT.needsUpdate = true;
-              localT.offset.set(textureType.x, textureType.y);
-              setLocalTextureSelected(localT);
-              return textureType;
-            }
-          }
+        if (block.infraType == 1 && block.type == 1 && block.state == 1) {
+          textureType = findTextByID(
+            parseInt(staticResources[block.randType - 1].sprites[animIndex])
+          );
+          const localT = textureSelected.clone();
+          localT.needsUpdate = true;
+          localT.offset.set(textureType.x, textureType.y);
+          setLocalTextureSelected(localT);
+          return textureType;
         }
       }
     }, [animIndex]);
@@ -397,8 +340,14 @@ export const ResourceItem = memo<IBlock>(
       fullMap[blockValue.posY][blockValue.posX].id = blockValue.id;
       updateMapBlock(_map);
 
-      // TODO Update string in DB inventories
-      // Call updateIncomingInventories(player, newString incomingInventories)
+      // Update incoming array
+      console.log("incoming array", incomingArray);
+      let _incomingArray = deleteElemFromIncoming(incomingArray, blockValue.id);
+      console.log("_incomingArray updated", _incomingArray);
+      var incomingArrStr = incomingCompose(_incomingArray);
+      console.log("_incomingArray string", incomingArrStr);
+      let _updateIncoming = updateIncomingInventories(player, incomingArrStr);
+      console.log("incoming array string", incomingArray);
     };
 
     useFrame(() => {
