@@ -3,7 +3,8 @@ import { useFrame } from "@react-three/fiber";
 import { Vector2 } from "three";
 import { useSelectContext } from "../../hooks/useSelectContext";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
-import { receiveResHarvest } from "../../utils/building";
+import { deleteElemFromIncoming, incomingCompose, receiveResHarvest } from "../../utils/building";
+import { updateIncomingInventories } from "../../api/player";
 
 interface IBlock {
   block: any;
@@ -48,6 +49,8 @@ export const ResourceItem = memo<IBlock>(
       fullMap,
       updateInventory,
       updateMapBlock,
+      incomingArray,
+      player
     } = useNewGameContext();
 
     const frameDataValue = useMemo(() => {
@@ -285,8 +288,15 @@ export const ResourceItem = memo<IBlock>(
       fullMap[blockValue.posY][blockValue.posX].id = blockValue.id;
       updateMapBlock(_map);
 
-      // TODO Update string in DB inventories
-      // Call updateIncomingInventories(player, newString incomingInventories)
+      // Update incoming array
+      console.log('incoming array', incomingArray)
+      let _incomingArray = deleteElemFromIncoming(incomingArray, blockValue.id)
+      console.log('_incomingArray updated', _incomingArray)
+      var incomingArrStr = incomingCompose(_incomingArray)
+      console.log('_incomingArray string', incomingArrStr)
+      let _updateIncoming = updateIncomingInventories(player, incomingArrStr)
+      console.log('incoming array string', incomingArray)
+
     };
 
     useFrame(() => {

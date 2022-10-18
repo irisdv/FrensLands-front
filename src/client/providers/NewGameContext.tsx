@@ -13,8 +13,12 @@ import {
   cycleRegisterCompose,
   cycleRegisterComposeD,
   harvestResPay,
+  incomingComposeD,
+  incomingCompose,
 } from "../utils/building";
 import { ComposeD } from "../utils/land";
+import { BuildDelay, HarvestDelay } from "../utils/constant";
+import { updateIncomingInventories } from "../api/player";
 
 export interface ILand {
   id: number;
@@ -58,6 +62,7 @@ export interface INewGameState {
   playerBuilding: any[];
   counters: any[];
   payloadActions: any[];
+  incomingArray: any[];
   initPlayer: (wallet: IStarknetWindowObject) => void;
   initGameSession: (
     inventory: any,
@@ -81,6 +86,7 @@ export interface INewGameState {
     status: number
   ) => void;
   updateMapBlock: (_map: any[]) => void;
+  transactions : any[];
 }
 
 export const NewGameState: INewGameState = {
@@ -96,6 +102,7 @@ export const NewGameState: INewGameState = {
   playerBuilding: [],
   counters: [],
   payloadActions: [],
+  incomingArray: [],
   initPlayer: (wallet) => {},
   initGameSession: (
     inventory,
@@ -112,6 +119,7 @@ export const NewGameState: INewGameState = {
   harvestActions: [],
   updateIncomingActions: (infraType, posX, posY, uid, time, status) => {},
   updateMapBlock: (_map) => {},
+  transactions: [],
 };
 
 const NewStateContext = React.createContext(NewGameState);
@@ -133,6 +141,7 @@ interface SetGameSession {
   staticResources: any[];
   staticBuildings: any[];
   counters: any[];
+  incomingArray: any[];
 }
 
 interface SetPayloadAction {
@@ -193,7 +202,6 @@ function reducer(state: INewGameState, action: Action): INewGameState {
       };
     }
     case "set_gameSession": {
-      console.log("action received", action);
       return {
         ...state,
         player: action.player,
@@ -204,6 +212,7 @@ function reducer(state: INewGameState, action: Action): INewGameState {
         staticBuildings: action.staticBuildings,
         staticResources: action.staticResources,
         counters: action.counters,
+        incomingArray: action.incomingArray,
       };
     }
     case "set_payloadAction": {
@@ -286,6 +295,8 @@ export const NewAppStateProvider: React.FC<
             // Reset error and return new block.
             console.log("new block", newBlock);
             // TODO call functions when block is updated
+            // TODO check newBlock.transactions against transactions array
+            // If tx validated then show notif and delete tx in array + update player_actions db to validated
             return newBlock;
           });
         })
@@ -357,29 +368,29 @@ export const NewAppStateProvider: React.FC<
       //console.log("test = ", test);
       //console.log("test2 = ", test2);
 
-      // //  - - - - - - INVENTORY - - - - - -
+      //  - - - - - - INVENTORY - - - - - -
       const inventoryArray: any[] = [];
 
-      // inventoryArray[0] = inventory[0].wood;
-      // inventoryArray[1] = inventory[0].rock;
-      // inventoryArray[2] = inventory[0].food;
-      inventoryArray[0] = 100;
-      inventoryArray[1] = 100;
-      inventoryArray[2] = 100;
-      // inventoryArray[3] = inventory[0].metal;
-      inventoryArray[3] = 100;
+      inventoryArray[0] = inventory[0].wood;
+      inventoryArray[1] = inventory[0].rock;
+      inventoryArray[2] = inventory[0].food;
+      // inventoryArray[0] = 100;
+      // inventoryArray[1] = 100;
+      // inventoryArray[2] = 100;
+      inventoryArray[3] = inventory[0].metal;
+      // inventoryArray[3] = 100;
       inventoryArray[4] = inventory[0].coal;
       inventoryArray[5] = inventory[0].energy;
-      // inventoryArray[6] = inventory[0].coin;
-      inventoryArray[6] = 100;
+      inventoryArray[6] = inventory[0].coin;
+      // inventoryArray[6] = 100;
       inventoryArray[7] = inventory[0].gold;
-      // inventoryArray[8] = inventory[0].freePop;
-      // inventoryArray[9] = inventory[0].totalPop;
-      inventoryArray[8] = 100;
-      inventoryArray[9] = 100;
+      inventoryArray[8] = inventory[0].freePop;
+      inventoryArray[9] = inventory[0].totalPop;
+      // inventoryArray[8] = 100;
+      // inventoryArray[9] = 100;
       inventoryArray[10] = inventory[0].timeSpent;
-      // inventoryArray[11] = inventory[0].level;
-      inventoryArray[11] = 8;
+      inventoryArray[11] = inventory[0].level;
+      // inventoryArray[11] = 8;
 
       console.log("inventoryArray = ", inventoryArray);
 
@@ -432,6 +443,13 @@ export const NewAppStateProvider: React.FC<
       console.log("playerArray", playerArray);
       //  - - - - - - DATA IN ARRAYS - - - - - - END
 
+
+      // Build incoming Array and update if action finished
+      var time = Date.now();
+      var incomingArray : any[] = incomingComposeD(inventory[0].incomingInventories, time);
+      var incomingArrStr = incomingCompose(incomingArray)
+      let _updateArr = updateIncomingInventories(playerArray, incomingArrStr);
+
       dispatch({
         type: "set_gameSession",
         player: playerArray,
@@ -441,6 +459,7 @@ export const NewAppStateProvider: React.FC<
         playerBuilding: mapBuildingArray,
         staticBuildings: fixBuildVal,
         staticResources: fixResVal,
+        incomingArray: incomingArray,
         counters: counters,
       });
     },
@@ -477,9 +496,9 @@ export const NewAppStateProvider: React.FC<
           currArr[posY][posX].status = status;
           currArr[posY][posX].harvestStartTime = time;
           if (type == 1) {
-            currArr[posY][posX].harvestDelay = 15000;
+            currArr[posY][posX].harvestDelay = HarvestDelay;
           } else if (type == 2) {
-            currArr[posY][posX].harvestDelay = 30000;
+            currArr[posY][posX].harvestDelay = BuildDelay;
           }
         } else {
           currArr[posY] = [];
@@ -488,9 +507,9 @@ export const NewAppStateProvider: React.FC<
           currArr[posY][posX].status = status;
           currArr[posY][posX].harvestStartTime = time;
           if (type == 1) {
-            currArr[posY][posX].harvestDelay = 15000;
+            currArr[posY][posX].harvestDelay = HarvestDelay;
           } else if (type == 2) {
-            currArr[posY][posX].harvestDelay = 30000;
+            currArr[posY][posX].harvestDelay = BuildDelay;
           }
         }
         dispatch({
@@ -533,12 +552,14 @@ export const NewAppStateProvider: React.FC<
         counters: state.counters,
         payloadActions: state.payloadActions,
         harvestActions: state.harvestActions,
+        incomingArray: state.incomingArray,
         initPlayer,
         initGameSession,
         addAction,
         updateInventory,
         updateIncomingActions,
         updateMapBlock,
+        transactions: state.transactions
       }}
     >
       {props.children}
