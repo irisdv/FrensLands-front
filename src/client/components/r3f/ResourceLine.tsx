@@ -13,7 +13,7 @@ export const ResourceLine = (props: any) => {
     worldType,
     staticBuildings,
     staticResources,
-    animIndex
+    animIndex,
   } = props;
 
   const lineValue = useMemo(() => {

@@ -148,26 +148,19 @@ export const Map = (props: any) => {
   }
 
   useFrame(({ mouse, raycaster }) => {
-
-
-
     // CREATE A VARIABLE WITH THE SPEED VALUE TO CHANGE IT WITH WEATHER
-    if ((Date.now() - curT) > 100)
-    {
-        if (animIndex <= 3)
-        {
-            setAnimIndex(animIndex + 1)
-        }
-        
-        if (animIndex == 3)
-        {
-            setAnimIndex(0)
-        }
+    if (Date.now() - curT > 100) {
+      if (animIndex <= 3) {
+        setAnimIndex(animIndex + 1);
+      }
 
-        //console.log("animIndex = ", animIndex)
-        setCurT(Date.now())
+      if (animIndex == 3) {
+        setAnimIndex(0);
+      }
+
+      //console.log("animIndex = ", animIndex)
+      setCurT(Date.now());
     }
-
 
     currBlockPos = new Vector2(0, 0);
 
