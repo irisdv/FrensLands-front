@@ -86,6 +86,8 @@ export const Map = (props: any) => {
   const [tempBuildMesh, setTempBuildMesh] = useState(new Vector3(0, 0, 0));
   const [spaceValid, setSpaceValid] = useState(0);
   const [UBlockIDs, setUBlockIDs] = useState(buildingsIDs);
+  const [animIndex, setAnimIndex] = useState(1);
+  const [curT, setCurT] = useState(Date.now());
 
   // Select objects
   const [objectSelected, setObjectSelected] = useState(0);
@@ -146,6 +148,27 @@ export const Map = (props: any) => {
   }
 
   useFrame(({ mouse, raycaster }) => {
+
+
+
+    // CREATE A VARIABLE WITH THE SPEED VALUE TO CHANGE IT WITH WEATHER
+    if ((Date.now() - curT) > 100)
+    {
+        if (animIndex <= 3)
+        {
+            setAnimIndex(animIndex + 1)
+        }
+        
+        if (animIndex == 3)
+        {
+            setAnimIndex(0)
+        }
+
+        //console.log("animIndex = ", animIndex)
+        setCurT(Date.now())
+    }
+
+
     currBlockPos = new Vector2(0, 0);
 
     const intersects = raycaster.intersectObjects(scene.children, true);
@@ -659,6 +682,7 @@ export const Map = (props: any) => {
             worldType={worldType}
             staticBuildings={staticBuildings}
             staticResources={staticResources}
+            animIndex={animIndex}
           />
         )}
 
