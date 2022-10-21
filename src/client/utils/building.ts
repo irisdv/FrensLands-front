@@ -285,15 +285,15 @@ export const cancelMaintainBuilding = (
   return inventory;
 };
 
-// /**
-//  * checkResMaintainMsg
-//  *  * Checks if a player can pay production cost of a given building and returns resources lacking
-//  * @param id {number} type id of building to maintain
-//  * @param inventory {[]} player inventory
-//  * @param fixBuildVal {[]} building static data
-//  * @param multiplier {number}
-//  * @return res {[]} array of resources lacking
-//  */
+/**
+ * checkResMaintainMsg
+ *  * Checks if a player can pay production cost of a given building and returns resources lacking
+ * @param id {number} type id of building to maintain
+ * @param inventory {[]} player inventory
+ * @param fixBuildVal {[]} building static data
+ * @param multiplier {number}
+ * @return res {[]} array of resources lacking
+ */
 export const checkResMaintainMsg = (
   id: number,
   inventory: any,
@@ -757,37 +757,35 @@ export const cancelClaim = (
 /**
  * createBuildingPay
  *  * spend resources to build
- *  TODO return multiple values + link to positions
  * @param id {number} type id of building to move
- * @param mapBuildingArray {[]} player buildings
  * @param inventory {[]} player inventory
  * @param fixBuildVal {[]} building static data
- * ? return an array : [inventory, mapBuildingArray]
  * @return inventory & mapBuildingArray updated
  */
 export const createBuildingPay = (
   id: number,
-  // mapBuildingArray: any,
   inventory: any,
   fixBuildVal: any
 ) => {
   let i: number = 0;
 
-  while (i < fixBuildVal[id].createCost.length) {
-    if (i != 9) {
-      inventory[i] -= fixBuildVal[id].createCost[i];
-    }
+  while (i <= 8) {
+    inventory[i] -= fixBuildVal[id].createCost[i];
     i++;
   }
-  // mapBuildingArray = addToBuildingArray(mapBuildingArray, id, 0, 0, 0, 0);
-  // NEED TO RETURN MAPBUILDINGARRAY AND CONNECT THE POSITIONS
+  // handle buildings bringing new pop
+  if (fixBuildVal[id].createCost[9] > 0) {
+    inventory[9] += fixBuildVal[id].createCost[9];
+    inventory[8] += fixBuildVal[id].createCost[9];
+  }
+
+  console.log("inventory after pay building", inventory);
   return inventory;
 };
 
 /**
  * addToBuildingArray
  * * Add a new building to player array
- * TODO need to test it it's [mapBuildingArray.length + 1]
  * @param mapBuildingArray {[]}
  * @param type {number}
  * @param posX {number}
@@ -839,31 +837,34 @@ export const deleteFromBuildingArray = (mapBuildingArray: any, uid: number) => {
 /**
  * destroyBuilding_
  * * Delete a building from player's building array
- * ? check right way to delete an element
- * @param uid {[]}
- * @param id {[]}
- * @param mapBuildingArray {[]}
- * @param uid {number} uid of building to destroy
- * ? return array w/ [inventory, mapBuildingArray]
- * @return inventory {[]} updated
+ * @param id {[]} type of building destroyed
+ * @param inventory {[]} player inventory
+ * @param fixBuildVal {[]} static data of buildings
+ * @return inventory {[]} updated player inventory
  */
 export const destroyBuilding_ = (
-  // uid: number,
   id: number,
-  // mapBuildingArray: any,
   inventory: any,
   fixBuildVal: any
 ) => {
   let i: number = 0;
-  while (i < fixBuildVal[id].createCost.length) {
+  while (i < 8) {
     var quotient =
       (fixBuildVal[id].createCost[i] - (fixBuildVal[id].createCost[i] % 2)) / 2;
     console.log("resources back from destroy", quotient);
     inventory[i] += quotient;
     i++;
   }
-  // mapBuildingArray = deleteFromBuildingArray(mapBuildingArray, uid);
-  // NEED TO RETURN MAPBUILDINGARRAY AS WELL
+
+  if (fixBuildVal[id].createCost[8] > 0) {
+    // Pop working in the building goes back into freePop
+    inventory[8] += fixBuildVal[id].createCost[8];
+  }
+  if (fixBuildVal[id].createCost[9] > 0) {
+    // Pop arrived by building leaves community
+    inventory[9] -= fixBuildVal[id].createCost[9];
+    inventory[8] -= fixBuildVal[id].createCost[9];
+  }
   return inventory;
 };
 
@@ -885,7 +886,6 @@ export const repairBuildingPay = (
 /**
  * harvestResPay
  * * Pay resources when harvesting
- * ? check right way to delete an element
  * @param id {number} type id of resource harvested
  * @param uid {[]} unique id of resource harvested
  * @param inventory {[]} player inventory

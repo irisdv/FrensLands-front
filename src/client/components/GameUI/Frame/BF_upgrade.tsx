@@ -98,6 +98,10 @@ export function BF_upgrade(props: any) {
   const destroyBuilding = (_typeId: number, _posX: number, _posY: number) => {
     if (tokenId) {
       console.log("inventory before destroy", inventory);
+      console.log(
+        "staticBuildingsData building",
+        staticBuildingsData[_typeId - 1]
+      );
       let _inventory = destroyBuilding_(
         _typeId - 1,
         inventory,
