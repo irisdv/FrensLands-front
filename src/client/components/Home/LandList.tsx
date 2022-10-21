@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useQuery, gql } from "@apollo/client";
-
 import { hexToDecimalString } from "starknet/utils/number";
 import { allMetadata } from "../../data/metadata";
 import UI_Frames from "../../style/resources/front/Ui_Frames3.svg";
 import { getLandByTokenId, initGame } from "../../api/player";
-import { useNewGameContext } from "../../hooks/useNewGameContext";
+// import { useNewGameContext } from "../../hooks/useNewGameContext";
 import { useFLContract } from "../../hooks/contracts/frenslands";
 import { useNavigate } from "react-router-dom";
+import { useTestContract } from "../../hooks/contracts/test";
 
 export const TOKENS_QUERY = gql`
   query tokens($owner: HexValue) {
@@ -28,13 +28,13 @@ export const INIT_QUERY = gql`
 `;
 
 export default function MenuHome(props: any) {
-  const { account, userId } = props;
-  const { wallet } = useNewGameContext();
+  const { account, userId, starknet } = props;
   const { contract: frenslands } = useFLContract();
   const navigate = useNavigate();
-
   const [isReady, setIsReady] = useState(false);
   const [initArray, setInitArray] = useState<any[]>([]);
+  // ! test
+  const testContract = useTestContract();
 
   const {
     data,
@@ -86,31 +86,49 @@ export default function MenuHome(props: any) {
       } else {
         // If not init onchain send tx
         // Send tx to init game onchain
-        let nonce = await wallet.account.getNonce();
-        const result = await wallet.account.execute(
-          [
-            {
-              contractAddress: frenslands?.address as string,
-              entrypoint: "start_game",
-              calldata: [_tokenId, 0, initArray[_tokenId].biomeId],
-            },
-          ],
-          undefined,
-          { maxFee: 500, nonce }
-        );
-        console.log("result from tx", result);
+        // let nonce = await wallet.account.getNonce();
+        // const result = await wallet.account.execute(
+        //   [
+        //     {
+        //       contractAddress: frenslands?.address as string,
+        //       entrypoint: "start_game",
+        //       calldata: [_tokenId, 0, initArray[_tokenId].biomeId],
+        //     },
+        //   ],
+        //   undefined,
+        //   { maxFee: 500, nonce }
+        // );
+        // console.log("result from tx", result);
+
+        const result = await starknet.account.execute([
+          {
+            contractAddress: testContract.address as string,
+            entrypoint: "harvest",
+            calldata: [1],
+          },
+        ]);
+        console.log("result", result);
+        // const result = {
+        //   code: "RECEIVED",
+        //   transaction_hash:
+        //     "0x1c4a2c6c3398cac008a66e727af63248b55aac85e6259308f059b34fc0ce311",
+        // };
 
         // Init game in db
-        let _initializeGame = initGame(initArray[_tokenId].id);
-        console.log("init", _initializeGame);
+        let _initializeGame = await initGame(
+          userId,
+          initArray[_tokenId].id,
+          initArray[_tokenId].biomeId,
+          _tokenId,
+          result
+        );
+        console.log("_initializeGame", _initializeGame);
 
         // Go the page play w/ tx ongoing tx information
         if (result)
           navigate("/play", {
             state: {
               landId: _tokenId,
-              initTx: result.transaction_hash,
-              initStatus: result.status,
             },
           });
       }

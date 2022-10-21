@@ -1,5 +1,3 @@
-// TODO Recompose fullMap from local fullMapArray
-
 /**
  * revComposeD
  * * Decompose land block values into an array formatted tempArray[posX][posY][param]
@@ -24,6 +22,10 @@ export const revComposeD = (compMap: string, account: string) => {
 
   tempArray[y] = [];
   const compMapSplit = compMap.split("|");
+
+  var counters: any = [];
+  counters[1] = [];
+  counters[2] = [];
 
   while (i < compMapSplit.length) {
     if (x > 40) {
@@ -82,10 +84,23 @@ export const revComposeD = (compMap: string, account: string) => {
     tempArray[y][x].posX = x; // posX
     tempArray[y][x].posY = y; // posY
 
+    if (tempArray[y][x].infraType != 0) {
+      // * Counters
+      let currCounter = 0;
+      if (
+        counters[tempArray[y][x].infraType] &&
+        counters[tempArray[y][x].infraType][tempArray[y][x].type] > 0
+      )
+        currCounter = counters[tempArray[y][x].infraType][tempArray[y][x].type];
+      counters[tempArray[y][x].infraType][tempArray[y][x].type] =
+        currCounter + 1;
+    }
+
     x++;
     i++;
   }
-  return tempArray;
+
+  return { tempArray, counters };
 };
 
 /**
@@ -282,4 +297,69 @@ export const generateFullMap = () => {
     i++;
   }
   return fullMap;
+};
+
+/**
+ * calculatePlayerLevel
+ * * calculate the level of a player
+ * @param currLevel {number} player current level
+ * @param mapBuildingArray {[]} array of buildings built by the player
+ * @param counters {[]} array of buildings counters
+ * @return level {number} updated level number
+ */
+const calculatePlayerLevel = (
+  currLevel: number,
+  mapBuildingArray: any[],
+  counters: any[]
+) => {
+  if (currLevel == 1) {
+    var cabin = mapBuildingArray.filter((building) => {
+      return building.type == 1;
+    });
+    if (cabin && cabin[0].decay == 0) return 2;
+  } else if (currLevel == 2) {
+    //     if (counters[4] && counters[4] > 0 && counters[16] && counters[16] > 0) {
+    return 3;
+  } else if (currLevel) {
+  }
+
+  //     if (frontArray[8][20][7] == 2) setLevel(2);
+  //     if (counters[4] && counters[4] > 0 && counters[16] && counters[16] > 0) {
+  //       setLevel(3);
+  //     }
+  //     if (counters[21] && counters[21] > 0) setLevel(4);
+  //     if (counters[8] && counters[7] && counters[8] > 0 && counters[7] > 0) {
+  //       setLevel(5);
+  //     }
+  //     if (counters[9] && counters[11] && counters[9] > 0 && counters[11] > 0) {
+  //       setLevel(6);
+  //     }
+  //     if (counters[22] && counters[22] > 0) setLevel(7);
+  //     if (counters[5] && counters[5] > 0) setLevel(8);
+  //     if (
+  //       counters[4] > 0 &&
+  //       counters[5] > 0 &&
+  //       counters[6] > 0 &&
+  //       counters[7] > 0 &&
+  //       counters[8] > 0 &&
+  //       counters[9] > 0 &&
+  //       counters[10] > 0 &&
+  //       counters[11] > 0 &&
+  //       counters[12] > 0 &&
+  //       counters[13] > 0 &&
+  //       counters[14] > 0 &&
+  //       counters[15] > 0 &&
+  //       counters[16] > 0 &&
+  //       counters[17] > 0 &&
+  //       counters[18] > 0 &&
+  //       counters[19] > 0 &&
+  //       counters[21] > 0 &&
+  //       counters[22] > 0 &&
+  //       counters[23] > 0 &&
+  //       counters[24] > 0 &&
+  //       counters[25] > 0 &&
+  //       counters[26] > 0
+  //     ) {
+  //       setLevel(9);
+  //     }
 };

@@ -2,7 +2,7 @@ import React, { useMemo, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import starknet, { uint256, number } from "starknet";
-import { getStarknet, IStarknetWindowObject } from "get-starknet";
+import { getStarknet, IStarknetWindowObject } from "@starknet/get-starknet";
 import { useStarknetCall } from "@starknet-react/core";
 import Notifications from "../components/Notifications";
 import MenuHome from "../components/Home/MenuHome";
@@ -28,114 +28,14 @@ export default function Home() {
   const [userId, setUserId] = useState("");
   const [userLands, setUserLands] = useState<any[]>([]);
   const navigate = useNavigate();
-  const {
-    updateTokenId,
-    tokenId,
-    // nonce,
-    // updateNonce,
-  } = useGameContext();
+  const { updateTokenId, tokenId } = useGameContext();
   const scrollRef = useRef<null | HTMLDivElement>(null);
 
   // Call
   const { contract: maps } = useMapsContract();
-  const { contract: frenslands } = useFLContract();
-  // const { contract: erc1155 } = useERC1155Contract();
   const [watch, setWatch] = useState(true);
   const [canPlay, setCanPlay] = useState(0);
   const [approved, setApproved] = useState<any>(null);
-  const [token, setToken] = useState("");
-  // const initializeGame = useStartGame();
-
-  // ------------------------------------- START: Fetch DB --------------------------------------------
-
-  // const initGame = async (account: string, biomeId: number) => {
-  //   var _user: string = localStorage.getItem("user") as string;
-  //   const _supabase = createSupabase(_user);
-
-  //   const response = await _supabase
-  //     .from("users")
-  //     .select(`id, account, lands (fk_userid, id, biomeId)`)
-  //     .eq("account", wallet?.account.address)
-  //     .single();
-
-  //   if (
-  //     response &&
-  //     response.data?.lands &&
-  //     Object.keys(response.data?.lands).length > 0
-  //   ) {
-  //     console.log(
-  //       "user already has a land initialized",
-  //       Object.keys(response.data?.lands).length
-  //     );
-
-  //     navigate("/play");
-
-  //     // Need to ensure that it's the right owner based on tokenId that was fetched
-  //   } else {
-  //     console.log("user need to initialize its land");
-  //     // TODO init w/ data fetched from chain (if land has not been already initialized)
-
-  //     var land_id;
-  //     const { data: inventory_data, error: inventory_error } = await _supabase
-  //       .from("inventories")
-  //       .insert([
-  //         {
-  //           fk_userid: response.data?.id,
-  //         },
-  //       ]);
-  //     console.log("inventory", inventory_data);
-
-  //     const { data: land_data, error: land_error } = await _supabase
-  //       .from("lands")
-  //       .insert([
-  //         {
-  //           fk_userid: response.data?.id,
-  //           biomeId: biomeId,
-  //           fullMap: initMap,
-  //           nbResourcesSpawned: 196,
-  //           nbResourcesLeft: 196,
-  //           nbBuilding: 1,
-  //         },
-  //       ])
-  //       .select();
-  //     console.log("land_data", land_data);
-  //     if (land_data) land_id = land_data[0].id;
-
-  //     const { data: building_data, error: building_error } = await _supabase
-  //       .from("player_buildings")
-  //       .insert([
-  //         {
-  //           fk_userid: response.data?.id,
-  //           fk_landid: land_id,
-  //           fk_buildingid: 1,
-  //           gameUid: 1,
-  //           posX: 1.2,
-  //           posY: 1.2,
-  //           blockX: 11,
-  //           blockY: 8,
-  //           decay: 100,
-  //           unitTimeCreatedAt: 0,
-  //         },
-  //       ]);
-
-  //     const { data: actions_data, error: actions_error } = await _supabase
-  //       .from("player_actions")
-  //       .insert([
-  //         {
-  //           entrypoint: "start_game",
-  //           calldata: biomeId,
-  //           validated: false,
-  //           fk_userid: response.data?.id,
-  //           fk_landid: land_id,
-  //         },
-  //       ]);
-
-  //     if (!inventory_error && !land_error && !building_error && !actions_error)
-  //       navigate("/play");
-  //   }
-  // };
-
-  // ------------------------------------- END: Fetch DB --------------------------------------------
 
   const connectWallet = async () => {
     const _wallet = await getStarknet();
@@ -187,12 +87,6 @@ export default function Home() {
     }
   }, [wallet]);
 
-  // Get current nonce value
-  // const nonceValue = useMemo(() => {
-  //   console.log("new nonce value", nonce);
-  //   return nonce;
-  // }, [nonce]);
-
   // Fetch NFT balance of user
   const { data: fetchBalanceNFTResult } = useStarknetCall({
     contract: maps,
@@ -216,53 +110,14 @@ export default function Home() {
     }
   }, [fetchBalanceNFTResult]);
 
-  const checkWasInit = async (_wallet: any, token: number) => {
-    const _res = await _wallet.account.callContract({
-      contractAddress:
-        "0x060363b467a2b8d409234315babe6be180020e0bb65d708c0d09be6fd3691a2f",
-      entrypoint: "get_owner",
-      calldata: [number.toFelt(token)],
-    });
-    return _res.result[0];
-  };
-
-  // Invoke Starting game
-  // const startGame = async (biomeId: number) => {
-  //   console.log("startingGame invoke with biomeId", biomeId);
-
-  //   // Send tx to init game on-chain
-  //   console.log("tokenId of owner", tokenId);
-
-  //   if (wallet != null && tokenId && !hasInit) {
-  //     // TODO update depending on changes to db + indexer
-  //     // returns 0x0 if not init
-  //     const wasInit = await checkWasInit(wallet, tokenId);
-  //     console.log("wasInit ? ", wasInit);
-
-  //     if (wasInit == "0x0") {
-  //       let nonce = await wallet.account.getNonce();
-  //       const result = await wallet.account.execute(
-  //         [
-  //           {
-  //             contractAddress: frenslands?.address as string,
-  //             entrypoint: "start_game",
-  //             calldata: [tokenId, 0, biomeId],
-  //           },
-  //         ],
-  //         undefined,
-  //         { maxFee: 500, nonce }
-  //       );
-  //       console.log("result", result);
-  //       // TODO keep tx hash for notif
-  //     }
-
-  //     // const tx_hash = await initializeGame(wallet, tokenId, biomeId, nonce);
-  //     // console.log('tx_hash', tx_hash);
-  //     setHasInit(1);
-  //   }
-
-  //   // Init game in DB
-  //   await initGame(wallet?.account.address as string, biomeId);
+  // const checkWasInit = async (_wallet: any, token: number) => {
+  //   const _res = await _wallet.account.callContract({
+  //     contractAddress:
+  //       "0x060363b467a2b8d409234315babe6be180020e0bb65d708c0d09be6fd3691a2f",
+  //     entrypoint: "get_owner",
+  //     calldata: [number.toFelt(token)],
+  //   });
+  //   return _res.result[0];
   // };
 
   // --------------------- STYLE ------------------------------
@@ -349,6 +204,7 @@ export default function Home() {
                       account={wallet.account.address}
                       userId={userId}
                       userLands={userLands}
+                      starknet={wallet}
                     />
                   </>
                 )}

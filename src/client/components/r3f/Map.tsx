@@ -13,10 +13,6 @@ import { useSelectContext } from "../../hooks/useSelectContext";
 import { BuildingTemp } from "./BuildingTemp";
 import Resources from "./Resources";
 import { Frens } from "./Frens";
-// import useTest from "../../hooks/invoke/useTest";
-// import { useStarknet } from "@starknet-react/core";
-
-// import useTxGame from "../../hooks/useTxGame";
 import { useNotifTransactionManager } from "../../providers/transactions";
 import useBuild from "../../hooks/invoke/useBuild";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
@@ -40,7 +36,7 @@ export const Map = (props: any) => {
     worldType,
     mouseLeftPressed,
     mouseMiddlePressed,
-    buildingsIDs,
+    // buildingsIDs,
   } = props;
 
   const mapRef = useRef<any>();
@@ -66,14 +62,15 @@ export const Map = (props: any) => {
     playerBuilding,
     updatePlayerBuilding,
     updateIncomingActions,
+    counters,
   } = useNewGameContext();
   const {
     tokenId,
     nonce,
-    updateNonce,
-    populationBusy,
-    populationFree,
-    setHarvesting,
+    // updateNonce,
+    // populationBusy,
+    // populationFree,
+    // setHarvesting,
   } = useGameContext();
   const { transactions, removeTransaction } = useNotifTransactionManager();
   const { frameData, updateBuildingFrame, sound } = useSelectContext();
@@ -85,7 +82,7 @@ export const Map = (props: any) => {
   const [tempBuildMeshSize, setTempBuildMeshSize] = useState(1);
   const [tempBuildMesh, setTempBuildMesh] = useState(new Vector3(0, 0, 0));
   const [spaceValid, setSpaceValid] = useState(0);
-  const [UBlockIDs, setUBlockIDs] = useState(buildingsIDs);
+  const [UBlockIDs, setUBlockIDs] = useState(counters["uid" as any]);
   const [animIndex, setAnimIndex] = useState(1);
   const [curT, setCurT] = useState(Date.now());
 
@@ -94,9 +91,9 @@ export const Map = (props: any) => {
   const [selectedObj, setSelectedObj] = useState<ISelectObject>();
   const [currBlockPosState, setCurrBlockPosState] = useState(new Vector2());
 
-  const nonceValue = useMemo(() => {
-    return nonce;
-  }, [nonce]);
+  // const nonceValue = useMemo(() => {
+  //   return nonce;
+  // }, [nonce]);
 
   const fullMapValue = useMemo(() => {
     return fullMap;
@@ -105,16 +102,16 @@ export const Map = (props: any) => {
   // Frens
   const frensArray = useMemo(() => {
     let max = 1;
-    if (populationBusy && populationFree) {
-      if (populationBusy + populationFree > 35) {
+    if (inventory[9]) {
+      if (inventory[9] > 35) {
         max = 7;
       } else {
-        max = parseInt(((populationBusy + populationFree) / 5).toFixed(0)) + 1;
+        max = parseInt((inventory[9] / 5).toFixed(0)) + 1;
       }
     }
     let i = 0;
     const tempArray = [];
-    while (i < max) {
+    while (i < 2) {
       const curPos = new Vector2();
       const targetPos = new Vector2();
 
@@ -129,7 +126,7 @@ export const Map = (props: any) => {
     }
 
     return tempArray;
-  }, [populationBusy, populationFree]);
+  }, [inventory[9]]);
 
   const frameDataValue = useMemo(() => {
     if (frameData != null) {
@@ -236,9 +233,6 @@ export const Map = (props: any) => {
           currBlockPos.x < 40 &&
           currBlockPos.y > 0 &&
           currBlockPos.y < 16 &&
-          // frontBlockArray[currBlockPos.y][currBlockPos.x] != null &&
-          // frontBlockArray[currBlockPos.y][currBlockPos.x][3] != null &&
-          // frontBlockArray[currBlockPos.y][currBlockPos.x][3] != 0
           frontBlockArray[currBlockPos.y][currBlockPos.x] != null &&
           frontBlockArray[currBlockPos.y][currBlockPos.x].type != null &&
           frontBlockArray[currBlockPos.y][currBlockPos.x].type != 0
@@ -351,7 +345,10 @@ export const Map = (props: any) => {
       mouseLeftPressed == 1 &&
       spaceValid == 1 &&
       placementActive == 1 &&
-      frameData?.typeId
+      frameData?.typeId &&
+      frameData?.infraType &&
+      frameData.infraType == 2 &&
+      frameData.typeId != 1
     ) {
       // NEED TO DO IT WITH RIGHT CLICK
       const pos = new Vector2();
@@ -372,10 +369,7 @@ export const Map = (props: any) => {
       // Update frontBlockArray
       frontBlockArray[pos.y][pos.x - 0.5].infraType = frameData?.infraType;
       frontBlockArray[pos.y][pos.x - 0.5].type = frameData?.typeId;
-      // frontBlockArray[pos.y][pos.x - 0.5].status = 1; // status to 0 for building
       frontBlockArray[pos.y][pos.x - 0.5].state = 1;
-      // TODO add right id of building
-      console.log("UBlockIDs", UBlockIDs);
       frontBlockArray[pos.y][pos.x - 0.5].id = UBlockIDs + 1;
       updateMapBlock(frontBlockArray);
 
@@ -428,6 +422,8 @@ export const Map = (props: any) => {
 
       // Update global variables
       setUBlockIDs(UBlockIDs + 1);
+      counters["uid" as any]++;
+      console.log("counters uid", counters["uid" as any]);
       setPlacementActive(0);
     }
     if (mouseMiddlePressed == 1 && placementActive == 1) {
@@ -479,155 +475,6 @@ export const Map = (props: any) => {
     }
     return 0;
   };
-
-  const generateBuild = useBuild();
-
-  const buildTx = async (
-    uniqueId: number,
-    typeId: number,
-    posX: number,
-    posY: number
-  ) => {
-    if (wallet && tokenId) {
-      const pos_start: number = (posY - 1) * 40 + posX;
-      const tx_hash = await generateBuild(
-        tokenId,
-        typeId,
-        1,
-        pos_start,
-        posX,
-        posY,
-        uniqueId,
-        nonceValue
-      );
-      console.log("tx hash", tx_hash);
-
-      // if (tx_hash == 0) {
-      //   // In case tx rejected
-      //   frontBlockArray[posY][posX][3] = 0;
-      //   frontBlockArray[posY][posX][4] = 0;
-      //   frontBlockArray[posY][posX][10] = 0;
-      //   setUBlockIDs(UBlockIDs - 1);
-      // } else {
-      //   updateNonce(nonceValue);
-      // }
-    }
-  };
-
-  // useEffect(() => {
-  //   // HANDLE ACCEPTED TX
-  //   const txList = transactions.filter((tx) => tx.status == "ACCEPTED_ON_L2");
-  //   if (txList) {
-  //     txList.map((tx) => {
-  //       // console.log('tx map', tx)
-
-  //       if (
-  //         tx.status == "ACCEPTED_ON_L2" &&
-  //         tx.metadata.posY &&
-  //         tx.metadata.posX
-  //       ) {
-  //         let _txExists: {} = {};
-  //         if (
-  //           Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11])
-  //             .length > 0
-  //         ) {
-  //           _txExists = frontBlockArray[tx.metadata.posY][
-  //             tx.metadata.posX
-  //           ][11].includes(tx.transactionHash);
-  //         }
-
-  //         if (
-  //           Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11])
-  //             .length == 0 ||
-  //           !_txExists
-  //         ) {
-  //           frontBlockArray[tx.metadata.posY][tx.metadata.posX][11].push(
-  //             tx.transactionHash
-  //           );
-
-  //           if (tx.metadata.method == "build") {
-  //             if (
-  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX] &&
-  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] == 0
-  //             ) {
-  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
-  //             }
-  //           } else if (tx.metadata.method == "harvest_resources") {
-  //             setHarvesting(tx.metadata.posX, tx.metadata.posY, 1);
-  //             if (frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] == 3) {
-  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0;
-  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0;
-  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] = 1;
-  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][9] = 0;
-  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
-  //             } else {
-  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] += 1;
-  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
-  //             }
-  //           } else if (tx.metadata.method == "destroy_building") {
-  //             setHarvesting(tx.metadata.posX, tx.metadata.posY, 1);
-  //             frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0;
-  //             frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0;
-  //             frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] = 1;
-  //             frontBlockArray[tx.metadata.posY][tx.metadata.posX][9] = 0;
-  //           } else if (tx.metadata.method == "upgrade") {
-  //             setHarvesting(tx.metadata.posX, tx.metadata.posY, 1);
-  //             frontBlockArray[tx.metadata.posY][tx.metadata.posX][7] += 1;
-  //           }
-  //         }
-  //       }
-  //     });
-  //   }
-
-  //   // HANDLE REJECTED TX
-  //   const rejectedTxList = transactions.filter((tx) => tx.status == "REJECTED");
-  //   if (rejectedTxList) {
-  //     txList.map((tx) => {
-  //       // TX for upgrades
-  //       if (tx.status == "REJECTED") {
-  //         let _txExists: {} = {};
-  //         if (
-  //           Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11])
-  //             .length > 0
-  //         ) {
-  //           _txExists = frontBlockArray[tx.metadata.posY][
-  //             tx.metadata.posX
-  //           ][11].includes(tx.transactionHash);
-  //         }
-
-  //         if (
-  //           Object.keys(frontBlockArray[tx.metadata.posY][tx.metadata.posX][11])
-  //             .length == 0 ||
-  //           !_txExists
-  //         ) {
-  //           frontBlockArray[tx.metadata.posY][tx.metadata.posX][11].push(
-  //             tx.transactionHash
-  //           );
-
-  //           if (tx.metadata.method == "build") {
-  //             if (
-  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX] &&
-  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] == 0
-  //             ) {
-  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
-  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][3] = 0;
-  //               frontBlockArray[tx.metadata.posY][tx.metadata.posX][4] = 0;
-  //             }
-  //           } else if (tx.metadata.method == "harvest_resources") {
-  //             setHarvesting(tx.metadata.posX, tx.metadata.posY, 1);
-  //             frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
-  //           } else if (tx.metadata.method == "destroy_building") {
-  //             setHarvesting(tx.metadata.posX, tx.metadata.posY, 1);
-  //             frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
-  //           } else if (tx.metadata.method == "upgrade") {
-  //             setHarvesting(tx.metadata.posX, tx.metadata.posY, 1);
-  //             frontBlockArray[tx.metadata.posY][tx.metadata.posX][10] = 1;
-  //           }
-  //         }
-  //       }
-  //     });
-  //   }
-  // }, [transactions]);
 
   // Load Frens texture
   const frenTexture = useMemo(() => {
@@ -691,7 +538,7 @@ export const Map = (props: any) => {
           sprite={staticBuildings[frameDataValue.typeId - 1].sprite}
           textArrRef={textArrRef}
           size={1}
-          id={UBlockIDs}
+          id={99999}
           spaceValid={spaceValid}
           position={tempBuildMesh}
         />

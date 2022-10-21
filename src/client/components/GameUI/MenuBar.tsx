@@ -1,28 +1,19 @@
-import { useStarknetBlock } from "@starknet-react/core";
 import React, { useMemo, useState, useEffect } from "react";
-import { toBN } from "starknet/dist/utils/number";
 import { useGameContext } from "../../hooks/useGameContext";
-// import useClaim from "../../hooks/invoke/useClaim";
-// import useActiveNotifications from "../../hooks/useNotifications";
 import Notifications from "../Notifications";
-import { allBuildings } from "../../data/buildings";
 import UI_Frames from "../../style/resources/front/Ui_Frames3.svg";
-
-import useResourcesContext from "../../hooks/useResourcesContext";
 import { useSelectContext } from "../../hooks/useSelectContext";
 import useReinitialize from "../../hooks/invoke/useReinitialize";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
-import { useResourcesContract } from "../../hooks/contracts/resources";
-import { getPosFromId } from "../../utils/building";
-import { number, uint256 } from "starknet";
+import { useFLContract } from "../../hooks/contracts/frenslands";
+import { bulkUpdateActions } from "../../api/player";
+import { TransactionItem } from "./transactionItem";
 
-// import { getStarknet } from "get-starknet";
-
-export function MenuBar() {
-  const { data: block } = useStarknetBlock();
+export function MenuBar(props: any) {
+  const { payloadActions } = props;
   const {
     addAction,
-    payloadActions,
+    // payloadActions,
     wallet,
     inventory,
     counters,
@@ -31,6 +22,8 @@ export function MenuBar() {
     fullMap,
     staticResources,
     staticBuildings,
+    transactions,
+    updateActions,
   } = useNewGameContext();
   const { zoomMode, updateZoom } = useSelectContext();
   const {
@@ -41,11 +34,11 @@ export function MenuBar() {
     buildingData,
     nonce,
     updateNonce,
-    counterResources,
+    // counterResources,
     accountContract,
   } = useGameContext();
 
-  const { contract: resourcesContract } = useResourcesContract();
+  const frenslandsContract = useFLContract();
 
   const reinitializeInvoke = useReinitialize();
 
@@ -56,8 +49,6 @@ export function MenuBar() {
 
   const [claimableResources, setClaimableResources] = useState<any[]>([]);
 
-  // console.log("payload", payloadActions);
-
   // useEffect(() => {
   //   console.log('useEffect zoom menubar', zoomMode)
   // }, [zoomMode])
@@ -65,6 +56,10 @@ export function MenuBar() {
   useEffect(() => {
     if (wallet && wallet.isConnected) setAddress(wallet.account.address);
   }, [wallet]);
+
+  useEffect(() => {
+    console.log("payloadActions useEffect", payloadActions);
+  }, [payloadActions]);
 
   useEffect(() => {
     if (wallet && wallet.isConnected && !tokenId) {
@@ -76,37 +71,6 @@ export function MenuBar() {
   const claimResources = () => {
     // Multicall
     console.log("actions = ", payloadActions);
-
-    const _calls: any[] = [];
-    payloadActions.forEach((action) => {
-      // Build calldata
-      // const _calldata: any[] = [];
-      // const _data = action.calldata.split("|");
-      // _data.forEach((elem: any) => {
-      //   _calldata.push(elem);
-      // });
-      // _calls.push({
-      //   contractAddress: resourcesContract?.address.toLowerCase() as string,
-      //   entrypoint: action.entrypoint as string,
-      //   calldata: _calldata,
-      // });
-
-      _calls.push({
-        contractAddress: resourcesContract?.address.toLowerCase() as string,
-        entrypoint: action.entrypoint as string,
-        calldata: [
-          uint256.bnToUint256(1),
-          number.toFelt(16),
-          number.toFelt(10),
-        ],
-      });
-    });
-
-    wallet.account.getNonce().then((nonce: any) => {
-      console.log("nonce", nonce);
-      wallet.account.execute(_calls);
-      // TODO : add nounce in execute multicall
-    });
 
     // if (tokenId) {
     //   const tx_hash = claimingInvoke(tokenId, nonceValue);
@@ -149,54 +113,54 @@ export function MenuBar() {
       let _newBlockClaimable = 0;
       const _resources: any[] = [];
 
-      buildingData.active?.forEach((elem: any) => {
-        if (elem.recharges) {
-          // check lasr claim block number
-          // current block - last_claim block > then add recharges
-          if (block?.block_number) {
-            const check =
-              toBN(block?.block_number).toNumber() - elem.last_claim;
-            let block2Claim = 0;
-            if (check > elem.recharges) {
-              block2Claim = elem.recharges;
-            } else {
-              block2Claim = check;
-            }
-            _newBlockClaimable += block2Claim;
+      // buildingData.active?.forEach((elem: any) => {
+      //   if (elem.recharges) {
+      //     // check lasr claim block number
+      //     // current block - last_claim block > then add recharges
+      //     if (block?.block_number) {
+      //       const check =
+      //         toBN(block?.block_number).toNumber() - elem.last_claim;
+      //       let block2Claim = 0;
+      //       if (check > elem.recharges) {
+      //         block2Claim = elem.recharges;
+      //       } else {
+      //         block2Claim = check;
+      //       }
+      //       _newBlockClaimable += block2Claim;
 
-            // Get resources to harvest for each claimable building
-            if (block2Claim > 0) {
-              allBuildings[elem.type - 1].daily_harvest?.[0].resources.map(
-                (elem: any) => {
-                  let _currValue = 0;
-                  if (_resources[elem.id] && _resources[elem.id] > 0) {
-                    _currValue = _resources[elem.id] + elem.qty * block2Claim;
-                  } else {
-                    _currValue += elem.qty * block2Claim;
-                  }
-                  _resources[elem.id] = _currValue;
-                }
-              );
-            }
-          }
-        }
-      });
+      //       // Get resources to harvest for each claimable building
+      //       if (block2Claim > 0) {
+      //         allBuildings[elem.type - 1].daily_harvest?.[0].resources.map(
+      //           (elem: any) => {
+      //             let _currValue = 0;
+      //             if (_resources[elem.id] && _resources[elem.id] > 0) {
+      //               _currValue = _resources[elem.id] + elem.qty * block2Claim;
+      //             } else {
+      //               _currValue += elem.qty * block2Claim;
+      //             }
+      //             _resources[elem.id] = _currValue;
+      //           }
+      //         );
+      //       }
+      //     }
+      //   }
+      // });
       setClaimableResources(_resources);
       return _newBlockClaimable;
     }
   }, [buildingData]);
 
   // Btn Claim
-  useEffect(() => {
-    if (block != null && blockGame) {
-      const current_block = toBN(block?.block_number).toNumber();
-      if (current_block >= blockGame) {
-        setBtnClaim(true);
-      } else {
-        setBtnClaim(false);
-      }
-    }
-  }, [block?.block_number, blockGame, claiming]);
+  // useEffect(() => {
+  //   if (block != null && blockGame) {
+  //     const current_block = toBN(block?.block_number).toNumber();
+  //     if (current_block >= blockGame) {
+  //       setBtnClaim(true);
+  //     } else {
+  //       setBtnClaim(false);
+  //     }
+  //   }
+  // }, [block?.block_number, blockGame, claiming]);
 
   const zoomValue = useMemo(() => {
     return zoomMode;
@@ -206,37 +170,43 @@ export function MenuBar() {
     console.log("building multicall w/ actions = ", payloadActions);
 
     const _calls: any[] = [];
-    payloadActions.forEach((action) => {
-      // // Build calldata
-      // const _calldata: any[] = [];
-      // const _data = action.calldata.split("|");
-      // _data.forEach((elem: any) => {
-      //   _calldata.push(elem);
-      // });
-      // _calls.push({
-      //   contractAddress: resourcesContract?.address.toLowerCase() as string,
-      //   entrypoint: action.entrypoint as string,
-      //   calldata: _calldata,
-      // });
-
+    payloadActions.forEach((action: any) => {
+      // Build calldata
+      const _calldata: any[] = [];
+      const _data = action.calldata.split("|");
+      _data.forEach((elem: any) => {
+        _calldata.push(elem);
+      });
       _calls.push({
-        contractAddress: resourcesContract?.address.toLowerCase() as string,
+        contractAddress: frenslandsContract.address.toLowerCase() as string,
         entrypoint: action.entrypoint as string,
-        calldata: [
-          uint256.bnToUint256(1),
-          number.toFelt(16),
-          number.toFelt(10),
-        ],
+        calldata: _calldata,
       });
     });
 
     console.log("_calls", _calls);
 
-    wallet.account.getNonce().then((nonce: any) => {
-      console.log("nonce", nonce);
-      wallet.account.execute(_calls);
-      // TODO : add nounce in execute multicall
+    // wallet.account.getNonce().then((nonce: any) => {
+    // console.log("nonce", nonce);
+    wallet.account.execute(_calls).then((response: any) => {
+      console.log("response", response);
+      transactions.push(response);
+      // TODO Update DB here w/ tx hash
+
+      payloadActions.map((action: any) => {
+        action.status = "pending";
+        action.transaction_hash = response.transaction_hash;
+      });
+      console.log("payloadActions menubar", payloadActions);
+      // Update payload in context
+      // updateActions(payloadActions);
+
+      // Update in DB
+      let _updatedActions = bulkUpdateActions(player, payloadActions);
+
+      // Update context status to onhoing / tx hash
     });
+    // });
   };
 
   return (
@@ -475,7 +445,7 @@ export function MenuBar() {
               //   <div className="btnClaimDisabled pixelated"></div>
               // )} */}
             </div>
-            <div
+            {/* <div
               className="flex jutify-center relative mx-auto"
               style={{ marginTop: "-13px" }}
             >
@@ -485,7 +455,7 @@ export function MenuBar() {
                   onClick={() => setPopUpInit(true)}
                 ></div>
               )}
-            </div>
+            </div> */}
 
             <div
               className="flex jutify-center relative mx-auto"
@@ -493,9 +463,17 @@ export function MenuBar() {
             >
               {tokenId && (
                 <div
-                  className="btnInit pixelated"
+                  className="btnCustom pixelated relative"
                   onClick={() => setPopUpTxCart(true)}
-                ></div>
+                  style={{ marginTop: "-40px" }}
+                >
+                  <p
+                    className="relative fontHpxl_JuicyXL"
+                    style={{ marginTop: "47px", marginLeft: "63px" }}
+                  >
+                    My tx
+                  </p>
+                </div>
               )}
             </div>
           </div>
@@ -506,6 +484,17 @@ export function MenuBar() {
               <div className="menuSettings pixelated"></div>
             </div> */}
         </div>
+      </div>
+      <div
+        className="flex jutify-center absolute mx-auto"
+        style={{ bottom: "0px", left: "0px", zIndex: "1" }}
+      >
+        {tokenId && (
+          <div
+            className="btnInit pixelated"
+            onClick={() => setPopUpInit(true)}
+          ></div>
+        )}
       </div>
       <div
         onClick={() => updateZoom(!zoomValue, player["id" as any] as string)}
@@ -526,37 +515,31 @@ export function MenuBar() {
             className="fontHpxl_JuicySmall absolute"
             style={{ marginTop: "16px", marginLeft: "268px" }}
           >
-            {/* {buildingData != null &&
-            buildingData.total &&
-            buildingData.total > 0
-              ? buildingData.total
-              : 0} */}
             {playerBuilding.length}
           </div>
           <div
             className="fontHpxl_JuicySmall absolute"
             style={{ marginTop: "16px", marginLeft: "452px" }}
           >
-            {counterResources && counterResources[3] ? counterResources[3] : 0}
+            {counters[1][1]}
           </div>
           <div
             className="fontHpxl_JuicySmall absolute"
             style={{ marginTop: "16px", marginLeft: "570px" }}
           >
-            {counterResources && counterResources[2] ? counterResources[2] : 0}
+            {counters[1][2]}
           </div>
           <div
             className="fontHpxl_JuicySmall absolute"
             style={{ marginTop: "16px", marginLeft: "700px" }}
           >
-            {counterResources && counterResources[27]
-              ? counterResources[27]
-              : 0}
+            {counters[1][3]}
           </div>
           <div
             className="fontHpxl_JuicySmall absolute"
             style={{ marginTop: "16px", marginLeft: "898px" }}
           >
+            {/* // TODO update inactive buildings */}
             {buildingData != null && buildingData.inactive != null
               ? Object.keys(buildingData.inactive).length
               : 0}
@@ -565,6 +548,7 @@ export function MenuBar() {
             className="fontHpxl_JuicySmall absolute"
             style={{ marginTop: "16px", marginLeft: "1078px" }}
           >
+            {/* // TODO update active buildings */}
             {buildingData != null && buildingData.active != null
               ? Object.keys(buildingData.active).length
               : 0}
@@ -573,6 +557,7 @@ export function MenuBar() {
             className="fontHpxl_JuicySmall absolute"
             style={{ marginTop: "16px", marginLeft: "1261px" }}
           >
+            {/* // TODO update blocks claimable */}
             {blockClaimable}
           </div>
         </div>
@@ -619,7 +604,6 @@ export function MenuBar() {
             <div
               className="popUpNotifsTxCart pixelated fontHPxl-sm"
               style={{
-                overflowY: "auto",
                 zIndex: 1,
                 borderImage: `url(data:image/svg+xml;base64,${btoa(
                   UI_Frames
@@ -633,57 +617,30 @@ export function MenuBar() {
               ></div>
               <p>Your transactions</p>
               <br />
-              {payloadActions.length > 0 ? (
-                payloadActions.map((action: any, key: number) => {
-                  var calldata = action.calldata.split("|");
-                  var posX = parseInt(calldata[2]);
-                  var posY = parseInt(calldata[3]);
-                  return (
-                    <div className="flex flex-row" key={key}>
-                      <div>
-                        <p>
-                          #{key} :{" "}
-                          <span className="capitalize">
-                            {action.entrypoint}
-                          </span>
-                          {action.entrypoint === "harvest" && (
-                            <>
-                              <span>
-                                {" "}
-                                {
-                                  staticResources[
-                                    fullMap[posY][posX].randType - 1
-                                  ].name
-                                }
-                              </span>
-                              <span>
-                                ({posX}, {posY})
-                              </span>
-                              <span></span>
-                            </>
-                          )}
-                          {action.entrypoint === "build" && (
-                            <>
-                              <span>
-                                {" "}
-                                {
-                                  staticBuildings[parseInt(calldata[4]) - 1]
-                                    .name
-                                }
-                              </span>
-                              <span>
-                                ({posX}, {posY})
-                              </span>
-                            </>
-                          )}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <p>You don't have any actions to validate on-chain yet.</p>
-              )}
+              <div style={{ overflowY: "auto" }}>
+                {payloadActions.length > 0 ? (
+                  payloadActions.map((action: any, key: number) => {
+                    var calldata = action.calldata.split("|");
+                    var status = 0;
+                    if (action.status == "TRANSACTION_RECEIVED") {
+                      status = 1;
+                    } else if (action.status == "ACCEPTED_ON_L2") {
+                      status = 2;
+                    }
+                    return (
+                      <TransactionItem
+                        key={key}
+                        index={key}
+                        status={status}
+                        calldata={calldata}
+                        entrypoint={action.entrypoint}
+                      />
+                    );
+                  })
+                ) : (
+                  <p>You don't have any actions to validate on-chain yet.</p>
+                )}
+              </div>
               <div
                 className="btnCustom pixelated relative"
                 onClick={() => buildMulticall()}

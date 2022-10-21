@@ -109,7 +109,7 @@ export function Achievements(props: any) {
         </div>
       )}
 
-      {showInfo && lastAchievement != null && lastLevel > 0 ? (
+      {showTutorial && showInfo && lastAchievement != null && lastLevel > 0 ? (
         <div className="flex justify-center selectDisable">
           <div className="parentNotif">
             <div

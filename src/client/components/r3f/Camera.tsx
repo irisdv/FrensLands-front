@@ -1,11 +1,5 @@
-import React, {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  useMemo,
-} from "react";
-import { Canvas, useThree, useFrame, useLoader } from "@react-three/fiber";
+import React, { useLayoutEffect, useRef, useState, useMemo } from "react";
+import { useThree, useFrame } from "@react-three/fiber";
 import { PerspectiveCamera } from "@react-three/drei";
 import { Vector2 } from "three";
 
@@ -20,6 +14,9 @@ export const Camera = (props: any) => {
   const [cameraPositionY, setCameraPositionY] = useState(150);
   const [cameraPositionZ, setCameraPositionZ] = useState(9);
   const [zoom, setZoom] = useState(0);
+  const [wayX, setWayX] = useState(0);
+  const [wayZ, setWayZ] = useState(0);
+  const [wayY, setWayY] = useState(0);
 
   const mouseWheelValue = useMemo(() => {
     console.log(mouseWheelProp);
@@ -32,8 +29,8 @@ export const Camera = (props: any) => {
 
   useFrame(({ mouse }) => {
     if (cameraRef.current != null) {
+      // CLASSIC INPUTS
       setCameraPositionY(15 * props.index);
-
       if (mouseRightPressed == 1) {
         const posX = cameraPositionX;
         const posZ = cameraPositionZ;
@@ -74,6 +71,75 @@ export const Camera = (props: any) => {
       }
       setTempMousePos(new Vector2(mouse.x, mouse.y));
 
+      // CINEMATIQUE INPUT
+
+      //let wayX:number = 0;
+      //let wayZ:number = 0;
+
+      // if (cameraPositionZ > 11)
+      // {
+      //   setCameraPositionZ(10.99);
+      //   setWayZ(1);
+      // }
+      // else if (cameraPositionZ < 5)
+      // {
+      //   setCameraPositionZ(5.01);
+      //   setWayZ(0);
+      // }
+
+      // if (cameraPositionX > 34)
+      // {
+      //   setCameraPositionX(33.99);
+      //   setWayX(1);
+      // }
+      // else if (cameraPositionX < 6)
+      // {
+      //   setCameraPositionX(6.01);
+      //   setWayX(0);
+      // }
+
+      // if (cameraPositionY > 190)
+      // {
+      //   setCameraPositionY(189.99);
+      //   setWayY(1);
+      // }
+      // else if (cameraPositionY < 55)
+      // {
+      //   setCameraPositionY(55.01);
+      //   setWayY(0);
+      // }
+      // //console.log("CAM X = ", cameraPositionX);
+      // //console.log("CAM Y = ", cameraPositionY);
+
+      // if (wayX == 0)
+      // {
+      //   setCameraPositionX(cameraPositionX + 0.01);
+      // }
+      // if (wayX == 1)
+      // {
+      //   setCameraPositionX(cameraPositionX - 0.01);
+      // }
+
+      // if (wayZ == 0)
+      // {
+      //   setCameraPositionZ(cameraPositionZ + 0.003);
+      // }
+      // if (wayZ == 1)
+      // {
+      //   setCameraPositionZ(cameraPositionZ - 0.003);
+      // }
+
+      // if (wayY == 0)
+      // {
+      //   setCameraPositionY(cameraPositionY + 0.08);
+      // }
+      // if (wayY == 1)
+      // {
+      //   setCameraPositionY(cameraPositionY - 0.08);
+      // }
+
+      // - - - -- - - - END OF CINEMATIC INPUT - - - - -- - - - - --
+
       cameraRef.current.aspect = size.width / size.height;
       cameraRef.current.position.set(
         cameraPositionX,
@@ -81,7 +147,7 @@ export const Camera = (props: any) => {
         cameraPositionZ
       );
       cameraRef.current.updateProjectionMatrix();
-    }
+    } // END
   });
 
   useLayoutEffect(() => {

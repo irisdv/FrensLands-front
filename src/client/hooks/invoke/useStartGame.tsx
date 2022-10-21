@@ -43,7 +43,7 @@ export default function useStartGame() {
 
           return tx.transaction_hash;
         })
-        .catch((e) => {
+        .catch((e: any) => {
           console.error(e);
           return 0;
         });

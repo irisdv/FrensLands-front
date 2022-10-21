@@ -285,7 +285,7 @@ export const cancelMaintainBuilding = (
   return inventory;
 };
 
-// /** // ! Not sure we need to use this fonction
+// /**
 //  * checkResMaintainMsg
 //  *  * Checks if a player can pay production cost of a given building and returns resources lacking
 //  * @param id {number} type id of building to maintain
@@ -306,12 +306,12 @@ export const checkResMaintainMsg = (
   // while (i < fixBuildVal[id].maintainCost.length) {
   while (i < 9) {
     if (inventory[i] < fixBuildVal[id].maintainCost[i] * multiplier) {
-      console.log("not enough resources to maintain ", i);
+      // console.log("not enough resources to maintain ", i);
       res.push(i);
     }
     i++;
   }
-  console.log("enough resources to maintain ", res);
+  // console.log("enough resources to maintain ", res);
   return res;
 };
 
@@ -607,7 +607,7 @@ export const checkIsMovable = (id: number, fixBuildVal: any) => {
 
 // FIND THE LAST CYCLE WHEN CLAIMING HAS BEEN INITIATED
 // playerArray.claimRegister = "dernier block - current block | " where dernier block = lastClaim block
-//// 14-18|18-39|39-45|  -> 45
+// 14-18|18-39|39-45|  -> 45
 export const calculateLastClaim = (playerArray: any) => {
   let lastClaim: number = 0;
   let strIndex: number = playerArray.claimRegister.length;

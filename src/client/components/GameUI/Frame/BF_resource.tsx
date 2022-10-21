@@ -37,11 +37,11 @@ export function BF_resource(props: any) {
     wallet,
     player,
     incomingArray,
+    harvestActions,
+    counters,
   } = useNewGameContext();
   const { tokenId } = useGameContext();
   const [showNotif, setShowNotif] = useState(false);
-
-  console.log("incoming array in BF", incomingArray);
 
   const inventoryValue = useMemo(() => {
     return inventory;
@@ -51,7 +51,7 @@ export function BF_resource(props: any) {
     return fullMap;
   }, [fullMap]);
 
-  const harvestingResources = async (
+  const harvestingResources = (
     _typeId: number,
     _posX: number,
     _posY: number,
@@ -88,6 +88,7 @@ export function BF_resource(props: any) {
         newMap[_posY][_posX].infraType = 0;
         newMap[_posY][_posX].type = 0;
         newMap[_posY][_posX].id = 0;
+        counters[1][_typeId]--;
       } else {
         newMap[_posY][_posX].state++;
       }
@@ -250,39 +251,36 @@ export function BF_resource(props: any) {
           <div className="flex flex-row justify-center inline-block">
             <div style={{ width: "135px", paddingTop: "10px" }}>
               <>
-                {
-                  // TODO comparer avec tableau en cours de harvest
-                  // (harvestingArrValue &&
-                  //   harvestingArrValue.length > 0 &&
-                  //   harvestingArr[frameData.posY] &&
-                  //   harvestingArr[frameData.posY][frameData.posX] == 0) ||
-                  !_canHarvest ? (
-                    <>
-                      <div
-                        className="btnHarvestDisabled"
-                        onMouseOver={() => setShowNotif(true)}
-                        onMouseOut={() => setShowNotif(false)}
-                      ></div>
-                      {showNotif && !_canHarvest && (
-                        <div className="popUpBuild fontHPxl-sm pixelated">
-                          {_msg}
-                        </div>
-                      )}
-                    </>
-                  ) : (
+                {(harvestActions &&
+                  harvestActions.length > 0 &&
+                  harvestActions[posY] &&
+                  harvestActions[posY][posX].status == 0) ||
+                !_canHarvest ? (
+                  <>
                     <div
-                      className="btnHarvest"
-                      onClick={() =>
-                        harvestingResources(
-                          typeId as number,
-                          posX,
-                          posY,
-                          state as number
-                        )
-                      }
+                      className="btnHarvestDisabled"
+                      onMouseOver={() => setShowNotif(true)}
+                      onMouseOut={() => setShowNotif(false)}
                     ></div>
-                  )
-                }
+                    {showNotif && !_canHarvest && (
+                      <div className="popUpBuild fontHPxl-sm pixelated">
+                        {_msg}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div
+                    className="btnHarvest"
+                    onClick={() =>
+                      harvestingResources(
+                        typeId as number,
+                        posX,
+                        posY,
+                        state as number
+                      )
+                    }
+                  ></div>
+                )}
               </>
             </div>
           </div>

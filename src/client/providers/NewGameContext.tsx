@@ -1,24 +1,12 @@
-import { IStarknetWindowObject } from "get-starknet";
+import { IStarknetWindowObject } from "@starknet-react/core";
 import React, { useReducer, useEffect, useState, useCallback } from "react";
-import * as starknet from "starknet";
-import uint256, { AccountInterface, GetBlockResponse } from "starknet";
-
-import { revComposeD, generateFullMap } from "../utils/land";
-import { parsePipeResToArray, parseResToArray } from "../utils/utils";
+import { GetBlockResponse } from "starknet";
+import { revComposeD } from "../utils/land";
 import { fillStaticBuildings, fillStaticResources } from "../utils/static";
 import { getStaticBuildings, getStaticResources } from "../api/static";
-import {
-  getIdFromPos,
-  getPosFromId,
-  cycleRegisterCompose,
-  cycleRegisterComposeD,
-  harvestResPay,
-  incomingComposeD,
-  incomingCompose,
-} from "../utils/building";
-import { ComposeD } from "../utils/land";
+import { incomingComposeD, incomingCompose } from "../utils/building";
 import { BuildDelay, HarvestDelay } from "../utils/constant";
-import { updateIncomingInventories } from "../api/player";
+import { bulkUpdateActions, updateIncomingInventories } from "../api/player";
 
 export interface ILand {
   id: number;
@@ -73,6 +61,7 @@ export interface INewGameState {
     userId: string
   ) => void;
   addAction: (entrypoint: string, calldata: string) => void;
+  updateActions: (actionArray: any[]) => void;
   updateInventory: (inventory: any[]) => void;
   updatePlayerBuilding: (_playerBuilding: any[]) => void;
   // Harvest actions
@@ -87,6 +76,7 @@ export interface INewGameState {
   ) => void;
   updateMapBlock: (_map: any[]) => void;
   transactions: any[];
+  updateTransactions: (transactions: any[]) => void;
 }
 
 export const NewGameState: INewGameState = {
@@ -113,6 +103,7 @@ export const NewGameState: INewGameState = {
     userId
   ) => {},
   addAction: (entrypoint, calldata) => {},
+  updateActions: (actionArray) => {},
   updateInventory: (inventory) => {},
   updatePlayerBuilding: (_playerBuilding) => {},
   // Harvest actions
@@ -120,6 +111,7 @@ export const NewGameState: INewGameState = {
   updateIncomingActions: (infraType, posX, posY, uid, time, status) => {},
   updateMapBlock: (_map) => {},
   transactions: [],
+  updateTransactions: (tx) => {},
 };
 
 const NewStateContext = React.createContext(NewGameState);
@@ -142,12 +134,22 @@ interface SetGameSession {
   staticBuildings: any[];
   counters: any[];
   incomingArray: any[];
+  transactions: any[];
 }
 
 interface SetPayloadAction {
   type: "set_payloadAction";
   entrypoint: string;
   calldata: string;
+}
+
+interface SetPayloadActions {
+  type: "set_payloadActions";
+  actionArray: any[];
+}
+interface SetTransactions {
+  type: "set_transactions";
+  transactions: any[];
 }
 
 interface SetInventory {
@@ -191,6 +193,8 @@ type Action =
   | SetPlayerBuildings
   | SetHarvestAction
   | SetFullMap
+  | SetPayloadActions
+  | SetTransactions
   | SetExecuteHarvest;
 
 function reducer(state: INewGameState, action: Action): INewGameState {
@@ -213,6 +217,7 @@ function reducer(state: INewGameState, action: Action): INewGameState {
         staticResources: action.staticResources,
         counters: action.counters,
         incomingArray: action.incomingArray,
+        transactions: action.transactions,
       };
     }
     case "set_payloadAction": {
@@ -226,6 +231,18 @@ function reducer(state: INewGameState, action: Action): INewGameState {
       return {
         ...state,
         payloadActions: currentPayload,
+      };
+    }
+    case "set_payloadActions": {
+      return {
+        ...state,
+        payloadActions: action.actionArray,
+      };
+    }
+    case "set_transactions": {
+      return {
+        ...state,
+        transactions: action.transactions,
       };
     }
     case "set_inventory": {
@@ -293,10 +310,47 @@ export const NewAppStateProvider: React.FC<
               return oldBlock;
             }
             // Reset error and return new block.
-            console.log("new block", newBlock);
+            // console.log("new block", newBlock);
+            // console.log("transactions array", state.transactions);
+            // console.log(
+            //   "payload actions in context before",
+            //   state.payloadActions
+            // );
+
+            state.transactions.map((ongoing: any) => {
+              var tx = newBlock.transactions.filter((transaction: any) => {
+                return transaction.transaction_hash == ongoing.transaction_hash;
+              });
+              console.log("tx", tx);
+              if (tx.length > 0) {
+                // console.log("Tx found in validated block", tx);
+
+                // update status in transactions array
+                ongoing.code = "ACCEPTED_ON_L2";
+
+                // Update payloadActions
+                var bulkUpdate: any[] = [];
+                state.payloadActions.map((action: any, index: number) => {
+                  if (action.txHash === ongoing.transaction_hash) {
+                    action.validated = true;
+                    action.status = "ACCEPTED_ON_L2";
+                    bulkUpdate.push(state.payloadActions[index]);
+                    state.payloadActions.splice(index, 1);
+                  }
+                });
+                // console.log("bulkUpdate", bulkUpdate);
+                if (bulkUpdate.length > 0)
+                  bulkUpdateActions(state.player, bulkUpdate);
+
+                // Update DB
+                // console.log("payload actions in context", state.payloadActions);
+              }
+            });
+            // console.log("transactions after map", state.transactions);
+            // console.log("payload actions after map", state.payloadActions);
+
             // TODO call functions when block is updated
-            // TODO check newBlock.transactions against transactions array
-            // If tx validated then show notif and delete tx in array + update player_actions db to validated
+            // TODO show notif based on transactions array (when value equals to ACCEPTED_ON_L2)
             return newBlock;
           });
         })
@@ -305,7 +359,13 @@ export const NewAppStateProvider: React.FC<
         })
         .finally(() => setLoading(false));
     }
-  }, [setBlock, state.wallet, setLoading]);
+  }, [
+    setBlock,
+    state.wallet,
+    setLoading,
+    state.payloadActions,
+    state.transactions,
+  ]);
 
   useEffect(() => {
     setLoading(true);
@@ -332,6 +392,22 @@ export const NewAppStateProvider: React.FC<
     []
   );
 
+  const updateActions = React.useCallback((actionArray: any[]) => {
+    console.log("action payload received", actionArray);
+    dispatch({
+      type: "set_payloadActions",
+      actionArray: actionArray,
+    });
+  }, []);
+
+  const updateTransactions = React.useCallback((txArray: any[]) => {
+    console.log("transactions received", txArray);
+    dispatch({
+      type: "set_transactions",
+      transactions: txArray,
+    });
+  }, []);
+
   const initPlayer = React.useCallback((wallet: IStarknetWindowObject) => {
     dispatch({
       type: "set_player",
@@ -352,31 +428,22 @@ export const NewAppStateProvider: React.FC<
       // let test = generateFullMap();
       // console.log("test", test);
 
-      const fullMapArray = revComposeD(land.fullMap, account);
-      console.log("fullMapArray = ", fullMapArray);
+      const value = revComposeD(land.fullMap, account);
+      console.log("fullMapArray = ", value.tempArray);
 
       //const composition = ComposeD(fullMapArray);
 
       // const fullMapArray = revComposeD(land.fullMap);
       //console.log("fullMapArray = ", fullMapArray);
 
-      // - - - - - - - TEST CALL FUNCTION - - - - - - - - //
-
-      //const test = getIdFromPos(fullMapArray, 8, 21);
-      //const test2 = getPosFromId(fullMapArray, 97);
-
-      //console.log("test = ", test);
-      //console.log("test2 = ", test2);
-
       //  - - - - - - INVENTORY - - - - - -
       const inventoryArray: any[] = [];
-
-      inventoryArray[0] = inventory[0].wood;
-      inventoryArray[1] = inventory[0].rock;
-      inventoryArray[2] = inventory[0].food;
-      // inventoryArray[0] = 100;
-      // inventoryArray[1] = 100;
-      // inventoryArray[2] = 100;
+      // inventoryArray[0] = inventory[0].wood;
+      // inventoryArray[1] = inventory[0].rock;
+      // inventoryArray[2] = inventory[0].food;
+      inventoryArray[0] = 22;
+      inventoryArray[1] = 16;
+      inventoryArray[2] = 14;
       inventoryArray[3] = inventory[0].metal;
       // inventoryArray[3] = 100;
       inventoryArray[4] = inventory[0].coal;
@@ -386,16 +453,17 @@ export const NewAppStateProvider: React.FC<
       inventoryArray[7] = inventory[0].gold;
       inventoryArray[8] = inventory[0].freePop;
       inventoryArray[9] = inventory[0].totalPop;
-      // inventoryArray[8] = 100;
-      // inventoryArray[9] = 100;
+      // inventoryArray[8] = 3;
+      // inventoryArray[9] = 3;
       inventoryArray[10] = inventory[0].timeSpent;
-      inventoryArray[11] = inventory[0].level;
-      // inventoryArray[11] = 8;
+      // inventoryArray[11] = inventory[0].level;
+      inventoryArray[11] = 9;
 
       console.log("inventoryArray = ", inventoryArray);
 
       //  - - - - - - PLAYER BUILDINGS - - - - - -
       const mapBuildingArray: any[] = [];
+      var lastUID = 0;
       playerBuildings.map((elem: any, key: number) => {
         mapBuildingArray[key] = [];
         mapBuildingArray[key].blockX = elem.blockX;
@@ -407,7 +475,9 @@ export const NewAppStateProvider: React.FC<
         mapBuildingArray[key].type = elem.fk_buildingid;
         mapBuildingArray[key].decay = elem.decay;
         mapBuildingArray[key].gameUid = elem.gameUid;
+        if (elem.gameUid > lastUID) lastUID = elem.gameUid;
       });
+      console.log("gameUid", lastUID);
       console.log("mapBuildingArray = ", mapBuildingArray);
 
       //  - - - - - - STATIC BUILDINGS - - - - - -
@@ -422,40 +492,61 @@ export const NewAppStateProvider: React.FC<
       const fixResVal: any[] = fillStaticResources(staticResources);
       console.log("fixResVal = ", fixResVal);
 
-      //  - - - - - - HARVEST - - - - - -
-
-      const harvestIncoming: any[] = [];
-
       //  - - - - - - COUNTERS - - - - - -
 
       const buildingCounter = mapBuildingArray.length;
       console.log("buildingCounter", buildingCounter);
 
-      var counters: any[] = [];
+      var counters: any[] = value.counters;
       counters["buildings" as any] = buildingCounter;
+      counters["uid" as any] = lastUID;
+
+      //  - - - - - - PLAYER ARRAY - - - - - -
 
       const playerArray: any[] = [];
       playerArray["landId" as any] = land.id;
       playerArray["tokenId" as any] = land.tokenId;
       playerArray["id" as any] = userId;
       playerArray["biomeId" as any] = land.biomeId;
-      playerArray["claimRegister" as any] = []; // ! TEMPORARY (NEED TO GET DATA FROM DB)
+      playerArray["claimRegister" as any] = land.claimRegister || 0;
       console.log("playerArray", playerArray);
-      //  - - - - - - DATA IN ARRAYS - - - - - - END
+
+      //  - - - - - - INCOMING HARVESTS - - - - - -
 
       // Build incoming Array and update if action finished
-      var time = Date.now();
-      var incomingArray: any[] = incomingComposeD(
-        inventory[0].incomingInventories,
-        time
-      );
-      var incomingArrStr = incomingCompose(incomingArray);
-      let _updateArr = updateIncomingInventories(playerArray, incomingArrStr);
+      if (inventory[0].incomingInventories == null) {
+        var incomingArray: any[] = [];
+      } else {
+        var time = Date.now();
+        var incomingArray: any[] = incomingComposeD(
+          inventory[0].incomingInventories,
+          time
+        );
+        var incomingArrStr = incomingCompose(incomingArray);
+        let _updateArr = updateIncomingInventories(playerArray, incomingArrStr);
+      }
+
+      //  - - - - - - ONGOING TX - - - - - -
+
+      var transactions: any[] = [];
+      var ongoingTx = land.player_actions.filter((action: any) => {
+        return action.status == "TRANSACTION_RECEIVED";
+      });
+      if (ongoingTx && ongoingTx.length > 0) {
+        ongoingTx.map((tx: any) => {
+          transactions.push({
+            code: tx.status,
+            transaction_hash: tx.txHash,
+          });
+        });
+      }
+      console.log("transactions in newGameContext", transactions);
+      console.log("playerActions in newGameContext", playerActions);
 
       dispatch({
         type: "set_gameSession",
         player: playerArray,
-        fullMap: fullMapArray,
+        fullMap: value.tempArray,
         actions: playerActions,
         inventory: inventoryArray,
         playerBuilding: mapBuildingArray,
@@ -463,6 +554,7 @@ export const NewAppStateProvider: React.FC<
         staticResources: fixResVal,
         incomingArray: incomingArray,
         counters: counters,
+        transactions: transactions,
       });
     },
     []
@@ -558,10 +650,12 @@ export const NewAppStateProvider: React.FC<
         initPlayer,
         initGameSession,
         addAction,
+        updateActions,
         updateInventory,
         updateIncomingActions,
         updateMapBlock,
         transactions: state.transactions,
+        updateTransactions,
       }}
     >
       {props.children}

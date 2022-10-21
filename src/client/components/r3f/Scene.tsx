@@ -124,6 +124,7 @@ export const Scene = (props: any) => {
             setMouseRightPressed(1);
           }
           if (event.button == 0) {
+            event.preventDefault;
             setMouseLeftPressed(1);
           }
           if (event.button == 1) {
@@ -136,6 +137,7 @@ export const Scene = (props: any) => {
             setMouseRightPressed(0);
           }
           if (event.button == 0) {
+            event.preventDefault;
             setMouseLeftPressed(0);
           }
           if (event.button == 1) {
