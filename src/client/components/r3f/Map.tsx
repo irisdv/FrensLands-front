@@ -7,19 +7,18 @@ import {
   Vector2,
   Vector3,
 } from "three";
-import { useGameContext } from "../../hooks/useGameContext";
 import { useBVH } from "@react-three/drei";
 import { useSelectContext } from "../../hooks/useSelectContext";
 import { BuildingTemp } from "./BuildingTemp";
 import Resources from "./Resources";
 import { Frens } from "./Frens";
 import { useNotifTransactionManager } from "../../providers/transactions";
-import useBuild from "../../hooks/invoke/useBuild";
+// import useBuild from "../../hooks/invoke/useBuild";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
 import { addToBuildingArray, createBuildingPay } from "../../utils/building";
 import { buildAction } from "../../api/player";
 import { ComposeD } from "../../utils/land";
-const { promises: Fs } = require("fs");
+// const { promises: Fs } = require("fs");
 
 export interface ISelectObject {
   infraType: any;
@@ -36,7 +35,6 @@ export const Map = (props: any) => {
     worldType,
     mouseLeftPressed,
     mouseMiddlePressed,
-    // buildingsIDs,
   } = props;
 
   const mapRef = useRef<any>();
@@ -64,15 +62,7 @@ export const Map = (props: any) => {
     updateIncomingActions,
     counters,
   } = useNewGameContext();
-  const {
-    tokenId,
-    nonce,
-    // updateNonce,
-    // populationBusy,
-    // populationFree,
-    // setHarvesting,
-  } = useGameContext();
-  const { transactions, removeTransaction } = useNotifTransactionManager();
+  // const { transactions, removeTransaction } = useNotifTransactionManager();
   const { frameData, updateBuildingFrame, sound } = useSelectContext();
 
   // Buildings
@@ -85,7 +75,6 @@ export const Map = (props: any) => {
   const [UBlockIDs, setUBlockIDs] = useState(counters["uid" as any]);
   const [animIndex, setAnimIndex] = useState(1);
   const [curT, setCurT] = useState(Date.now());
-
   // Select objects
   const [objectSelected, setObjectSelected] = useState(0);
   const [selectedObj, setSelectedObj] = useState<ISelectObject>();
@@ -95,9 +84,14 @@ export const Map = (props: any) => {
   //   return nonce;
   // }, [nonce]);
 
-  const fullMapValue = useMemo(() => {
-    return fullMap;
-  }, [fullMap]);
+  // const fullMapValue = useMemo(() => {
+  //   return fullMap;
+  // }, [fullMap]);
+
+  // const playerBuildingValue = useMemo(() => {
+  //   console.log("playerBuilding map.tsx", playerBuilding);
+  //   return playerBuilding;
+  // }, [playerBuilding]);
 
   // Frens
   const frensArray = useMemo(() => {
@@ -111,6 +105,7 @@ export const Map = (props: any) => {
     }
     let i = 0;
     const tempArray = [];
+    // ! change 2 by max
     while (i < 2) {
       const curPos = new Vector2();
       const targetPos = new Vector2();
@@ -135,17 +130,17 @@ export const Map = (props: any) => {
     }
   }, [frameData]);
 
-  function exists(path: String) {
-    try {
-      Fs.access(path);
-      return true;
-    } catch {
-      return false;
-    }
-  }
+  // function exists(path: String) {
+  //   try {
+  //     Fs.access(path);
+  //     return true;
+  //   } catch {
+  //     return false;
+  //   }
+  // }
 
   useFrame(({ mouse, raycaster }) => {
-    // CREATE A VARIABLE WITH THE SPEED VALUE TO CHANGE IT WITH WEATHER
+    // Create a variable with the speed value to change it with weather
     if (Date.now() - curT > 100) {
       if (animIndex <= 3) {
         setAnimIndex(animIndex + 1);
@@ -154,8 +149,6 @@ export const Map = (props: any) => {
       if (animIndex == 3) {
         setAnimIndex(0);
       }
-
-      //console.log("animIndex = ", animIndex)
       setCurT(Date.now());
     }
 
@@ -199,25 +192,20 @@ export const Map = (props: any) => {
       const rayY = parseInt(tempRayPos.z.toFixed(2));
 
       if (rayX < 40 && rayX > 0 && rayY < 16 && rayY > 0) {
-        // console.log('VALID RAYCAST')
         currBlockPos.x = rayX;
         currBlockPos.y = rayY;
       } else {
-        // console.log('INVALID RAYCAST')
         currBlockPos.x = 0;
         currBlockPos.y = 0;
       }
 
       setCurrBlockPosState(new Vector2(currBlockPos.x, currBlockPos.y));
-      // console.log('rayX', rayX)
-      // console.log('rayY', rayY)
-      // this.debugPrint(1, "blockChain-Elem = ", (((16 - (rayY - 1)) * 40) + (rayX) + 1));
 
       if (placementActive == 1) {
         setTempBuildMesh(
           new Vector3(
             currBlockPos.x + 0.5,
-            /* 0.2 */ 0.2 + mouse.y * 0.02,
+            0.2 + mouse.y * 0.02,
             currBlockPos.y
           )
         );
@@ -276,7 +264,7 @@ export const Map = (props: any) => {
       }
 
       if (objectSelected == 1 && mouseLeftPressed == 1) {
-        // OPEN POPUP BUILDING WITH INFORMATION - NOT SELECTED
+        // Open building frame - not selected
         updateBuildingFrame(true, {
           infraType: frontBlockArray[rayY][rayX].infraType,
           typeId: selectedObj?.type_id, // resource_type_id
@@ -290,7 +278,7 @@ export const Map = (props: any) => {
       }
     }
 
-    // FRENS GOING
+    // Frens going
     var i = 0;
     frensArray.map((fren: any, id: any) => {
       let tempValX = 0;
@@ -350,10 +338,11 @@ export const Map = (props: any) => {
       frameData.infraType == 2 &&
       frameData.typeId != 1
     ) {
-      // NEED TO DO IT WITH RIGHT CLICK
       const pos = new Vector2();
       pos.x = tempBuildMesh.x;
       pos.y = tempBuildMesh.z;
+
+      setPlacementActive(0);
 
       console.log("create building on Map", frameData?.typeId);
 
@@ -373,7 +362,7 @@ export const Map = (props: any) => {
       frontBlockArray[pos.y][pos.x - 0.5].id = UBlockIDs + 1;
       updateMapBlock(frontBlockArray);
 
-      // update player inventory
+      // Update player inventory
       let _inventoryPay = createBuildingPay(
         frameData.typeId - 1,
         inventory,
@@ -385,7 +374,7 @@ export const Map = (props: any) => {
 
       // Store on-chain action in context
       const calldata =
-        tokenId +
+        player["tokenId" as any] +
         "|" +
         0 +
         "|" +
@@ -395,7 +384,6 @@ export const Map = (props: any) => {
         "|" +
         frameData.typeId;
       const entrypoint = "build";
-      addAction(entrypoint, calldata);
 
       // Create entry in player building & save to context
       const newBuilding: any[] = addToBuildingArray(
@@ -411,7 +399,7 @@ export const Map = (props: any) => {
 
       // ? send request DB
       const _mapComposed = ComposeD(frontBlockArray);
-      const _action = buildAction(
+      const _action = await buildAction(
         player,
         entrypoint,
         calldata,
@@ -419,12 +407,13 @@ export const Map = (props: any) => {
         newBuilding[newBuilding.length - 1],
         _mapComposed
       );
+      // Add action in context
+      addAction(_action[0]);
 
       // Update global variables
       setUBlockIDs(UBlockIDs + 1);
       counters["uid" as any]++;
       console.log("counters uid", counters["uid" as any]);
-      setPlacementActive(0);
     }
     if (mouseMiddlePressed == 1 && placementActive == 1) {
       // NEED TO TEST THE KEY
@@ -479,24 +468,11 @@ export const Map = (props: any) => {
   // Load Frens texture
   const frenTexture = useMemo(() => {
     if (textArrRef && textArrRef.length > 0) {
-      let textObj;
-      if (worldType == 2) {
-        textObj = new TextureLoader().load(
-          "resources/textures/Matchbox_Tiles_Objects_nogrid_1.png"
-        );
-      } else if (worldType == 3) {
-        textObj = new TextureLoader().load(
-          "resources/textures/Matchbox_Tiles_Objects_nogrid_2.png"
-        );
-      } else if (worldType == 4) {
-        textObj = new TextureLoader().load(
-          "resources/textures/Matchbox_Tiles_Objects_nogrid_3.png"
-        );
-      } else {
-        textObj = new TextureLoader().load(
-          "resources/textures/Matchbox_Tiles_Objects_nogrid_0.png"
-        );
-      }
+      let textObj = new TextureLoader().load(
+        "resources/textures/Matchbox_Tiles_Objects_nogrid_" +
+          (worldType - 1).toString() +
+          ".png"
+      );
       // textureType = findTextByID(193);
       textObj.offset.set(0, 0.1875);
       textObj.repeat = new Vector2(0.0625, 0.0625);

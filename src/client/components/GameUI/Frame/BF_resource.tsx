@@ -10,7 +10,7 @@ import {
   receiveResHarvest,
 } from "../../../utils/building";
 import { FrameItem } from "../FrameItem";
-import { harvestAction } from "../../../api/player";
+import { harvestAction, updateIncomingInventories } from "../../../api/player";
 import { ComposeD } from "../../../utils/land";
 import { number } from "starknet";
 
@@ -37,7 +37,7 @@ export function BF_resource(props: any) {
     wallet,
     player,
     incomingArray,
-    harvestActions,
+    incomingActions,
     counters,
   } = useNewGameContext();
   const { tokenId } = useGameContext();
@@ -51,7 +51,7 @@ export function BF_resource(props: any) {
     return fullMap;
   }, [fullMap]);
 
-  const harvestingResources = (
+  const harvestingResources = async (
     _typeId: number,
     _posX: number,
     _posY: number,
@@ -67,44 +67,9 @@ export function BF_resource(props: any) {
       updateInventory(_inventory);
       var time = Date.now();
       updateIncomingActions(1, _posX, _posY, uid, time, 0);
-      // Store on-chain action in context
-      const calldata = tokenId + "|" + 0 + "|" + _posX + "|" + _posY;
-      const entrypoint = "harvest";
-      addAction(entrypoint, calldata);
-
-      // Update inventoryIncoming array in context
-      const newInventory = [..._inventory];
-      var _inventoryUpdated = receiveResHarvest(
-        randType - 1,
-        newInventory,
-        staticResourcesData
-      );
-
-      var newMap = [...fullMapValue];
-      newMap[_posY] = [...fullMap[_posY]];
-      newMap[_posY][_posX] = structuredClone(fullMapValue[_posY][_posX]);
-      if (_state == 3) {
-        newMap[_posY][_posX].state = 0;
-        newMap[_posY][_posX].infraType = 0;
-        newMap[_posY][_posX].type = 0;
-        newMap[_posY][_posX].id = 0;
-        counters[1][_typeId]--;
-      } else {
-        newMap[_posY][_posX].state++;
-      }
-      var _mapComposed = ComposeD(newMap);
-
       let _incomingArray = addElemToIncoming(incomingArray, uid, time);
       var incomingArrStr = incomingCompose(_incomingArray);
-
-      const _isHarvested = harvestAction(
-        player,
-        entrypoint,
-        calldata,
-        _inventoryUpdated,
-        _mapComposed,
-        incomingArrStr
-      );
+      let _updateIncoming = updateIncomingInventories(player, incomingArrStr);
     } else {
       console.log("Cannot harvest or missing tokenId");
     }
@@ -251,10 +216,11 @@ export function BF_resource(props: any) {
           <div className="flex flex-row justify-center inline-block">
             <div style={{ width: "135px", paddingTop: "10px" }}>
               <>
-                {(harvestActions &&
-                  harvestActions.length > 0 &&
-                  harvestActions[posY] &&
-                  harvestActions[posY][posX].status == 0) ||
+                {(incomingActions &&
+                  incomingActions.length > 0 &&
+                  incomingActions[posY] &&
+                  incomingActions[posY][posX] &&
+                  incomingActions[posY][posX].status == 0) ||
                 !_canHarvest ? (
                   <>
                     <div

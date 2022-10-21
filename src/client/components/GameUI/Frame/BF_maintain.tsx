@@ -32,7 +32,11 @@ export function BF_maintain(props: any) {
   const [msg, setMsg] = useState("");
   const [showNotif, setShowNotif] = useState(false);
 
-  const destroyBuilding = (_typeId: number, _posX: number, _posY: number) => {
+  const destroyBuilding = async (
+    _typeId: number,
+    _posX: number,
+    _posY: number
+  ) => {
     if (tokenId) {
       console.log("inventory before destroy", inventory);
       let _inventory = destroyBuilding_(
@@ -59,21 +63,18 @@ export function BF_maintain(props: any) {
       _map[_posY][_posX].id = 0;
       updateMapBlock(_map);
 
-      // Update action in context
-      const entrypoint = "destroy_building";
-      const calldata = tokenId + "|" + 0 + "|" + _posX + "|" + _posY;
-      addAction(entrypoint, calldata);
-
-      // ? Send request DB
+      // Send request DB
       const _mapComposed = ComposeD(_map);
-      let _destroy = destroyAction(
+      let _destroy = await destroyAction(
         player,
-        entrypoint,
-        calldata,
+        "destroy_building",
+        tokenId + "|" + 0 + "|" + _posX + "|" + _posY,
         inventory,
         uid,
         _mapComposed
       );
+      // update action in context
+      addAction(_destroy[0]);
 
       updateBuildingFrame(false, {
         infraType: 0,

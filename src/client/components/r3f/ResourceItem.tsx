@@ -8,7 +8,8 @@ import {
   incomingCompose,
   receiveResHarvest,
 } from "../../utils/building";
-import { updateIncomingInventories } from "../../api/player";
+import { harvestAction, updateIncomingInventories } from "../../api/player";
+import { ComposeD } from "../../utils/land";
 
 interface IBlock {
   block: any;
@@ -47,7 +48,7 @@ export const ResourceItem = memo<IBlock>(
     const [localTextureSelected, setLocalTextureSelected] = useState<any>(null);
     const { frameData, updateBuildingFrame } = useSelectContext();
     const {
-      harvestActions,
+      incomingActions,
       playerBuilding,
       updateIncomingActions,
       inventory,
@@ -56,6 +57,7 @@ export const ResourceItem = memo<IBlock>(
       updateMapBlock,
       incomingArray,
       player,
+      addAction,
     } = useNewGameContext();
 
     const frameDataValue = useMemo(() => {
@@ -65,11 +67,11 @@ export const ResourceItem = memo<IBlock>(
       }
     }, [clicked]);
 
-    const harvestArrValue = useMemo(() => {
-      if (harvestActions) {
-        return harvestActions;
+    const IncomingActionsValue = useMemo(() => {
+      if (incomingActions) {
+        return incomingActions;
       }
-    }, [harvestActions]);
+    }, [incomingActions]);
 
     const blockValue = useMemo(() => {
       if (block) {
@@ -77,6 +79,12 @@ export const ResourceItem = memo<IBlock>(
         return block;
       }
     }, [block, level]);
+
+    // const playerbuildingsval = useMemo(() => {
+    //   console.log('player building', playerBuilding)
+    //   console.log('fullMap', fullMap)
+    //   return playerBuilding
+    // }, [playerBuilding]);
 
     const textureValue = useMemo(() => {
       let textureType: Vector2 = new Vector2(0, 0);
@@ -112,16 +120,26 @@ export const ResourceItem = memo<IBlock>(
         }
       } else if (block.infraType == 2) {
         if (block.type == 1) {
-          const _entry = playerBuilding.filter((elem: any) => {
-            return elem.gameUid == block.id;
-          });
-          if (_entry[0].decay == 100) {
+          console.log("block", block);
+          console.log("playerbuilding", playerBuilding);
+          if (block.status == 1) {
             textureType = findTextByID(2);
           } else {
             textureType = findTextByID(
               staticBuildings[block.type - 1].sprite[0]
             );
           }
+          // const _entry = playerBuilding.filter((elem: any) => {
+          //   return elem.gameUid == block.id;
+          // });
+          // console.log('entry', _entry)
+          // if (_entry[0].decay == 100) {
+          //   textureType = findTextByID(2);
+          // } else {
+          //   textureType = findTextByID(
+          //     staticBuildings[block.type - 1].sprite[0]
+          //   );
+          // }
         } else {
           textureType = findTextByID(staticBuildings[block.type - 1].sprite[0]);
         }
@@ -167,16 +185,23 @@ export const ResourceItem = memo<IBlock>(
         }
       } else if (block.infraType == 2) {
         if (block.type == 1) {
-          const _entry = playerBuilding.filter((elem: any) => {
-            return elem.gameUid == block.id;
-          });
-          if (_entry[0].decay == 100) {
+          if (block.status == 1) {
             textureType = findTextByID(2);
           } else {
             textureType = findTextByID(
               staticBuildings[block.type - 1].sprite[0]
             );
           }
+          // const _entry = playerBuilding.filter((elem: any) => {
+          //   return elem.gameUid == block.id;
+          // });
+          // if (_entry[0].decay == 100) {
+          //   textureType = findTextByID(2);
+          // } else {
+          //   textureType = findTextByID(
+          //     staticBuildings[block.type - 1].sprite[0]
+          //   );
+          // }
         } else {
           textureType = findTextByID(staticBuildings[block.type - 1].sprite[0]);
         }
@@ -247,7 +272,7 @@ export const ResourceItem = memo<IBlock>(
 
     const animations = useMemo(() => {
       let textureType: Vector2 = new Vector2(0, 0);
-      //RANDTREE AND RANDRATIO SHOULD BE GLOBAL TO USE THEM FOR WEATHER
+      // RANDTREE AND RANDRATIO SHOULD BE GLOBAL TO USE THEM FOR WEATHER
       let randTree: number = parseInt(
         (Math.random() * (100 - 1) + 1).toFixed(0)
       );
@@ -255,7 +280,6 @@ export const ResourceItem = memo<IBlock>(
         (Math.random() * (15 - 5) + 5).toFixed(0)
       );
       let randAnim: number = parseInt((Math.random() * (4 - 1) + 1).toFixed(0));
-      // console.log("animIndex = ", animIndex);
 
       if (randTree < randRatio) {
         if (block.infraType == 1 && block.type == 1 && block.state == 1) {
@@ -312,7 +336,7 @@ export const ResourceItem = memo<IBlock>(
       return new Vector2(0, 0);
     }
 
-    const completeHarvest = () => {
+    const completeHarvest = async () => {
       // update inventory in frontend
       const _inventoryUpdated = receiveResHarvest(
         blockValue.randType - 1,
@@ -339,6 +363,7 @@ export const ResourceItem = memo<IBlock>(
       fullMap[blockValue.posY][blockValue.posX].type = blockValue.type;
       fullMap[blockValue.posY][blockValue.posX].id = blockValue.id;
       updateMapBlock(_map);
+      var _mapComposed = ComposeD(_map);
 
       // Update incoming array
       console.log("incoming array", incomingArray);
@@ -346,8 +371,26 @@ export const ResourceItem = memo<IBlock>(
       console.log("_incomingArray updated", _incomingArray);
       var incomingArrStr = incomingCompose(_incomingArray);
       console.log("_incomingArray string", incomingArrStr);
-      let _updateIncoming = updateIncomingInventories(player, incomingArrStr);
-      console.log("incoming array string", incomingArray);
+      // let _updateIncoming = updateIncomingInventories(player, incomingArrStr);
+      // console.log("incoming array string", incomingArray);
+
+      const _isHarvested = await harvestAction(
+        player,
+        "harvest",
+        player["tokenId" as any] +
+          "|" +
+          0 +
+          "|" +
+          blockValue.posX +
+          "|" +
+          blockValue.posY,
+        _inventoryUpdated,
+        _mapComposed,
+        incomingArrStr
+      );
+      addAction(_isHarvested[0]);
+
+      console.log("incoming actions", incomingActions);
     };
 
     useFrame(() => {
@@ -378,19 +421,21 @@ export const ResourceItem = memo<IBlock>(
 
             // Check if resource being harvested
             if (
-              harvestArrValue != null &&
-              harvestArrValue[blockValue.posY] &&
-              harvestArrValue[blockValue.posY][blockValue.posX] &&
-              harvestArrValue[blockValue.posY][blockValue.posX].status == 0
+              IncomingActionsValue != null &&
+              IncomingActionsValue[blockValue.posY] &&
+              IncomingActionsValue[blockValue.posY][blockValue.posX] &&
+              IncomingActionsValue[blockValue.posY][blockValue.posX].status == 0
             ) {
               if (
-                harvestArrValue[blockValue.posY][blockValue.posX]
+                IncomingActionsValue[blockValue.posY][blockValue.posX]
                   .harvestStartTime +
-                  harvestArrValue[blockValue.posY][blockValue.posX]
+                  IncomingActionsValue[blockValue.posY][blockValue.posX]
                     .harvestDelay <
                 Date.now()
               ) {
-                harvestArrValue[blockValue.posY][blockValue.posX].status = 1;
+                IncomingActionsValue[blockValue.posY][
+                  blockValue.posX
+                ].status = 1;
                 updateIncomingActions(
                   1,
                   blockValue.posX,
@@ -408,19 +453,21 @@ export const ResourceItem = memo<IBlock>(
 
             // check if resource being harvested
             if (
-              harvestArrValue != null &&
-              harvestArrValue[blockValue.posY] &&
-              harvestArrValue[blockValue.posY][blockValue.posX] &&
-              harvestArrValue[blockValue.posY][blockValue.posX].status == 0
+              IncomingActionsValue != null &&
+              IncomingActionsValue[blockValue.posY] &&
+              IncomingActionsValue[blockValue.posY][blockValue.posX] &&
+              IncomingActionsValue[blockValue.posY][blockValue.posX].status == 0
             ) {
               if (
-                harvestArrValue[blockValue.posY][blockValue.posX]
+                IncomingActionsValue[blockValue.posY][blockValue.posX]
                   .harvestStartTime +
-                  harvestArrValue[blockValue.posY][blockValue.posX]
+                  IncomingActionsValue[blockValue.posY][blockValue.posX]
                     .harvestDelay <
                 Date.now()
               ) {
-                harvestArrValue[blockValue.posY][blockValue.posX].status = 1;
+                IncomingActionsValue[blockValue.posY][
+                  blockValue.posX
+                ].status = 1;
                 updateIncomingActions(
                   1,
                   blockValue.posX,
@@ -445,19 +492,21 @@ export const ResourceItem = memo<IBlock>(
             // building under construction
             if (
               // blockValue.status == 0
-              harvestArrValue != null &&
-              harvestArrValue[blockValue.posY] &&
-              harvestArrValue[blockValue.posY][blockValue.posX] &&
-              harvestArrValue[blockValue.posY][blockValue.posX].status == 0
+              IncomingActionsValue != null &&
+              IncomingActionsValue[blockValue.posY] &&
+              IncomingActionsValue[blockValue.posY][blockValue.posX] &&
+              IncomingActionsValue[blockValue.posY][blockValue.posX].status == 0
             ) {
               if (
-                harvestArrValue[blockValue.posY][blockValue.posX]
+                IncomingActionsValue[blockValue.posY][blockValue.posX]
                   .harvestStartTime +
-                  harvestArrValue[blockValue.posY][blockValue.posX]
+                  IncomingActionsValue[blockValue.posY][blockValue.posX]
                     .harvestDelay <
                 Date.now()
               ) {
-                harvestArrValue[blockValue.posY][blockValue.posX].status = 1;
+                IncomingActionsValue[blockValue.posY][
+                  blockValue.posX
+                ].status = 1;
                 updateIncomingActions(
                   2,
                   blockValue.posX,
@@ -480,19 +529,21 @@ export const ResourceItem = memo<IBlock>(
           } else {
             // building under construction
             if (
-              harvestArrValue != null &&
-              harvestArrValue[blockValue.posY] &&
-              harvestArrValue[blockValue.posY][blockValue.posX] &&
-              harvestArrValue[blockValue.posY][blockValue.posX].status == 0
+              IncomingActionsValue != null &&
+              IncomingActionsValue[blockValue.posY] &&
+              IncomingActionsValue[blockValue.posY][blockValue.posX] &&
+              IncomingActionsValue[blockValue.posY][blockValue.posX].status == 0
             ) {
               if (
-                harvestArrValue[blockValue.posY][blockValue.posX]
+                IncomingActionsValue[blockValue.posY][blockValue.posX]
                   .harvestStartTime +
-                  harvestArrValue[blockValue.posY][blockValue.posX]
+                  IncomingActionsValue[blockValue.posY][blockValue.posX]
                     .harvestDelay <
                 Date.now()
               ) {
-                harvestArrValue[blockValue.posY][blockValue.posX].status = 1;
+                IncomingActionsValue[blockValue.posY][
+                  blockValue.posX
+                ].status = 1;
                 updateIncomingActions(
                   2,
                   blockValue.posX,
@@ -506,19 +557,21 @@ export const ResourceItem = memo<IBlock>(
 
               // building upgraded destroyed
             } else if (
-              harvestArrValue != null &&
-              harvestArrValue[blockValue.posY] &&
-              harvestArrValue[blockValue.posY][blockValue.posX] &&
-              harvestArrValue[blockValue.posY][blockValue.posX].status == 0
+              IncomingActionsValue != null &&
+              IncomingActionsValue[blockValue.posY] &&
+              IncomingActionsValue[blockValue.posY][blockValue.posX] &&
+              IncomingActionsValue[blockValue.posY][blockValue.posX].status == 0
             ) {
               if (
-                harvestArrValue[blockValue.posY][blockValue.posX]
+                IncomingActionsValue[blockValue.posY][blockValue.posX]
                   .harvestStartTime +
-                  harvestArrValue[blockValue.posY][blockValue.posX]
+                  IncomingActionsValue[blockValue.posY][blockValue.posX]
                     .harvestDelay <
                 Date.now()
               ) {
-                harvestArrValue[blockValue.posY][blockValue.posX].status = 1;
+                IncomingActionsValue[blockValue.posY][
+                  blockValue.posX
+                ].status = 1;
                 updateIncomingActions(
                   2,
                   blockValue.posX,

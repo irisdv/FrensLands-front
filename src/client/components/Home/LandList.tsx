@@ -87,27 +87,27 @@ export default function MenuHome(props: any) {
         // If not init onchain send tx
         // Send tx to init game onchain
         // let nonce = await wallet.account.getNonce();
-        // const result = await wallet.account.execute(
-        //   [
-        //     {
-        //       contractAddress: frenslands?.address as string,
-        //       entrypoint: "start_game",
-        //       calldata: [_tokenId, 0, initArray[_tokenId].biomeId],
-        //     },
-        //   ],
-        //   undefined,
-        //   { maxFee: 500, nonce }
-        // );
-        // console.log("result from tx", result);
+        const result = await starknet.account.execute(
+          [
+            {
+              contractAddress: frenslands?.address as string,
+              entrypoint: "start_game",
+              calldata: [_tokenId, 0, initArray[_tokenId].biomeId],
+            },
+          ]
+          // undefined,
+          // { maxFee: 500, nonce }
+        );
+        console.log("result from tx", result);
 
-        const result = await starknet.account.execute([
-          {
-            contractAddress: testContract.address as string,
-            entrypoint: "harvest",
-            calldata: [1],
-          },
-        ]);
-        console.log("result", result);
+        // const result = await starknet.account.execute([
+        //   {
+        //     contractAddress: testContract.address as string,
+        //     entrypoint: "harvest",
+        //     calldata: [1],
+        //   },
+        // ]);
+        // console.log("result", result);
         // const result = {
         //   code: "RECEIVED",
         //   transaction_hash:

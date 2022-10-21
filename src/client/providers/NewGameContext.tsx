@@ -38,19 +38,16 @@ export interface IPlayerBuilding {
 }
 
 export interface INewGameState {
-  // Static data
-  staticResources: any[];
-  staticBuildings: any[];
-  // Player data
-  timeSpent: number;
-  wallet: any;
-  player: any[];
-  fullMap: any[];
-  inventory: any[];
-  playerBuilding: any[];
-  counters: any[];
-  payloadActions: any[];
-  incomingArray: any[];
+  staticResources: any[]; // static data resources spawned
+  staticBuildings: any[]; // static data buildings
+  timeSpent: number; // ! to delete
+  wallet: any; // starknet
+  player: any[]; // player information (uid, landId, tokenId)
+  fullMap: any[]; // fullMap array
+  inventory: any[]; // player inventory (resources, level, timeSpent)
+  playerBuilding: any[]; // player array of buildings
+  counters: any[]; // player counters (resources spawned, total buildings, inactive / active buildings, last building uid)
+  payloadActions: any[]; // actions array to be sent onchain
   initPlayer: (wallet: IStarknetWindowObject) => void;
   initGameSession: (
     inventory: any,
@@ -60,12 +57,14 @@ export interface INewGameState {
     account: string,
     userId: string
   ) => void;
-  addAction: (entrypoint: string, calldata: string) => void;
+  addAction: (action: any) => void;
   updateActions: (actionArray: any[]) => void;
   updateInventory: (inventory: any[]) => void;
   updatePlayerBuilding: (_playerBuilding: any[]) => void;
   // Harvest actions
-  harvestActions: any[];
+  // TODO check l'utilité des deux
+  incomingArray: any[]; // incoming harvest actions
+  incomingActions: any[]; // incoming actions overall
   updateIncomingActions: (
     infraType: number,
     posX: number,
@@ -102,12 +101,12 @@ export const NewGameState: INewGameState = {
     account,
     userId
   ) => {},
-  addAction: (entrypoint, calldata) => {},
+  addAction: (value) => {},
   updateActions: (actionArray) => {},
   updateInventory: (inventory) => {},
   updatePlayerBuilding: (_playerBuilding) => {},
   // Harvest actions
-  harvestActions: [],
+  incomingActions: [],
   updateIncomingActions: (infraType, posX, posY, uid, time, status) => {},
   updateMapBlock: (_map) => {},
   transactions: [],
@@ -139,8 +138,7 @@ interface SetGameSession {
 
 interface SetPayloadAction {
   type: "set_payloadAction";
-  entrypoint: string;
-  calldata: string;
+  action: any;
 }
 
 interface SetPayloadActions {
@@ -160,21 +158,21 @@ interface SetPlayerBuildings {
   type: "set_playerBuilding";
   playerBuilding: any[];
 }
-interface SetHarvestAction {
-  type: "set_harvestAction";
-  harvestingArr: any[];
+interface SetIncomingAction {
+  type: "set_incomingAction";
+  incomingArr: any[];
 }
 interface SetFullMap {
   type: "set_fullMap";
   map: any[];
 }
 
-interface SetExecuteHarvest {
-  type: "set_executeHarvest";
-  inventory: any[];
-  map: any[];
-  harvestingArr: any[];
-}
+// interface SetExecuteHarvest {
+//   type: "set_executeHarvest";
+//   inventory: any[];
+//   map: any[];
+//   harvestingArr: any[];
+// }
 
 interface SetError {
   type: "set_error";
@@ -191,11 +189,11 @@ type Action =
   | SetPayloadAction
   | SetInventory
   | SetPlayerBuildings
-  | SetHarvestAction
+  | SetIncomingAction
   | SetFullMap
   | SetPayloadActions
-  | SetTransactions
-  | SetExecuteHarvest;
+  | SetTransactions;
+// | SetExecuteHarvest;
 
 function reducer(state: INewGameState, action: Action): INewGameState {
   switch (action.type) {
@@ -223,10 +221,7 @@ function reducer(state: INewGameState, action: Action): INewGameState {
     case "set_payloadAction": {
       const currentPayload = state.payloadActions;
       console.log("state.payloadActions", state.payloadActions);
-      currentPayload.push({
-        entrypoint: action.entrypoint,
-        calldata: action.calldata,
-      });
+      currentPayload.push(action.action);
       console.log("current payload", currentPayload);
       return {
         ...state,
@@ -259,11 +254,11 @@ function reducer(state: INewGameState, action: Action): INewGameState {
         playerBuilding: action.playerBuilding,
       };
     }
-    case "set_harvestAction": {
-      console.log("current payload harvest", action.harvestingArr);
+    case "set_incomingAction": {
+      console.log("current payload harvest", action.incomingArr);
       return {
         ...state,
-        harvestActions: action.harvestingArr,
+        incomingActions: action.incomingArr,
       };
     }
     case "set_fullMap": {
@@ -272,15 +267,15 @@ function reducer(state: INewGameState, action: Action): INewGameState {
         fullMap: action.map,
       };
     }
-    case "set_executeHarvest": {
-      console.log("actions", action);
-      return {
-        ...state,
-        inventory: action.inventory,
-        fullMap: action.map,
-        harvestActions: action.harvestingArr,
-      };
-    }
+    // case "set_executeHarvest": {
+    //   console.log("actions", action);
+    //   return {
+    //     ...state,
+    //     inventory: action.inventory,
+    //     fullMap: action.map,
+    //     harvestActions: action.harvestingArr,
+    //   };
+    // }
     case "set_error": {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -380,17 +375,13 @@ export const NewAppStateProvider: React.FC<
     return () => clearInterval(intervalId);
   }, [fetchBlock]);
 
-  const addAction = React.useCallback(
-    (entrypoint: string, calldata: string) => {
-      console.log("action received", entrypoint);
-      dispatch({
-        type: "set_payloadAction",
-        entrypoint,
-        calldata,
-      });
-    },
-    []
-  );
+  const addAction = React.useCallback((value: any) => {
+    console.log("action received", value);
+    dispatch({
+      type: "set_payloadAction",
+      action: value,
+    });
+  }, []);
 
   const updateActions = React.useCallback((actionArray: any[]) => {
     console.log("action payload received", actionArray);
@@ -438,26 +429,22 @@ export const NewAppStateProvider: React.FC<
 
       //  - - - - - - INVENTORY - - - - - -
       const inventoryArray: any[] = [];
-      // inventoryArray[0] = inventory[0].wood;
-      // inventoryArray[1] = inventory[0].rock;
-      // inventoryArray[2] = inventory[0].food;
-      inventoryArray[0] = 22;
-      inventoryArray[1] = 16;
-      inventoryArray[2] = 14;
+      inventoryArray[0] = inventory[0].wood;
+      inventoryArray[1] = inventory[0].rock;
+      inventoryArray[2] = inventory[0].food;
       inventoryArray[3] = inventory[0].metal;
-      // inventoryArray[3] = 100;
       inventoryArray[4] = inventory[0].coal;
       inventoryArray[5] = inventory[0].energy;
       inventoryArray[6] = inventory[0].coin;
-      // inventoryArray[6] = 100;
       inventoryArray[7] = inventory[0].gold;
       inventoryArray[8] = inventory[0].freePop;
       inventoryArray[9] = inventory[0].totalPop;
-      // inventoryArray[8] = 3;
-      // inventoryArray[9] = 3;
       inventoryArray[10] = inventory[0].timeSpent;
-      // inventoryArray[11] = inventory[0].level;
-      inventoryArray[11] = 9;
+      inventoryArray[11] = inventory[0].level;
+      // inventoryArray[0] = 22;
+      // inventoryArray[1] = 16;
+      // inventoryArray[2] = 14;
+      // inventoryArray[11] = 9;
 
       console.log("inventoryArray = ", inventoryArray);
 
@@ -476,9 +463,15 @@ export const NewAppStateProvider: React.FC<
         mapBuildingArray[key].decay = elem.decay;
         mapBuildingArray[key].gameUid = elem.gameUid;
         if (elem.gameUid > lastUID) lastUID = elem.gameUid;
+        if (elem.fk_buildingid == 1 && elem.decay == 0) {
+          console.log("elem", elem);
+          value.tempArray[elem.blockY][elem.blockX].status = 2;
+        }
       });
+
       console.log("gameUid", lastUID);
       console.log("mapBuildingArray = ", mapBuildingArray);
+      console.log("value.tempArray", value.tempArray);
 
       //  - - - - - - STATIC BUILDINGS - - - - - -
       const staticBuildings: any = await getStaticBuildings();
@@ -517,6 +510,10 @@ export const NewAppStateProvider: React.FC<
       if (inventory[0].incomingInventories == null) {
         var incomingArray: any[] = [];
       } else {
+        console.log(
+          "inventory[0].incomingInventories",
+          inventory[0].incomingInventories
+        );
         var time = Date.now();
         var incomingArray: any[] = incomingComposeD(
           inventory[0].incomingInventories,
@@ -579,10 +576,10 @@ export const NewAppStateProvider: React.FC<
       if (
         posX &&
         posY &&
-        state.harvestActions &&
+        state.incomingActions &&
         (status == 1 || status == 0)
       ) {
-        const currArr = state.harvestActions;
+        const currArr = state.incomingActions;
 
         if (currArr && currArr[posY] != undefined) {
           if (!currArr[posY][posX]) currArr[posY][posX] = [];
@@ -607,8 +604,8 @@ export const NewAppStateProvider: React.FC<
           }
         }
         dispatch({
-          type: "set_harvestAction",
-          harvestingArr: currArr,
+          type: "set_incomingAction",
+          incomingArr: currArr,
         });
       }
     },
@@ -645,7 +642,7 @@ export const NewAppStateProvider: React.FC<
         playerBuilding: state.playerBuilding,
         counters: state.counters,
         payloadActions: state.payloadActions,
-        harvestActions: state.harvestActions,
+        incomingActions: state.incomingActions,
         incomingArray: state.incomingArray,
         initPlayer,
         initGameSession,

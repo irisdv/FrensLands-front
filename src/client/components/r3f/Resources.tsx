@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import { TextureLoader, RepeatWrapping, NearestFilter, Vector2 } from "three";
 import { ResourceLine } from "./ResourceLine";
-const { promises: Fs } = require("fs");
 
 export default function Resources({
   frontBlockArray,
@@ -53,15 +52,6 @@ export default function Resources({
       return textObj;
     }
   }, [textArrRef]);
-
-  function exists(path: String) {
-    try {
-      Fs.access(path);
-      return true;
-    } catch {
-      return false;
-    }
-  }
 
   return (
     textureLoader != null &&

@@ -59,11 +59,6 @@ export function BF_upgrade(props: any) {
       );
       updateInventory(_inventory);
 
-      // Store on-chain action in context
-      const calldata = tokenId + "|" + 0 + "|" + _posX + "|" + _posY;
-      const entrypoint = "repair_building";
-      addAction(entrypoint, calldata);
-
       // ? repair timer has passed
       // receive resources after upgrade
       _inventory[9] += staticBuildingsData[_typeId - 1].repairCost[9];
@@ -71,7 +66,10 @@ export function BF_upgrade(props: any) {
 
       const _idx = playerBuilding.findIndex((obj) => obj.gameUid == uid);
       playerBuilding[_idx].decay = 0;
-      updatePlayerBuilding(playerBuilding);
+      // updatePlayerBuilding(playerBuilding);
+
+      fullMap[_posY][_posX].status = 2;
+      updateMapBlock(fullMap);
 
       updateBuildingFrame(false, {
         infraType: 0,
@@ -85,17 +83,24 @@ export function BF_upgrade(props: any) {
       // ? send request to db
       let _action = await repairAction(
         player,
-        entrypoint,
-        calldata,
+        "repair_building",
+        tokenId + "|" + 0 + "|" + _posX + "|" + _posY,
         inventory,
         playerBuilding[_idx].gameUid
       );
+      console.log("_action repair", _action);
+      // update context action
+      addAction(_action[0]);
     } else {
       console.log("Cannot repair or missing tokenId");
     }
   };
 
-  const destroyBuilding = (_typeId: number, _posX: number, _posY: number) => {
+  const destroyBuilding = async (
+    _typeId: number,
+    _posX: number,
+    _posY: number
+  ) => {
     if (tokenId) {
       console.log("inventory before destroy", inventory);
       console.log(
@@ -126,21 +131,17 @@ export function BF_upgrade(props: any) {
       _map[_posY][_posX].id = 0;
       updateMapBlock(_map);
 
-      // Update action in context
-      const entrypoint = "destroy_building";
-      const calldata = tokenId + "|" + 0 + "|" + _posX + "|" + _posY;
-      addAction(entrypoint, calldata);
-
       // ? Send request DB
       const _mapComposed = ComposeD(_map);
-      let _destroy = destroyAction(
+      let _destroy = await destroyAction(
         player,
-        entrypoint,
-        calldata,
+        "destroy_building",
+        tokenId + "|" + 0 + "|" + _posX + "|" + _posY,
         inventory,
         uid,
         _mapComposed
       );
+      addAction(_destroy[0]);
 
       updateBuildingFrame(false, {
         infraType: 0,

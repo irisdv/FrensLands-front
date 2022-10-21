@@ -3,10 +3,10 @@ import { useGameContext } from "../../hooks/useGameContext";
 import Notifications from "../Notifications";
 import UI_Frames from "../../style/resources/front/Ui_Frames3.svg";
 import { useSelectContext } from "../../hooks/useSelectContext";
-import useReinitialize from "../../hooks/invoke/useReinitialize";
+// import useReinitialize from "../../hooks/invoke/useReinitialize";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
 import { useFLContract } from "../../hooks/contracts/frenslands";
-import { bulkUpdateActions } from "../../api/player";
+import { bulkUpdateActions, reinitLand } from "../../api/player";
 import { TransactionItem } from "./transactionItem";
 
 export function MenuBar(props: any) {
@@ -30,28 +30,20 @@ export function MenuBar(props: any) {
     tokenId,
     updateTokenId,
     setAddress,
-    blockGame,
+    // blockGame,
     buildingData,
-    nonce,
-    updateNonce,
+    // nonce,
+    // updateNonce,
     // counterResources,
     accountContract,
   } = useGameContext();
 
   const frenslandsContract = useFLContract();
-
-  const reinitializeInvoke = useReinitialize();
-
-  const [claiming, setClaiming] = useState<any>(null);
-  const [btnClaim, setBtnClaim] = useState(false);
+  // const [claiming, setClaiming] = useState<any>(null);
+  // const [btnClaim, setBtnClaim] = useState(false);
   const [popUpInit, setPopUpInit] = useState(false);
   const [popUpTxCart, setPopUpTxCart] = useState(false);
-
   const [claimableResources, setClaimableResources] = useState<any[]>([]);
-
-  // useEffect(() => {
-  //   console.log('useEffect zoom menubar', zoomMode)
-  // }, [zoomMode])
 
   useEffect(() => {
     if (wallet && wallet.isConnected) setAddress(wallet.account.address);
@@ -88,23 +80,32 @@ export function MenuBar(props: any) {
     // setClaiming(true);
   };
 
-  const nonceValue = useMemo(() => {
-    console.log("new nonce value", nonce);
-    return nonce;
-  }, [nonce]);
+  // const nonceValue = useMemo(() => {
+  //   console.log("new nonce value", nonce);
+  //   return nonce;
+  // }, [nonce]);
 
-  const reinitializeLand = () => {
+  const reinitializeLand = async () => {
     if (tokenId) {
-      const tx_hash = reinitializeInvoke(tokenId, nonceValue);
+      // const result = await wallet.account.execute([
+      //   {
+      //     contractAddress: frenslandsContract?.address as string,
+      //     entrypoint: "reinit_game",
+      //     calldata: [tokenId, 0],
+      //   },
+      // ]);
+      // console.log("result from tx reinit", result);
 
-      //     tx_hash.then((res) => {
-      //       console.log("res", res);
-      //       if (res != 0) {
-      //         updateNonce(nonceValue);
-      //       }
-      //     });
-    } else {
-      console.log("Missing tokenId");
+      const result = {
+        code: "TRANSACTION_RECEIVED",
+        transaction_hash:
+          "0x1c4a2c6c3398cac008a66e727af63248b55aac85e6259308f059b34fc0ce311",
+      };
+
+      let _reinitializeGame = await reinitLand(player, playerBuilding, result);
+      console.log("_initializeGame", _reinitializeGame);
+
+      window.location.reload();
     }
   };
 
@@ -190,11 +191,11 @@ export function MenuBar(props: any) {
     // console.log("nonce", nonce);
     wallet.account.execute(_calls).then((response: any) => {
       console.log("response", response);
+
       transactions.push(response);
-      // TODO Update DB here w/ tx hash
 
       payloadActions.map((action: any) => {
-        action.status = "pending";
+        action.status = response.code;
         action.transaction_hash = response.transaction_hash;
       });
       console.log("payloadActions menubar", payloadActions);
@@ -617,7 +618,7 @@ export function MenuBar(props: any) {
               ></div>
               <p>Your transactions</p>
               <br />
-              <div style={{ overflowY: "auto" }}>
+              <div style={{ overflowY: "auto", height: "310px" }}>
                 {payloadActions.length > 0 ? (
                   payloadActions.map((action: any, key: number) => {
                     var calldata = action.calldata.split("|");
@@ -627,30 +628,34 @@ export function MenuBar(props: any) {
                     } else if (action.status == "ACCEPTED_ON_L2") {
                       status = 2;
                     }
-                    return (
-                      <TransactionItem
-                        key={key}
-                        index={key}
-                        status={status}
-                        calldata={calldata}
-                        entrypoint={action.entrypoint}
-                      />
-                    );
+                    if (
+                      action.status != "ACCEPTED_ON_L2" ||
+                      action.status != "ACCEPTED_ON_L1"
+                    )
+                      return (
+                        <TransactionItem
+                          key={key}
+                          index={key}
+                          status={status}
+                          calldata={calldata}
+                          entrypoint={action.entrypoint}
+                        />
+                      );
                   })
                 ) : (
                   <p>You don't have any actions to validate on-chain yet.</p>
                 )}
-              </div>
-              <div
-                className="btnCustom pixelated relative"
-                onClick={() => buildMulticall()}
-              >
-                <p
-                  className="relative fontHpxl_JuicyXL"
-                  style={{ marginTop: "47px" }}
+                <div
+                  className="btnCustom pixelated relative"
+                  onClick={() => buildMulticall()}
                 >
-                  Send TX
-                </p>
+                  <p
+                    className="relative fontHpxl_JuicyXL"
+                    style={{ marginTop: "47px" }}
+                  >
+                    Send TX
+                  </p>
+                </div>
               </div>
             </div>
           </div>

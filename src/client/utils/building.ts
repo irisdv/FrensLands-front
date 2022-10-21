@@ -551,7 +551,6 @@ export const checkResRepair = (
 
   while (i < fixBuildVal[id].repairCost.length) {
     if (inventory[i] < fixBuildVal[id].repairCost[i]) {
-      console.log("not enough resources to repair ", id);
       return 0;
     }
     i++;
