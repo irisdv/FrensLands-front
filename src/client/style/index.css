@@ -2160,3 +2160,22 @@ Lab = 24 */
   -o-user-select: none;
   user-select: none;
 }
+
+.snackbar-centered {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 0px;
+  z-index: 10;
+}
+
+.snackbar-container {
+  width: 701px;
+  box-shadow: 0 2px 8px 0 #1a273d40;
+  border: solid 1px #e0e7ff;
+  background-color: #ffffff;
+  padding: 1rem 2rem;
+  margin: 0 0.5rem;
+}

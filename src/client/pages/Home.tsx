@@ -1,7 +1,7 @@
 import React, { useMemo, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-import starknet, { uint256, number } from "starknet";
+import { uint256 } from "starknet";
 import { getStarknet, IStarknetWindowObject } from "@starknet/get-starknet";
 import { useStarknetCall } from "@starknet-react/core";
 import Notifications from "../components/Notifications";
@@ -9,16 +9,11 @@ import MenuHome from "../components/Home/MenuHome";
 import LandList from "../components/Home/LandList";
 import { useMapsContract } from "../hooks/contracts/maps";
 import { useGameContext } from "../hooks/useGameContext";
-// import { useERC1155Contract } from "../hooks/contracts/erc1155";
-// import { useResourcesContract } from "../hooks/contracts/resources";
 import { ILand } from "../providers/NewGameContext";
 
 import { gsap } from "gsap";
 import UI_Frames from "../style/resources/front/Ui_Frames3.svg";
-// import useStartGame from "../hooks/invoke/useStartGame";
 import { useFLContract } from "../hooks/contracts/frenslands";
-// import { createSupabase } from "../supabaseClient";
-// import { initMap } from "../utils/constant";
 
 export default function Home() {
   const [wallet, setWallet] = useState<IStarknetWindowObject>();
@@ -152,13 +147,6 @@ export default function Home() {
                 <Notifications />
               </div>
             </div>
-
-            {/* <button
-              onClick={async () => await startGame(2)}
-              style={{ position: "absolute", zIndex: 100 }}
-            >
-              START GAME
-            </button> */}
 
             <div className="absolute" style={{ width: "100vw", top: "0" }}>
               <img

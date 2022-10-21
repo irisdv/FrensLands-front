@@ -497,6 +497,11 @@ export function MenuBar(props: any) {
           ></div>
         )}
       </div>
+      <div className="snackbar-centered">
+        <div id="snackbar-fixed-container">
+          <Notifications />
+        </div>
+      </div>
       <div
         onClick={() => updateZoom(!zoomValue, player["id" as any] as string)}
       >
@@ -563,8 +568,6 @@ export function MenuBar(props: any) {
           </div>
         </div>
       </div>
-
-      <Notifications />
 
       {popUpInit && (
         <div className="flex justify-center selectDisable">

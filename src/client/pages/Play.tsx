@@ -15,6 +15,7 @@ import { useNewGameContext } from "../hooks/useNewGameContext";
 import { getStarknet } from "@starknet/get-starknet";
 import { useSelectContext } from "../hooks/useSelectContext";
 import getPlayer, { getLandInformation } from "../api/player";
+// import { showErrorMessage, showSuccessMessage } from "../helpers/ExceptionUtils";
 
 export default function Play() {
   const { address, setAddress, updateTokenId, tokenId, fetchMapType } =
@@ -138,6 +139,19 @@ export default function Play() {
     }
     setTextArrRef(textArrRefTemp);
   }, []);
+
+  // useEffect(() => {
+  //   if (transactions && transactions.length > 0) {
+  //     transactions.forEach((transaction : any) => {
+  //       console.log('transaction', transaction)
+  //       try{
+  //         showSuccessMessage("Nicely done", "You did very well");
+  //       }catch(e){
+  //         showErrorMessage("Something exploded", "Better luck next time");
+  //       }
+  //     })
+  //   }
+  // }, [transactions])
 
   // const frontBlockArray = useMemo(() => {
   //   if (mapArray != null && Object.keys(mapArray).length > 0) {

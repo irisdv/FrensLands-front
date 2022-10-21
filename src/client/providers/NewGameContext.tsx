@@ -76,6 +76,7 @@ export interface INewGameState {
   updateMapBlock: (_map: any[]) => void;
   transactions: any[];
   updateTransactions: (transactions: any[]) => void;
+  removeTransaction: (transaction_hash: string) => void;
 }
 
 export const NewGameState: INewGameState = {
@@ -111,6 +112,7 @@ export const NewGameState: INewGameState = {
   updateMapBlock: (_map) => {},
   transactions: [],
   updateTransactions: (tx) => {},
+  removeTransaction: (transaction_hash) => {},
 };
 
 const NewStateContext = React.createContext(NewGameState);
@@ -628,6 +630,29 @@ export const NewAppStateProvider: React.FC<
     });
   }, []);
 
+  const removeTransaction = React.useCallback((transaction_hash: string) => {
+    const index = state.transactions
+      .map(function (e) {
+        return e.transaction_hash;
+      })
+      .indexOf(transaction_hash);
+
+    let _transactions = state.transactions;
+
+    if (_transactions[index].code == "TRANSACTION_RECEIVED") {
+      _transactions[index].show = false;
+    } else if (
+      _transactions[index].code == "ACCEPTED_ON_L2" ||
+      _transactions[index].code == "REJECTED"
+    ) {
+      _transactions.splice(index, 1);
+    }
+    dispatch({
+      type: "set_transactions",
+      transactions: _transactions,
+    });
+  }, []);
+
   return (
     <NewStateContext.Provider
       value={{
@@ -653,6 +678,7 @@ export const NewAppStateProvider: React.FC<
         updateMapBlock,
         transactions: state.transactions,
         updateTransactions,
+        removeTransaction,
       }}
     >
       {props.children}
