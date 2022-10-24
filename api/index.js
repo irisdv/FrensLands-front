@@ -74,23 +74,31 @@ app.post("/api/signin", async (req, res) => {
     var _lands;
     fetch(endpoint, options).then((response) =>
       response.json().then((data) => {
+
+
         console.log('data', data.data)
         _lands = data.data;
+
         if (data.data.tokens && data.data.tokens.length > 0) {
+          var _landsIds = ''
           data.data.tokens.forEach((land) => {
             console.log('land', land)
-            supabase
-              .from("lands")
-              .update([{ fk_userid: user.id }])
-              .eq("tokenId", parseInt(land.tokenId))
-              .then((data) => {
-                res.json({ user: user, token: token, lands: _lands });
-              })
-              .catch((error) => {
-                var errMessage = `${error}`;
-                processErrorResponse(res, 500, errMessage);
-              });
+            _landsIds += (parseInt(land.tokenId) + ',')
           });
+          if (_landsIds.length > 0) _landsIds = _landsIds.slice(0, -1);
+          console.log('_landsIds', _landsIds)
+
+          supabase
+            .from("lands")
+            .update([{ fk_userid: user.id }])
+            .or('tokenId.in.(' + _landsIds + ')')
+            .then((data) => {
+              res.json({ user: user, token: token, lands: _lands });
+            })
+            .catch((error) => {
+              var errMessage = `${error}`;
+              processErrorResponse(res, 500, errMessage);
+            });
         }
       })
     );
