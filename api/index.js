@@ -5,6 +5,8 @@ const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const fetch = require("node-fetch");
 
+console.log('fetch', fetch)
+
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
@@ -72,22 +74,24 @@ app.post("/api/signin", async (req, res) => {
     var _lands;
     fetch(endpoint, options).then((response) =>
       response.json().then((data) => {
+        console.log('data', data.data)
         _lands = data.data;
         if (data.data.tokens && data.data.tokens.length > 0) {
           data.data.tokens.forEach((land) => {
+            console.log('land', land)
             supabase
               .from("lands")
               .update([{ fk_userid: user.id }])
               .eq("tokenId", parseInt(land.tokenId))
-              .then((data) => {})
+              .then((data) => {
+                res.json({ user: user, token: token, lands: _lands });
+              })
               .catch((error) => {
                 var errMessage = `${error}`;
                 processErrorResponse(res, 500, errMessage);
               });
           });
         }
-
-        res.json({ user: user, token: token, lands: _lands });
       })
     );
   } catch (error) {
