@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useRef, useState } from "react";
+import React, { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Vector2 } from "three";
 import { useSelectContext } from "../../hooks/useSelectContext";
@@ -14,12 +14,9 @@ import { ComposeD } from "../../utils/land";
 interface IBlock {
   block: any;
   textArrRef: any[];
-  rightBuildingType: any[];
   position: any;
-  frontBlockArray: any;
   textureLoader: any;
   textureSelected: any;
-  worldType: any;
   level: number;
   staticBuildings: any;
   staticResources: any;
@@ -30,12 +27,9 @@ export const ResourceItem = memo<IBlock>(
   ({
     block,
     textArrRef,
-    rightBuildingType,
     position,
-    frontBlockArray,
     textureLoader,
     textureSelected,
-    worldType,
     level,
     staticBuildings,
     staticResources,
@@ -80,12 +74,6 @@ export const ResourceItem = memo<IBlock>(
       }
     }, [block, level]);
 
-    // const playerbuildingsval = useMemo(() => {
-    //   console.log('player building', playerBuilding)
-    //   console.log('fullMap', fullMap)
-    //   return playerBuilding
-    // }, [playerBuilding]);
-
     const textureValue = useMemo(() => {
       let textureType: Vector2 = new Vector2(0, 0);
       if (block.infraType == 1) {
@@ -120,26 +108,18 @@ export const ResourceItem = memo<IBlock>(
         }
       } else if (block.infraType == 2) {
         if (block.type == 1) {
-          console.log("block", block);
-          console.log("playerbuilding", playerBuilding);
-          if (block.status == 1) {
-            textureType = findTextByID(2);
-          } else {
-            textureType = findTextByID(
-              staticBuildings[block.type - 1].sprite[0]
-            );
+          if (playerBuilding) {
+            const _entry = playerBuilding.filter((elem: any) => {
+              return elem.gameUid == block.id;
+            });
+            if (_entry[0].decay == 100) {
+              textureType = findTextByID(2);
+            } else {
+              textureType = findTextByID(
+                staticBuildings[block.type - 1].sprite[0]
+              );
+            }
           }
-          // const _entry = playerBuilding.filter((elem: any) => {
-          //   return elem.gameUid == block.id;
-          // });
-          // console.log('entry', _entry)
-          // if (_entry[0].decay == 100) {
-          //   textureType = findTextByID(2);
-          // } else {
-          //   textureType = findTextByID(
-          //     staticBuildings[block.type - 1].sprite[0]
-          //   );
-          // }
         } else {
           textureType = findTextByID(staticBuildings[block.type - 1].sprite[0]);
         }
@@ -185,23 +165,18 @@ export const ResourceItem = memo<IBlock>(
         }
       } else if (block.infraType == 2) {
         if (block.type == 1) {
-          if (block.status == 1) {
-            textureType = findTextByID(2);
-          } else {
-            textureType = findTextByID(
-              staticBuildings[block.type - 1].sprite[0]
-            );
+          if (playerBuilding) {
+            const _entry = playerBuilding.filter((elem: any) => {
+              return elem.gameUid == block.id;
+            });
+            if (_entry[0].decay == 100) {
+              textureType = findTextByID(2);
+            } else {
+              textureType = findTextByID(
+                staticBuildings[block.type - 1].sprite[0]
+              );
+            }
           }
-          // const _entry = playerBuilding.filter((elem: any) => {
-          //   return elem.gameUid == block.id;
-          // });
-          // if (_entry[0].decay == 100) {
-          //   textureType = findTextByID(2);
-          // } else {
-          //   textureType = findTextByID(
-          //     staticBuildings[block.type - 1].sprite[0]
-          //   );
-          // }
         } else {
           textureType = findTextByID(staticBuildings[block.type - 1].sprite[0]);
         }
@@ -354,6 +329,7 @@ export const ResourceItem = memo<IBlock>(
         blockValue.infraType = 0;
         blockValue.type = 0;
         blockValue.id = 0;
+        // TODO update counter resources to -1
       } else {
         blockValue.state++;
       }
@@ -377,7 +353,7 @@ export const ResourceItem = memo<IBlock>(
       const _isHarvested = await harvestAction(
         player,
         "harvest",
-        player["tokenId" as any] +
+        player.tokenId +
           "|" +
           0 +
           "|" +

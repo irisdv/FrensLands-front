@@ -5,12 +5,9 @@ export const ResourceLine = (props: any) => {
   const {
     line,
     textArrRef,
-    rightBuildingType,
     textureLoader,
     position,
-    frontBlockArray,
     textureSelected,
-    worldType,
     staticBuildings,
     staticResources,
     animIndex,
@@ -29,12 +26,12 @@ export const ResourceLine = (props: any) => {
             key={elem.infraType + "_" + elem.id}
             block={elem}
             textArrRef={textArrRef}
-            rightBuildingType={rightBuildingType}
+            // rightBuildingType={rightBuildingType}
             position={position}
-            frontBlockArray={frontBlockArray}
+            // frontBlockArray={frontBlockArray}
             textureLoader={textureLoader}
             textureSelected={textureSelected}
-            worldType={worldType}
+            // worldType={worldType}
             level={elem.state}
             staticBuildings={staticBuildings}
             staticResources={staticResources}

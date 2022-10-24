@@ -352,6 +352,32 @@
   {
     "inputs": [
       {
+        "name": "address_of_controller",
+        "type": "felt"
+      },
+      {
+        "name": "proxy_admin",
+        "type": "felt"
+      }
+    ],
+    "name": "initializer",
+    "outputs": [],
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "name": "new_implementation",
+        "type": "felt"
+      }
+    ],
+    "name": "upgrade",
+    "outputs": [],
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "name": "tokenId",
         "type": "Uint256"
       },
@@ -366,10 +392,6 @@
   },
   {
     "inputs": [
-      {
-        "name": "resources_addr",
-        "type": "felt"
-      },
       {
         "name": "tokenId",
         "type": "Uint256"
@@ -389,10 +411,6 @@
   },
   {
     "inputs": [
-      {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
       {
         "name": "tokenId",
         "type": "Uint256"
@@ -417,10 +435,6 @@
   {
     "inputs": [
       {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
-      {
         "name": "tokenId",
         "type": "Uint256"
       },
@@ -440,10 +454,6 @@
   {
     "inputs": [
       {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
-      {
         "name": "tokenId",
         "type": "Uint256"
       },
@@ -462,10 +472,6 @@
   },
   {
     "inputs": [
-      {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
       {
         "name": "tokenId",
         "type": "Uint256"
@@ -494,10 +500,6 @@
   {
     "inputs": [
       {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
-      {
         "name": "tokenId",
         "type": "Uint256"
       },
@@ -521,16 +523,8 @@
   {
     "inputs": [
       {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
-      {
         "name": "tokenId",
         "type": "Uint256"
-      },
-      {
-        "name": "block_nb",
-        "type": "felt"
       }
     ],
     "name": "claim_production",
@@ -539,10 +533,6 @@
   },
   {
     "inputs": [
-      {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
       {
         "name": "tokenId",
         "type": "Uint256"
@@ -739,15 +729,11 @@
     "name": "get_building_recharges",
     "outputs": [
       {
-        "name": "incoming_cycles",
+        "name": "nb_recharges",
         "type": "felt"
       },
       {
-        "name": "active_cycles",
-        "type": "felt"
-      },
-      {
-        "name": "last_fuel",
+        "name": "last_claim",
         "type": "felt"
       }
     ],
@@ -772,15 +758,11 @@
         "type": "felt"
       },
       {
-        "name": "incoming_cycles",
+        "name": "nb_recharges",
         "type": "felt"
       },
       {
-        "name": "active_cycles",
-        "type": "felt"
-      },
-      {
-        "name": "last_fuel",
+        "name": "last_claim",
         "type": "felt"
       }
     ],
@@ -815,27 +797,6 @@
         "type": "felt"
       }
     ],
-    "name": "get_all_buildings_data",
-    "outputs": [
-      {
-        "name": "data_len",
-        "type": "felt"
-      },
-      {
-        "name": "data",
-        "type": "felt*"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      }
-    ],
     "name": "get_pop",
     "outputs": [
       {
@@ -845,23 +806,6 @@
       {
         "name": "pop",
         "type": "felt*"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      }
-    ],
-    "name": "get_init_time",
-    "outputs": [
-      {
-        "name": "time",
-        "type": "felt"
       }
     ],
     "stateMutability": "view",

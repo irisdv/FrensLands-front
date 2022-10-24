@@ -76,7 +76,7 @@ app.post("/api/signin", async (req, res) => {
         if (data.data.tokens && data.data.tokens.length > 0) {
           data.data.tokens.forEach((land) => {
             supabase
-              .from("lands_duplicate")
+              .from("lands")
               .update([{ fk_userid: user.id }])
               .eq("tokenId", parseInt(land.tokenId))
               .then((data) => {})

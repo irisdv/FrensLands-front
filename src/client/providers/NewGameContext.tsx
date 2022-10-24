@@ -1,12 +1,18 @@
-import { IStarknetWindowObject } from "@starknet-react/core";
 import React, { useReducer, useEffect, useState, useCallback } from "react";
 import { GetBlockResponse } from "starknet";
 import { revComposeD } from "../utils/land";
 import { fillStaticBuildings, fillStaticResources } from "../utils/static";
 import { getStaticBuildings, getStaticResources } from "../api/static";
-import { incomingComposeD, incomingCompose } from "../utils/building";
+import {
+  incomingComposeD,
+  incomingCompose,
+  decomposeCycleRegister,
+  initCounters,
+  composeCycleRegister,
+} from "../utils/building";
 import { BuildDelay, HarvestDelay } from "../utils/constant";
-import { bulkUpdateActions, updateIncomingInventories } from "../api/player";
+import { fuelProdEffective, updateIncomingInventories } from "../api/player";
+import { IStarknetWindowObject } from "get-starknet";
 
 export interface ILand {
   id: number;
@@ -42,12 +48,13 @@ export interface INewGameState {
   staticBuildings: any[]; // static data buildings
   timeSpent: number; // ! to delete
   wallet: any; // starknet
-  player: any[]; // player information (uid, landId, tokenId)
+  player: any; // player information (uid, landId, tokenId)
   fullMap: any[]; // fullMap array
   inventory: any[]; // player inventory (resources, level, timeSpent)
   playerBuilding: any[]; // player array of buildings
   counters: any[]; // player counters (resources spawned, total buildings, inactive / active buildings, last building uid)
   payloadActions: any[]; // actions array to be sent onchain
+  cycleRegister: any[];
   initPlayer: (wallet: IStarknetWindowObject) => void;
   initGameSession: (
     inventory: any,
@@ -60,9 +67,8 @@ export interface INewGameState {
   addAction: (action: any) => void;
   updateActions: (actionArray: any[]) => void;
   updateInventory: (inventory: any[]) => void;
-  updatePlayerBuilding: (_playerBuilding: any[]) => void;
-  // Harvest actions
-  // TODO check l'utilité des deux
+  updatePlayerBuildingEntry: (_playerBuilding: any[]) => void;
+  updatePlayerBuildings: (_playerBuilding: any[]) => void;
   incomingArray: any[]; // incoming harvest actions
   incomingActions: any[]; // incoming actions overall
   updateIncomingActions: (
@@ -77,13 +83,14 @@ export interface INewGameState {
   transactions: any[];
   updateTransactions: (transactions: any[]) => void;
   removeTransaction: (transaction_hash: string) => void;
+  updateCycleRegister: (cycleRegister: any[]) => void;
+  updateCounters: (counters: any[]) => void;
+  updateClaimRegister: (claimRegister: string) => void;
 }
 
 export const NewGameState: INewGameState = {
-  // Static data
   staticResources: [],
   staticBuildings: [],
-  // Player data
   timeSpent: 0,
   wallet: null,
   player: [],
@@ -93,6 +100,7 @@ export const NewGameState: INewGameState = {
   counters: [],
   payloadActions: [],
   incomingArray: [],
+  cycleRegister: [],
   initPlayer: (wallet) => {},
   initGameSession: (
     inventory,
@@ -105,7 +113,8 @@ export const NewGameState: INewGameState = {
   addAction: (value) => {},
   updateActions: (actionArray) => {},
   updateInventory: (inventory) => {},
-  updatePlayerBuilding: (_playerBuilding) => {},
+  updatePlayerBuildingEntry: (_playerBuilding) => {},
+  updatePlayerBuildings: (_playerBuilding) => {},
   // Harvest actions
   incomingActions: [],
   updateIncomingActions: (infraType, posX, posY, uid, time, status) => {},
@@ -113,13 +122,20 @@ export const NewGameState: INewGameState = {
   transactions: [],
   updateTransactions: (tx) => {},
   removeTransaction: (transaction_hash) => {},
+  updateCycleRegister: (cycleRegister) => {},
+  updateCounters: (counters) => {},
+  updateClaimRegister: (claimRegister) => {},
 };
 
 const NewStateContext = React.createContext(NewGameState);
 
+interface SetStarknet {
+  type: "set_starknet";
+  wallet: IStarknetWindowObject;
+}
 interface SetPlayer {
   type: "set_player";
-  wallet: IStarknetWindowObject;
+  player: any[];
 }
 
 // Setup player session
@@ -136,6 +152,7 @@ interface SetGameSession {
   counters: any[];
   incomingArray: any[];
   transactions: any[];
+  cycleRegister: any[];
 }
 
 interface SetPayloadAction {
@@ -156,7 +173,7 @@ interface SetInventory {
   type: "set_inventory";
   inventory: any[];
 }
-interface SetPlayerBuildings {
+interface SetPlayerBuilding {
   type: "set_playerBuilding";
   playerBuilding: any[];
 }
@@ -169,40 +186,48 @@ interface SetFullMap {
   map: any[];
 }
 
-// interface SetExecuteHarvest {
-//   type: "set_executeHarvest";
-//   inventory: any[];
-//   map: any[];
-//   harvestingArr: any[];
-// }
+interface SetCycleRegister {
+  type: "set_cycleRegister";
+  cycleRegister: any[];
+}
+
+interface SetCounters {
+  type: "set_counters";
+  counters: any[];
+}
 
 interface SetError {
   type: "set_error";
   error: Error;
 }
 
-// Update inventory
-// Update player building array
-
 type Action =
   | SetPlayer
+  | SetStarknet
   | SetGameSession
   | SetError
   | SetPayloadAction
   | SetInventory
-  | SetPlayerBuildings
+  | SetPlayerBuilding
   | SetIncomingAction
   | SetFullMap
   | SetPayloadActions
+  | SetCycleRegister
+  | SetCounters
   | SetTransactions;
-// | SetExecuteHarvest;
 
 function reducer(state: INewGameState, action: Action): INewGameState {
   switch (action.type) {
-    case "set_player": {
+    case "set_starknet": {
       return {
         ...state,
         wallet: action.wallet,
+      };
+    }
+    case "set_player": {
+      return {
+        ...state,
+        player: action.player,
       };
     }
     case "set_gameSession": {
@@ -218,6 +243,7 @@ function reducer(state: INewGameState, action: Action): INewGameState {
         counters: action.counters,
         incomingArray: action.incomingArray,
         transactions: action.transactions,
+        cycleRegister: action.cycleRegister,
       };
     }
     case "set_payloadAction": {
@@ -250,7 +276,7 @@ function reducer(state: INewGameState, action: Action): INewGameState {
       };
     }
     case "set_playerBuilding": {
-      console.log("updating playerBuilding", state.playerBuilding);
+      console.log("updating playerBuilding", action.playerBuilding);
       return {
         ...state,
         playerBuilding: action.playerBuilding,
@@ -269,15 +295,18 @@ function reducer(state: INewGameState, action: Action): INewGameState {
         fullMap: action.map,
       };
     }
-    // case "set_executeHarvest": {
-    //   console.log("actions", action);
-    //   return {
-    //     ...state,
-    //     inventory: action.inventory,
-    //     fullMap: action.map,
-    //     harvestActions: action.harvestingArr,
-    //   };
-    // }
+    case "set_cycleRegister": {
+      return {
+        ...state,
+        cycleRegister: action.cycleRegister,
+      };
+    }
+    case "set_counters": {
+      return {
+        ...state,
+        counters: action.counters,
+      };
+    }
     case "set_error": {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -291,11 +320,88 @@ export const NewAppStateProvider: React.FC<
   React.PropsWithChildren<{ children: any }>
 > = (props: React.PropsWithChildren<{ children: any }>): React.ReactElement => {
   const [state, dispatch] = useReducer(reducer, NewGameState);
-  const value = React.useMemo(() => [state, dispatch], [state]);
   const [block, setBlock] = useState<GetBlockResponse | undefined>(undefined);
+  const [isInit, setIsInit] = useState(false);
   const [loading, setLoading] = useState<boolean | undefined>(undefined);
-  // const [fixBuildVal, setFixBuildVal] = useState<any[]>([]);
-  // const [fixResVal, setFixResVal] = useState<any[]>([]);
+
+  const {
+    playerBuilding,
+    transactions,
+    payloadActions,
+    fullMap,
+    player,
+    counters,
+    cycleRegister,
+  } = state;
+
+  useEffect(() => {
+    if (
+      block &&
+      playerBuilding &&
+      cycleRegister &&
+      !isInit &&
+      (player.claimRegister || player.claimRegister == 0)
+    ) {
+      let currentBlock = block.block_number;
+      let lastClaimedBlock: number;
+      if (player.claimRegister == 0) {
+        lastClaimedBlock = 0;
+      } else {
+        let _last = player.claimRegister.split("|");
+        lastClaimedBlock = parseInt(_last[_last.length - 1]);
+      }
+
+      Object.keys(cycleRegister).forEach((gameUid: any) => {
+        cycleRegister[gameUid].map((fuelData: any) => {
+          console.log("fuelData", fuelData);
+          var blockStart = fuelData[0];
+          var blockEnd = fuelData[1];
+
+          if (blockStart > lastClaimedBlock) {
+            // Rien n'a été claim dans ce fuel
+
+            // Check par rapport au current block où on en est
+            if (blockEnd <= currentBlock) {
+              //
+              playerBuilding[gameUid].activeCycles += blockEnd - blockStart;
+            } else {
+              // une partie seulement du fuel est passée
+              var _activeCycles = currentBlock - blockStart;
+              console.log("_activeCycles", _activeCycles);
+              playerBuilding[gameUid].activeCycles += _activeCycles;
+              playerBuilding[gameUid].incomingCycles += blockEnd - currentBlock;
+              console.log("blockEnd - _activeCycles", blockEnd - currentBlock);
+            }
+          } else {
+            if (blockEnd > lastClaimedBlock) {
+              // Une partie n'a pas été claimed
+              var _remainingCycles = blockEnd - lastClaimedBlock;
+              if (blockEnd <= currentBlock) {
+                // tout est déjà passé
+                playerBuilding[gameUid].activeCycles += _remainingCycles;
+              } else {
+                // une partie seulement
+                var _activeCycles = currentBlock - lastClaimedBlock;
+                playerBuilding[gameUid].activeCycles += _activeCycles;
+                playerBuilding[gameUid].incomingCycles +=
+                  blockEnd - currentBlock;
+              }
+            }
+          }
+        });
+      });
+
+      // Init counters
+      let { incomingInventory, inactive, active, nbBlocksClaimable } =
+        initCounters(playerBuilding, state.staticBuildings);
+      counters["incomingInventory" as any] = incomingInventory;
+      counters["inactive" as any] = inactive;
+      counters["active" as any] = active;
+      counters["blockClaimable" as any] = nbBlocksClaimable;
+      console.log("counter", counters);
+      setIsInit(true);
+    }
+  }, [block, player, playerBuilding, counters]);
 
   const fetchBlock = useCallback(() => {
     if (state.wallet) {
@@ -306,48 +412,139 @@ export const NewAppStateProvider: React.FC<
             if (oldBlock?.block_hash === newBlock.block_hash) {
               return oldBlock;
             }
-            // Reset error and return new block.
-            // console.log("new block", newBlock);
-            // console.log("transactions array", state.transactions);
-            // console.log(
-            //   "payload actions in context before",
-            //   state.payloadActions
-            // );
 
-            state.transactions.map((ongoing: any) => {
+            // Update incoming & active cycles of each building
+            playerBuilding.map((building: any) => {
+              if (building.incomingCycles > 0) {
+                building.incomingCycles -= 1;
+                building.activeCycles += 1;
+
+                // update active inactive counters
+                if (building.incomingCycles == 0) {
+                  counters["inactive" as any] += 1;
+                  counters["active" as any] -= 1;
+                }
+
+                // update incomingInventories & blockClaimable in counters
+                for (let i = 0; i < 8; i++) {
+                  counters["incomingInventory" as any][i] +=
+                    state.staticBuildings[building.type - 1].production[i];
+                }
+                counters["blockClaimable" as any] += 1;
+              }
+            });
+
+            // Loop through ongoing transactions to check if it was validated
+            transactions.map((ongoing: any) => {
               var tx = newBlock.transactions.filter((transaction: any) => {
                 return transaction.transaction_hash == ongoing.transaction_hash;
               });
-              console.log("tx", tx);
               if (tx.length > 0) {
-                // console.log("Tx found in validated block", tx);
+                console.log("Tx accepted onchain", tx);
 
-                // update status in transactions array
+                // update status in transactions array to fire notification
                 ongoing.code = "ACCEPTED_ON_L2";
+                ongoing.show = true;
 
-                // Update payloadActions
+                // Update payloadActions included in this tx
                 var bulkUpdate: any[] = [];
-                state.payloadActions.map((action: any, index: number) => {
+                payloadActions.map((action: any, index: number) => {
                   if (action.txHash === ongoing.transaction_hash) {
+                    // console.log('same', action.entrypoint)
+
                     action.validated = true;
                     action.status = "ACCEPTED_ON_L2";
-                    bulkUpdate.push(state.payloadActions[index]);
-                    state.payloadActions.splice(index, 1);
+                    bulkUpdate.push(action);
+
+                    // Cas action build
+                    if (action.entrypoint == "build") {
+                      // Increase incoming cycles by 1 in context
+                      var calldata = action.calldata.split("|");
+                      var gameId =
+                        fullMap[parseInt(calldata[3])][parseInt(calldata[2])]
+                          .id;
+
+                      if (
+                        fullMap[parseInt(calldata[3])][parseInt(calldata[2])]
+                          .type > 3
+                      ) {
+                        playerBuilding[gameId].incomingCycles += 1;
+                        cycleRegister[gameId] = [];
+                        cycleRegister[gameId].push([
+                          newBlock.block_number,
+                          newBlock.block_number + 1,
+                        ]);
+
+                        // update counters
+                        counters["inactive" as any] -= 1;
+                        counters["active" as any] += 1;
+                      }
+                    } else if (
+                      action.entrypoint == "fuel_building_production"
+                    ) {
+                      // console.log('entrypoint FUEL BUILDING PRODUCTION')
+                      // Cas action fuel building production
+                      var calldata = action.calldata.split("|");
+                      var gameId =
+                        fullMap[parseInt(calldata[3])][parseInt(calldata[2])]
+                          .id;
+                      // console.log('playerBuilding[gameId].incomingCycles', playerBuilding[gameId].incomingCycles)
+                      // console.log('cycleRegister', cycleRegister)
+                      let _lastRegister =
+                        cycleRegister[gameId][cycleRegister[gameId].length - 1];
+                      // console.log('_lastRegister', _lastRegister)
+                      if (_lastRegister[1] < newBlock.block_number) {
+                        // Update cycleRegister and playerBuilding incoming cycles
+                        cycleRegister[gameId].push([
+                          newBlock.block_number,
+                          newBlock.block_number + parseInt(calldata[4]),
+                        ]);
+                      } else {
+                        cycleRegister[gameId].push([
+                          _lastRegister[1],
+                          _lastRegister[1] + parseInt(calldata[4]),
+                        ]);
+                      }
+                      if (playerBuilding[gameId].incomingCycles == 0) {
+                        counters["inactive" as any] -= 1;
+                        counters["active" as any] += 1;
+                      }
+                      playerBuilding[gameId].incomingCycles += parseInt(
+                        calldata[4]
+                      );
+                    }
                   }
                 });
-                // console.log("bulkUpdate", bulkUpdate);
-                if (bulkUpdate.length > 0)
-                  bulkUpdateActions(state.player, bulkUpdate);
 
-                // Update DB
-                // console.log("payload actions in context", state.payloadActions);
+                var cycleRegisterStr: any = composeCycleRegister(cycleRegister);
+                if (player.cycleRegister !== cycleRegisterStr) {
+                  player.cycleRegister = cycleRegisterStr;
+                } else {
+                  cycleRegisterStr = 0;
+                }
+
+                let _updateAfterValidated = fuelProdEffective(
+                  player,
+                  bulkUpdate,
+                  cycleRegisterStr
+                );
+
+                let payloadActionsFiltered = payloadActions.filter(
+                  (elem: any) => {
+                    return elem.txHash != ongoing.transaction_hash;
+                  }
+                );
+                console.log("payloadActionsFiltered", payloadActionsFiltered);
+                // Update values in context w/ dispatch
+                updateActions(payloadActionsFiltered);
+                updateTransactions(transactions);
+                updatePlayerBuildings(playerBuilding);
+                updateCycleRegister(cycleRegister);
+                updateCounters(counters);
               }
             });
-            // console.log("transactions after map", state.transactions);
-            // console.log("payload actions after map", state.payloadActions);
 
-            // TODO call functions when block is updated
-            // TODO show notif based on transactions array (when value equals to ACCEPTED_ON_L2)
+            // TODO handle tx rejected
             return newBlock;
           });
         })
@@ -360,8 +557,12 @@ export const NewAppStateProvider: React.FC<
     setBlock,
     state.wallet,
     setLoading,
-    state.payloadActions,
-    state.transactions,
+    payloadActions,
+    player,
+    playerBuilding,
+    transactions,
+    fullMap,
+    counters,
   ]);
 
   useEffect(() => {
@@ -377,36 +578,46 @@ export const NewAppStateProvider: React.FC<
     return () => clearInterval(intervalId);
   }, [fetchBlock]);
 
-  const addAction = React.useCallback((value: any) => {
-    console.log("action received", value);
-    dispatch({
-      type: "set_payloadAction",
-      action: value,
-    });
-  }, []);
+  const addAction = React.useCallback(
+    (value: any) => {
+      dispatch({
+        type: "set_payloadAction",
+        action: value,
+      });
+    },
+    [dispatch]
+  );
 
-  const updateActions = React.useCallback((actionArray: any[]) => {
-    console.log("action payload received", actionArray);
-    dispatch({
-      type: "set_payloadActions",
-      actionArray: actionArray,
-    });
-  }, []);
+  const updateActions = React.useCallback(
+    (actionArray: any[]) => {
+      dispatch({
+        type: "set_payloadActions",
+        actionArray: actionArray,
+      });
+    },
+    [dispatch, payloadActions]
+  );
 
-  const updateTransactions = React.useCallback((txArray: any[]) => {
-    console.log("transactions received", txArray);
-    dispatch({
-      type: "set_transactions",
-      transactions: txArray,
-    });
-  }, []);
+  const updateTransactions = React.useCallback(
+    (txArray: any[]) => {
+      console.log("transactions received", txArray);
+      dispatch({
+        type: "set_transactions",
+        transactions: txArray,
+      });
+    },
+    [dispatch, transactions]
+  );
 
-  const initPlayer = React.useCallback((wallet: IStarknetWindowObject) => {
-    dispatch({
-      type: "set_player",
-      wallet,
-    });
-  }, []);
+  const initPlayer = React.useCallback(
+    (wallet: IStarknetWindowObject) => {
+      dispatch({
+        type: "set_starknet",
+        wallet,
+      });
+    },
+    [dispatch]
+  );
 
   const initGameSession = React.useCallback(
     async (
@@ -418,16 +629,8 @@ export const NewAppStateProvider: React.FC<
       userId: string
     ) => {
       //  - - - - - - PLAYER LAND - - - - - -
-      // let test = generateFullMap();
-      // console.log("test", test);
-
       const value = revComposeD(land.fullMap, account);
       console.log("fullMapArray = ", value.tempArray);
-
-      //const composition = ComposeD(fullMapArray);
-
-      // const fullMapArray = revComposeD(land.fullMap);
-      //console.log("fullMapArray = ", fullMapArray);
 
       //  - - - - - - INVENTORY - - - - - -
       const inventoryArray: any[] = [];
@@ -443,42 +646,31 @@ export const NewAppStateProvider: React.FC<
       inventoryArray[9] = inventory[0].totalPop;
       inventoryArray[10] = inventory[0].timeSpent;
       inventoryArray[11] = inventory[0].level;
-      // inventoryArray[0] = 22;
-      // inventoryArray[1] = 16;
-      // inventoryArray[2] = 14;
-      // inventoryArray[11] = 9;
-
       console.log("inventoryArray = ", inventoryArray);
 
       //  - - - - - - PLAYER BUILDINGS - - - - - -
       const mapBuildingArray: any[] = [];
       var lastUID = 0;
-      playerBuildings.map((elem: any, key: number) => {
-        mapBuildingArray[key] = [];
-        mapBuildingArray[key].blockX = elem.blockX;
-        mapBuildingArray[key].blockY = elem.blockY;
-        mapBuildingArray[key].activeCycles = elem.activeCycles;
-        mapBuildingArray[key].cycleRegister = elem.cycleRegister;
-        mapBuildingArray[key].posX = elem.posX;
-        mapBuildingArray[key].posY = elem.posY;
-        mapBuildingArray[key].type = elem.fk_buildingid;
-        mapBuildingArray[key].decay = elem.decay;
-        mapBuildingArray[key].gameUid = elem.gameUid;
+      playerBuildings.map((elem: any) => {
+        mapBuildingArray[elem.gameUid] = [];
+        mapBuildingArray[elem.gameUid].blockX = elem.blockX;
+        mapBuildingArray[elem.gameUid].blockY = elem.blockY;
+        mapBuildingArray[elem.gameUid].activeCycles = 0;
+        mapBuildingArray[elem.gameUid].incomingCycles = 0;
+        mapBuildingArray[elem.gameUid].posX = elem.posX;
+        mapBuildingArray[elem.gameUid].posY = elem.posY;
+        mapBuildingArray[elem.gameUid].type = elem.fk_buildingid;
+        mapBuildingArray[elem.gameUid].decay = elem.decay;
+        mapBuildingArray[elem.gameUid].gameUid = elem.gameUid;
+        mapBuildingArray[elem.gameUid].uid = elem.id;
         if (elem.gameUid > lastUID) lastUID = elem.gameUid;
-        if (elem.fk_buildingid == 1 && elem.decay == 0) {
-          console.log("elem", elem);
-          value.tempArray[elem.blockY][elem.blockX].status = 2;
-        }
       });
 
       console.log("gameUid", lastUID);
-      console.log("mapBuildingArray = ", mapBuildingArray);
-      console.log("value.tempArray", value.tempArray);
+      console.log("playerBuildingArray = ", mapBuildingArray);
 
       //  - - - - - - STATIC BUILDINGS - - - - - -
       const staticBuildings: any = await getStaticBuildings();
-      console.log("static buildings", staticBuildings);
-
       const fixBuildVal: any[] = fillStaticBuildings(staticBuildings);
       console.log("fixBuildVal = ", fixBuildVal);
 
@@ -489,22 +681,29 @@ export const NewAppStateProvider: React.FC<
 
       //  - - - - - - COUNTERS - - - - - -
 
-      const buildingCounter = mapBuildingArray.length;
-      console.log("buildingCounter", buildingCounter);
-
       var counters: any[] = value.counters;
-      counters["buildings" as any] = buildingCounter;
       counters["uid" as any] = lastUID;
+      counters["incomingInventory" as any] = [];
+      counters["inactive" as any] = 0;
+      counters["active" as any] = 0;
+      counters["blockClaimable" as any] = 0;
+      console.log("counters", counters);
 
       //  - - - - - - PLAYER ARRAY - - - - - -
 
-      const playerArray: any[] = [];
-      playerArray["landId" as any] = land.id;
-      playerArray["tokenId" as any] = land.tokenId;
-      playerArray["id" as any] = userId;
-      playerArray["biomeId" as any] = land.biomeId;
-      playerArray["claimRegister" as any] = land.claimRegister || 0;
+      const playerArray: any = [];
+      playerArray.landId = land.id;
+      playerArray.tokenId = land.tokenId;
+      playerArray.id = userId;
+      playerArray.biomeId = land.biomeId;
+      playerArray.cycleRegister = land.cycleRegister || ""; // String buildingGameUid-blockStart-blockEnd | ...
+      playerArray.claimRegister = land.claimRegister || 0; // String avec blockNb|blockNb
       console.log("playerArray", playerArray);
+
+      let register: any = [];
+      if (land.cycleRegister)
+        register = decomposeCycleRegister(land.cycleRegister);
+      console.log("cycleRegister array", register);
 
       //  - - - - - - INCOMING HARVESTS - - - - - -
 
@@ -512,10 +711,6 @@ export const NewAppStateProvider: React.FC<
       if (inventory[0].incomingInventories == null) {
         var incomingArray: any[] = [];
       } else {
-        console.log(
-          "inventory[0].incomingInventories",
-          inventory[0].incomingInventories
-        );
         var time = Date.now();
         var incomingArray: any[] = incomingComposeD(
           inventory[0].incomingInventories,
@@ -531,16 +726,20 @@ export const NewAppStateProvider: React.FC<
       var ongoingTx = land.player_actions.filter((action: any) => {
         return action.status == "TRANSACTION_RECEIVED";
       });
+      var txArr: any = [];
       if (ongoingTx && ongoingTx.length > 0) {
         ongoingTx.map((tx: any) => {
-          transactions.push({
-            code: tx.status,
-            transaction_hash: tx.txHash,
-          });
+          if (!txArr[tx.txHash]) {
+            transactions.push({
+              code: tx.status,
+              transaction_hash: tx.txHash,
+            });
+            txArr[tx.txHash] = [];
+          }
         });
       }
-      console.log("transactions in newGameContext", transactions);
-      console.log("playerActions in newGameContext", playerActions);
+
+      // ----- FUEL + CLAIM initialization ----
 
       dispatch({
         type: "set_gameSession",
@@ -554,9 +753,10 @@ export const NewAppStateProvider: React.FC<
         incomingArray: incomingArray,
         counters: counters,
         transactions: transactions,
+        cycleRegister: register,
       });
     },
-    []
+    [dispatch, transactions]
   );
 
   const updateInventory = React.useCallback((_inventory: any[]) => {
@@ -611,47 +811,100 @@ export const NewAppStateProvider: React.FC<
         });
       }
     },
-    []
+    [dispatch]
   );
 
-  const updateMapBlock = React.useCallback((_map: any[]) => {
-    console.log("_map", _map);
-    dispatch({
-      type: "set_fullMap",
-      map: _map,
-    });
-  }, []);
+  const updateMapBlock = React.useCallback(
+    (_map: any[]) => {
+      dispatch({
+        type: "set_fullMap",
+        map: _map,
+      });
+    },
+    [dispatch]
+  );
 
-  const updatePlayerBuilding = React.useCallback((_playerBuilding: any[]) => {
-    console.log("_playerBuilding updating", _playerBuilding);
-    dispatch({
-      type: "set_playerBuilding",
-      playerBuilding: _playerBuilding,
-    });
-  }, []);
+  // Send new entry of building to update
+  const updatePlayerBuildingEntry = React.useCallback(
+    (_playerBuilding: any) => {
+      let _filteredArr = playerBuilding.filter((elem) => {
+        return elem.gameUid != _playerBuilding.gameUid;
+      });
+      _filteredArr[_playerBuilding.gameUid] = _playerBuilding;
+      dispatch({
+        type: "set_playerBuilding",
+        playerBuilding: _filteredArr,
+      });
+    },
+    [dispatch, playerBuilding]
+  );
 
-  const removeTransaction = React.useCallback((transaction_hash: string) => {
-    const index = state.transactions
-      .map(function (e) {
-        return e.transaction_hash;
-      })
-      .indexOf(transaction_hash);
+  const updatePlayerBuildings = React.useCallback(
+    (_playerBuildings: any) => {
+      dispatch({
+        type: "set_playerBuilding",
+        playerBuilding: _playerBuildings,
+      });
+    },
+    [dispatch, playerBuilding]
+  );
 
-    let _transactions = state.transactions;
+  const removeTransaction = React.useCallback(
+    (transaction_hash: string) => {
+      const index = state.transactions
+        .map(function (e) {
+          return e.transaction_hash;
+        })
+        .indexOf(transaction_hash);
 
-    if (_transactions[index].code == "TRANSACTION_RECEIVED") {
-      _transactions[index].show = false;
-    } else if (
-      _transactions[index].code == "ACCEPTED_ON_L2" ||
-      _transactions[index].code == "REJECTED"
-    ) {
-      _transactions.splice(index, 1);
-    }
-    dispatch({
-      type: "set_transactions",
-      transactions: _transactions,
-    });
-  }, []);
+      let _transactions = state.transactions;
+
+      if (_transactions[index].code == "TRANSACTION_RECEIVED") {
+        _transactions[index].show = false;
+      } else if (
+        _transactions[index].code == "ACCEPTED_ON_L2" ||
+        _transactions[index].code == "REJECTED"
+      ) {
+        _transactions.splice(index, 1);
+      }
+      dispatch({
+        type: "set_transactions",
+        transactions: _transactions,
+      });
+    },
+    [state, state.transactions]
+  );
+
+  const updateCycleRegister = React.useCallback(
+    (cycleRegister: any[]) => {
+      dispatch({
+        type: "set_cycleRegister",
+        cycleRegister: cycleRegister,
+      });
+    },
+    [dispatch, state, cycleRegister]
+  );
+
+  const updateCounters = React.useCallback(
+    (counters: any[]) => {
+      dispatch({
+        type: "set_counters",
+        counters: counters,
+      });
+    },
+    [dispatch, state, counters]
+  );
+
+  const updateClaimRegister = React.useCallback(
+    (claimRegister: string) => {
+      player.claimRegister = claimRegister;
+      dispatch({
+        type: "set_player",
+        player: player,
+      });
+    },
+    [dispatch, player]
+  );
 
   return (
     <NewStateContext.Provider
@@ -663,12 +916,14 @@ export const NewAppStateProvider: React.FC<
         player: state.player,
         fullMap: state.fullMap,
         inventory: state.inventory,
-        updatePlayerBuilding,
+        updatePlayerBuildingEntry,
+        updatePlayerBuildings,
         playerBuilding: state.playerBuilding,
         counters: state.counters,
         payloadActions: state.payloadActions,
         incomingActions: state.incomingActions,
         incomingArray: state.incomingArray,
+        cycleRegister: state.cycleRegister,
         initPlayer,
         initGameSession,
         addAction,
@@ -679,6 +934,9 @@ export const NewAppStateProvider: React.FC<
         transactions: state.transactions,
         updateTransactions,
         removeTransaction,
+        updateCycleRegister,
+        updateCounters,
+        updateClaimRegister,
       }}
     >
       {props.children}

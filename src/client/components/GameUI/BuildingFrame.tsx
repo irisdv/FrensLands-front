@@ -1,5 +1,4 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { useGameContext } from "../../hooks/useGameContext";
 import { useSelectContext } from "../../hooks/useSelectContext";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
 import {
@@ -14,17 +13,13 @@ import { BF_maintain } from "./Frame/BF_maintain";
 import { buildErrorMsg } from "../../utils/utils";
 
 export function BuildingFrame(props: any) {
-  const { tokenId, setAddress, updateTokenId } = useGameContext();
-
   const {
-    wallet,
     inventory,
     staticBuildings,
     staticResources,
     fullMap,
     playerBuilding,
   } = useNewGameContext();
-
   const { showFrame, frameData } = useSelectContext();
   const [msg, setMsg] = useState("");
   const [canHarvest, setCanHarvest] = useState(1);
@@ -41,11 +36,6 @@ export function BuildingFrame(props: any) {
     }
   }, [show, showFrame, frameData]);
 
-  // const nonceValue = useMemo(() => {
-  //   console.log("new nonce value", nonce);
-  //   return nonce;
-  // }, [nonce]);
-
   const frameDataValue = useMemo(() => {
     return frameData;
   }, [frameData]);
@@ -58,24 +48,14 @@ export function BuildingFrame(props: any) {
     return fullMap;
   }, [fullMap]);
 
-  useEffect(() => {
-    if (wallet && wallet.isConnected) {
-      setAddress(wallet.account.address);
-    }
-  }, [wallet]);
-
-  useEffect(() => {
-    if (wallet.isConnected && !tokenId) {
-      updateTokenId(wallet.account.address);
-    }
-  }, [wallet, tokenId]);
-
   // Update costs/production for focused infrastructure in building frame
   useEffect(() => {
     if (frameData != null && frameData.infraType && frameData.typeId) {
       let _msg = "";
 
-      if (frameData.infraType == 1) {
+      console.log("frameData", frameData);
+
+      if (frameData.infraType == 1 && frameData.typeId <= 4) {
         // * Check can harvest resource
         const _canHarvest = checkResHarvestMsg(
           frameData.typeId,
@@ -201,6 +181,7 @@ export function BuildingFrame(props: any) {
               _msg={msg}
               staticBuildingsData={staticBuildings}
               inventory={inventory}
+              playerBuilding={playerBuilding}
             />
           </>
         )}
@@ -212,7 +193,7 @@ export function BuildingFrame(props: any) {
         staticBuildings[frameDataValue.typeId - 1].needMaintain && (
           <>
             <BF_maintain
-              uid={frameData?.unique_id}
+              uid={frameDataValue.unique_id}
               typeId={frameDataValue.typeId}
               state={frameDataValue.state}
               posX={frameDataValue.posX}

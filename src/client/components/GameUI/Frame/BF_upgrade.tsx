@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { destroyAction, repairAction } from "../../../api/player";
-import { useGameContext } from "../../../hooks/useGameContext";
+// import { useGameContext } from "../../../hooks/useGameContext";
 import { useNewGameContext } from "../../../hooks/useNewGameContext";
 import { useSelectContext } from "../../../hooks/useSelectContext";
 import {
@@ -8,7 +8,7 @@ import {
   destroyBuilding_,
   repairBuildingPay,
 } from "../../../utils/building";
-import { ComposeD } from "../../../utils/land";
+import { calculatePlayerLevel, ComposeD } from "../../../utils/land";
 import { FrameItem } from "../FrameItem";
 
 export function BF_upgrade(props: any) {
@@ -22,6 +22,7 @@ export function BF_upgrade(props: any) {
     decay,
     _msg,
     staticBuildingsData,
+    playerBuilding,
   } = props;
 
   const {
@@ -29,14 +30,14 @@ export function BF_upgrade(props: any) {
     addAction,
     inventory,
     wallet,
-    playerBuilding,
-    updatePlayerBuilding,
+    // playerBuilding,
+    updatePlayerBuildingEntry,
     player,
     fullMap,
     updateMapBlock,
+    counters,
   } = useNewGameContext();
   const { updateBuildingFrame } = useSelectContext();
-  const { tokenId } = useGameContext();
   const [showNotif, setShowNotif] = useState(false);
 
   //   Function to upgrade building
@@ -51,7 +52,7 @@ export function BF_upgrade(props: any) {
       inventory,
       staticBuildingsData
     );
-    if (_check && tokenId) {
+    if (_check && player.tokenId) {
       const _inventory = repairBuildingPay(
         _typeId - 1,
         inventory,
@@ -59,18 +60,23 @@ export function BF_upgrade(props: any) {
       );
       updateInventory(_inventory);
 
-      // ? repair timer has passed
-      // receive resources after upgrade
+      // Update decay level of building
+      playerBuilding[uid].decay = 0;
+      updatePlayerBuildingEntry(playerBuilding[uid]);
+
+      // Receive resources after upgrade
       _inventory[9] += staticBuildingsData[_typeId - 1].repairCost[9];
+      _inventory[8] += staticBuildingsData[_typeId - 1].repairCost[9];
+      // Increase player level
+      let _newLevel = calculatePlayerLevel(
+        _inventory[11],
+        playerBuilding,
+        counters
+      );
+      _inventory[11] = _newLevel;
       updateInventory(_inventory);
 
-      const _idx = playerBuilding.findIndex((obj) => obj.gameUid == uid);
-      playerBuilding[_idx].decay = 0;
-      // updatePlayerBuilding(playerBuilding);
-
-      fullMap[_posY][_posX].status = 2;
-      updateMapBlock(fullMap);
-
+      // Close building frame
       updateBuildingFrame(false, {
         infraType: 0,
         type_id: 0,
@@ -80,16 +86,16 @@ export function BF_upgrade(props: any) {
         selected: 0,
       });
 
-      // ? send request to db
+      // Send request to db
       let _action = await repairAction(
         player,
         "repair_building",
-        tokenId + "|" + 0 + "|" + _posX + "|" + _posY,
+        player.tokenId + "|" + 0 + "|" + _posX + "|" + _posY,
         inventory,
-        playerBuilding[_idx].gameUid
+        playerBuilding[uid].gameUid
       );
       console.log("_action repair", _action);
-      // update context action
+      // Update context action
       addAction(_action[0]);
     } else {
       console.log("Cannot repair or missing tokenId");
@@ -101,7 +107,7 @@ export function BF_upgrade(props: any) {
     _posX: number,
     _posY: number
   ) => {
-    if (tokenId) {
+    if (player.tokenId) {
       console.log("inventory before destroy", inventory);
       console.log(
         "staticBuildingsData building",
@@ -121,7 +127,7 @@ export function BF_upgrade(props: any) {
         (item: any) => item.gameUid !== uid
       );
       console.log("_newPlayerB before", playerBuilding);
-      updatePlayerBuilding(_newPlayerB);
+      updatePlayerBuildingEntry(_newPlayerB);
 
       // Update map block
       const _map = fullMap;
@@ -136,7 +142,7 @@ export function BF_upgrade(props: any) {
       let _destroy = await destroyAction(
         player,
         "destroy_building",
-        tokenId + "|" + 0 + "|" + _posX + "|" + _posY,
+        player.tokenId + "|" + 0 + "|" + _posX + "|" + _posY,
         inventory,
         uid,
         _mapComposed
@@ -158,7 +164,7 @@ export function BF_upgrade(props: any) {
 
   const moveBuilding = (_typeId: number, _posX: number, _posY: number) => {
     console.log("moving building", _typeId);
-    if (tokenId) {
+    if (player.tokenId) {
     }
   };
 

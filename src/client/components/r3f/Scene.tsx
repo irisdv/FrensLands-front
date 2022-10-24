@@ -9,33 +9,16 @@ import { Camera } from "./Camera";
 import { TerrainBackground } from "./TerrainBackground";
 import { Map } from "./Map";
 import { Vector2 } from "three";
-import BuildingContext from "../../providers/BuildingContext";
 import SelectContext from "../../providers/SelectContext";
-import { TransactionManagerContext } from "../../providers/transactions/context";
-// import { StarknetContext } from "@starknet-react/core/dist/providers/starknet";
-import StateContext from "../../providers/GameContext";
 import { useSelectContext } from "../../hooks/useSelectContext";
 import NewStateContext from "../../providers/NewGameContext";
-
-// import socketService from "../../services/socketService";
-// import gameService from "../../services/gameService";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
 
 export const Scene = (props: any) => {
-  const ContextBridge = useContextBridge(
-    SelectContext,
-    BuildingContext,
-    TransactionManagerContext,
-    // StarknetContext,
-    StateContext,
-    NewStateContext
-  );
+  const ContextBridge = useContextBridge(SelectContext, NewStateContext);
   const refCanvas = useRef<any>();
-
   const { updateBuildingFrame, zoomMode } = useSelectContext();
-
-  const { mapArray, textArrRef, rightBuildingType, worldType, UBlockIDs } =
-    props;
+  const { mapArray, textArrRef, worldType, UBlockIDs } = props;
 
   const [mouseWheelProp, setMouseWheelProp] = useState(0);
   const [mouseLeftPressed, setMouseLeftPressed] = useState(0);
@@ -43,21 +26,20 @@ export const Scene = (props: any) => {
   const [mouseMiddlePressed, setMouseMiddlePressed] = useState(0);
   const [frontBlockArray, setFrontBlockArray] = useState([]);
   const { wallet } = useNewGameContext();
+  const [customMouse, setCustomMouse] = useState(new Vector2(0, 0));
+  const [keyMap, setKeyMap] = useState({
+    Escape: false,
+    KeyD: false,
+  });
+  const indexRef = useRef<any>();
+  const [index, setIndex] = useState(10);
+  indexRef.current = index;
 
   const zoomValue = useMemo(() => {
     if (wallet.isConnected && zoomMode != undefined) {
       return zoomMode;
     }
   }, [zoomMode, wallet]);
-
-  const [keyMap, setKeyMap] = useState({
-    Escape: false,
-  });
-  const [customMouse, setCustomMouse] = useState(new Vector2(0, 0));
-
-  const indexRef = useRef<any>();
-  const [index, setIndex] = useState(10);
-  indexRef.current = index;
 
   useEffect(() => {
     const handleKeyDown = (event: any) => {
@@ -173,7 +155,6 @@ export const Scene = (props: any) => {
           <Map
             frontBlockArray={frontBlockArray}
             textArrRef={textArrRef}
-            rightBuildingType={rightBuildingType}
             worldType={worldType}
             mouseLeftPressed={mouseLeftPressed}
             mouseMiddlePressed={mouseMiddlePressed}

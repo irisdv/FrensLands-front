@@ -211,17 +211,17 @@ export const maintainBuildingPay = (
   id: number,
   inventory: any,
   fixBuildVal: any,
-  mapBuildingArray: any,
+  // mapBuildingArray: any,
   cycles: number
 ) => {
   let i: number = 0;
 
-  while (i < fixBuildVal[id].maintainCost) {
+  while (i < fixBuildVal[id].maintainCost.length) {
     inventory[i] -= fixBuildVal[id].maintainCost[i] * cycles;
     i++;
   }
 
-  refillBuilding(id, mapBuildingArray, cycles);
+  // refillBuilding(id, mapBuildingArray, cycles);
 
   return inventory;
 };
@@ -303,15 +303,13 @@ export const checkResMaintainMsg = (
   let i: number = 0;
   const res: any = [];
 
-  // while (i < fixBuildVal[id].maintainCost.length) {
   while (i < 9) {
     if (inventory[i] < fixBuildVal[id].maintainCost[i] * multiplier) {
-      // console.log("not enough resources to maintain ", i);
       res.push(i);
     }
     i++;
   }
-  // console.log("enough resources to maintain ", res);
+  console.log("enough resources to maintain ", res);
   return res;
 };
 
@@ -437,7 +435,6 @@ export const checkResHarvest = (id: number, inventory: any, fixResVal: any) => {
 
   while (i < fixResVal[id].harvestCost) {
     if (inventory[i] < fixResVal[id].harvestCost[i]) {
-      console.log("not enough resources to harvest ", id);
       return 0;
     }
     i++;
@@ -465,7 +462,6 @@ export const checkResHarvestMsg = (
   // while (i < fixResVal[id].harvestCost) {
   while (i < 9) {
     if (inventory[i] < fixResVal[id].harvestCost[i]) {
-      console.log("not enough resources to harvest ", i);
       res.push(i);
     }
     i++;
@@ -488,7 +484,6 @@ export const checkResBuild = (id: number, inventory: any, fixBuildVal: any) => {
   while (i < fixBuildVal[id].createCost.length) {
     if (i == 8) {
       if (inventory[i] - fixBuildVal[id].createCost[i] < 1) {
-        console.log("not enough resources to build ", id);
         return 0;
       }
     } else if (inventory[i] < fixBuildVal[id].createCost[i]) {
@@ -522,10 +517,10 @@ export const checkResBuildMsg = (
     if (i == 8) {
       if (inventory[i] - fixBuildVal[id].createCost[i] < 1) {
         res.push(i);
-        console.log("not enough resources to build ", i);
+        // console.log("not enough resources to build ", i);
       }
     } else if (inventory[i] < fixBuildVal[id].createCost[i]) {
-      console.log("not enough resources to build ", i);
+      // console.log("not enough resources to build ", i);
       res.push(i);
     }
     i++;
@@ -575,17 +570,13 @@ export const checkResRepairMsg = (
   let i: number = 0;
   const res: any = [];
 
-  // while (i < fixBuildVal[id].repairCost.length) {
   while (i < 9) {
     if (inventory[i] < fixBuildVal[id].repairCost[i]) {
-      console.log("not enough resources to repair ", i);
-      // return 0;
       res.push(i);
     }
     i++;
   }
   console.log("enough resources to repair ", res);
-  // return 1;
   return res;
 };
 
@@ -803,14 +794,16 @@ export const addToBuildingArray = (
   blockY: number,
   uid: number
 ) => {
-  const _newEntry: any[] = [];
-  _newEntry["blockX" as any] = blockX;
-  _newEntry["blockY" as any] = blockY;
-  _newEntry["posX" as any] = posX;
-  _newEntry["posY" as any] = posY;
-  _newEntry["type" as any] = type;
-  _newEntry["decay" as any] = 0;
-  _newEntry["gameUid" as any] = uid;
+  const _newEntry: any = [];
+  _newEntry.blockX = blockX;
+  _newEntry.blockY = blockY;
+  _newEntry.posX = posX;
+  _newEntry.posY = posY;
+  _newEntry.type = type;
+  _newEntry.decay = 0;
+  _newEntry.gameUid = uid;
+  _newEntry.activeCycles = 0;
+  _newEntry.incomingCycles = 0;
 
   mapBuildingArray.push(_newEntry);
 
@@ -945,4 +938,90 @@ export const playerLevelIncrease = (inventory: any) => {
 export const playerLevelDecrease = (inventory: any) => {
   inventory[11] -= 1;
   return inventory;
+};
+
+/**
+ * composeCycleRegister
+ * * Compose cycle register array of values
+ * @param cycleregisterArray {Object{}}
+ * @return cycleRegisterStr {string} string
+ */
+export const composeCycleRegister = (cycleregisterArray: any) => {
+  let cycleRegisterStr: string = "";
+
+  Object.keys(cycleregisterArray).map((uid: any) => {
+    cycleregisterArray[uid].map((elem: any) => {
+      cycleRegisterStr =
+        cycleRegisterStr + uid.toString() + "-" + elem[0] + "-" + elem[1] + "|";
+    });
+  });
+  cycleRegisterStr = cycleRegisterStr.slice(0, -1);
+
+  return cycleRegisterStr;
+};
+
+/**
+ * decomposeCycleRegister
+ * * Decompose cycle register to array
+ * @param cycleregisterStr {string}
+ * @return cycleRegister {[]} array ordonné through building type id
+ */
+export const decomposeCycleRegister = (cycleregisterStr: string) => {
+  let cycleRegisterArr = cycleregisterStr.split("|");
+
+  var cycleRegister = cycleRegisterArr.reduce(function (acc: any, curr: any) {
+    var elem = curr.split("-");
+    return (
+      acc[parseInt(elem[0])]
+        ? acc[parseInt(elem[0])].push([parseInt(elem[1]), parseInt(elem[2])])
+        : (acc[parseInt(elem[0])] = [[parseInt(elem[1]), parseInt(elem[2])]]),
+      acc
+    );
+  }, {});
+
+  return cycleRegister;
+};
+
+/**
+ * initCounters
+ * * Init player counters on first loading
+ * @param playerBuilding {[]} player array of buildings
+ * @param staticBuildings {[]} array of static data
+ * @return incomingInventory {[]} array of resources available to claim
+ * @return inactive {number} nb of inactive buildings
+ * @return active {number} nb of active buildings
+ * @return nbBlocksClaimable {number} nb of blocks claimable by player
+ */
+export const initCounters = (playerBuilding: any[], staticBuildings: any[]) => {
+  let inactive: number = 0;
+  let active: number = 0;
+  let nbBlocksClaimable: number = 0;
+  let incomingInventory: any[] = [];
+  incomingInventory[0] = 0;
+  incomingInventory[1] = 0;
+  incomingInventory[2] = 0;
+  incomingInventory[3] = 0;
+  incomingInventory[4] = 0;
+  incomingInventory[5] = 0;
+  incomingInventory[6] = 0;
+  incomingInventory[7] = 0;
+
+  playerBuilding.map((building: any) => {
+    if (building.incomingCycles > 0) {
+      active++;
+    } else {
+      inactive++;
+    }
+    if (building.activeCycles > 0) {
+      nbBlocksClaimable += building.activeCycles;
+      // Calculate incomingInventory with cycles to claim
+      for (let i = 0; i < 8; i++) {
+        incomingInventory[i] +=
+          staticBuildings[building.type - 1].production[i] *
+          building.activeCycles;
+      }
+    }
+  });
+
+  return { incomingInventory, inactive, active, nbBlocksClaimable };
 };

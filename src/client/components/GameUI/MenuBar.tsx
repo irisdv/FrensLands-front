@@ -1,92 +1,88 @@
-import React, { useMemo, useState, useEffect } from "react";
-import { useGameContext } from "../../hooks/useGameContext";
+import React, { useMemo, useState } from "react";
 import Notifications from "../Notifications";
 import UI_Frames from "../../style/resources/front/Ui_Frames3.svg";
 import { useSelectContext } from "../../hooks/useSelectContext";
-// import useReinitialize from "../../hooks/invoke/useReinitialize";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
 import { useFLContract } from "../../hooks/contracts/frenslands";
-import { bulkUpdateActions, reinitLand } from "../../api/player";
+import {
+  bulkUpdateActions,
+  claimResourcesQuery,
+  reinitLand,
+} from "../../api/player";
 import { TransactionItem } from "./transactionItem";
+import { initMapArr } from "../../utils/land";
 
 export function MenuBar(props: any) {
-  const { payloadActions } = props;
   const {
     addAction,
-    // payloadActions,
+    payloadActions,
     wallet,
     inventory,
     counters,
     playerBuilding,
     player,
-    fullMap,
-    staticResources,
-    staticBuildings,
     transactions,
     updateActions,
+    updateCounters,
+    updateClaimRegister,
   } = useNewGameContext();
   const { zoomMode, updateZoom } = useSelectContext();
-  const {
-    tokenId,
-    updateTokenId,
-    setAddress,
-    // blockGame,
-    buildingData,
-    // nonce,
-    // updateNonce,
-    // counterResources,
-    accountContract,
-  } = useGameContext();
-
   const frenslandsContract = useFLContract();
-  // const [claiming, setClaiming] = useState<any>(null);
-  // const [btnClaim, setBtnClaim] = useState(false);
   const [popUpInit, setPopUpInit] = useState(false);
   const [popUpTxCart, setPopUpTxCart] = useState(false);
-  const [claimableResources, setClaimableResources] = useState<any[]>([]);
 
-  useEffect(() => {
-    if (wallet && wallet.isConnected) setAddress(wallet.account.address);
+  const initialMap = useMemo(() => {
+    return initMapArr(wallet.account.address);
   }, [wallet]);
 
-  useEffect(() => {
-    console.log("payloadActions useEffect", payloadActions);
-  }, [payloadActions]);
-
-  useEffect(() => {
-    if (wallet && wallet.isConnected && !tokenId) {
-      updateTokenId(wallet.account.address);
-    }
-  }, [wallet, tokenId]);
-
-  // Invoke claim resources
-  const claimResources = () => {
+  const claimResources = async () => {
     // Multicall
-    console.log("actions = ", payloadActions);
+    console.log("actions before claiming = ", payloadActions);
 
-    // if (tokenId) {
-    //   const tx_hash = claimingInvoke(tokenId, nonceValue);
-    //   setClaiming(tx_hash);
+    if (wallet && player.tokendId) {
+      wallet.account.getBlock().then((block: any) => {
+        // Update player inventory
+        for (var i = 0; i < 7; i++) {
+          inventory[i] += counters["incomingInventory" as any][i];
+        }
 
-    //   tx_hash.then((res) => {
-    //     console.log("res", res);
-    //     if (res != 0) {
-    //       updateNonce(nonceValue);
-    //     }
-    //   });
-    // } else {
-    //   console.log("Missing tokenId");
-    // }
-    // setClaiming(true);
+        // Update lastClaimedRegister
+        if (player.claimRegister == 0) {
+          player.claimRegister = block.block_number.toString();
+        } else {
+          player.claimRegister += "|" + block.block_number.toString();
+        }
+        console.log("player claimRegister", player.claimRegister);
+        updateClaimRegister(player.claimRegister);
+
+        // Reinit counters in context
+        counters["incomingInventory" as any][0] = 0;
+        counters["incomingInventory" as any][1] = 0;
+        counters["incomingInventory" as any][2] = 0;
+        counters["incomingInventory" as any][3] = 0;
+        counters["incomingInventory" as any][4] = 0;
+        counters["incomingInventory" as any][5] = 0;
+        counters["incomingInventory" as any][6] = 0;
+        counters["incomingInventory" as any][7] = 0;
+        counters["nbBlocksClaimable" as any] = 0;
+        updateCounters(counters);
+
+        var calldata = player.tokenId + "|0|" + block.block_number;
+        claimResourcesQuery(
+          player,
+          inventory,
+          player.claimRegister,
+          "claim_production",
+          calldata
+        ).then((actionData: any) => {
+          addAction(actionData[0]);
+        });
+      });
+    }
   };
 
-  // const nonceValue = useMemo(() => {
-  //   console.log("new nonce value", nonce);
-  //   return nonce;
-  // }, [nonce]);
-
   const reinitializeLand = async () => {
-    if (tokenId) {
+    if (player.tokenId) {
       // const result = await wallet.account.execute([
       //   {
       //     contractAddress: frenslandsContract?.address as string,
@@ -97,117 +93,80 @@ export function MenuBar(props: any) {
       // console.log("result from tx reinit", result);
 
       const result = {
-        code: "TRANSACTION_RECEIVED",
-        transaction_hash:
-          "0x1c4a2c6c3398cac008a66e727af63248b55aac85e6259308f059b34fc0ce311",
+        code: "",
+        transaction_hash: "",
       };
 
-      let _reinitializeGame = await reinitLand(player, playerBuilding, result);
+      let _reinitializeGame = await reinitLand(player, result);
       console.log("_initializeGame", _reinitializeGame);
 
       window.location.reload();
     }
   };
 
-  const blockClaimable = useMemo(() => {
-    if (buildingData != null) {
-      let _newBlockClaimable = 0;
-      const _resources: any[] = [];
-
-      // buildingData.active?.forEach((elem: any) => {
-      //   if (elem.recharges) {
-      //     // check lasr claim block number
-      //     // current block - last_claim block > then add recharges
-      //     if (block?.block_number) {
-      //       const check =
-      //         toBN(block?.block_number).toNumber() - elem.last_claim;
-      //       let block2Claim = 0;
-      //       if (check > elem.recharges) {
-      //         block2Claim = elem.recharges;
-      //       } else {
-      //         block2Claim = check;
-      //       }
-      //       _newBlockClaimable += block2Claim;
-
-      //       // Get resources to harvest for each claimable building
-      //       if (block2Claim > 0) {
-      //         allBuildings[elem.type - 1].daily_harvest?.[0].resources.map(
-      //           (elem: any) => {
-      //             let _currValue = 0;
-      //             if (_resources[elem.id] && _resources[elem.id] > 0) {
-      //               _currValue = _resources[elem.id] + elem.qty * block2Claim;
-      //             } else {
-      //               _currValue += elem.qty * block2Claim;
-      //             }
-      //             _resources[elem.id] = _currValue;
-      //           }
-      //         );
-      //       }
-      //     }
-      //   }
-      // });
-      setClaimableResources(_resources);
-      return _newBlockClaimable;
-    }
-  }, [buildingData]);
-
-  // Btn Claim
-  // useEffect(() => {
-  //   if (block != null && blockGame) {
-  //     const current_block = toBN(block?.block_number).toNumber();
-  //     if (current_block >= blockGame) {
-  //       setBtnClaim(true);
-  //     } else {
-  //       setBtnClaim(false);
-  //     }
-  //   }
-  // }, [block?.block_number, blockGame, claiming]);
-
   const zoomValue = useMemo(() => {
     return zoomMode;
   }, [zoomMode, wallet]);
 
-  const buildMulticall = () => {
+  const buildMulticall = async () => {
     console.log("building multicall w/ actions = ", payloadActions);
 
     const _calls: any[] = [];
     payloadActions.forEach((action: any) => {
       // Build calldata
-      const _calldata: any[] = [];
-      const _data = action.calldata.split("|");
-      _data.forEach((elem: any) => {
-        _calldata.push(elem);
-      });
-      _calls.push({
-        contractAddress: frenslandsContract.address.toLowerCase() as string,
-        entrypoint: action.entrypoint as string,
-        calldata: _calldata,
-      });
+      if (
+        action.status != "TRANSACTION_RECEIVED" &&
+        action.status != "ACCEPTED_ON_L2"
+      ) {
+        const _calldata: any[] = [];
+        const _data = action.calldata.split("|");
+
+        // ! for test contracts
+        if (
+          action.entrypoint == "build" ||
+          action.entrypoint == "destroy_building" ||
+          action.entrypoint == "repair_building" ||
+          action.entrypoint == "move_infrastructure" ||
+          action.entrypoint == "fuel_building_production" ||
+          action.entrypoint == "claim_production" ||
+          action.entrypoint == "reinit_game"
+        ) {
+          _calldata.push(
+            "0x0623dbdd29ae5dc1b314fa41d2b1b5d3014fd62ec86fab7ddd6ef5c2da1d2314"
+          );
+        } else if (action.entrypoint == "harvest") {
+          _calldata.push(
+            "0x07f711ddbb1786333f242b676603e2cadf62034f74e298a0085318649c84ba05"
+          );
+        }
+        //  ! end testing
+
+        _data.forEach((elem: any) => {
+          _calldata.push(elem);
+        });
+        _calls.push({
+          contractAddress: frenslandsContract.address.toLowerCase() as string,
+          entrypoint: action.entrypoint as string,
+          calldata: _calldata,
+        });
+      }
     });
 
-    console.log("_calls", _calls);
-
-    // wallet.account.getNonce().then((nonce: any) => {
-    // console.log("nonce", nonce);
     wallet.account.execute(_calls).then((response: any) => {
       console.log("response", response);
-
+      response.show = true;
       transactions.push(response);
 
       payloadActions.map((action: any) => {
         action.status = response.code;
-        action.transaction_hash = response.transaction_hash;
+        action.txHash = response.transaction_hash;
       });
-      console.log("payloadActions menubar", payloadActions);
-      // Update payload in context
-      // updateActions(payloadActions);
+      updateActions(payloadActions);
 
       // Update in DB
       let _updatedActions = bulkUpdateActions(player, payloadActions);
-
-      // Update context status to onhoing / tx hash
+      setPopUpTxCart(false);
     });
-    // });
   };
 
   return (
@@ -268,7 +227,11 @@ export function MenuBar(props: any) {
                   fontSize: "16px",
                 }}
               >
-                {claimableResources[10] ? "+" + claimableResources[10] : ""}
+                {counters &&
+                counters["incomingInventory" as any] &&
+                counters["incomingInventory" as any][6]
+                  ? "+" + counters["incomingInventory" as any][6]
+                  : ""}
               </div>
             </div>
             <div
@@ -291,7 +254,11 @@ export function MenuBar(props: any) {
                   fontSize: "16px",
                 }}
               >
-                {claimableResources[1] ? "+" + claimableResources[1] : ""}
+                {counters &&
+                counters["incomingInventory" as any] &&
+                counters["incomingInventory" as any][0]
+                  ? "+" + counters["incomingInventory" as any][0]
+                  : ""}
               </div>
             </div>
             <div
@@ -314,7 +281,11 @@ export function MenuBar(props: any) {
                   fontSize: "16px",
                 }}
               >
-                {claimableResources[2] ? "+" + claimableResources[2] : ""}
+                {counters &&
+                counters["incomingInventory" as any] &&
+                counters["incomingInventory" as any][1]
+                  ? "+" + counters["incomingInventory" as any][1]
+                  : ""}
               </div>
             </div>
             <div
@@ -337,7 +308,11 @@ export function MenuBar(props: any) {
                   fontSize: "16px",
                 }}
               >
-                {claimableResources[6] ? "+" + claimableResources[6] : ""}
+                {counters &&
+                counters["incomingInventory" as any] &&
+                counters["incomingInventory" as any][3]
+                  ? "+" + counters["incomingInventory" as any][3]
+                  : ""}
               </div>
             </div>
             <div
@@ -360,7 +335,11 @@ export function MenuBar(props: any) {
                   fontSize: "16px",
                 }}
               >
-                {claimableResources[8] ? "+" + claimableResources[8] : ""}
+                {counters &&
+                counters["incomingInventory" as any] &&
+                counters["incomingInventory" as any][4]
+                  ? "+" + counters["incomingInventory" as any][4]
+                  : ""}
               </div>
             </div>
             <div
@@ -407,7 +386,11 @@ export function MenuBar(props: any) {
                   fontSize: "16px",
                 }}
               >
-                {claimableResources[3] ? "+" + claimableResources[3] : ""}
+                {counters &&
+                counters["incomingInventory" as any] &&
+                counters["incomingInventory" as any][2]
+                  ? "+" + counters["incomingInventory" as any][2]
+                  : ""}
               </div>
             </div>
             <div
@@ -430,21 +413,27 @@ export function MenuBar(props: any) {
                   fontSize: "16px",
                 }}
               >
-                {claimableResources[11] ? "+" + claimableResources[11] : ""}
+                {counters &&
+                counters["incomingInventory" as any] &&
+                counters["incomingInventory" as any][5]
+                  ? "+" + counters["incomingInventory" as any][5]
+                  : ""}
               </div>
             </div>
             <div
               className="flex jutify-center relative mx-auto"
               style={{ marginTop: "-13px" }}
             >
-              {/* {tokenId && blockClaimable && blockClaimable > 0 ? ( */}
-              <div
-                className="btnClaim pixelated"
-                onClick={() => claimResources()}
-              ></div>
-              {/* ) : (
-              //   <div className="btnClaimDisabled pixelated"></div>
-              // )} */}
+              {counters["incomingInventory" as any].filter((elem: any) => {
+                return elem > 0;
+              }).length > 0 ? (
+                <div
+                  className="btnClaim pixelated"
+                  onClick={() => claimResources()}
+                ></div>
+              ) : (
+                <div className="btnClaimDisabled pixelated"></div>
+              )}
             </div>
             {/* <div
               className="flex jutify-center relative mx-auto"
@@ -462,7 +451,7 @@ export function MenuBar(props: any) {
               className="flex jutify-center relative mx-auto"
               style={{ marginTop: "-13px" }}
             >
-              {tokenId && (
+              {player.tokenId && (
                 <div
                   className="btnCustom pixelated relative"
                   onClick={() => setPopUpTxCart(true)}
@@ -490,7 +479,7 @@ export function MenuBar(props: any) {
         className="flex jutify-center absolute mx-auto"
         style={{ bottom: "0px", left: "0px", zIndex: "1" }}
       >
-        {tokenId && (
+        {player.tokenId && (
           <div
             className="btnInit pixelated"
             onClick={() => setPopUpInit(true)}
@@ -502,9 +491,7 @@ export function MenuBar(props: any) {
           <Notifications />
         </div>
       </div>
-      <div
-        onClick={() => updateZoom(!zoomValue, player["id" as any] as string)}
-      >
+      <div onClick={() => updateZoom(!zoomValue, player.id as string)}>
         {zoomValue ? (
           <div className="checkZoom1 pixelated"></div>
         ) : (
@@ -521,7 +508,7 @@ export function MenuBar(props: any) {
             className="fontHpxl_JuicySmall absolute"
             style={{ marginTop: "16px", marginLeft: "268px" }}
           >
-            {playerBuilding.length}
+            {Object.keys(playerBuilding).length}
           </div>
           <div
             className="fontHpxl_JuicySmall absolute"
@@ -545,26 +532,19 @@ export function MenuBar(props: any) {
             className="fontHpxl_JuicySmall absolute"
             style={{ marginTop: "16px", marginLeft: "898px" }}
           >
-            {/* // TODO update inactive buildings */}
-            {buildingData != null && buildingData.inactive != null
-              ? Object.keys(buildingData.inactive).length
-              : 0}
+            {counters && counters["inactive" as any]}
           </div>
           <div
             className="fontHpxl_JuicySmall absolute"
             style={{ marginTop: "16px", marginLeft: "1078px" }}
           >
-            {/* // TODO update active buildings */}
-            {buildingData != null && buildingData.active != null
-              ? Object.keys(buildingData.active).length
-              : 0}
+            {counters && counters["active" as any]}
           </div>
           <div
             className="fontHpxl_JuicySmall absolute"
             style={{ marginTop: "16px", marginLeft: "1261px" }}
           >
-            {/* // TODO update blocks claimable */}
-            {blockClaimable}
+            {counters && counters["blockClaimable" as any]}
           </div>
         </div>
       </div>
@@ -642,23 +622,28 @@ export function MenuBar(props: any) {
                           status={status}
                           calldata={calldata}
                           entrypoint={action.entrypoint}
+                          initialMap={initialMap}
                         />
                       );
                   })
                 ) : (
                   <p>You don't have any actions to validate on-chain yet.</p>
                 )}
-                <div
-                  className="btnCustom pixelated relative"
-                  onClick={() => buildMulticall()}
-                >
-                  <p
-                    className="relative fontHpxl_JuicyXL"
-                    style={{ marginTop: "47px" }}
+                {payloadActions.filter((action: any) => {
+                  return action.status != "TRANSACTION_RECEIVED";
+                }).length > 0 && (
+                  <div
+                    className="btnCustom pixelated relative"
+                    onClick={() => buildMulticall()}
                   >
-                    Send TX
-                  </p>
-                </div>
+                    <p
+                      className="relative fontHpxl_JuicyXL"
+                      style={{ marginTop: "47px" }}
+                    >
+                      Send TX
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

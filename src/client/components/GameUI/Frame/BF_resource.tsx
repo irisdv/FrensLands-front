@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useGameContext } from "../../../hooks/useGameContext";
+// import { useGameContext } from "../../../hooks/useGameContext";
 import { useNewGameContext } from "../../../hooks/useNewGameContext";
 import { useSelectContext } from "../../../hooks/useSelectContext";
 import {
@@ -40,7 +40,7 @@ export function BF_resource(props: any) {
     incomingActions,
     counters,
   } = useNewGameContext();
-  const { tokenId } = useGameContext();
+  // const { tokenId } = useGameContext();
   const [showNotif, setShowNotif] = useState(false);
 
   const inventoryValue = useMemo(() => {
@@ -58,7 +58,7 @@ export function BF_resource(props: any) {
     _state: number
   ) => {
     const _check = checkResHarvest(_typeId - 1, inventory, staticResourcesData);
-    if (_check && tokenId) {
+    if (_check && player.tokenId) {
       var _inventory = harvestResPay(
         randType - 1,
         inventoryValue,

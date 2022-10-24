@@ -3,8 +3,8 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import { InjectedConnector, StarknetProvider } from "@starknet-react/core";
 import { BrowserRouter } from "react-router-dom";
-import { AppStateProvider } from "./providers/GameContext";
-import { NotifTransactionManagerProvider } from "./providers/transactions";
+// import { AppStateProvider } from "./providers/GameContext";
+// import { NotifTransactionManagerProvider } from "./providers/transactions";
 import { SelectStateProvider } from "./providers/SelectContext";
 import { NewAppStateProvider } from "./providers/NewGameContext";
 import {
@@ -49,17 +49,17 @@ root.render(
   <>
     <ApolloProvider client={client}>
       <StarknetProvider connectors={connectors}>
-        <NotifTransactionManagerProvider>
-          <BrowserRouter>
-            <AppStateProvider>
-              <NewAppStateProvider>
-                <SelectStateProvider>
-                  <App />
-                </SelectStateProvider>
-              </NewAppStateProvider>
-            </AppStateProvider>
-          </BrowserRouter>
-        </NotifTransactionManagerProvider>
+        {/* <NotifTransactionManagerProvider> */}
+        <BrowserRouter>
+          {/* <AppStateProvider> */}
+          <NewAppStateProvider>
+            <SelectStateProvider>
+              <App />
+            </SelectStateProvider>
+          </NewAppStateProvider>
+          {/* </AppStateProvider> */}
+        </BrowserRouter>
+        {/* </NotifTransactionManagerProvider> */}
       </StarknetProvider>
     </ApolloProvider>
   </>

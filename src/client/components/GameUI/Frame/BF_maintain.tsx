@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import { destroyAction } from "../../../api/player";
-import { useGameContext } from "../../../hooks/useGameContext";
+import React, { useEffect, useMemo, useState } from "react";
+import { destroyAction, fuelProdQuery } from "../../../api/player";
+// import { useGameContext } from "../../../hooks/useGameContext";
 import { useNewGameContext } from "../../../hooks/useNewGameContext";
 import { useSelectContext } from "../../../hooks/useSelectContext";
 import {
   checkResMaintainMsg,
   destroyBuilding_,
+  maintainBuildingPay,
   maintainMax,
 } from "../../../utils/building";
 import { ComposeD } from "../../../utils/land";
@@ -15,7 +16,7 @@ import { FrameItem } from "../FrameItem";
 export function BF_maintain(props: any) {
   const { uid, typeId, state, posX, posY, staticBuildingsData, inventory } =
     props;
-  const { frameData, updateBuildingFrame } = useSelectContext();
+  const { updateBuildingFrame } = useSelectContext();
   const {
     updateInventory,
     fullMap,
@@ -23,21 +24,48 @@ export function BF_maintain(props: any) {
     updateMapBlock,
     player,
     playerBuilding,
-    updatePlayerBuilding,
+    updatePlayerBuildingEntry,
+    payloadActions,
   } = useNewGameContext();
-  const { tokenId } = useGameContext();
+  // const { tokenId } = useGameContext();
 
   const [inputFuel, setInputFuel] = useState(1);
   const [canMaintain, setCanMaintain] = useState(1);
   const [msg, setMsg] = useState("");
   const [showNotif, setShowNotif] = useState(false);
+  const [pendingCycles, setPendingCycles] = useState(0);
+
+  const pendingRecharges = useMemo(() => {
+    console.log("uid", uid);
+    console.log("in use memo pending recharges", payloadActions);
+    if (payloadActions && payloadActions.length > 0) {
+      var actions = payloadActions.filter((action: any) => {
+        return (
+          action.entrypoint == "fuel_building_production" &&
+          action.calldata.split("|")[2] == posX &&
+          action.calldata.split("|")[3] == posY
+        );
+      });
+      console.log("actions filtered", actions);
+      if (actions && actions.length > 0) {
+        let _pendingCycles = 0;
+        actions.map((action: any) => {
+          _pendingCycles += parseInt(action.calldata.split("|")[4]);
+        });
+        setPendingCycles(_pendingCycles);
+        console.log("_pendingCycles", _pendingCycles);
+      } else {
+        setPendingCycles(0);
+      }
+    }
+  }, [payloadActions, uid]);
 
   const destroyBuilding = async (
     _typeId: number,
     _posX: number,
     _posY: number
   ) => {
-    if (tokenId) {
+    if (player.tokenId) {
       console.log("inventory before destroy", inventory);
       let _inventory = destroyBuilding_(
         _typeId - 1,
@@ -53,7 +81,7 @@ export function BF_maintain(props: any) {
         (item: any) => item.gameUid !== uid
       );
       console.log("_newPlayerB before", playerBuilding);
-      updatePlayerBuilding(_newPlayerB);
+      updatePlayerBuildingEntry(_newPlayerB);
 
       // Update map block
       const _map = fullMap;
@@ -68,7 +96,7 @@ export function BF_maintain(props: any) {
       let _destroy = await destroyAction(
         player,
         "destroy_building",
-        tokenId + "|" + 0 + "|" + _posX + "|" + _posY,
+        player.tokenId + "|" + 0 + "|" + _posX + "|" + _posY,
         inventory,
         uid,
         _mapComposed
@@ -91,17 +119,47 @@ export function BF_maintain(props: any) {
 
   const moveBuilding = (_typeId: number, _posX: number, _posY: number) => {
     console.log("moving building", _typeId);
-    if (tokenId) {
+    if (player.tokenId) {
     }
   };
 
-  const fuelProd = (
-    nb_days: number,
+  const fuelProd = async (
+    cycles: number,
     type_id: number,
     pos_x: number,
     pos_y: number,
     uniqueId: number
-  ) => {};
+  ) => {
+    const _canMaintain = checkResMaintainMsg(
+      typeId - 1,
+      inventory,
+      staticBuildingsData,
+      inputFuel
+    );
+    if (_canMaintain && player.tokenId) {
+      const _inventory = maintainBuildingPay(
+        type_id - 1,
+        inventory,
+        staticBuildingsData,
+        cycles
+      );
+      updateInventory(_inventory);
+      console.log("inventory updated", _inventory);
+
+      var calldata =
+        player.tokenId + "|0|" + pos_x + "|" + pos_y + "|" + cycles;
+
+      let _action = await fuelProdQuery(
+        player,
+        _inventory,
+        "fuel_building_production",
+        calldata
+      );
+      console.log("action", _action[0]);
+      addAction(_action[0]);
+      setPendingCycles(pendingCycles + cycles);
+    }
+  };
 
   const updateInputFuel = () => {
     var _msg = "";
@@ -218,7 +276,7 @@ export function BF_maintain(props: any) {
               style={{ width: "68px" }}
             >
               <div
-                className={"building" + `${frameData?.typeId}`}
+                className={"building" + `${typeId}`}
                 style={{
                   left: "-26px",
                   top: "-39px",
@@ -341,14 +399,13 @@ export function BF_maintain(props: any) {
               fontSize: "19px",
             }}
           >
-            {/* // TODO get number of blocks fueled by player  */}
-            {/* {buildingData != null &&
-                  buildingData.active != null &&
-                  buildingData.active[frameData.unique_id as any] &&
-                  buildingData.active[frameData.unique_id as any].recharges
-                    ? buildingData.active[frameData.unique_id as any].recharges
-                    : 0} */}
-            0
+            {playerBuilding &&
+            playerBuilding[uid] &&
+            playerBuilding[uid].activeCycles &&
+            playerBuilding[uid].activeCycles > 0
+              ? playerBuilding[uid].activeCycles
+              : 0}
+            <span className="fontRed">({pendingCycles})</span>
           </div>
         </div>
 
@@ -356,7 +413,6 @@ export function BF_maintain(props: any) {
           className="grid grid-cols-2"
           style={{ height: "55px", marginLeft: "0px", pointerEvents: "all" }}
         >
-          {/* {buildingData && buildingData.active && buildingData.active[frameData.unique_id as any] ?  */}
           <div>
             {canMaintain ? (
               <div

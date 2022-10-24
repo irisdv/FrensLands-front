@@ -1,3 +1,5 @@
+import { initMap } from "./constant";
+
 /**
  * revComposeD
  * * Decompose land block values into an array formatted tempArray[posX][posY][param]
@@ -307,7 +309,7 @@ export const generateFullMap = () => {
  * @param counters {[]} array of buildings counters
  * @return level {number} updated level number
  */
-const calculatePlayerLevel = (
+export const calculatePlayerLevel = (
   currLevel: number,
   mapBuildingArray: any[],
   counters: any[]
@@ -318,48 +320,155 @@ const calculatePlayerLevel = (
     });
     if (cabin && cabin[0].decay == 0) return 2;
   } else if (currLevel == 2) {
-    //     if (counters[4] && counters[4] > 0 && counters[16] && counters[16] > 0) {
-    return 3;
-  } else if (currLevel) {
+    // Construire une maison + 1 wheat farm
+    if (
+      counters[2] &&
+      counters[2][2] &&
+      counters[2][2] > 0 &&
+      counters[2][14] &&
+      counters[2][14] > 0
+    )
+      return 3;
+  } else if (currLevel == 3) {
+    // Construire une coal plant
+    if (counters[2] && counters[2][18] && counters[2][18] > 0) return 4;
+  } else if (currLevel == 4) {
+    // constuire bakery + grocery shop
+    if (
+      counters[2] &&
+      counters[2][5] &&
+      counters[2][5] > 0 &&
+      counters[2][6] &&
+      counters[2][6] > 0
+    )
+      return 5;
+  } else if (currLevel == 5) {
+    // construire bar + restaurant
+    if (
+      counters[2] &&
+      counters[2][9] &&
+      counters[2][9] > 0 &&
+      counters[2][7] &&
+      counters[2][7] > 0
+    )
+      return 6;
+  } else if (currLevel == 6) {
+    // build police station
+    if (counters[2] && counters[2][19] && counters[2][19] > 0) return 7;
+  } else if (currLevel == 7) {
+    // build apartments
+    if (counters[2] && counters[2][3] && counters[2][3] > 0) return 8;
+  } else if (currLevel == 8) {
+    // build all existing buildings
+    if (
+      counters[2] &&
+      counters[2][4] &&
+      counters[2][4] > 0 &&
+      counters[2][8] &&
+      counters[2][8] > 0 &&
+      counters[2][10] &&
+      counters[2][10] > 0 &&
+      counters[2][11] &&
+      counters[2][11] > 0 &&
+      counters[2][12] &&
+      counters[2][12] > 0 &&
+      counters[2][13] &&
+      counters[2][13] > 0 &&
+      counters[2][15] &&
+      counters[2][15] > 0 &&
+      counters[2][16] &&
+      counters[2][16] > 0 &&
+      counters[2][17] &&
+      counters[2][17] > 0 &&
+      counters[2][20] &&
+      counters[2][20] > 0 &&
+      counters[2][21] &&
+      counters[2][21] > 0 &&
+      counters[2][22] &&
+      counters[2][22] > 0 &&
+      counters[2][23] &&
+      counters[2][23] > 0
+    )
+      // 4 8 10 11 12 13 15 16 17 20 21 22 23
+      return 9;
+  }
+  return currLevel;
+};
+
+export const initMapArr = (account: string) => {
+  const tempArray: any[] = [];
+
+  let x: number = 1;
+  let y: number = 1;
+  let i: number = 0;
+  var specIndex: number = 1; // ! THIS NEEDS TO BE GLOBAL
+
+  tempArray[y] = [];
+  const compMapSplit = initMap.split("|");
+
+  var counters: any = [];
+  counters[1] = [];
+  counters[2] = [];
+
+  while (i < compMapSplit.length) {
+    if (x > 40) {
+      y++;
+      tempArray[y] = [];
+      x = 1;
+    }
+
+    if (compMapSplit[i] == "0") {
+      tempArray[y][x] = [];
+      tempArray[y][x].infraType = 0;
+      tempArray[y][x].type = 0;
+      tempArray[y][x].id = 0;
+      tempArray[y][x].state = 0;
+      tempArray[y][x].blockType = 1;
+      tempArray[y][x].blockFertility = 99;
+    } else {
+      tempArray[y][x] = [];
+      tempArray[y][x].infraType = parseInt(compMapSplit[i][0]);
+      tempArray[y][x].type = parseInt(compMapSplit[i][1] + compMapSplit[i][2]);
+      tempArray[y][x].id = parseInt(
+        compMapSplit[i][3] +
+          compMapSplit[i][4] +
+          compMapSplit[i][5] +
+          compMapSplit[i][6]
+      );
+      tempArray[y][x].state = parseInt(compMapSplit[i][7]);
+      tempArray[y][x].blockType = parseInt(compMapSplit[i][8]);
+      tempArray[y][x].blockFertility = parseInt(
+        compMapSplit[i][9] + compMapSplit[i][10]
+      );
+    }
+
+    // * Additional values
+    // Rand for trees and rocks
+    if (tempArray[y][x].infraType == 1) {
+      if (tempArray[y][x].type == 1) {
+        var randomNum: number = random(specIndex, account) * (3 - 1) + 1;
+        randomNum = parseInt(randomNum.toFixed(0));
+        tempArray[y][x].randType = randomNum;
+        specIndex++;
+        //console.log("tempArray[y][x].randType = ", tempArray[y][x].randType);
+      } else if (tempArray[y][x].type == 2) {
+        var randomNum: number = random(specIndex, account) * (6 - 4) + 4;
+        randomNum = parseInt(randomNum.toFixed(0));
+        tempArray[y][x].randType = randomNum;
+        specIndex++;
+      } else if (tempArray[y][x].type == 3) {
+        tempArray[y][x].randType = 7;
+      } else if (tempArray[y][x].type == 4) {
+        tempArray[y][x].randType = 8;
+      }
+    }
+
+    tempArray[y][x].posX = x; // posX
+    tempArray[y][x].posY = y; // posY
+
+    x++;
+    i++;
   }
 
-  //     if (frontArray[8][20][7] == 2) setLevel(2);
-  //     if (counters[4] && counters[4] > 0 && counters[16] && counters[16] > 0) {
-  //       setLevel(3);
-  //     }
-  //     if (counters[21] && counters[21] > 0) setLevel(4);
-  //     if (counters[8] && counters[7] && counters[8] > 0 && counters[7] > 0) {
-  //       setLevel(5);
-  //     }
-  //     if (counters[9] && counters[11] && counters[9] > 0 && counters[11] > 0) {
-  //       setLevel(6);
-  //     }
-  //     if (counters[22] && counters[22] > 0) setLevel(7);
-  //     if (counters[5] && counters[5] > 0) setLevel(8);
-  //     if (
-  //       counters[4] > 0 &&
-  //       counters[5] > 0 &&
-  //       counters[6] > 0 &&
-  //       counters[7] > 0 &&
-  //       counters[8] > 0 &&
-  //       counters[9] > 0 &&
-  //       counters[10] > 0 &&
-  //       counters[11] > 0 &&
-  //       counters[12] > 0 &&
-  //       counters[13] > 0 &&
-  //       counters[14] > 0 &&
-  //       counters[15] > 0 &&
-  //       counters[16] > 0 &&
-  //       counters[17] > 0 &&
-  //       counters[18] > 0 &&
-  //       counters[19] > 0 &&
-  //       counters[21] > 0 &&
-  //       counters[22] > 0 &&
-  //       counters[23] > 0 &&
-  //       counters[24] > 0 &&
-  //       counters[25] > 0 &&
-  //       counters[26] > 0
-  //     ) {
-  //       setLevel(9);
-  //     }
+  return tempArray;
 };

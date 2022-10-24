@@ -10,15 +10,17 @@ export function NotifItem(props: any) {
   useEffect(() => {
     setTimeout(() => {
       setShowNotif(false);
-      if (transactions[index].code == "TRANSACTION_RECEIVED") {
-        transactions[index].show = false;
-      } else if (
-        transactions[index].code == "ACCEPTED_ON_L2" ||
-        transactions[index].code == "REJECTED"
-      ) {
-        transactions.splice(index, 1);
+      if (transactions && transactions[index]) {
+        if (transactions[index].code == "TRANSACTION_RECEIVED") {
+          transactions[index].show = false;
+        } else if (
+          transactions[index].code == "ACCEPTED_ON_L2" ||
+          transactions[index].code == "REJECTED"
+        ) {
+          transactions.splice(index, 1);
+        }
       }
-    }, 5000);
+    }, 10000);
   }, []);
 
   const index = transactions
@@ -50,7 +52,7 @@ export function NotifItem(props: any) {
     textNotif = "Your transaction was rejected. Try again.";
   }
 
-  let explorerUri = "https://testnet.starkscan.co/tx" + transaction_hash;
+  let explorerUri = "https://testnet.starkscan.co/tx/" + transaction_hash;
 
   if (show == false) {
     return <></>;

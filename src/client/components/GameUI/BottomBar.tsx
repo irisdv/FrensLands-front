@@ -1,13 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useGameContext } from "../../hooks/useGameContext";
+import React, { useMemo, useState } from "react";
 import { useSelectContext } from "../../hooks/useSelectContext";
 import { allBuildings } from "../../data/buildings";
 
 export function BottomBar(props: any) {
-  const { address } = useGameContext();
   const { showFrame, updateBuildingFrame, frameData } = useSelectContext();
   const { level } = props;
-
   const [displayNature, setDisplayNature] = useState(false);
   const [displayEntertainment, setDisplayEntertainment] = useState(false);
   const [displayHousing, setDisplayHousing] = useState(false);
@@ -15,11 +12,6 @@ export function BottomBar(props: any) {
   const [displayShop, setDisplayShop] = useState(false);
   const [displayFrame, setDisplayFrame] = useState(false);
   const [oldFrame, setOldFrame] = useState<any>();
-
-  const playerLevel = 10;
-
-  // 0 : build a new building
-  // 1: update a building
 
   const frameValue = useMemo(() => {
     if (frameData != null) {
@@ -89,12 +81,6 @@ export function BottomBar(props: any) {
   return (
     <>
       {/* Menu Nature */}
-      {/* - **cereal farm : game art done**
-- **vegetable farm** 17
-- **cow farm** 18
-- **tree farm** 19
-- **Mines** 20
-- **coal plant** 21 */}
       <div
         className="absolute"
         style={{
@@ -205,9 +191,6 @@ export function BottomBar(props: any) {
         </div>
       </div>
       {/* Menu Security */}
-      {/* - **Hospital 23
-- **police station 22
-- **agriculture/biology lab (cure disease, unlock new farms and updates, etc 24 */}
       <div
         className="absolute"
         style={{
@@ -261,10 +244,6 @@ export function BottomBar(props: any) {
         </div>
       </div>
       {/* Menu Entertainment */}
-      {/* - **cinema 14
-- **bars** 11
-- **library** 12
-- **swimming pool** 13 */}
       <div
         className="absolute"
         style={{
@@ -332,9 +311,6 @@ export function BottomBar(props: any) {
         </div>
       </div>
       {/* Menu House */}
-      {/* - **house (different sizes)** 4
-- **apartments building (different sizes)** 5
-- **hotels** 6 */}
       <div
         className="absolute"
         style={{

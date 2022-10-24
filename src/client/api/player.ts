@@ -15,6 +15,8 @@ export default async function getPlayer(account: string) {
     .eq("account", account)
     .single();
 
+  if (error) throw error;
+
   return data;
 }
 
@@ -28,16 +30,16 @@ export const getLandInformation = async (tokenId: string) => {
   const _supabase = createSupabase(localStorage.getItem("user") as string);
 
   const { data, error } = await _supabase
-    .from("lands_duplicate")
+    .from("lands")
     .select(
-      `id, tokenId, fullMap, isInit, biomeId, nbResourcesSpawned, claimRegister, cycleRegister, 
-      inventories_duplicate(fk_landid, id, wood, rock, food, coal, metal, energy, coin, gold, freePop, totalPop, level, timeSpent, incomingInventories),
-      player_buildings_duplicate(fk_buildingid, posX, posY, blockX, blockY, decay, gameUid, isDestroyed),
+      `id, tokenId, fullMap, isInit, biomeId, nbResourcesSpawned, claimRegister, cycleRegister, timestampCheck,
+      inventories(fk_landid, id, wood, rock, food, coal, metal, energy, coin, gold, freePop, totalPop, level, timeSpent, incomingInventories),
+      player_buildings(fk_buildingid, id, posX, posY, blockX, blockY, decay, gameUid, isDestroyed),
       player_actions(fk_landid, id, entrypoint, calldata, status, txHash, validated)
     `
     )
     .eq("tokenId", tokenId)
-    .eq("player_buildings_duplicate.isDestroyed", false)
+    .eq("player_buildings.isDestroyed", false)
     .eq("player_actions.validated", false)
     .single();
 
@@ -52,9 +54,7 @@ export const getLandInformation = async (tokenId: string) => {
  */
 export const getLandByTokenId = async (tokenIds: any[]) => {
   const _supabase = createSupabase(localStorage.getItem("user") as string);
-  let query = _supabase
-    .from("lands_duplicate")
-    .select(`id, tokenId, biomeId, isInit`);
+  let query = _supabase.from("lands").select(`id, tokenId, biomeId, isInit`);
 
   let str = "";
   tokenIds.map((id: number) => {
@@ -87,7 +87,7 @@ export const initGame = async (
 ) => {
   const _supabase = createSupabase(localStorage.getItem("user") as string);
   const { data: inventoryData, error: inventoryError } = await _supabase
-    .from("inventories_duplicate")
+    .from("inventories")
     .insert([
       {
         fk_landid: landId,
@@ -97,7 +97,7 @@ export const initGame = async (
   console.log("inventory", inventoryData);
 
   const { data: buildingData, error: buildingError } = await _supabase
-    .from("player_buildings_duplicate")
+    .from("player_buildings")
     .insert([
       {
         fk_landid: landId,
@@ -115,7 +115,7 @@ export const initGame = async (
 
   // update init land
   const { data: landData, error: landError } = await _supabase
-    .from("lands_duplicate")
+    .from("lands")
     .update({ isInit: true })
     .eq("id", landId)
     .select();
@@ -152,7 +152,7 @@ export const initGame = async (
  * @return success
  */
 export const storeAction = async (
-  player: any[],
+  player: any,
   entrypoint: string,
   calldata: string
 ) => {
@@ -161,8 +161,8 @@ export const storeAction = async (
     .from("player_actions")
     .insert([
       {
-        fk_userid: player["id" as any],
-        fk_landid: player["landId" as any],
+        fk_userid: player.id,
+        fk_landid: player.landId,
         entrypoint: entrypoint,
         calldata: calldata,
         validated: false,
@@ -228,7 +228,7 @@ export const updateZoomRequest = async (uid: string, val: boolean) => {
  * @return success
  */
 export const buildAction = async (
-  player: any[],
+  player: any,
   entrypoint: string,
   calldata: string,
   inventory: any,
@@ -237,17 +237,17 @@ export const buildAction = async (
 ) => {
   const _supabase = createSupabase(localStorage.getItem("user") as string);
   const { data: landData, error: landError } = await _supabase
-    .from("lands_duplicate")
+    .from("lands")
     .update([{ fullMap: mapComposed }])
-    .eq("id", player["landId" as any]);
+    .eq("id", player.landId);
   if (landError) throw landError;
 
   const { data: actionData, error: actionError } = await _supabase
     .from("player_actions")
     .insert([
       {
-        fk_userid: player["id" as any],
-        fk_landid: player["landId" as any],
+        fk_userid: player.id,
+        fk_landid: player.landId,
         entrypoint: entrypoint,
         calldata: calldata,
         validated: false,
@@ -258,7 +258,7 @@ export const buildAction = async (
   if (actionError) throw actionError;
 
   const { data: inventoryData, error: inventoryError } = await _supabase
-    .from("inventories_duplicate")
+    .from("inventories")
     .update([
       {
         wood: inventory[0],
@@ -275,16 +275,16 @@ export const buildAction = async (
         level: inventory[11],
       },
     ])
-    .eq("fk_landid", player["landId" as any]);
+    .eq("fk_landid", player.landId);
 
   if (inventoryError) throw inventoryError;
 
   // Create entry in db player_buildings
   const { data: buildingData, error: buildingError } = await _supabase
-    .from("player_buildings_duplicate")
+    .from("player_buildings")
     .insert([
       {
-        fk_landid: player["landId" as any],
+        fk_landid: player.landId,
         fk_buildingid: newBuilding["type"],
         gameUid: newBuilding["gameUid"],
         posX: newBuilding["posX"],
@@ -311,7 +311,7 @@ export const buildAction = async (
  * @return success
  */
 export const harvestAction = async (
-  player: any[],
+  player: any,
   entrypoint: string,
   calldata: string,
   inventory: any,
@@ -320,13 +320,13 @@ export const harvestAction = async (
 ) => {
   const _supabase = createSupabase(localStorage.getItem("user") as string);
   const { data: landData, error: landError } = await _supabase
-    .from("lands_duplicate")
+    .from("lands")
     .update([{ fullMap: mapComposed }])
-    .eq("id", player["landId" as any]);
+    .eq("id", player.landId);
   if (landError) throw landError;
 
   const { data: inventoryData, error: inventoryError } = await _supabase
-    .from("inventories_duplicate")
+    .from("inventories")
     .update([
       {
         wood: inventory[0],
@@ -344,7 +344,7 @@ export const harvestAction = async (
         incomingInventories: incomingInventories,
       },
     ])
-    .eq("fk_landid", player["landId" as any]);
+    .eq("fk_landid", player.landId);
 
   if (inventoryError) throw inventoryError;
 
@@ -352,8 +352,8 @@ export const harvestAction = async (
     .from("player_actions")
     .insert([
       {
-        fk_userid: player["id" as any],
-        fk_landid: player["landId" as any],
+        fk_userid: player.id,
+        fk_landid: player.landId,
         entrypoint: entrypoint,
         calldata: calldata,
         validated: false,
@@ -375,7 +375,7 @@ export const harvestAction = async (
  * @return success
  */
 export const repairAction = async (
-  player: any[],
+  player: any,
   entrypoint: string,
   calldata: string,
   inventory: any,
@@ -383,7 +383,7 @@ export const repairAction = async (
 ) => {
   const _supabase = createSupabase(localStorage.getItem("user") as string);
   const { data: inventoryData, error: inventoryError } = await _supabase
-    .from("inventories_duplicate")
+    .from("inventories")
     .update([
       {
         wood: inventory[0],
@@ -400,16 +400,16 @@ export const repairAction = async (
         level: inventory[11],
       },
     ])
-    .eq("fk_landid", player["landId" as any]);
+    .eq("fk_landid", player.landId);
 
   if (inventoryError) throw inventoryError;
 
   // Update player_buildings
   const { data: buildingData, error: buildingError } = await _supabase
-    .from("player_buildings_duplicate")
+    .from("player_buildings")
     .update([{ decay: 0 }])
     .match({
-      fk_landid: player["landId" as any],
+      fk_landid: player.landId,
       gameUid: uid,
     });
 
@@ -419,8 +419,8 @@ export const repairAction = async (
     .from("player_actions")
     .insert([
       {
-        fk_userid: player["id" as any],
-        fk_landid: player["landId" as any],
+        fk_userid: player.id,
+        fk_landid: player.landId,
         entrypoint: entrypoint,
         calldata: calldata,
         validated: false,
@@ -443,7 +443,7 @@ export const repairAction = async (
  * @return success
  */
 export const destroyAction = async (
-  player: any[],
+  player: any,
   entrypoint: string,
   calldata: string,
   inventory: any,
@@ -452,13 +452,13 @@ export const destroyAction = async (
 ) => {
   const _supabase = createSupabase(localStorage.getItem("user") as string);
   const { data: landData, error: landError } = await _supabase
-    .from("lands_duplicate")
+    .from("lands")
     .update([{ fullMap: mapComposed }])
-    .eq("id", player["landId" as any]);
+    .eq("id", player.landId);
   if (landError) throw landError;
 
   const { data: inventoryData, error: inventoryError } = await _supabase
-    .from("inventories_duplicate")
+    .from("inventories")
     .update([
       {
         wood: inventory[0],
@@ -475,16 +475,16 @@ export const destroyAction = async (
         level: inventory[11],
       },
     ])
-    .eq("fk_landid", player["landId" as any]);
+    .eq("fk_landid", player.landId);
 
   if (inventoryError) throw inventoryError;
 
   // Update player_buildings
   const { data: buildingData, error: buildingError } = await _supabase
-    .from("player_buildings_duplicate")
+    .from("player_buildings")
     .update([{ isDestroyed: true }])
     .match({
-      fk_landid: player["landId" as any],
+      fk_landid: player.landId,
       gameUid: uid,
     });
 
@@ -494,8 +494,8 @@ export const destroyAction = async (
     .from("player_actions")
     .insert([
       {
-        fk_userid: player["id" as any],
-        fk_landid: player["landId" as any],
+        fk_userid: player.id,
+        fk_landid: player.landId,
         entrypoint: entrypoint,
         calldata: calldata,
         validated: false,
@@ -518,7 +518,7 @@ export const destroyAction = async (
  * @return success
  */
 export const moveAction = async (
-  player: any[],
+  player: any,
   entrypoint: string,
   calldata: string,
   playerBuilding: any,
@@ -526,27 +526,14 @@ export const moveAction = async (
 ) => {
   const _supabase = createSupabase(localStorage.getItem("user") as string);
   const { data: landData, error: landError } = await _supabase
-    .from("lands_duplicate")
+    .from("lands")
     .update([{ fullMap: mapComposed }])
-    .eq("id", player["landId" as any]);
+    .eq("id", player.landId);
   if (landError) throw landError;
-
-  const { data: actionData, error: actionError } = await _supabase
-    .from("player_actions")
-    .insert([
-      {
-        fk_userid: player["id" as any],
-        fk_landid: player["landId" as any],
-        entrypoint: entrypoint,
-        calldata: calldata,
-        validated: false,
-      },
-    ]);
-  if (actionError) throw actionError;
 
   // Update player_buildings
   const { data: buildingData, error: buildingError } = await _supabase
-    .from("player_buildings_duplicate")
+    .from("player_buildings")
     .update([
       {
         posX: playerBuilding.posX,
@@ -556,10 +543,26 @@ export const moveAction = async (
       },
     ])
     .match({
-      fk_landid: player["landId" as any],
+      fk_landid: player.landId,
       gameUid: playerBuilding.gameUid,
     });
   if (buildingError) throw buildingError;
+
+  const { data: actionData, error: actionError } = await _supabase
+    .from("player_actions")
+    .insert([
+      {
+        fk_userid: player.id,
+        fk_landid: player.landId,
+        entrypoint: entrypoint,
+        calldata: calldata,
+        validated: false,
+      },
+    ])
+    .select();
+  if (actionError) throw actionError;
+
+  return actionData;
 };
 
 /**
@@ -569,18 +572,18 @@ export const moveAction = async (
  * @param incomingInventories {string}
  */
 export const updateIncomingInventories = async (
-  player: any[],
+  player: any,
   incomingInventories: string
 ) => {
   const _supabase = createSupabase(localStorage.getItem("user") as string);
   const { data: inventoryData, error: inventoryError } = await _supabase
-    .from("inventories_duplicate")
+    .from("inventories")
     .update([
       {
         incomingInventories: incomingInventories,
       },
     ])
-    .eq("fk_landid", player["landId" as any]);
+    .eq("fk_landid", player.landId);
   if (inventoryError) throw inventoryError;
 };
 
@@ -590,7 +593,7 @@ export const updateIncomingInventories = async (
  * @param player {[]} player information
  * @param actionsArr {[]}
  */
-export const bulkUpdateActions = async (player: any[], actionsArr: any[]) => {
+export const bulkUpdateActions = async (player: any, actionsArr: any[]) => {
   const _supabase = createSupabase(localStorage.getItem("user") as string);
 
   var actionsQuery: any[] = [];
@@ -600,19 +603,21 @@ export const bulkUpdateActions = async (player: any[], actionsArr: any[]) => {
     // }
     actionsQuery.push({
       id: action.id,
-      fk_userid: player["id" as any],
+      fk_userid: player.id,
       validated: action.validated,
-      txHash: action.transaction_hash,
+      txHash: action.txHash,
       status: action.status,
     });
   });
+
+  console.log("actionsQuery", actionsQuery);
 
   const { data: actionData, error: actionError } = await _supabase
     .from("player_actions")
     .upsert(actionsQuery)
     .match({
-      fk_landid: player["landId" as any],
-      fk_userid: player["id" as any],
+      fk_landid: player.landId,
+      fk_userid: player.id,
     });
 
   if (actionError) throw actionError;
@@ -625,17 +630,12 @@ export const bulkUpdateActions = async (player: any[], actionsArr: any[]) => {
  * @param playerBuildings {[]} array of building of player
  * @param actionsArr {[]}
  */
-// TODO add args in query w/ txHash && tx code
-export const reinitLand = async (
-  player: any[],
-  playerBuildings: any[],
-  txData: any
-) => {
+export const reinitLand = async (player: any, txData: any) => {
   const _supabase = createSupabase(localStorage.getItem("user") as string);
 
   // reinit inventory
   const { data: inventoryData, error: inventoryError } = await _supabase
-    .from("inventories_duplicate")
+    .from("inventories")
     .update([
       {
         wood: 0,
@@ -653,38 +653,38 @@ export const reinitLand = async (
         incomingInventories: "",
       },
     ])
-    .eq("fk_landid", player["landId" as any]);
+    .eq("fk_landid", player.landId);
   if (inventoryError) throw inventoryError;
   console.log("inventory", inventoryData);
 
   // update init land
   const { data: landData, error: landError } = await _supabase
-    .from("lands_duplicate")
+    .from("lands")
     .update({
       fullMap: initMap,
       claimRegister: null,
       cycleRegister: null,
       nbResourcesSpawned: 196,
     })
-    .eq("id", player["landId" as any])
+    .eq("id", player.landId)
     .select();
   if (landError) throw landError;
 
   // update cabin
   const { data: buildingData, error: buildingError } = await _supabase
-    .from("player_buildings_duplicate")
+    .from("player_buildings")
     .update([
       {
         posX: 1.2,
         posY: 1.2,
-        blockX: 11,
+        blockX: 20,
         blockY: 8,
         decay: 100,
         unitTimeCreatedAt: 0,
       },
     ])
     .match({
-      fk_landid: player["landId" as any],
+      fk_landid: player.landId,
       fk_buildingid: 1,
       gameUid: 1,
     });
@@ -693,10 +693,10 @@ export const reinitLand = async (
   // Pass all buildings to destroyed
   const { data: buildingDestroyedData, error: buildingDestroyedError } =
     await _supabase
-      .from("player_buildings_duplicate")
+      .from("player_buildings")
       .update([{ isDestroyed: true }])
       .match({
-        fk_landid: player["landId" as any],
+        fk_landid: player.landId,
       })
       .neq("gameUid", 1);
   if (buildingDestroyedError) throw buildingDestroyedError;
@@ -705,17 +705,17 @@ export const reinitLand = async (
   const { data: destroyData, error: destroyError } = await _supabase
     .from("player_actions")
     .delete()
-    .eq("fk_landid", player["landId" as any])
+    .eq("fk_landid", player.landId)
     .eq("validated", false);
   if (destroyError) throw destroyError;
 
   const { data: actionReinitData, error: actionReinitError } = await _supabase
     .from("player_actions")
     .insert({
-      fk_userid: player["id" as any],
-      fk_landid: player["landId" as any],
+      fk_userid: player.id,
+      fk_landid: player.landId,
       entrypoint: "reinit_game",
-      calldata: player["tokenId" as any] + "|0",
+      calldata: player.tokenId + "|0",
       validated: false,
       txHash: txData.transaction_hash,
       status: txData.code,
@@ -725,6 +725,163 @@ export const reinitLand = async (
   if (actionReinitError) throw actionReinitError;
 };
 
-// Move
-// Claim
-// Fuel Production
+/**
+ * fuelProdQuery
+ * * Fuel production of a building
+ * @param player {[]} player information
+ * @param inventory {[]} player inventory
+ * @param entrypoint {string}
+ * @param calldata {string}
+ */
+export const fuelProdQuery = async (
+  player: any,
+  inventory: any[],
+  entrypoint: string,
+  calldata: string
+) => {
+  const _supabase = createSupabase(localStorage.getItem("user") as string);
+
+  const { data: inventoryData, error: inventoryError } = await _supabase
+    .from("inventories")
+    .update([
+      {
+        wood: inventory[0],
+        rock: inventory[1],
+        food: inventory[2],
+        metal: inventory[3],
+        coal: inventory[4],
+        energy: inventory[5],
+        coin: inventory[6],
+        gold: inventory[7],
+        freePop: inventory[8],
+        totalPop: inventory[9],
+        timeSpent: inventory[10],
+        level: inventory[11],
+      },
+    ])
+    .eq("fk_landid", player.landId);
+  if (inventoryError) throw inventoryError;
+
+  const { data: actionData, error: actionError } = await _supabase
+    .from("player_actions")
+    .insert([
+      {
+        fk_userid: player.id,
+        fk_landid: player.landId,
+        entrypoint: entrypoint,
+        calldata: calldata,
+        validated: false,
+      },
+    ])
+    .select();
+
+  if (actionError) throw actionError;
+  return actionData;
+};
+
+/**
+ * fuelProdEffective
+ * * Fuel production of a building after tx was accepted onchain
+ * @param player {[]} player information
+ * @param playerBuilding {[]} array of building of player that were recharged
+ * @param playerAction {[]} array of player actions that were juste validated onchain
+ */
+export const fuelProdEffective = async (
+  player: any,
+  actionsArr: any,
+  cycleRegisterStr: any
+) => {
+  const _supabase = createSupabase(localStorage.getItem("user") as string);
+
+  if (actionsArr.length > 0) {
+    var actionsQuery: any[] = [];
+    actionsArr.map((action: any) => {
+      actionsQuery.push({
+        id: action.id,
+        fk_userid: player.id,
+        validated: action.validated,
+        txHash: action.transaction_hash,
+        status: action.status,
+      });
+    });
+
+    const { data: actionData, error: actionError } = await _supabase
+      .from("player_actions")
+      .upsert(actionsQuery)
+      .match({
+        fk_landid: player.landId,
+        fk_userid: player.id,
+      });
+
+    if (actionError) throw actionError;
+  }
+
+  // update le building rechargé
+  if (cycleRegisterStr) {
+    const { data: buildingData, error: buildingError } = await _supabase
+      .from("lands")
+      .update({ cycleRegister: cycleRegisterStr })
+      .eq("id", player.landId);
+    if (buildingError) throw buildingError;
+  }
+};
+
+/**
+ * claimResourcesQuery
+ * * Claim building production
+ * @param player {[]} player information
+ * @param inventory {[]} updated player inventory
+ * @param claimRegister {string} string composed with block number of claims
+ * @param entrypoint {string}
+ * @param calldata {string}
+ * @return actionData {[]} action info stored in DB
+ */
+export const claimResourcesQuery = async (
+  player: any,
+  inventory: any[],
+  claimRegister: any,
+  entrypoint: string,
+  calldata: string
+) => {
+  const _supabase = createSupabase(localStorage.getItem("user") as string);
+
+  // update claimRegister
+  const { data: buildingData, error: buildingError } = await _supabase
+    .from("lands")
+    .update({ claimRegister: claimRegister })
+    .eq("id", player.landId);
+  if (buildingError) throw buildingError;
+
+  // update inventory
+  const { data: inventoryData, error: inventoryError } = await _supabase
+    .from("inventories")
+    .update([
+      {
+        wood: inventory[0],
+        rock: inventory[1],
+        food: inventory[2],
+        metal: inventory[3],
+        coal: inventory[4],
+        energy: inventory[5],
+        coin: inventory[6],
+      },
+    ])
+    .eq("fk_landid", player.landId);
+  if (inventoryError) throw inventoryError;
+
+  // Insert new action
+  const { data: actionData, error: actionError } = await _supabase
+    .from("player_actions")
+    .insert([
+      {
+        fk_userid: player.id,
+        fk_landid: player.landId,
+        entrypoint: entrypoint,
+        calldata: calldata,
+        validated: false,
+      },
+    ])
+    .select();
+  if (actionError) throw actionError;
+  return actionData;
+};

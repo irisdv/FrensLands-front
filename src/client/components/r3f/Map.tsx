@@ -12,13 +12,10 @@ import { useSelectContext } from "../../hooks/useSelectContext";
 import { BuildingTemp } from "./BuildingTemp";
 import Resources from "./Resources";
 import { Frens } from "./Frens";
-import { useNotifTransactionManager } from "../../providers/transactions";
-// import useBuild from "../../hooks/invoke/useBuild";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
 import { addToBuildingArray, createBuildingPay } from "../../utils/building";
 import { buildAction } from "../../api/player";
-import { ComposeD } from "../../utils/land";
-// const { promises: Fs } = require("fs");
+import { calculatePlayerLevel, ComposeD } from "../../utils/land";
 
 export interface ISelectObject {
   infraType: any;
@@ -35,6 +32,7 @@ export const Map = (props: any) => {
     worldType,
     mouseLeftPressed,
     mouseMiddlePressed,
+    keyMap,
   } = props;
 
   const mapRef = useRef<any>();
@@ -58,7 +56,7 @@ export const Map = (props: any) => {
     updateInventory,
     addAction,
     playerBuilding,
-    updatePlayerBuilding,
+    updatePlayerBuildingEntry,
     updateIncomingActions,
     counters,
   } = useNewGameContext();
@@ -79,19 +77,7 @@ export const Map = (props: any) => {
   const [objectSelected, setObjectSelected] = useState(0);
   const [selectedObj, setSelectedObj] = useState<ISelectObject>();
   const [currBlockPosState, setCurrBlockPosState] = useState(new Vector2());
-
-  // const nonceValue = useMemo(() => {
-  //   return nonce;
-  // }, [nonce]);
-
-  // const fullMapValue = useMemo(() => {
-  //   return fullMap;
-  // }, [fullMap]);
-
-  // const playerBuildingValue = useMemo(() => {
-  //   console.log("playerBuilding map.tsx", playerBuilding);
-  //   return playerBuilding;
-  // }, [playerBuilding]);
+  const [movingBuilding, setMovingBuilding] = useState(0);
 
   // Frens
   const frensArray = useMemo(() => {
@@ -129,15 +115,6 @@ export const Map = (props: any) => {
       return frameData;
     }
   }, [frameData]);
-
-  // function exists(path: String) {
-  //   try {
-  //     Fs.access(path);
-  //     return true;
-  //   } catch {
-  //     return false;
-  //   }
-  // }
 
   useFrame(({ mouse, raycaster }) => {
     // Create a variable with the speed value to change it with weather
@@ -201,16 +178,46 @@ export const Map = (props: any) => {
 
       setCurrBlockPosState(new Vector2(currBlockPos.x, currBlockPos.y));
 
-      if (placementActive == 1) {
+      if (keyMap.KeyD == true) {
+        if (frameData?.infraType == 2) {
+          setMovingBuilding(1);
+          updateBuildingFrame(false, {
+            infraType:
+              frontBlockArray[currBlockPos.y][currBlockPos.x].infraType,
+            typeId: selectedObj?.type_id, // resource_type_id
+            randType: frontBlockArray[currBlockPos.y][currBlockPos.x].randType,
+            unique_id: selectedObj?.unique_id,
+            state: frontBlockArray[currBlockPos.y][currBlockPos.x].state,
+            posX: frontBlockArray[currBlockPos.y][currBlockPos.x].posX,
+            posY: frontBlockArray[currBlockPos.y][currBlockPos.x].posY,
+            selected: 1,
+          });
+        }
+      }
+
+      if (movingBuilding == 1 || placementActive == 1) {
+        frameDataValue?.selected == 1;
+        if (placementActive == 0) setPlacementActive(1);
         setTempBuildMesh(
           new Vector3(
             currBlockPos.x + 0.5,
-            0.2 + mouse.y * 0.02,
+            /* 0.2 */ 0.2 + mouse.y * 0.02,
             currBlockPos.y
           )
         );
         updateTempBuildMesh(currBlockPos);
       }
+
+      // if (placementActive == 1) {
+      //   setTempBuildMesh(
+      //     new Vector3(
+      //       currBlockPos.x + 0.5,
+      //       0.2 + mouse.y * 0.02,
+      //       currBlockPos.y
+      //     )
+      //   );
+      //   updateTempBuildMesh(currBlockPos);
+      // }
 
       if (objectSelected == 0) {
         if (
@@ -344,79 +351,109 @@ export const Map = (props: any) => {
 
       setPlacementActive(0);
 
-      console.log("create building on Map", frameData?.typeId);
+      if (movingBuilding == 1) {
+        // delete old location
+        frontBlockArray[frameData.posY][frameData.posX].infraType = 0;
+        frontBlockArray[frameData.posY][frameData.posX].type = 0;
+        frontBlockArray[frameData.posY][frameData.posX].state = 0;
+        frontBlockArray[frameData.posY][frameData.posX].id = 0;
 
-      updateIncomingActions(
-        2,
-        pos.x - 0.5,
-        pos.y,
-        UBlockIDs + 1,
-        Date.now(),
-        0
-      );
+        // update new location
+        frontBlockArray[pos.y][pos.x - 0.5].infraType = frameData?.infraType;
+        frontBlockArray[pos.y][pos.x - 0.5].type = frameData?.typeId;
+        frontBlockArray[pos.y][pos.x - 0.5].state = 1;
+        frontBlockArray[pos.y][pos.x - 0.5].id = frameData?.unique_id;
 
-      // Update frontBlockArray
-      frontBlockArray[pos.y][pos.x - 0.5].infraType = frameData?.infraType;
-      frontBlockArray[pos.y][pos.x - 0.5].type = frameData?.typeId;
-      frontBlockArray[pos.y][pos.x - 0.5].state = 1;
-      frontBlockArray[pos.y][pos.x - 0.5].id = UBlockIDs + 1;
-      updateMapBlock(frontBlockArray);
+        updateMapBlock(frontBlockArray);
 
-      // Update player inventory
-      let _inventoryPay = createBuildingPay(
-        frameData.typeId - 1,
-        inventory,
-        staticBuildings
-      );
-      console.log("_inventoryPay", _inventoryPay);
-      // TODO Check if it changes level of player and update _inventoryPay accordingly
-      updateInventory(_inventoryPay);
+        setMovingBuilding(0);
+      } else {
+        // Nouveau building construit
+        console.log("create building on Map", frameData?.typeId);
 
-      // Store on-chain action in context
-      const calldata =
-        player["tokenId" as any] +
-        "|" +
-        0 +
-        "|" +
-        (pos.x - 0.5) +
-        "|" +
-        pos.y +
-        "|" +
-        frameData.typeId;
-      const entrypoint = "build";
+        updateIncomingActions(
+          2,
+          pos.x - 0.5,
+          pos.y,
+          UBlockIDs + 1,
+          Date.now(),
+          0
+        );
 
-      // Create entry in player building & save to context
-      const newBuilding: any[] = addToBuildingArray(
-        playerBuilding,
-        frameData.typeId,
-        pos.x - 0.5,
-        pos.y,
-        pos.x - 0.5,
-        pos.y,
-        UBlockIDs + 1
-      );
-      updatePlayerBuilding(newBuilding);
+        // Update frontBlockArray
+        frontBlockArray[pos.y][pos.x - 0.5].infraType = frameData?.infraType;
+        frontBlockArray[pos.y][pos.x - 0.5].type = frameData?.typeId;
+        frontBlockArray[pos.y][pos.x - 0.5].state = 1;
+        frontBlockArray[pos.y][pos.x - 0.5].id = UBlockIDs + 1;
+        updateMapBlock(frontBlockArray);
 
-      // ? send request DB
-      const _mapComposed = ComposeD(frontBlockArray);
-      const _action = await buildAction(
-        player,
-        entrypoint,
-        calldata,
-        inventory,
-        newBuilding[newBuilding.length - 1],
-        _mapComposed
-      );
-      // Add action in context
-      addAction(_action[0]);
+        if (!counters[2][frameData?.typeId]) {
+          counters[2][frameData?.typeId] = 0;
+        }
+        counters[2][frameData?.typeId] += 1;
+        console.log("updated counters", counters);
 
-      // Update global variables
-      setUBlockIDs(UBlockIDs + 1);
-      counters["uid" as any]++;
-      console.log("counters uid", counters["uid" as any]);
+        // Update player inventory
+        let _inventoryPay = createBuildingPay(
+          frameData.typeId - 1,
+          inventory,
+          staticBuildings
+        );
+        let _newLevel = calculatePlayerLevel(
+          _inventoryPay[11],
+          playerBuilding,
+          counters
+        );
+        _inventoryPay[11] = _newLevel;
+        console.log("_inventoryPay", _inventoryPay);
+        updateInventory(_inventoryPay);
+
+        // Store on-chain action in context
+        const calldata =
+          player.tokenId +
+          "|" +
+          0 +
+          "|" +
+          (pos.x - 0.5) +
+          "|" +
+          pos.y +
+          "|" +
+          frameData.typeId;
+        const entrypoint = "build";
+
+        // Create entry in player building & save to context
+        const newBuilding: any[] = addToBuildingArray(
+          playerBuilding,
+          frameData.typeId,
+          pos.x - 0.5,
+          pos.y,
+          pos.x - 0.5,
+          pos.y,
+          UBlockIDs + 1
+        );
+        updatePlayerBuildingEntry(newBuilding);
+
+        // send request DB
+        const _mapComposed = ComposeD(frontBlockArray);
+        const _action = await buildAction(
+          player,
+          entrypoint,
+          calldata,
+          inventory,
+          newBuilding[newBuilding.length - 1],
+          _mapComposed
+        );
+        // Add action in context
+        addAction(_action[0]);
+
+        // Update global variables
+        setUBlockIDs(UBlockIDs + 1);
+        counters["uid" as any]++;
+        console.log("counters uid", counters["uid" as any]);
+      }
     }
+
     if (mouseMiddlePressed == 1 && placementActive == 1) {
-      // NEED TO TEST THE KEY
       updateBuildingFrame(false, {
         infraType: selectedObj?.infraType,
         id: selectedObj?.type_id,
@@ -493,7 +530,6 @@ export const Map = (props: any) => {
           <Resources
             frontBlockArray={frontBlockArray}
             textArrRef={textArrRef}
-            rightBuildingType={rightBuildingType}
             position={currBlockPosState}
             worldType={worldType}
             staticBuildings={staticBuildings}

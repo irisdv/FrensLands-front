@@ -4,7 +4,6 @@ import { hexToDecimalString } from "starknet/utils/number";
 import { allMetadata } from "../../data/metadata";
 import UI_Frames from "../../style/resources/front/Ui_Frames3.svg";
 import { getLandByTokenId, initGame } from "../../api/player";
-// import { useNewGameContext } from "../../hooks/useNewGameContext";
 import { useFLContract } from "../../hooks/contracts/frenslands";
 import { useNavigate } from "react-router-dom";
 import { useTestContract } from "../../hooks/contracts/test";
@@ -29,12 +28,10 @@ export const INIT_QUERY = gql`
 
 export default function MenuHome(props: any) {
   const { account, userId, starknet } = props;
-  const { contract: frenslands } = useFLContract();
+  const frenslandsContract = useFLContract();
   const navigate = useNavigate();
   const [isReady, setIsReady] = useState(false);
   const [initArray, setInitArray] = useState<any[]>([]);
-  // ! test
-  const testContract = useTestContract();
 
   const {
     data,
@@ -77,42 +74,28 @@ export default function MenuHome(props: any) {
 
   const startGame = async (_tokenId: number) => {
     console.log("starting game for tokendId", _tokenId);
-    console.log("initArray defined", initArray);
 
     if (initArray && initArray[_tokenId]) {
       if (initArray[_tokenId].isInit) {
         console.log("isInit", initArray[_tokenId].isInit);
         navigate("/play", { state: { landId: _tokenId } });
       } else {
-        // If not init onchain send tx
-        // Send tx to init game onchain
         // let nonce = await wallet.account.getNonce();
-        const result = await starknet.account.execute(
-          [
-            {
-              contractAddress: frenslands?.address as string,
-              entrypoint: "start_game",
-              calldata: [_tokenId, 0, initArray[_tokenId].biomeId],
-            },
-          ]
-          // undefined,
-          // { maxFee: 500, nonce }
-        );
-        console.log("result from tx", result);
+        // const result = await starknet.account.execute(
+        //   [
+        //     {
+        //       contractAddress: frenslandsContract.address as string,
+        //       entrypoint: "start_game",
+        //       calldata: [_tokenId, 0, initArray[_tokenId].biomeId],
+        //     },
+        //   ]
+        // );
+        // console.log("result from tx", result);
 
-        // const result = await starknet.account.execute([
-        //   {
-        //     contractAddress: testContract.address as string,
-        //     entrypoint: "harvest",
-        //     calldata: [1],
-        //   },
-        // ]);
-        // console.log("result", result);
-        // const result = {
-        //   code: "RECEIVED",
-        //   transaction_hash:
-        //     "0x1c4a2c6c3398cac008a66e727af63248b55aac85e6259308f059b34fc0ce311",
-        // };
+        const result = {
+          code: "",
+          transaction_hash: "",
+        };
 
         // Init game in db
         let _initializeGame = await initGame(

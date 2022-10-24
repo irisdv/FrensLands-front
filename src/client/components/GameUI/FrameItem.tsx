@@ -1,7 +1,7 @@
 import React from "react";
 
 export function FrameItem(props: any) {
-  const { index, cost, inventory, option, inputFuel } = props;
+  const { index, cost, inventory, option } = props;
 
   return (
     <div className="flex flex-row justify-center inline-block relative">

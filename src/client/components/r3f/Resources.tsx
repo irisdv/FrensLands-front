@@ -5,7 +5,6 @@ import { ResourceLine } from "./ResourceLine";
 export default function Resources({
   frontBlockArray,
   textArrRef,
-  rightBuildingType,
   position,
   worldType,
   staticBuildings,
@@ -63,15 +62,12 @@ export default function Resources({
     frontBlockArrayValue.frontBlockArray.map((line: any, key: any) => {
       return (
         <ResourceLine
-          frontBlockArray={frontBlockArray}
           key={key}
           line={line}
           textArrRef={textArrRef}
-          rightBuildingType={rightBuildingType}
           textureLoader={textureLoader}
           textureSelected={textureLoaderSelected}
           position={position}
-          worldType={worldType}
           staticBuildings={staticBuildings}
           staticResources={staticResources}
           animIndex={animIndex}

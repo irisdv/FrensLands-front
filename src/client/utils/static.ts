@@ -54,6 +54,11 @@ export const fillStaticBuildings = (staticBuildings: any) => {
       parseInt(val)
     );
 
+    const _destroy = parseResToArray(staticBuildings[i].destroy);
+    fixBuildVal[staticBuildings[i].id - 1].destroy = _destroy.map((val) =>
+      parseInt(val)
+    );
+
     i++;
   }
 
@@ -100,4 +105,100 @@ export const fillStaticResources = (staticResources: any) => {
   }
 
   return fixResVal;
+};
+
+/**
+ * generateResourcesComps
+ * Generate composition for static data onchain
+ * @param staticBuildings {[]}
+ * @return compValues {[]}
+ */
+export const generateResourcesComps = (staticBuildings: any) => {
+  let compValues: any = [];
+
+  staticBuildings.map((building: any) => {
+    compValues[building.id] = [];
+    compValues[building.id].name = building.name;
+
+    // Create building values
+    let createComp = "";
+    let popRequired = 0;
+    let popAdd = 0;
+    building.createCost.forEach((cost: any, index: any) => {
+      if (index < 7) {
+        if (cost != 0) {
+          if (cost < 10) {
+            createComp =
+              createComp + (index + 1).toString() + "0" + cost.toString();
+          } else {
+            createComp = createComp + (index + 1).toString() + cost.toString();
+          }
+        }
+      }
+      if (index == 8) popRequired = cost;
+      if (index == 9) popAdd = cost;
+    });
+    compValues[building.id].build = {
+      comp: createComp,
+      popRequired: popRequired,
+      popAdd: popAdd,
+    };
+
+    // destroy
+    let destroyComp = "";
+    building.destroy.forEach((cost: any, index: any) => {
+      if (index < 7) {
+        if (cost != 0) {
+          if (cost < 10) {
+            destroyComp =
+              destroyComp + (index + 1).toString() + "0" + cost.toString();
+          } else {
+            destroyComp =
+              destroyComp + (index + 1).toString() + cost.toString();
+          }
+        }
+      }
+    });
+    compValues[building.id].destroy = {
+      comp: destroyComp,
+      popRequired: popRequired,
+      popAdd: popAdd,
+    };
+
+    // maintenance costs
+    let maintenanceComp = "";
+    building.maintainCost.forEach((cost: any, index: any) => {
+      if (index < 7) {
+        if (cost != 0) {
+          if (cost < 10) {
+            maintenanceComp =
+              maintenanceComp + (index + 1).toString() + "0" + cost.toString();
+          } else {
+            maintenanceComp =
+              maintenanceComp + (index + 1).toString() + cost.toString();
+          }
+        }
+      }
+    });
+    compValues[building.id].maintenance = maintenanceComp;
+
+    // daily production
+    let productionComp = "";
+    building.production.forEach((cost: any, index: any) => {
+      if (index < 7) {
+        if (cost != 0) {
+          if (cost < 10) {
+            productionComp =
+              productionComp + (index + 1).toString() + "0" + cost.toString();
+          } else {
+            productionComp =
+              productionComp + (index + 1).toString() + cost.toString();
+          }
+        }
+      }
+    });
+    compValues[building.id].production = productionComp;
+  });
+
+  return compValues;
 };

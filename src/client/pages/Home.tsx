@@ -1,40 +1,28 @@
-import React, { useMemo, useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-
-import { uint256 } from "starknet";
-import { getStarknet, IStarknetWindowObject } from "@starknet/get-starknet";
-import { useStarknetCall } from "@starknet-react/core";
+import { number } from "starknet";
+import { getStarknet, IStarknetWindowObject } from "get-starknet";
 import Notifications from "../components/Notifications";
 import MenuHome from "../components/Home/MenuHome";
 import LandList from "../components/Home/LandList";
 import { useMapsContract } from "../hooks/contracts/maps";
-import { useGameContext } from "../hooks/useGameContext";
 import { ILand } from "../providers/NewGameContext";
-
 import { gsap } from "gsap";
 import UI_Frames from "../style/resources/front/Ui_Frames3.svg";
-import { useFLContract } from "../hooks/contracts/frenslands";
 
 export default function Home() {
   const [wallet, setWallet] = useState<IStarknetWindowObject>();
   const [signedIn, setSignedIn] = useState(false);
   const [hasLand, setHasLand] = useState<ILand>();
-  // const [hasInit, setHasInit] = useState(0);
+  const [balance, setBalance] = useState<any>(null);
   const [userId, setUserId] = useState("");
   const [userLands, setUserLands] = useState<any[]>([]);
   const navigate = useNavigate();
-  const { updateTokenId, tokenId } = useGameContext();
   const scrollRef = useRef<null | HTMLDivElement>(null);
-
-  // Call
-  const { contract: maps } = useMapsContract();
-  const [watch, setWatch] = useState(true);
-  const [canPlay, setCanPlay] = useState(0);
-  const [approved, setApproved] = useState<any>(null);
+  const mapsContract = useMapsContract();
 
   const connectWallet = async () => {
     const _wallet = await getStarknet();
-    console.log("wallet", _wallet);
     await _wallet.enable({ showModal: true });
     setWallet(_wallet);
   };
@@ -82,28 +70,26 @@ export default function Home() {
     }
   }, [wallet]);
 
-  // Fetch NFT balance of user
-  const { data: fetchBalanceNFTResult } = useStarknetCall({
-    contract: maps,
-    method: "balanceOf",
-    args: [wallet?.account.address],
-    options: { watch },
-  });
-
-  const BalanceNFTValue = useMemo(() => {
-    if (fetchBalanceNFTResult != null && fetchBalanceNFTResult.length > 0) {
-      const elem = uint256.uint256ToBN(fetchBalanceNFTResult[0]);
-      const balance = elem.toNumber();
-
-      console.log("balance NFT", balance);
-
-      if (balance > 0 && wallet?.account.address) {
-        updateTokenId(wallet?.account.address);
-      }
-
-      return { NFTbalance: balance };
+  useEffect(() => {
+    if (wallet && wallet.account && wallet.account.address) {
+      wallet.account
+        .callContract(
+          {
+            contractAddress: mapsContract.address as string,
+            entrypoint: "balanceOf",
+            calldata: [number.toFelt(wallet.account.address)],
+          },
+          { blockIdentifier: "pending" }
+        )
+        .then((res: any) => {
+          console.log("result balanceOf player", res);
+          setBalance(Number(res.result[0]));
+        })
+        .catch((error: any) => {
+          console.log("error while fetching balance NFT lands", error);
+        });
     }
-  }, [fetchBalanceNFTResult]);
+  }, [wallet]);
 
   // const checkWasInit = async (_wallet: any, token: number) => {
   //   const _res = await _wallet.account.callContract({
@@ -183,52 +169,50 @@ export default function Home() {
                 </>
               )}
               {/* User is connected, has an NFT but doesn't have a land  */}
-              {wallet?.isConnected &&
-                hasLand == null &&
-                BalanceNFTValue != null &&
-                BalanceNFTValue.NFTbalance > 0 && (
-                  <>
-                    <LandList
-                      account={wallet.account.address}
-                      userId={userId}
-                      userLands={userLands}
-                      starknet={wallet}
-                    />
-                  </>
-                )}
+              {wallet?.isConnected && hasLand == null && balance > 0 ? (
+                <>
+                  <LandList
+                    account={wallet.account.address}
+                    userId={userId}
+                    userLands={userLands}
+                    starknet={wallet}
+                  />
+                </>
+              ) : (
+                <></>
+              )}
               {/* User is connected and does not have a land and doesn't have a NFT either  */}
-              {wallet?.isConnected &&
-                hasLand == null &&
-                BalanceNFTValue != null &&
-                BalanceNFTValue.NFTbalance == 0 && (
-                  <>
-                    <div className="messageNotifParentNoLand">
-                      <div
-                        className="messageNotifNoLand fontHPxl-sm mx-auto text-center"
-                        style={{
-                          borderImage: `url(data:image/svg+xml;base64,${btoa(
-                            UI_Frames
-                          )}) 18 fill stretch`,
-                        }}
-                      >
-                        <p>You don't own a map... </p>
-                        <br />
-                        <p>
-                          Join the{" "}
-                          <a
-                            className="cursor-pointer"
-                            style={{ color: "#964489" }}
-                            href="https://discord.gg/gehYZU9Trf"
-                            target="_blank"
-                          >
-                            Frens Lands discord server
-                          </a>{" "}
-                          to take part in the next testing sessions.
-                        </p>
-                      </div>
+              {wallet?.isConnected && hasLand == null && balance == 0 ? (
+                <>
+                  <div className="messageNotifParentNoLand">
+                    <div
+                      className="messageNotifNoLand fontHPxl-sm mx-auto text-center"
+                      style={{
+                        borderImage: `url(data:image/svg+xml;base64,${btoa(
+                          UI_Frames
+                        )}) 18 fill stretch`,
+                      }}
+                    >
+                      <p>You don't own a map... </p>
+                      <br />
+                      <p>
+                        Join the{" "}
+                        <a
+                          className="cursor-pointer"
+                          style={{ color: "#964489" }}
+                          href="https://discord.gg/gehYZU9Trf"
+                          target="_blank"
+                        >
+                          Frens Lands discord server
+                        </a>{" "}
+                        to take part in the next testing sessions.
+                      </p>
                     </div>
-                  </>
-                )}
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
               {/* Connect Wallet */}
               {!wallet?.isConnected && (
                 <button
@@ -236,17 +220,6 @@ export default function Home() {
                   className="relative mx-auto btnPlay pixelated"
                   style={{ marginTop: "300px" }}
                 ></button>
-              )}
-
-              {/* Send user to next page */}
-              {wallet?.isConnected && canPlay && approved == true && signedIn && (
-                <div style={{ height: "170px", pointerEvents: "all" }}>
-                  <button
-                    className="relative mx-auto pixelated btnPlay"
-                    onClick={() => navigate("/play")}
-                    style={{ marginTop: "-65px" }}
-                  ></button>
-                </div>
               )}
             </div>
           </div>
