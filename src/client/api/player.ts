@@ -41,6 +41,7 @@ export const getLandInformation = async (tokenId: string) => {
     .eq("tokenId", tokenId)
     .eq("player_buildings.isDestroyed", false)
     .eq("player_actions.validated", false)
+    .order("created_at", { foreignTable: "player_actions", ascending: true })
     .single();
 
   return data;

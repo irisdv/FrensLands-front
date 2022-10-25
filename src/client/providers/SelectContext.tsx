@@ -10,6 +10,7 @@ export interface IFrame {
   posX?: any;
   posY?: any;
   selected?: any;
+  moved?: any;
 }
 
 export interface IPopUp {

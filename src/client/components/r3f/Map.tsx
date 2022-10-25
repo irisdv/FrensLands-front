@@ -14,7 +14,7 @@ import Resources from "./Resources";
 import { Frens } from "./Frens";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
 import { addToBuildingArray, createBuildingPay } from "../../utils/building";
-import { buildAction } from "../../api/player";
+import { buildAction, moveAction } from "../../api/player";
 import { calculatePlayerLevel, ComposeD } from "../../utils/land";
 
 export interface ISelectObject {
@@ -27,7 +27,7 @@ export interface ISelectObject {
 export const Map = (props: any) => {
   const {
     frontBlockArray,
-    rightBuildingType,
+    // rightBuildingType,
     textArrRef,
     worldType,
     mouseLeftPressed,
@@ -46,7 +46,6 @@ export const Map = (props: any) => {
 
   // Context
   const {
-    wallet,
     player,
     fullMap,
     staticBuildings,
@@ -59,6 +58,7 @@ export const Map = (props: any) => {
     updatePlayerBuildingEntry,
     updateIncomingActions,
     counters,
+    updatePlayerBuildings,
   } = useNewGameContext();
   // const { transactions, removeTransaction } = useNotifTransactionManager();
   const { frameData, updateBuildingFrame, sound } = useSelectContext();
@@ -111,7 +111,16 @@ export const Map = (props: any) => {
 
   const frameDataValue = useMemo(() => {
     if (frameData != null) {
-      if (frameData.selected == 1) setPlacementActive(1);
+      if (frameData.selected == 1) {
+        setPlacementActive(1);
+      } else {
+        setPlacementActive(0);
+      }
+      if (frameData.moved == 1) {
+        setMovingBuilding(1);
+      } else {
+        setMovingBuilding(0);
+      }
       return frameData;
     }
   }, [frameData]);
@@ -191,12 +200,13 @@ export const Map = (props: any) => {
             posX: frontBlockArray[currBlockPos.y][currBlockPos.x].posX,
             posY: frontBlockArray[currBlockPos.y][currBlockPos.x].posY,
             selected: 1,
+            moved: 1,
           });
         }
       }
 
       if (movingBuilding == 1 || placementActive == 1) {
-        frameDataValue?.selected == 1;
+        // frameDataValue?.selected == 1;
         if (placementActive == 0) setPlacementActive(1);
         setTempBuildMesh(
           new Vector3(
@@ -207,17 +217,6 @@ export const Map = (props: any) => {
         );
         updateTempBuildMesh(currBlockPos);
       }
-
-      // if (placementActive == 1) {
-      //   setTempBuildMesh(
-      //     new Vector3(
-      //       currBlockPos.x + 0.5,
-      //       0.2 + mouse.y * 0.02,
-      //       currBlockPos.y
-      //     )
-      //   );
-      //   updateTempBuildMesh(currBlockPos);
-      // }
 
       if (objectSelected == 0) {
         if (
@@ -281,6 +280,7 @@ export const Map = (props: any) => {
           posX: frontBlockArray[rayY][rayX].posX,
           posY: frontBlockArray[rayY][rayX].posY,
           selected: 0,
+          moved: 0,
         });
       }
     }
@@ -357,18 +357,46 @@ export const Map = (props: any) => {
         frontBlockArray[frameData.posY][frameData.posX].type = 0;
         frontBlockArray[frameData.posY][frameData.posX].state = 0;
         frontBlockArray[frameData.posY][frameData.posX].id = 0;
-
         // update new location
         frontBlockArray[pos.y][pos.x - 0.5].infraType = frameData?.infraType;
         frontBlockArray[pos.y][pos.x - 0.5].type = frameData?.typeId;
         frontBlockArray[pos.y][pos.x - 0.5].state = 1;
         frontBlockArray[pos.y][pos.x - 0.5].id = frameData?.unique_id;
-
+        // update context
         updateMapBlock(frontBlockArray);
+
+        playerBuilding[frameData.unique_id as number].posX = pos.x - 0.5;
+        playerBuilding[frameData.unique_id as number].posY = pos.y;
+        playerBuilding[frameData.unique_id as number].blockX = pos.x - 0.5;
+        playerBuilding[frameData.unique_id as number].blockY = pos.y;
+        console.log("new player building", playerBuilding);
+        updatePlayerBuildings(playerBuilding);
+
+        const calldata =
+          player.tokenId +
+          "|" +
+          0 +
+          "|" +
+          frameData.posX +
+          "|" +
+          frameData.posY +
+          "|" +
+          (pos.x - 0.5) +
+          "|" +
+          pos.y;
+        // compose new map
+        const _mapComposed = ComposeD(frontBlockArray);
+        let _actionMove = await moveAction(
+          player,
+          "move_infrastructure",
+          calldata,
+          playerBuilding,
+          _mapComposed
+        );
+        addAction(_actionMove[0]);
 
         setMovingBuilding(0);
       } else {
-        // Nouveau building construit
         console.log("create building on Map", frameData?.typeId);
 
         updateIncomingActions(
@@ -454,6 +482,7 @@ export const Map = (props: any) => {
     }
 
     if (mouseMiddlePressed == 1 && placementActive == 1) {
+      console.log("test");
       updateBuildingFrame(false, {
         infraType: selectedObj?.infraType,
         id: selectedObj?.type_id,
@@ -461,6 +490,7 @@ export const Map = (props: any) => {
         posX: selectedObj?.pos?.x,
         posY: selectedObj?.pos?.y,
         selected: 0,
+        moved: 0,
       });
       setPlacementActive(0);
     }
@@ -539,6 +569,7 @@ export const Map = (props: any) => {
         )}
 
       {frameDataValue != null &&
+      frameData?.infraType == 2 &&
       frameDataValue.typeId &&
       frameDataValue.typeId != 0 &&
       frameDataValue.selected == 1 &&

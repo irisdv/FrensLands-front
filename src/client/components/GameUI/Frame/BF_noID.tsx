@@ -23,6 +23,7 @@ export function BF_noID(props: any) {
       posX: 0,
       posY: 0,
       selected: 1,
+      moved: 0,
     });
   };
 
@@ -40,6 +41,7 @@ export function BF_noID(props: any) {
               posX: 0,
               posY: 0,
               selected: 0,
+              moved: 0,
             })
           }
         ></div>

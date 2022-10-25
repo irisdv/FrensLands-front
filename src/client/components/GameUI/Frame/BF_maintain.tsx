@@ -111,6 +111,7 @@ export function BF_maintain(props: any) {
         posX: 0,
         posY: 0,
         selected: 0,
+        moved: 0,
       });
     } else {
       console.log("Missing tokenId");
@@ -120,6 +121,16 @@ export function BF_maintain(props: any) {
   const moveBuilding = (_typeId: number, _posX: number, _posY: number) => {
     console.log("moving building", _typeId);
     if (player.tokenId) {
+      updateBuildingFrame(false, {
+        infraType: 2,
+        typeId: _typeId,
+        unique_id: uid,
+        state: 1,
+        posX: _posX,
+        posY: _posY,
+        selected: 1,
+        moved: 1,
+      });
     }
   };
 
@@ -218,6 +229,7 @@ export function BF_maintain(props: any) {
               posX: 0,
               posY: 0,
               selected: 0,
+              moved: 0,
             })
           }
         ></div>

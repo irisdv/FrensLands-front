@@ -53,8 +53,6 @@ export function BuildingFrame(props: any) {
     if (frameData != null && frameData.infraType && frameData.typeId) {
       let _msg = "";
 
-      console.log("frameData", frameData);
-
       if (frameData.infraType == 1 && frameData.typeId <= 4) {
         // * Check can harvest resource
         const _canHarvest = checkResHarvestMsg(

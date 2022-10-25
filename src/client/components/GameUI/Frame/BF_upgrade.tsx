@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { destroyAction, repairAction } from "../../../api/player";
-// import { useGameContext } from "../../../hooks/useGameContext";
 import { useNewGameContext } from "../../../hooks/useNewGameContext";
 import { useSelectContext } from "../../../hooks/useSelectContext";
 import {
@@ -29,8 +28,6 @@ export function BF_upgrade(props: any) {
     updateInventory,
     addAction,
     inventory,
-    wallet,
-    // playerBuilding,
     updatePlayerBuildingEntry,
     player,
     fullMap,
@@ -84,6 +81,7 @@ export function BF_upgrade(props: any) {
         posX: 0,
         posY: 0,
         selected: 0,
+        moved: 0,
       });
 
       // Send request to db
@@ -156,6 +154,7 @@ export function BF_upgrade(props: any) {
         posX: 0,
         posY: 0,
         selected: 0,
+        moved: 0,
       });
     } else {
       console.log("Missing tokenId");
@@ -165,6 +164,18 @@ export function BF_upgrade(props: any) {
   const moveBuilding = (_typeId: number, _posX: number, _posY: number) => {
     console.log("moving building", _typeId);
     if (player.tokenId) {
+      updateBuildingFrame(false, {
+        infraType: 2,
+        typeId: _typeId,
+        unique_id: uid,
+        state: 1,
+        posX: _posX,
+        posY: _posY,
+        selected: 1,
+        moved: 1,
+      });
+    } else {
+      console.log("missing tokenId");
     }
   };
 
@@ -202,6 +213,7 @@ export function BF_upgrade(props: any) {
               posX: 0,
               posY: 0,
               selected: 0,
+              moved: 0,
             })
           }
         ></div>

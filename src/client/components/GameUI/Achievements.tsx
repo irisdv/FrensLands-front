@@ -14,8 +14,6 @@ export function Achievements(props: any) {
   const [showInfo, setShowInfo] = useState(true);
   const [lastLevel, setLastLevel] = useState(0);
 
-  console.log('props level', props.level)
-
   const currAchievement = useMemo(() => {
     if (props.level != lastLevel) {
       setLastLevel(props.level);
