@@ -1,4 +1,3 @@
-import { useContract } from "@starknet-react/core";
 import { Abi, Contract } from "starknet";
 
 import TestAbi from "../../abi/test_abi.json";
