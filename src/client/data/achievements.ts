@@ -17,7 +17,7 @@ export const allAchievements: Achievement[] = [
       "You'll first need to build houses to bring more frens into your community.",
     description:
       "Congrats ! Two new frens arrived in your community! You'll be sharing your cabin with them. Your frens need more food now.",
-    unlock: [4, 16],
+    unlock: [2, 14],
   },
   {
     level: 3,
@@ -25,7 +25,7 @@ export const allAchievements: Achievement[] = [
     goalDesc: "Build a coal plant to start producing some energy",
     description:
       "You built your first farm ! Your farm is fueled for the next 5 blocks. It will bring you 5 food every block. Once the 5 blocks passed you can fuel your farm so it continues producing more food.",
-    unlock: [21],
+    unlock: [18],
   },
   {
     level: 4,
@@ -34,7 +34,7 @@ export const allAchievements: Achievement[] = [
       "Your frens go a long way out of your community to buy basic products, build a grocery shop & a bakery",
     description:
       "You can now produce energy! Your coal plant is recharged for the next 5 blocks then you can fuel it. It will bring you 2 energy / block.",
-    unlock: [7, 8, 18, 19],
+    unlock: [5, 6, 16, 17],
   },
   {
     level: 5,
@@ -43,7 +43,7 @@ export const allAchievements: Achievement[] = [
       "Your frens are bored on weekends, you should build a place for them to relax and socialize ... ",
     description:
       "Frens are delighted by these new shops, especially the bakery !",
-    unlock: [9, 11, 25, 26],
+    unlock: [7, 9, 22, 23],
   },
   {
     level: 6,
@@ -51,7 +51,7 @@ export const allAchievements: Achievement[] = [
     goalDesc: "Police stations bring order into your community.",
     description:
       "Nice parties ahead ! So many frens joining your community, last weekend some frens went a bit too far... It's time to bring some order into your community.",
-    unlock: [22],
+    unlock: [19],
   },
   {
     level: 7,
@@ -59,7 +59,7 @@ export const allAchievements: Achievement[] = [
     goalDesc: "Bring more frens into your community.",
     description:
       "Frens are feeling safe again! Frens have voted, a police station should be built for every 20 buildings. Your community is ready to go to the next level.",
-    unlock: [5, 15, 23, 12, 17],
+    unlock: [3, 13, 20, 10, 15],
   },
   {
     level: 8,
@@ -67,7 +67,7 @@ export const allAchievements: Achievement[] = [
     goalDesc:
       "Build all the existing buildings available in your world. Many more will come soon !",
     description: "",
-    unlock: [6, 10, 13, 14, 24],
+    unlock: [4, 8, 11, 12, 21],
   },
   {
     level: 9,
