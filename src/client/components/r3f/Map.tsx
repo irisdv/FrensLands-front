@@ -459,7 +459,7 @@ export const Map = (props: any) => {
           pos.y,
           UBlockIDs + 1
         );
-        updatePlayerBuildingEntry(newBuilding);
+        updatePlayerBuildings(newBuilding);
 
         // send request DB
         const _mapComposed = ComposeD(frontBlockArray);

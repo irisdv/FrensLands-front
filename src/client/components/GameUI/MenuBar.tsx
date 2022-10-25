@@ -98,7 +98,9 @@ export function MenuBar(props: any) {
       };
 
       var hasStarted = true;
-      var _hasStarted = payloadActions.filter((action: any) => { return action.entrypoint == 'start_game'})
+      var _hasStarted = payloadActions.filter((action: any) => {
+        return action.entrypoint == "start_game";
+      });
       if (_hasStarted && _hasStarted.length > 0) hasStarted = false;
       let _reinitializeGame = await reinitLand(player, result, false);
       console.log("_initializeGame", _reinitializeGame);
@@ -608,11 +610,11 @@ export function MenuBar(props: any) {
                 {payloadActions.length > 0 ? (
                   payloadActions.map((action: any, key: number) => {
                     var calldata = action.calldata.split("|");
-                    var status = 'not sent';
+                    var status = "not sent";
                     if (action.status == "TRANSACTION_RECEIVED") {
-                      status = 'ongoing';
+                      status = "ongoing";
                     } else if (action.status == "ACCEPTED_ON_L2") {
-                      status = 'accepted';
+                      status = "accepted";
                     }
                     if (
                       action.status != "ACCEPTED_ON_L2" ||

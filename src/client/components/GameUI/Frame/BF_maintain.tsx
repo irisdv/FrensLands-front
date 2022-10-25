@@ -24,7 +24,7 @@ export function BF_maintain(props: any) {
     updateMapBlock,
     player,
     playerBuilding,
-    updatePlayerBuildingEntry,
+    updatePlayerBuildings,
     payloadActions,
   } = useNewGameContext();
   // const { tokenId } = useGameContext();
@@ -81,7 +81,7 @@ export function BF_maintain(props: any) {
         (item: any) => item.gameUid !== uid
       );
       console.log("_newPlayerB before", playerBuilding);
-      updatePlayerBuildingEntry(_newPlayerB);
+      updatePlayerBuildings(_newPlayerB);
 
       // Update map block
       const _map = fullMap;

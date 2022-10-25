@@ -29,6 +29,7 @@ export function BF_upgrade(props: any) {
     addAction,
     inventory,
     updatePlayerBuildingEntry,
+    updatePlayerBuildings,
     player,
     fullMap,
     updateMapBlock,
@@ -125,7 +126,7 @@ export function BF_upgrade(props: any) {
         (item: any) => item.gameUid !== uid
       );
       console.log("_newPlayerB before", playerBuilding);
-      updatePlayerBuildingEntry(_newPlayerB);
+      updatePlayerBuildings(_newPlayerB);
 
       // Update map block
       const _map = fullMap;
