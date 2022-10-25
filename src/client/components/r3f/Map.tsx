@@ -386,7 +386,7 @@ export const Map = (props: any) => {
           pos.y;
         // compose new map
         const _mapComposed = ComposeD(frontBlockArray);
-        let _actionMove = await moveAction(
+        const _actionMove = await moveAction(
           player,
           "move_infrastructure",
           calldata,
@@ -422,12 +422,12 @@ export const Map = (props: any) => {
         console.log("updated counters", counters);
 
         // Update player inventory
-        let _inventoryPay = createBuildingPay(
+        const _inventoryPay = createBuildingPay(
           frameData.typeId - 1,
           inventory,
           staticBuildings
         );
-        let _newLevel = calculatePlayerLevel(
+        const _newLevel = calculatePlayerLevel(
           _inventoryPay[11],
           playerBuilding,
           counters
@@ -535,7 +535,7 @@ export const Map = (props: any) => {
   // Load Frens texture
   const frenTexture = useMemo(() => {
     if (textArrRef && textArrRef.length > 0) {
-      let textObj = new TextureLoader().load(
+      const textObj = new TextureLoader().load(
         "resources/textures/Matchbox_Tiles_Objects_nogrid_" +
           (worldType - 1).toString() +
           ".png"

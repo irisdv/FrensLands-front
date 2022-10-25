@@ -45,7 +45,7 @@ export default function MenuHome(props: any) {
 
   const tokenIdsArray = useMemo(() => {
     if (data && data.tokens && data.tokens.length > 0) {
-      let _tokenIds: any[] = [];
+      const _tokenIds: any[] = [];
       console.log("data", data);
       data.tokens.map((land: any) => {
         _tokenIds.push(parseInt(hexToDecimalString(land.tokenId)));
@@ -57,8 +57,8 @@ export default function MenuHome(props: any) {
   }, [data, isReady]);
 
   useEffect(() => {
-    if (tokenIdsArray && tokenIdsArray.length > 0) {
-      let _initArray: any[] = [];
+    if (tokenIdsArray != null && tokenIdsArray.length > 0) {
+      const _initArray: any[] = [];
       getLandByTokenId(tokenIdsArray).then((res: any) => {
         res.map((elem: any) => {
           _initArray[elem.tokenId] = elem;
@@ -98,7 +98,7 @@ export default function MenuHome(props: any) {
         };
 
         // Init game in db
-        let _initializeGame = await initGame(
+        const _initializeGame = await initGame(
           userId,
           initArray[_tokenId].id,
           initArray[_tokenId].biomeId,
@@ -108,17 +108,18 @@ export default function MenuHome(props: any) {
         console.log("_initializeGame", _initializeGame);
 
         // Go the page play w/ tx ongoing tx information
-        if (result)
+        if (result) {
           navigate("/play", {
             state: {
               landId: _tokenId,
             },
           });
+        }
       }
     }
   };
 
-  if (!isReady)
+  if (!isReady) {
     return (
       <>
         <div className="messageNotifParent">
@@ -135,8 +136,9 @@ export default function MenuHome(props: any) {
         </div>
       </>
     );
+  }
 
-  if (error)
+  if (error != null) {
     return (
       <>
         <div className="messageNotifParent">
@@ -153,6 +155,7 @@ export default function MenuHome(props: any) {
         </div>
       </>
     );
+  }
 
   return (
     <>
@@ -160,15 +163,15 @@ export default function MenuHome(props: any) {
         <>
           <div className={`grid grid-cols-${data.tokens.length} px-8`}>
             {data.tokens.map((land: any) => {
-              let _metadata = allMetadata.filter(
-                (res) => res.id == (land.tokenId as any)
+              const _metadata = allMetadata.filter(
+                (res) => res.id == land.tokenId
               );
               return (
                 <div
                   className="cursor-pointer px-5"
                   key={land.tokenId}
-                  onClick={() =>
-                    startGame(parseInt(hexToDecimalString(land.tokenId)))
+                  onClick={async () =>
+                    await startGame(parseInt(hexToDecimalString(land.tokenId)))
                   }
                 >
                   <img

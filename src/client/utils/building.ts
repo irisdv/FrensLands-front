@@ -38,14 +38,14 @@ import { HarvestDelay } from "./constant";
 // ||||||- composeD of buildings registers to send to DB
 // ||||||incoming id->timestamp
 
-let incomingArr: any[] = [];
+const incomingArr: any[] = [];
 
 export const addElemToIncoming = (
   incomingArr: any,
   id: number,
   timeStamp: number
 ) => {
-  let i: number = incomingArr.length;
+  const i: number = incomingArr.length;
 
   incomingArr[i] = [];
   incomingArr[i].id = id;
@@ -78,12 +78,12 @@ export const incomingCompose = (incomingArr: any) => {
 };
 
 export const incomingComposeD = (comp: string, time: number) => {
-  let incomingArr: any[] = [];
-  let compArr = comp.split("|");
+  const incomingArr: any[] = [];
+  const compArr = comp.split("|");
 
   compArr.map((elem: any, index: number) => {
     if (elem.length > 0) {
-      var val = elem.split("-");
+      const val = elem.split("-");
       if (val[1] + HarvestDelay < time) {
         incomingArr[index] = [];
         incomingArr[index].id = val[0];
@@ -141,7 +141,7 @@ export const cycleRegisterComposeD = (
 // called every block change
 // Adds a 0 or 1 in cycleRegister of each building
 export const checkFuelBuildings = (mapBuildingArray: any) => {
-  let i: number = 0;
+  const i: number = 0;
 
   while (i < mapBuildingArray.length) {
     if (mapBuildingArray[i].activeCycles > 0) {
@@ -271,7 +271,7 @@ export const cancelMaintainBuilding = (
     if (cycles < mapBuildingArray[uid].activeCycles) {
       mapBuildingArray[uid] = mapBuildingArray[uid].activeCycles - cycles;
     } else if (cycles > mapBuildingArray[uid].activeCycles) {
-      let cylesLeft: number = cycles - mapBuildingArray[uid].activeCycles;
+      const cylesLeft: number = cycles - mapBuildingArray[uid].activeCycles;
       mapBuildingArray[uid].activeCycles = 0;
 
       i = mapBuildingArray[uid].cycleRegister.length;
@@ -323,7 +323,7 @@ export const cancelCreate = (id: number, inventory: any, fixBuildVal: any) => {
     }
     i++;
   }
-  //deleteFromBuildingArray(mapBuildingArray, id); // ! DELETE FROM BUILDING ARRAY WHEN WE PUT mapBuildingArray BACK
+  // deleteFromBuildingArray(mapBuildingArray, id); // ! DELETE FROM BUILDING ARRAY WHEN WE PUT mapBuildingArray BACK
 
   return inventory;
 };
@@ -404,7 +404,7 @@ export const getIdFromPos = (fullmap: any, posY: number, posX: number) => {
 
 // GET POS OF ENTITY BASED ON ITS UID
 export const getPosFromId = (fullmap: any, id: number) => {
-  let vecYX: any[] = [];
+  const vecYX: any[] = [];
   let j: number = 1;
   let i: number = 1;
 
@@ -644,7 +644,7 @@ export const claim = (
   let k: number = 0;
   let totalActive: number = 0;
 
-  let lastClaim: number = calculateLastClaim(playerArray) as number;
+  const lastClaim: number = calculateLastClaim(playerArray) as number;
 
   // CALCULATE THE CLAIM
   while (i < mapBuildingArray.length) {
@@ -675,7 +675,7 @@ export const claim = (
   return inventory;
 };
 
-//FIND THE FIRST CYCLE OF THE LAST CLAIM
+// FIND THE FIRST CYCLE OF THE LAST CLAIM
 // 14-18|18-39|39-45|  -> 39
 export const calculateLastClaimFirstCycle = (playerArray: any) => {
   let lastClaim: number = 0;
@@ -708,17 +708,17 @@ export const cancelClaim = (
   fixBuildVal: any,
   inventory: any,
   playerArray: any
-  //currenCycle: any,
+  // currenCycle: any,
 ) => {
   let i: number = 0;
   let j: number = 0;
   let k: number = 0;
   let totalActive: number = 0;
 
-  let lastClaimFirstCycle: number = calculateLastClaimFirstCycle(
+  const lastClaimFirstCycle: number = calculateLastClaimFirstCycle(
     playerArray
   ) as number;
-  let lastClaim: number = calculateLastClaim(playerArray) as number;
+  const lastClaim: number = calculateLastClaim(playerArray) as number;
 
   // CALCULATE THE CLAIM
   while (i < mapBuildingArray.length) {
@@ -841,7 +841,7 @@ export const destroyBuilding_ = (
 ) => {
   let i: number = 0;
   while (i < 8) {
-    var quotient =
+    const quotient =
       (fixBuildVal[id].createCost[i] - (fixBuildVal[id].createCost[i] % 2)) / 2;
     console.log("resources back from destroy", quotient);
     inventory[i] += quotient;
@@ -967,10 +967,10 @@ export const composeCycleRegister = (cycleregisterArray: any) => {
  * @return cycleRegister {[]} array ordonné through building type id
  */
 export const decomposeCycleRegister = (cycleregisterStr: string) => {
-  let cycleRegisterArr = cycleregisterStr.split("|");
+  const cycleRegisterArr = cycleregisterStr.split("|");
 
-  var cycleRegister = cycleRegisterArr.reduce(function (acc: any, curr: any) {
-    var elem = curr.split("-");
+  const cycleRegister = cycleRegisterArr.reduce(function (acc: any, curr: any) {
+    const elem = curr.split("-");
     return (
       acc[parseInt(elem[0])]
         ? acc[parseInt(elem[0])].push([parseInt(elem[1]), parseInt(elem[2])])
@@ -996,7 +996,7 @@ export const initCounters = (playerBuilding: any[], staticBuildings: any[]) => {
   let inactive: number = 0;
   let active: number = 0;
   let nbBlocksClaimable: number = 0;
-  let incomingInventory: any[] = [];
+  const incomingInventory: any[] = [];
   incomingInventory[0] = 0;
   incomingInventory[1] = 0;
   incomingInventory[2] = 0;

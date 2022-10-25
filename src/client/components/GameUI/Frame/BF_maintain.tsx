@@ -39,7 +39,7 @@ export function BF_maintain(props: any) {
     console.log("uid", uid);
     console.log("in use memo pending recharges", payloadActions);
     if (payloadActions && payloadActions.length > 0) {
-      var actions = payloadActions.filter((action: any) => {
+      const actions = payloadActions.filter((action: any) => {
         return (
           action.entrypoint == "fuel_building_production" &&
           action.calldata.split("|")[2] == posX &&
@@ -67,7 +67,7 @@ export function BF_maintain(props: any) {
   ) => {
     if (player.tokenId) {
       console.log("inventory before destroy", inventory);
-      let _inventory = destroyBuilding_(
+      const _inventory = destroyBuilding_(
         _typeId - 1,
         inventory,
         staticBuildingsData
@@ -77,7 +77,7 @@ export function BF_maintain(props: any) {
 
       // update buildings array
       console.log("playerBuilding before", playerBuilding);
-      var _newPlayerB = playerBuilding.filter(
+      const _newPlayerB = playerBuilding.filter(
         (item: any) => item.gameUid !== uid
       );
       console.log("_newPlayerB before", playerBuilding);
@@ -93,7 +93,7 @@ export function BF_maintain(props: any) {
 
       // Send request DB
       const _mapComposed = ComposeD(_map);
-      let _destroy = await destroyAction(
+      const _destroy = await destroyAction(
         player,
         "destroy_building",
         player.tokenId + "|" + 0 + "|" + _posX + "|" + _posY,
@@ -157,10 +157,10 @@ export function BF_maintain(props: any) {
       updateInventory(_inventory);
       console.log("inventory updated", _inventory);
 
-      var calldata =
+      const calldata =
         player.tokenId + "|0|" + pos_x + "|" + pos_y + "|" + cycles;
 
-      let _action = await fuelProdQuery(
+      const _action = await fuelProdQuery(
         player,
         _inventory,
         "fuel_building_production",
@@ -173,15 +173,15 @@ export function BF_maintain(props: any) {
   };
 
   const updateInputFuel = () => {
-    var _msg = "";
-    var fuel = 1;
+    let _msg = "";
+    let fuel = 1;
 
     if (inputFuel == 1) {
       fuel = 10;
     } else if (inputFuel == 10) {
       fuel = 100;
     } else if (inputFuel == 100) {
-      let _max = maintainMax(typeId - 1, inventory, staticBuildingsData);
+      const _max = maintainMax(typeId - 1, inventory, staticBuildingsData);
       fuel = _max as number;
     }
 
@@ -209,7 +209,9 @@ export function BF_maintain(props: any) {
       >
         <div
           className="btnDestroy absolute"
-          onClick={() => destroyBuilding(typeId as number, posX, posY)}
+          onClick={async () =>
+            await destroyBuilding(typeId as number, posX, posY)
+          }
           style={{ right: "135px", bottom: "280px" }}
         ></div>
 
@@ -354,7 +356,7 @@ export function BF_maintain(props: any) {
           {staticBuildingsData[typeId - 1].description}
         </div>
 
-        {/* upgrade btn*/}
+        {/* upgrade btn */}
         <div
           className="relative flex jutify-center items-center inline-block"
           style={{
@@ -429,8 +431,8 @@ export function BF_maintain(props: any) {
             {canMaintain ? (
               <div
                 className="btnFuelProd pixelated"
-                onClick={() =>
-                  fuelProd(inputFuel, typeId as number, posX, posY, uid)
+                onClick={async () =>
+                  await fuelProd(inputFuel, typeId as number, posX, posY, uid)
                 }
                 style={{ marginTop: "-9px", marginLeft: "-18px" }}
               ></div>
@@ -485,9 +487,9 @@ export function BF_maintain(props: any) {
                 <>
                   <div>
                     <div className="btnStartProd pixelated" onClick={() => fuelProd(inputFuel, frameData.id as number, frameData.posX, frameData.posY, frameData.unique_id as any)} style={{marginTop: '-9px', marginLeft: '-18px'}}></div>
-                    {inputFuel == 1 || inputFuel == 10 || inputFuel == 100 ? 
+                    {inputFuel == 1 || inputFuel == 10 || inputFuel == 100 ?
                       <div style={{height: "42px", marginTop: '-23px', marginLeft: '30px', pointerEvents: 'all'}} onClick={() => updateInputFuel()} ><div className={"pixelated btnInput"+`${inputFuel}`} style={{marginTop: '-25px', pointerEvents: 'none'}}></div></div>
-                      : 
+                      :
                       <div style={{height: "42px", marginTop: '-23px', marginLeft: '30px', pointerEvents: 'all'}} onClick={() => updateInputFuel()} ><div className="pixelated btnInputMax" style={{marginTop: '-25px', pointerEvents: 'none'}}></div></div>
                     }
                   </div>

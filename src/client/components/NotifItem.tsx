@@ -52,7 +52,7 @@ export function NotifItem(props: any) {
     textNotif = "Your transaction was rejected. Try again.";
   }
 
-  let explorerUri = "https://testnet.starkscan.co/tx/" + transaction_hash;
+  const explorerUri = "https://testnet.starkscan.co/tx/" + transaction_hash;
 
   if (show == false) {
     return <></>;
@@ -81,6 +81,7 @@ export function NotifItem(props: any) {
               target="_blank"
               style={{ color: "#964489" }}
               className="cursor-pointer underline"
+              rel="noreferrer"
             >
               Tx information
             </a>

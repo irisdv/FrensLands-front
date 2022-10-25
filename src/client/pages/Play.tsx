@@ -37,20 +37,20 @@ export default function Play() {
   }, [fullMap]);
 
   const compareFullMap = async (_wallet: any, localFullMap: any) => {
-    var _localFullMap = localFullMap.split("|");
+    const _localFullMap = localFullMap.split("|");
     console.log("_local full map", _localFullMap);
     console.log("landId", landId);
     _wallet.account
       .callContract(
         {
-          contractAddress: frenslandsContract.address.toLowerCase() as string,
+          contractAddress: frenslandsContract.address.toLowerCase(),
           entrypoint: "get_map_array",
           calldata: [number.toFelt(landId)],
         },
         { blockIdentifier: "pending" }
       )
       .then((res: any) => {
-        let _updatedArr: any = [];
+        const _updatedArr: any = [];
         if (res && res.result) {
           res.result.map((elem: any) => {
             if (Number(elem) != 640) _updatedArr.push(Number(elem).toString());
@@ -78,7 +78,7 @@ export default function Play() {
     _wallet.account
       .callContract(
         {
-          contractAddress: frenslandsContract.address.toLowerCase() as string,
+          contractAddress: frenslandsContract.address.toLowerCase(),
           entrypoint: "get_all_buildings_data",
           calldata: [number.toFelt(landId)],
         },

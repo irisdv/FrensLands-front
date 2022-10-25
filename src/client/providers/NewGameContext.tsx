@@ -340,7 +340,7 @@ export const NewAppStateProvider: React.FC<
 
   useEffect(() => {
     if (state.wallet && isInit && transactions && transactions.length > 0) {
-      let _rejectedTx: any[] = [];
+      const _rejectedTx: any[] = [];
       transactions.map((transaction: any) => {
         if (transaction.code == "TRANSACTION_RECEIVED") {
           state.wallet.account
@@ -360,7 +360,7 @@ export const NewAppStateProvider: React.FC<
         }
       });
       if (_rejectedTx && _rejectedTx.length > 0) {
-        var _update = bulkUpdateActions(player, payloadActions);
+        const _update = bulkUpdateActions(player, payloadActions);
         updateActions(payloadActions);
       }
     }
@@ -368,26 +368,26 @@ export const NewAppStateProvider: React.FC<
 
   useEffect(() => {
     if (
-      block &&
+      block != null &&
       playerBuilding &&
       cycleRegister &&
       !isInit &&
       (player.claimRegister || player.claimRegister == 0)
     ) {
-      let currentBlock = block.block_number;
+      const currentBlock = block.block_number;
       let lastClaimedBlock: number;
       if (player.claimRegister == 0) {
         lastClaimedBlock = 0;
       } else {
-        let _last = player.claimRegister.split("|");
+        const _last = player.claimRegister.split("|");
         lastClaimedBlock = parseInt(_last[_last.length - 1]);
       }
 
       Object.keys(cycleRegister).forEach((gameUid: any) => {
         cycleRegister[gameUid].map((fuelData: any) => {
           console.log("fuelData", fuelData);
-          var blockStart = fuelData[0];
-          var blockEnd = fuelData[1];
+          const blockStart = fuelData[0];
+          const blockEnd = fuelData[1];
 
           if (blockStart > lastClaimedBlock) {
             // Rien n'a été claim dans ce fuel
@@ -407,7 +407,7 @@ export const NewAppStateProvider: React.FC<
           } else {
             if (blockEnd > lastClaimedBlock) {
               // Une partie n'a pas été claimed
-              var _remainingCycles = blockEnd - lastClaimedBlock;
+              const _remainingCycles = blockEnd - lastClaimedBlock;
               if (blockEnd <= currentBlock) {
                 // tout est déjà passé
                 playerBuilding[gameUid].activeCycles += _remainingCycles;
@@ -424,7 +424,7 @@ export const NewAppStateProvider: React.FC<
       });
 
       // Init counters
-      let { incomingInventory, inactive, active, nbBlocksClaimable } =
+      const { incomingInventory, inactive, active, nbBlocksClaimable } =
         initCounters(playerBuilding, state.staticBuildings);
       counters["incomingInventory" as any] = incomingInventory;
       counters["inactive" as any] = inactive;
@@ -468,7 +468,7 @@ export const NewAppStateProvider: React.FC<
 
             // Loop through ongoing transactions to check if it was validated
             transactions.map((ongoing: any) => {
-              var tx = newBlock.transactions.filter((transaction: any) => {
+              const tx = newBlock.transactions.filter((transaction: any) => {
                 return transaction.transaction_hash == ongoing.transaction_hash;
               });
               if (tx.length > 0) {
@@ -479,7 +479,7 @@ export const NewAppStateProvider: React.FC<
                 ongoing.show = true;
 
                 // Update payloadActions included in this tx
-                var bulkUpdate: any[] = [];
+                const bulkUpdate: any[] = [];
                 payloadActions.map((action: any, index: number) => {
                   if (action.txHash === ongoing.transaction_hash) {
                     // console.log('same', action.entrypoint)
@@ -522,7 +522,7 @@ export const NewAppStateProvider: React.FC<
                           .id;
                       // console.log('playerBuilding[gameId].incomingCycles', playerBuilding[gameId].incomingCycles)
                       // console.log('cycleRegister', cycleRegister)
-                      let _lastRegister =
+                      const _lastRegister =
                         cycleRegister[gameId][cycleRegister[gameId].length - 1];
                       // console.log('_lastRegister', _lastRegister)
                       if (_lastRegister[1] < newBlock.block_number) {
@@ -548,20 +548,20 @@ export const NewAppStateProvider: React.FC<
                   }
                 });
 
-                var cycleRegisterStr: any = composeCycleRegister(cycleRegister);
+                let cycleRegisterStr: any = composeCycleRegister(cycleRegister);
                 if (player.cycleRegister !== cycleRegisterStr) {
                   player.cycleRegister = cycleRegisterStr;
                 } else {
                   cycleRegisterStr = 0;
                 }
 
-                let _updateAfterValidated = fuelProdEffective(
+                const _updateAfterValidated = fuelProdEffective(
                   player,
                   bulkUpdate,
                   cycleRegisterStr
                 );
 
-                let payloadActionsFiltered = payloadActions.filter(
+                const payloadActionsFiltered = payloadActions.filter(
                   (elem: any) => {
                     return elem.txHash != ongoing.transaction_hash;
                   }
@@ -624,7 +624,7 @@ export const NewAppStateProvider: React.FC<
     (actionArray: any[]) => {
       dispatch({
         type: "set_payloadActions",
-        actionArray: actionArray,
+        actionArray,
       });
     },
     [dispatch, payloadActions]
@@ -693,7 +693,7 @@ export const NewAppStateProvider: React.FC<
 
       //  - - - - - - PLAYER BUILDINGS - - - - - -
       const mapBuildingArray: any[] = [];
-      var lastUID = 0;
+      let lastUID = 0;
       playerBuildings.map((elem: any) => {
         mapBuildingArray[elem.gameUid] = [];
         mapBuildingArray[elem.gameUid].blockX = elem.blockX;
@@ -724,7 +724,7 @@ export const NewAppStateProvider: React.FC<
 
       //  - - - - - - COUNTERS - - - - - -
 
-      var counters: any[] = value.counters;
+      const counters: any[] = value.counters;
       counters["uid" as any] = lastUID;
       counters["incomingInventory" as any] = [];
       counters["inactive" as any] = 0;
@@ -744,8 +744,9 @@ export const NewAppStateProvider: React.FC<
       console.log("playerArray", playerArray);
 
       let register: any = [];
-      if (land.cycleRegister)
+      if (land.cycleRegister) {
         register = decomposeCycleRegister(land.cycleRegister);
+      }
       console.log("cycleRegister array", register);
 
       //  - - - - - - INCOMING HARVESTS - - - - - -
@@ -754,22 +755,25 @@ export const NewAppStateProvider: React.FC<
       if (inventory[0].incomingInventories == null) {
         var incomingArray: any[] = [];
       } else {
-        var time = Date.now();
+        const time = Date.now();
         var incomingArray: any[] = incomingComposeD(
           inventory[0].incomingInventories,
           time
         );
-        var incomingArrStr = incomingCompose(incomingArray);
-        let _updateArr = updateIncomingInventories(playerArray, incomingArrStr);
+        const incomingArrStr = incomingCompose(incomingArray);
+        const _updateArr = updateIncomingInventories(
+          playerArray,
+          incomingArrStr
+        );
       }
 
       //  - - - - - - ONGOING TX - - - - - -
 
-      var transactions: any[] = [];
-      var ongoingTx = land.player_actions.filter((action: any) => {
+      const transactions: any[] = [];
+      const ongoingTx = land.player_actions.filter((action: any) => {
         return action.status == "TRANSACTION_RECEIVED";
       });
-      var txArr: any = [];
+      const txArr: any = [];
       if (ongoingTx && ongoingTx.length > 0) {
         ongoingTx.map((tx: any) => {
           if (!txArr[tx.txHash]) {
@@ -793,9 +797,9 @@ export const NewAppStateProvider: React.FC<
         playerBuilding: mapBuildingArray,
         staticBuildings: fixBuildVal,
         staticResources: fixResVal,
-        incomingArray: incomingArray,
-        counters: counters,
-        transactions: transactions,
+        incomingArray,
+        counters,
+        transactions,
         cycleRegister: register,
       });
     },
@@ -870,7 +874,7 @@ export const NewAppStateProvider: React.FC<
   // Send new entry of building to update
   const updatePlayerBuildingEntry = React.useCallback(
     (_playerBuilding: any) => {
-      let _filteredArr = playerBuilding.filter((elem) => {
+      const _filteredArr = playerBuilding.filter((elem) => {
         return elem.gameUid != _playerBuilding.gameUid;
       });
       _filteredArr[_playerBuilding.gameUid] = _playerBuilding;
@@ -900,7 +904,7 @@ export const NewAppStateProvider: React.FC<
         })
         .indexOf(transaction_hash);
 
-      let _transactions = state.transactions;
+      const _transactions = state.transactions;
 
       if (_transactions[index].code == "TRANSACTION_RECEIVED") {
         _transactions[index].show = false;
@@ -922,7 +926,7 @@ export const NewAppStateProvider: React.FC<
     (cycleRegister: any[]) => {
       dispatch({
         type: "set_cycleRegister",
-        cycleRegister: cycleRegister,
+        cycleRegister,
       });
     },
     [dispatch, state, cycleRegister]
@@ -932,7 +936,7 @@ export const NewAppStateProvider: React.FC<
     (counters: any[]) => {
       dispatch({
         type: "set_counters",
-        counters: counters,
+        counters,
       });
     },
     [dispatch, state, counters]
@@ -943,7 +947,7 @@ export const NewAppStateProvider: React.FC<
       player.claimRegister = claimRegister;
       dispatch({
         type: "set_player",
-        player: player,
+        player,
       });
     },
     [dispatch, player]

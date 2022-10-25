@@ -5,9 +5,9 @@ import { parseResToArray, parsePipeResToArray } from "./utils";
  * @param staticBuildings {[]}
  * @return fixBuildVal {[]}
  */
-export const fillStaticBuildings = (staticBuildings: any) => {
+export const fillStaticBuildings = (staticBuildings: any): [] => {
   let i = 0;
-  const fixBuildVal: any[] = [];
+  const fixBuildVal: any[number] = [];
 
   while (i < staticBuildings.length) {
     fixBuildVal[staticBuildings[i].id - 1] = [];
@@ -70,9 +70,9 @@ export const fillStaticBuildings = (staticBuildings: any) => {
  * @param staticResources {[]}
  * @return fixResVal {[]}
  */
-export const fillStaticResources = (staticResources: any) => {
+export const fillStaticResources = (staticResources: any): [] => {
   let i = 0;
-  const fixResVal: any[] = [];
+  const fixResVal: any[number] = [];
 
   while (i < staticResources.length) {
     let tempSpriteArray: any[] = [];
@@ -92,8 +92,9 @@ export const fillStaticResources = (staticResources: any) => {
     fixResVal[i].fertility = staticResources[i].fertilityNeed;
 
     fixResVal[i].sprites = parseResToArray(tempSpriteArray[0]);
-    if (tempSpriteArray[1])
+    if (tempSpriteArray[1]) {
       fixResVal[i].harvestSprites = parseResToArray(tempSpriteArray[1]);
+    }
 
     const _harvestCosts = parseResToArray(staticResources[i].harvestCost);
     fixResVal[i].harvestCost = _harvestCosts.map((val) => parseInt(val));
@@ -113,18 +114,18 @@ export const fillStaticResources = (staticResources: any) => {
  * @param staticBuildings {[]}
  * @return compValues {[]}
  */
-export const generateResourcesComps = (staticBuildings: any) => {
-  let compValues: any = [];
+export const generateResourcesComps = (staticBuildings: any): [] => {
+  const compValues: any = [];
 
   staticBuildings.map((building: any) => {
     compValues[building.id] = [];
     compValues[building.id].name = building.name;
 
     // Create building values
-    let createComp = "";
+    let createComp: string = "";
     let popRequired = 0;
     let popAdd = 0;
-    building.createCost.forEach((cost: any, index: any) => {
+    building.createCost.forEach((cost: number, index: number) => {
       if (index < 7) {
         if (cost != 0) {
           if (cost < 10) {
@@ -140,13 +141,13 @@ export const generateResourcesComps = (staticBuildings: any) => {
     });
     compValues[building.id].build = {
       comp: createComp,
-      popRequired: popRequired,
-      popAdd: popAdd,
+      popRequired,
+      popAdd,
     };
 
     // destroy
     let destroyComp = "";
-    building.destroy.forEach((cost: any, index: any) => {
+    building.destroy.forEach((cost: number, index: number) => {
       if (index < 7) {
         if (cost != 0) {
           if (cost < 10) {
@@ -161,13 +162,13 @@ export const generateResourcesComps = (staticBuildings: any) => {
     });
     compValues[building.id].destroy = {
       comp: destroyComp,
-      popRequired: popRequired,
-      popAdd: popAdd,
+      popRequired,
+      popAdd,
     };
 
     // maintenance costs
-    let maintenanceComp = "";
-    building.maintainCost.forEach((cost: any, index: any) => {
+    let maintenanceComp: string = "";
+    building.maintainCost.forEach((cost: number, index: number) => {
       if (index < 7) {
         if (cost != 0) {
           if (cost < 10) {
@@ -183,8 +184,8 @@ export const generateResourcesComps = (staticBuildings: any) => {
     compValues[building.id].maintenance = maintenanceComp;
 
     // daily production
-    let productionComp = "";
-    building.production.forEach((cost: any, index: any) => {
+    let productionComp: string = "";
+    building.production.forEach((cost: number, index: number) => {
       if (index < 7) {
         if (cost != 0) {
           if (cost < 10) {

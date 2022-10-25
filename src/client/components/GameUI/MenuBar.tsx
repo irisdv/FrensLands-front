@@ -42,7 +42,7 @@ export function MenuBar(props: any) {
     if (wallet && player.tokendId) {
       wallet.account.getBlock().then((block: any) => {
         // Update player inventory
-        for (var i = 0; i < 7; i++) {
+        for (let i = 0; i < 7; i++) {
           inventory[i] += counters["incomingInventory" as any][i];
         }
 
@@ -67,7 +67,7 @@ export function MenuBar(props: any) {
         counters["nbBlocksClaimable" as any] = 0;
         updateCounters(counters);
 
-        var calldata = player.tokenId + "|0|" + block.block_number;
+        const calldata = player.tokenId + "|0|" + block.block_number;
         claimResourcesQuery(
           player,
           inventory,
@@ -97,12 +97,12 @@ export function MenuBar(props: any) {
         transaction_hash: "",
       };
 
-      var hasStarted = true;
-      var _hasStarted = payloadActions.filter((action: any) => {
+      let hasStarted = true;
+      const _hasStarted = payloadActions.filter((action: any) => {
         return action.entrypoint == "start_game";
       });
       if (_hasStarted && _hasStarted.length > 0) hasStarted = false;
-      let _reinitializeGame = await reinitLand(player, result, false);
+      const _reinitializeGame = await reinitLand(player, result, hasStarted);
       console.log("_initializeGame", _reinitializeGame);
 
       window.location.reload();
@@ -150,7 +150,7 @@ export function MenuBar(props: any) {
           _calldata.push(elem);
         });
         _calls.push({
-          contractAddress: frenslandsContract.address.toLowerCase() as string,
+          contractAddress: frenslandsContract.address.toLowerCase(),
           entrypoint: action.entrypoint as string,
           calldata: _calldata,
         });
@@ -169,7 +169,7 @@ export function MenuBar(props: any) {
       updateActions(payloadActions);
 
       // Update in DB
-      let _updatedActions = bulkUpdateActions(player, payloadActions);
+      const _updatedActions = bulkUpdateActions(player, payloadActions);
       setPopUpTxCart(false);
     });
   };
@@ -434,7 +434,7 @@ export function MenuBar(props: any) {
               }).length > 0 ? (
                 <div
                   className="btnClaim pixelated"
-                  onClick={() => claimResources()}
+                  onClick={async () => await claimResources()}
                 ></div>
               ) : (
                 <div className="btnClaimDisabled pixelated"></div>
@@ -580,7 +580,7 @@ export function MenuBar(props: any) {
               </p>
               <div
                 className="btnInit pixelated"
-                onClick={() => reinitializeLand()}
+                onClick={async () => await reinitializeLand()}
               ></div>
             </div>
           </div>
@@ -609,8 +609,8 @@ export function MenuBar(props: any) {
               <div style={{ overflowY: "auto", height: "310px" }}>
                 {payloadActions.length > 0 ? (
                   payloadActions.map((action: any, key: number) => {
-                    var calldata = action.calldata.split("|");
-                    var status = "not sent";
+                    const calldata = action.calldata.split("|");
+                    let status = "not sent";
                     if (action.status == "TRANSACTION_RECEIVED") {
                       status = "ongoing";
                     } else if (action.status == "ACCEPTED_ON_L2") {
@@ -619,7 +619,7 @@ export function MenuBar(props: any) {
                     if (
                       action.status != "ACCEPTED_ON_L2" ||
                       action.status != "ACCEPTED_ON_L1"
-                    )
+                    ) {
                       return (
                         <TransactionItem
                           key={key}
@@ -630,6 +630,7 @@ export function MenuBar(props: any) {
                           initialMap={initialMap}
                         />
                       );
+                    }
                   })
                 ) : (
                   <p>You don't have any actions to validate on-chain yet.</p>
@@ -639,7 +640,7 @@ export function MenuBar(props: any) {
                 }).length > 0 && (
                   <div
                     className="btnCustom pixelated relative"
-                    onClick={() => buildMulticall()}
+                    onClick={async () => await buildMulticall()}
                   >
                     <p
                       className="relative fontHpxl_JuicyXL"

@@ -20,12 +20,12 @@ export const revComposeD = (compMap: string, account: string) => {
   let x: number = 1;
   let y: number = 1;
   let i: number = 0;
-  var specIndex: number = 1; // ! THIS NEEDS TO BE GLOBAL
+  let specIndex: number = 1; // ! THIS NEEDS TO BE GLOBAL
 
   tempArray[y] = [];
   const compMapSplit = compMap.split("|");
 
-  var counters: any = [];
+  const counters: any = [];
   counters[1] = [];
   counters[2] = [];
 
@@ -69,7 +69,7 @@ export const revComposeD = (compMap: string, account: string) => {
         randomNum = parseInt(randomNum.toFixed(0));
         tempArray[y][x].randType = randomNum;
         specIndex++;
-        //console.log("tempArray[y][x].randType = ", tempArray[y][x].randType);
+        // console.log("tempArray[y][x].randType = ", tempArray[y][x].randType);
       } else if (tempArray[y][x].type == 2) {
         var randomNum: number = random(specIndex, account) * (6 - 4) + 4;
         randomNum = parseInt(randomNum.toFixed(0));
@@ -92,8 +92,9 @@ export const revComposeD = (compMap: string, account: string) => {
       if (
         counters[tempArray[y][x].infraType] &&
         counters[tempArray[y][x].infraType][tempArray[y][x].type] > 0
-      )
+      ) {
         currCounter = counters[tempArray[y][x].infraType][tempArray[y][x].type];
+      }
       counters[tempArray[y][x].infraType][tempArray[y][x].type] =
         currCounter + 1;
     }
@@ -116,7 +117,7 @@ export const ComposeD = (fullMap: any) => {
 
   let x: number = 1;
   let y: number = 1;
-  let i: number = 0;
+  const i: number = 0;
 
   while (y < 17) {
     while (x < 41) {
@@ -127,7 +128,7 @@ export const ComposeD = (fullMap: any) => {
           compStr = compStr + "|" + "0";
         }
       } else {
-        var _id = "";
+        let _id = "";
 
         // 4 characters for id
         if (fullMap[y][x].id < 10) {
@@ -141,7 +142,7 @@ export const ComposeD = (fullMap: any) => {
         }
 
         // 2 characters for type
-        var _type = "";
+        let _type = "";
         if (fullMap[y][x].type < 10) {
           _type = "0" + fullMap[y][x].type;
         } else {
@@ -168,14 +169,14 @@ export const ComposeD = (fullMap: any) => {
 };
 
 export const random = (spec: number, account: string) => {
-  var x = Math.sin(seedFromWallet(account) + spec) * 10000;
+  const x = Math.sin(seedFromWallet(account) + spec) * 10000;
   return x - Math.floor(x);
 };
 
 export const seedFromWallet = (wallet: string) => {
-  var i: number = 3;
-  var seed: number = 0;
-  var seedStr: string = "";
+  let i: number = 3;
+  let seed: number = 0;
+  let seedStr: string = "";
 
   while (i < 20) {
     seedStr = seedStr + wallet[i].charCodeAt(0).toString();
@@ -315,7 +316,7 @@ export const calculatePlayerLevel = (
   counters: any[]
 ) => {
   if (currLevel == 1) {
-    var cabin = mapBuildingArray.filter((building) => {
+    const cabin = mapBuildingArray.filter((building) => {
       return building.type == 1;
     });
     if (cabin && cabin[0].decay == 0) return 2;
@@ -327,8 +328,9 @@ export const calculatePlayerLevel = (
       counters[2][2] > 0 &&
       counters[2][14] &&
       counters[2][14] > 0
-    )
+    ) {
       return 3;
+    }
   } else if (currLevel == 3) {
     // Construire une coal plant
     if (counters[2] && counters[2][18] && counters[2][18] > 0) return 4;
@@ -340,8 +342,9 @@ export const calculatePlayerLevel = (
       counters[2][5] > 0 &&
       counters[2][6] &&
       counters[2][6] > 0
-    )
+    ) {
       return 5;
+    }
   } else if (currLevel == 5) {
     // construire bar + restaurant
     if (
@@ -350,8 +353,9 @@ export const calculatePlayerLevel = (
       counters[2][9] > 0 &&
       counters[2][7] &&
       counters[2][7] > 0
-    )
+    ) {
       return 6;
+    }
   } else if (currLevel == 6) {
     // build police station
     if (counters[2] && counters[2][19] && counters[2][19] > 0) return 7;
@@ -388,9 +392,10 @@ export const calculatePlayerLevel = (
       counters[2][22] > 0 &&
       counters[2][23] &&
       counters[2][23] > 0
-    )
+    ) {
       // 4 8 10 11 12 13 15 16 17 20 21 22 23
       return 9;
+    }
   }
   return currLevel;
 };
@@ -401,12 +406,12 @@ export const initMapArr = (account: string) => {
   let x: number = 1;
   let y: number = 1;
   let i: number = 0;
-  var specIndex: number = 1; // ! THIS NEEDS TO BE GLOBAL
+  let specIndex: number = 1; // ! THIS NEEDS TO BE GLOBAL
 
   tempArray[y] = [];
   const compMapSplit = initMap.split("|");
 
-  var counters: any = [];
+  const counters: any = [];
   counters[1] = [];
   counters[2] = [];
 
@@ -450,7 +455,7 @@ export const initMapArr = (account: string) => {
         randomNum = parseInt(randomNum.toFixed(0));
         tempArray[y][x].randType = randomNum;
         specIndex++;
-        //console.log("tempArray[y][x].randType = ", tempArray[y][x].randType);
+        // console.log("tempArray[y][x].randType = ", tempArray[y][x].randType);
       } else if (tempArray[y][x].type == 2) {
         var randomNum: number = random(specIndex, account) * (6 - 4) + 4;
         randomNum = parseInt(randomNum.toFixed(0));

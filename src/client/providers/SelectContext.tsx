@@ -149,7 +149,7 @@ export const SelectStateProvider: React.FC<
   }, []);
 
   const updateZoom = React.useCallback((val: boolean, uid: string) => {
-    let _zoomUpdate = updateZoomRequest(uid, val);
+    const _zoomUpdate = updateZoomRequest(uid, val);
 
     _zoomUpdate.then((res) => {
       if (res) {
@@ -162,7 +162,7 @@ export const SelectStateProvider: React.FC<
   }, []);
 
   const updateTuto = React.useCallback((val: boolean, uid: string) => {
-    let _tutoUpdate = updateTutorial(uid, val);
+    const _tutoUpdate = updateTutorial(uid, val);
 
     _tutoUpdate.then((res) => {
       if (res) {

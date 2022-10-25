@@ -28,7 +28,7 @@ export default function Home() {
   };
 
   const connectUser = (_account: string) => {
-    var _url: string;
+    let _url: string;
     if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
       _url = "http://localhost:3001/api/signin";
     } else {
@@ -42,7 +42,7 @@ export default function Home() {
       },
       body: JSON.stringify({ _account }),
     })
-      .then((res) => res.json())
+      .then(async (res) => await res.json())
       .then((data) => {
         console.log("data received from server ", data);
 
@@ -50,8 +50,9 @@ export default function Home() {
           if (data && data.token) {
             localStorage.setItem("user", data.token);
             setUserId(data.user.id);
-            if (data.lands && data.lands.tokens)
+            if (data.lands && data.lands.tokens) {
               setUserLands(data.lands.tokens);
+            }
             setTimeout(function () {
               setSignedIn(true);
             }, 50);
@@ -71,11 +72,11 @@ export default function Home() {
   }, [wallet]);
 
   useEffect(() => {
-    if (wallet && wallet.account && wallet.account.address) {
+    if (wallet != null && wallet.account && wallet.account.address) {
       wallet.account
         .callContract(
           {
-            contractAddress: mapsContract.address as string,
+            contractAddress: mapsContract.address,
             entrypoint: "balanceOf",
             calldata: [number.toFelt(wallet.account.address)],
           },
@@ -202,6 +203,7 @@ export default function Home() {
                           style={{ color: "#964489" }}
                           href="https://discord.gg/gehYZU9Trf"
                           target="_blank"
+                          rel="noreferrer"
                         >
                           Frens Lands discord server
                         </a>{" "}

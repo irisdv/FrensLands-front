@@ -11,11 +11,11 @@ export default async function getPlayer(account: string) {
   const _supabase = createSupabase(localStorage.getItem("user") as string);
   const { data, error } = await _supabase
     .from("users")
-    .select(`id, account, invZoom, tutorial, sound`)
+    .select("id, account, invZoom, tutorial, sound")
     .eq("account", account)
     .single();
 
-  if (error) throw error;
+  if (error != null) throw error;
 
   return data;
 }
@@ -55,7 +55,7 @@ export const getLandInformation = async (tokenId: string) => {
  */
 export const getLandByTokenId = async (tokenIds: any[]) => {
   const _supabase = createSupabase(localStorage.getItem("user") as string);
-  let query = _supabase.from("lands").select(`id, tokenId, biomeId, isInit`);
+  let query = _supabase.from("lands").select("id, tokenId, biomeId, isInit");
 
   let str = "";
   tokenIds.map((id: number) => {
@@ -67,7 +67,7 @@ export const getLandByTokenId = async (tokenIds: any[]) => {
   query = query.or(str);
 
   const { data, error } = await query;
-  if (error) throw error;
+  if (error != null) throw error;
 
   return data;
 };
@@ -94,7 +94,7 @@ export const initGame = async (
         fk_landid: landId,
       },
     ]);
-  if (inventoryError) throw inventoryError;
+  if (inventoryError != null) throw inventoryError;
   console.log("inventory", inventoryData);
 
   const { data: buildingData, error: buildingError } = await _supabase
@@ -112,7 +112,7 @@ export const initGame = async (
         unitTimeCreatedAt: 0,
       },
     ]);
-  if (buildingError) throw buildingError;
+  if (buildingError != null) throw buildingError;
 
   // update init land
   const { data: landData, error: landError } = await _supabase
@@ -121,7 +121,7 @@ export const initGame = async (
     .eq("id", landId)
     .select();
 
-  if (landError) throw landError;
+  if (landError != null) throw landError;
 
   // Add action start game in db
   const { data: actionData, error: actionError } = await _supabase
@@ -140,7 +140,7 @@ export const initGame = async (
     .select();
   console.log("actionData", actionData);
 
-  if (actionError) throw actionError;
+  if (actionError != null) throw actionError;
   return actionData;
 };
 
@@ -164,13 +164,13 @@ export const storeAction = async (
       {
         fk_userid: player.id,
         fk_landid: player.landId,
-        entrypoint: entrypoint,
-        calldata: calldata,
+        entrypoint,
+        calldata,
         validated: false,
       },
     ]);
 
-  if (actionError) throw actionError;
+  if (actionError != null) throw actionError;
 };
 
 /**
@@ -188,7 +188,7 @@ export const updateTutorial = async (uid: string, val: boolean) => {
     .update([{ tutorial: val }])
     .eq("id", uid);
 
-  if (settingError) {
+  if (settingError != null) {
     throw settingError;
   } else {
     return 1;
@@ -210,7 +210,7 @@ export const updateZoomRequest = async (uid: string, val: boolean) => {
     .update([{ invZoom: val }])
     .eq("id", uid);
 
-  if (settingError) {
+  if (settingError != null) {
     throw settingError;
   } else {
     return 1;
@@ -241,7 +241,7 @@ export const buildAction = async (
     .from("lands")
     .update([{ fullMap: mapComposed }])
     .eq("id", player.landId);
-  if (landError) throw landError;
+  if (landError != null) throw landError;
 
   const { data: actionData, error: actionError } = await _supabase
     .from("player_actions")
@@ -249,14 +249,14 @@ export const buildAction = async (
       {
         fk_userid: player.id,
         fk_landid: player.landId,
-        entrypoint: entrypoint,
-        calldata: calldata,
+        entrypoint,
+        calldata,
         validated: false,
       },
     ])
     .select();
 
-  if (actionError) throw actionError;
+  if (actionError != null) throw actionError;
 
   const { data: inventoryData, error: inventoryError } = await _supabase
     .from("inventories")
@@ -278,7 +278,7 @@ export const buildAction = async (
     ])
     .eq("fk_landid", player.landId);
 
-  if (inventoryError) throw inventoryError;
+  if (inventoryError != null) throw inventoryError;
 
   // Create entry in db player_buildings
   const { data: buildingData, error: buildingError } = await _supabase
@@ -286,16 +286,16 @@ export const buildAction = async (
     .insert([
       {
         fk_landid: player.landId,
-        fk_buildingid: newBuilding["type"],
-        gameUid: newBuilding["gameUid"],
-        posX: newBuilding["posX"],
-        posY: newBuilding["posY"],
-        blockX: newBuilding["blockX"],
-        blockY: newBuilding["blockY"],
+        fk_buildingid: newBuilding.type,
+        gameUid: newBuilding.gameUid,
+        posX: newBuilding.posX,
+        posY: newBuilding.posY,
+        blockX: newBuilding.blockX,
+        blockY: newBuilding.blockY,
       },
     ]);
 
-  if (buildingError) throw buildingError;
+  if (buildingError != null) throw buildingError;
 
   return actionData;
 };
@@ -324,7 +324,7 @@ export const harvestAction = async (
     .from("lands")
     .update([{ fullMap: mapComposed }])
     .eq("id", player.landId);
-  if (landError) throw landError;
+  if (landError != null) throw landError;
 
   const { data: inventoryData, error: inventoryError } = await _supabase
     .from("inventories")
@@ -342,12 +342,12 @@ export const harvestAction = async (
         totalPop: inventory[9],
         timeSpent: inventory[10],
         level: inventory[11],
-        incomingInventories: incomingInventories,
+        incomingInventories,
       },
     ])
     .eq("fk_landid", player.landId);
 
-  if (inventoryError) throw inventoryError;
+  if (inventoryError != null) throw inventoryError;
 
   const { data: actionData, error: actionError } = await _supabase
     .from("player_actions")
@@ -355,14 +355,14 @@ export const harvestAction = async (
       {
         fk_userid: player.id,
         fk_landid: player.landId,
-        entrypoint: entrypoint,
-        calldata: calldata,
+        entrypoint,
+        calldata,
         validated: false,
       },
     ])
     .select();
 
-  if (actionError) throw actionError;
+  if (actionError != null) throw actionError;
   return actionData;
 };
 
@@ -403,7 +403,7 @@ export const repairAction = async (
     ])
     .eq("fk_landid", player.landId);
 
-  if (inventoryError) throw inventoryError;
+  if (inventoryError != null) throw inventoryError;
 
   // Update player_buildings
   const { data: buildingData, error: buildingError } = await _supabase
@@ -414,7 +414,7 @@ export const repairAction = async (
       gameUid: uid,
     });
 
-  if (buildingError) throw buildingError;
+  if (buildingError != null) throw buildingError;
 
   const { data: actionData, error: actionError } = await _supabase
     .from("player_actions")
@@ -422,14 +422,14 @@ export const repairAction = async (
       {
         fk_userid: player.id,
         fk_landid: player.landId,
-        entrypoint: entrypoint,
-        calldata: calldata,
+        entrypoint,
+        calldata,
         validated: false,
       },
     ])
     .select();
 
-  if (actionError) throw actionError;
+  if (actionError != null) throw actionError;
   return actionData;
 };
 
@@ -456,7 +456,7 @@ export const destroyAction = async (
     .from("lands")
     .update([{ fullMap: mapComposed }])
     .eq("id", player.landId);
-  if (landError) throw landError;
+  if (landError != null) throw landError;
 
   const { data: inventoryData, error: inventoryError } = await _supabase
     .from("inventories")
@@ -478,7 +478,7 @@ export const destroyAction = async (
     ])
     .eq("fk_landid", player.landId);
 
-  if (inventoryError) throw inventoryError;
+  if (inventoryError != null) throw inventoryError;
 
   // Update player_buildings
   const { data: buildingData, error: buildingError } = await _supabase
@@ -489,7 +489,7 @@ export const destroyAction = async (
       gameUid: uid,
     });
 
-  if (buildingError) throw buildingError;
+  if (buildingError != null) throw buildingError;
 
   const { data: actionData, error: actionError } = await _supabase
     .from("player_actions")
@@ -497,14 +497,14 @@ export const destroyAction = async (
       {
         fk_userid: player.id,
         fk_landid: player.landId,
-        entrypoint: entrypoint,
-        calldata: calldata,
+        entrypoint,
+        calldata,
         validated: false,
       },
     ])
     .select();
 
-  if (actionError) throw actionError;
+  if (actionError != null) throw actionError;
   return actionData;
 };
 
@@ -530,7 +530,7 @@ export const moveAction = async (
     .from("lands")
     .update([{ fullMap: mapComposed }])
     .eq("id", player.landId);
-  if (landError) throw landError;
+  if (landError != null) throw landError;
 
   // Update player_buildings
   const { data: buildingData, error: buildingError } = await _supabase
@@ -547,7 +547,7 @@ export const moveAction = async (
       fk_landid: player.landId,
       gameUid: playerBuilding.gameUid,
     });
-  if (buildingError) throw buildingError;
+  if (buildingError != null) throw buildingError;
 
   const { data: actionData, error: actionError } = await _supabase
     .from("player_actions")
@@ -555,13 +555,13 @@ export const moveAction = async (
       {
         fk_userid: player.id,
         fk_landid: player.landId,
-        entrypoint: entrypoint,
-        calldata: calldata,
+        entrypoint,
+        calldata,
         validated: false,
       },
     ])
     .select();
-  if (actionError) throw actionError;
+  if (actionError != null) throw actionError;
 
   return actionData;
 };
@@ -581,11 +581,11 @@ export const updateIncomingInventories = async (
     .from("inventories")
     .update([
       {
-        incomingInventories: incomingInventories,
+        incomingInventories,
       },
     ])
     .eq("fk_landid", player.landId);
-  if (inventoryError) throw inventoryError;
+  if (inventoryError != null) throw inventoryError;
 };
 
 /**
@@ -597,7 +597,7 @@ export const updateIncomingInventories = async (
 export const bulkUpdateActions = async (player: any, actionsArr: any[]) => {
   const _supabase = createSupabase(localStorage.getItem("user") as string);
 
-  var actionsQuery: any[] = [];
+  const actionsQuery: any[] = [];
   actionsArr.map((action: any) => {
     actionsQuery.push({
       id: action.id,
@@ -618,7 +618,7 @@ export const bulkUpdateActions = async (player: any, actionsArr: any[]) => {
       fk_userid: player.id,
     });
 
-  if (actionError) throw actionError;
+  if (actionError != null) throw actionError;
 };
 
 /**
@@ -656,7 +656,7 @@ export const reinitLand = async (
       },
     ])
     .eq("fk_landid", player.landId);
-  if (inventoryError) throw inventoryError;
+  if (inventoryError != null) throw inventoryError;
   console.log("inventory", inventoryData);
 
   // update init land
@@ -670,7 +670,7 @@ export const reinitLand = async (
     })
     .eq("id", player.landId)
     .select();
-  if (landError) throw landError;
+  if (landError != null) throw landError;
 
   // update cabin
   const { data: buildingData, error: buildingError } = await _supabase
@@ -690,7 +690,7 @@ export const reinitLand = async (
       fk_buildingid: 1,
       gameUid: 1,
     });
-  if (buildingError) throw buildingError;
+  if (buildingError != null) throw buildingError;
 
   // Pass all buildings to destroyed
   const { data: buildingDestroyedData, error: buildingDestroyedError } =
@@ -701,7 +701,7 @@ export const reinitLand = async (
         fk_landid: player.landId,
       })
       .neq("gameUid", 1);
-  if (buildingDestroyedError) throw buildingDestroyedError;
+  if (buildingDestroyedError != null) throw buildingDestroyedError;
 
   // Delete actions that are not validated onchain
   const { data: destroyData, error: destroyError } = await _supabase
@@ -710,7 +710,7 @@ export const reinitLand = async (
     .eq("fk_landid", player.landId)
     .eq("validated", false)
     .neq("entrypoint", "start_game");
-  if (destroyError) throw destroyError;
+  if (destroyError != null) throw destroyError;
 
   if (hasStarted) {
     const { data: actionReinitData, error: actionReinitError } = await _supabase
@@ -725,7 +725,7 @@ export const reinitLand = async (
         status: txData.code,
       })
       .select();
-    if (actionReinitError) throw actionReinitError;
+    if (actionReinitError != null) throw actionReinitError;
   }
 };
 
@@ -764,7 +764,7 @@ export const fuelProdQuery = async (
       },
     ])
     .eq("fk_landid", player.landId);
-  if (inventoryError) throw inventoryError;
+  if (inventoryError != null) throw inventoryError;
 
   const { data: actionData, error: actionError } = await _supabase
     .from("player_actions")
@@ -772,14 +772,14 @@ export const fuelProdQuery = async (
       {
         fk_userid: player.id,
         fk_landid: player.landId,
-        entrypoint: entrypoint,
-        calldata: calldata,
+        entrypoint,
+        calldata,
         validated: false,
       },
     ])
     .select();
 
-  if (actionError) throw actionError;
+  if (actionError != null) throw actionError;
   return actionData;
 };
 
@@ -798,7 +798,7 @@ export const fuelProdEffective = async (
   const _supabase = createSupabase(localStorage.getItem("user") as string);
 
   if (actionsArr.length > 0) {
-    var actionsQuery: any[] = [];
+    const actionsQuery: any[] = [];
     actionsArr.map((action: any) => {
       actionsQuery.push({
         id: action.id,
@@ -817,7 +817,7 @@ export const fuelProdEffective = async (
         fk_userid: player.id,
       });
 
-    if (actionError) throw actionError;
+    if (actionError != null) throw actionError;
   }
 
   // update le building rechargé
@@ -826,7 +826,7 @@ export const fuelProdEffective = async (
       .from("lands")
       .update({ cycleRegister: cycleRegisterStr })
       .eq("id", player.landId);
-    if (buildingError) throw buildingError;
+    if (buildingError != null) throw buildingError;
   }
 };
 
@@ -852,9 +852,9 @@ export const claimResourcesQuery = async (
   // update claimRegister
   const { data: buildingData, error: buildingError } = await _supabase
     .from("lands")
-    .update({ claimRegister: claimRegister })
+    .update({ claimRegister })
     .eq("id", player.landId);
-  if (buildingError) throw buildingError;
+  if (buildingError != null) throw buildingError;
 
   // update inventory
   const { data: inventoryData, error: inventoryError } = await _supabase
@@ -871,7 +871,7 @@ export const claimResourcesQuery = async (
       },
     ])
     .eq("fk_landid", player.landId);
-  if (inventoryError) throw inventoryError;
+  if (inventoryError != null) throw inventoryError;
 
   // Insert new action
   const { data: actionData, error: actionError } = await _supabase
@@ -880,12 +880,12 @@ export const claimResourcesQuery = async (
       {
         fk_userid: player.id,
         fk_landid: player.landId,
-        entrypoint: entrypoint,
-        calldata: calldata,
+        entrypoint,
+        calldata,
         validated: false,
       },
     ])
     .select();
-  if (actionError) throw actionError;
+  if (actionError != null) throw actionError;
   return actionData;
 };

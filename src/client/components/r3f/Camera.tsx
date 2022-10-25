@@ -73,8 +73,8 @@ export const Camera = (props: any) => {
 
       // CINEMATIQUE INPUT
 
-      //let wayX:number = 0;
-      //let wayZ:number = 0;
+      // let wayX:number = 0;
+      // let wayZ:number = 0;
 
       // if (cameraPositionZ > 11)
       // {

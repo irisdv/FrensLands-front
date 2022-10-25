@@ -66,7 +66,7 @@ export function BF_upgrade(props: any) {
       _inventory[9] += staticBuildingsData[_typeId - 1].repairCost[9];
       _inventory[8] += staticBuildingsData[_typeId - 1].repairCost[9];
       // Increase player level
-      let _newLevel = calculatePlayerLevel(
+      const _newLevel = calculatePlayerLevel(
         _inventory[11],
         playerBuilding,
         counters
@@ -86,7 +86,7 @@ export function BF_upgrade(props: any) {
       });
 
       // Send request to db
-      let _action = await repairAction(
+      const _action = await repairAction(
         player,
         "repair_building",
         player.tokenId + "|" + 0 + "|" + _posX + "|" + _posY,
@@ -112,7 +112,7 @@ export function BF_upgrade(props: any) {
         "staticBuildingsData building",
         staticBuildingsData[_typeId - 1]
       );
-      let _inventory = destroyBuilding_(
+      const _inventory = destroyBuilding_(
         _typeId - 1,
         inventory,
         staticBuildingsData
@@ -122,7 +122,7 @@ export function BF_upgrade(props: any) {
 
       // update buildings array
       console.log("playerBuilding before", playerBuilding);
-      var _newPlayerB = playerBuilding.filter(
+      const _newPlayerB = playerBuilding.filter(
         (item: any) => item.gameUid !== uid
       );
       console.log("_newPlayerB before", playerBuilding);
@@ -138,7 +138,7 @@ export function BF_upgrade(props: any) {
 
       // ? Send request DB
       const _mapComposed = ComposeD(_map);
-      let _destroy = await destroyAction(
+      const _destroy = await destroyAction(
         player,
         "destroy_building",
         player.tokenId + "|" + 0 + "|" + _posX + "|" + _posY,
@@ -186,7 +186,9 @@ export function BF_upgrade(props: any) {
         {staticBuildingsData[typeId - 1].canDestroy ? (
           <div
             className="btnDestroy absolute"
-            onClick={() => destroyBuilding(typeId as number, posX, posY)}
+            onClick={async () =>
+              await destroyBuilding(typeId as number, posX, posY)
+            }
             style={{ right: "135px", bottom: "212px" }}
           ></div>
         ) : (
@@ -352,8 +354,8 @@ export function BF_upgrade(props: any) {
                 <>
                   <div
                     className="btnUpgrade"
-                    onClick={() =>
-                      upgradeBuilding(
+                    onClick={async () =>
+                      await upgradeBuilding(
                         typeId as number,
                         posX,
                         posY,

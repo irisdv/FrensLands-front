@@ -31,7 +31,7 @@ const client = new ApolloClient({
   link: httpLink,
   cache: new InMemoryCache(),
   connectToDevTools: true,
-  defaultOptions: defaultOptions,
+  defaultOptions,
 });
 
 const container = document.getElementById("root");
@@ -40,13 +40,13 @@ const root = createRoot(container!); // createRoot(container!) if you use TypeSc
 root.render(
   <>
     <ApolloProvider client={client}>
-        <BrowserRouter>
-          <NewAppStateProvider>
-            <SelectStateProvider>
-              <App />
-            </SelectStateProvider>
-          </NewAppStateProvider>
-        </BrowserRouter>
+      <BrowserRouter>
+        <NewAppStateProvider>
+          <SelectStateProvider>
+            <App />
+          </SelectStateProvider>
+        </NewAppStateProvider>
+      </BrowserRouter>
     </ApolloProvider>
   </>
 );
