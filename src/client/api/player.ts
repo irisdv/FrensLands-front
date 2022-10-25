@@ -631,7 +631,7 @@ export const bulkUpdateActions = async (player: any, actionsArr: any[]) => {
  * @param playerBuildings {[]} array of building of player
  * @param actionsArr {[]}
  */
-export const reinitLand = async (player: any, txData: any) => {
+export const reinitLand = async (player: any, txData: any, hasStarted: boolean) => {
   const _supabase = createSupabase(localStorage.getItem("user") as string);
 
   // reinit inventory
@@ -707,10 +707,12 @@ export const reinitLand = async (player: any, txData: any) => {
     .from("player_actions")
     .delete()
     .eq("fk_landid", player.landId)
-    .eq("validated", false);
+    .eq("validated", false)
+    .neq("entrypoint", 'start_game');
   if (destroyError) throw destroyError;
 
-  const { data: actionReinitData, error: actionReinitError } = await _supabase
+  if (hasStarted) {
+    const { data: actionReinitData, error: actionReinitError } = await _supabase
     .from("player_actions")
     .insert({
       fk_userid: player.id,
@@ -722,8 +724,8 @@ export const reinitLand = async (player: any, txData: any) => {
       status: txData.code,
     })
     .select();
-
-  if (actionReinitError) throw actionReinitError;
+    if (actionReinitError) throw actionReinitError;
+  }
 };
 
 /**

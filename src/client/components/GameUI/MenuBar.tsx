@@ -97,7 +97,10 @@ export function MenuBar(props: any) {
         transaction_hash: "",
       };
 
-      let _reinitializeGame = await reinitLand(player, result);
+      var hasStarted = true;
+      var _hasStarted = payloadActions.filter((action: any) => { return action.entrypoint == 'start_game'})
+      if (_hasStarted && _hasStarted.length > 0) hasStarted = false;
+      let _reinitializeGame = await reinitLand(player, result, false);
       console.log("_initializeGame", _reinitializeGame);
 
       window.location.reload();
@@ -605,11 +608,11 @@ export function MenuBar(props: any) {
                 {payloadActions.length > 0 ? (
                   payloadActions.map((action: any, key: number) => {
                     var calldata = action.calldata.split("|");
-                    var status = 0;
+                    var status = 'not sent';
                     if (action.status == "TRANSACTION_RECEIVED") {
-                      status = 1;
+                      status = 'ongoing';
                     } else if (action.status == "ACCEPTED_ON_L2") {
-                      status = 2;
+                      status = 'accepted';
                     }
                     if (
                       action.status != "ACCEPTED_ON_L2" ||
