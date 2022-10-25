@@ -11,7 +11,11 @@ import {
   composeCycleRegister,
 } from "../utils/building";
 import { BuildDelay, HarvestDelay } from "../utils/constant";
-import { fuelProdEffective, updateIncomingInventories } from "../api/player";
+import {
+  bulkUpdateActions,
+  fuelProdEffective,
+  updateIncomingInventories,
+} from "../api/player";
 import { IStarknetWindowObject } from "get-starknet";
 
 export interface ILand {
@@ -335,6 +339,34 @@ export const NewAppStateProvider: React.FC<
   } = state;
 
   useEffect(() => {
+    if (state.wallet && isInit && transactions && transactions.length > 0) {
+      let _rejectedTx: any[] = [];
+      transactions.map((transaction: any) => {
+        if (transaction.code == "TRANSACTION_RECEIVED") {
+          state.wallet.account
+            .getTransactionReceipt(transaction.transaction_hash as string)
+            .then((res: any) => {
+              console.log("getTransactionReceipt", res);
+              if (res.status == "REJECTED") {
+                transaction.code = "REJECTED";
+                payloadActions.map((action: any) => {
+                  if (action.txHash == transaction.transaction_hash) {
+                    action.status = "REJECTED";
+                    _rejectedTx.push(action);
+                  }
+                });
+              }
+            });
+        }
+      });
+      if (_rejectedTx && _rejectedTx.length > 0) {
+        var _update = bulkUpdateActions(player, payloadActions);
+        updateActions(payloadActions);
+      }
+    }
+  }, [state.wallet, isInit, transactions]);
+
+  useEffect(() => {
     if (
       block &&
       playerBuilding &&
@@ -646,6 +678,17 @@ export const NewAppStateProvider: React.FC<
       inventoryArray[9] = inventory[0].totalPop;
       inventoryArray[10] = inventory[0].timeSpent;
       inventoryArray[11] = inventory[0].level;
+
+      inventoryArray[0] = 50;
+      inventoryArray[1] = 50;
+      inventoryArray[2] = 100;
+      inventoryArray[3] = 50;
+      inventoryArray[4] = 50;
+      inventoryArray[5] = 50;
+      inventoryArray[6] = 50;
+      inventoryArray[8] = 50;
+      inventoryArray[9] = 50;
+      inventoryArray[11] = 9;
       console.log("inventoryArray = ", inventoryArray);
 
       //  - - - - - - PLAYER BUILDINGS - - - - - -

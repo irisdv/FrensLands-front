@@ -599,9 +599,6 @@ export const bulkUpdateActions = async (player: any, actionsArr: any[]) => {
 
   var actionsQuery: any[] = [];
   actionsArr.map((action: any) => {
-    // if (action.id == 0) {
-    //   const {data : test, error: errortest} = await _supabase.from('player_ac')
-    // }
     actionsQuery.push({
       id: action.id,
       fk_userid: player.id,
