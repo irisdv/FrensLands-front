@@ -1,870 +1,805 @@
 [
   {
-    "members": [
-      {
-        "name": "low",
-        "offset": 0,
-        "type": "felt"
-      },
-      {
-        "name": "high",
-        "offset": 1,
-        "type": "felt"
-      }
-    ],
-    "name": "Uint256",
-    "size": 2,
-    "type": "struct"
+      "members": [
+          {
+              "name": "low",
+              "offset": 0,
+              "type": "felt"
+          },
+          {
+              "name": "high",
+              "offset": 1,
+              "type": "felt"
+          }
+      ],
+      "name": "Uint256",
+      "size": 2,
+      "type": "struct"
   },
   {
-    "data": [
-      {
-        "name": "implementation",
-        "type": "felt"
-      }
-    ],
-    "keys": [],
-    "name": "Upgraded",
-    "type": "event"
+      "data": [
+          {
+              "name": "implementation",
+              "type": "felt"
+          }
+      ],
+      "keys": [],
+      "name": "Upgraded",
+      "type": "event"
   },
   {
-    "data": [
-      {
-        "name": "previousAdmin",
-        "type": "felt"
-      },
-      {
-        "name": "newAdmin",
-        "type": "felt"
-      }
-    ],
-    "keys": [],
-    "name": "AdminChanged",
-    "type": "event"
+      "data": [
+          {
+              "name": "previousAdmin",
+              "type": "felt"
+          },
+          {
+              "name": "newAdmin",
+              "type": "felt"
+          }
+      ],
+      "keys": [],
+      "name": "AdminChanged",
+      "type": "event"
   },
   {
-    "data": [
-      {
-        "name": "owner",
-        "type": "felt"
-      },
-      {
-        "name": "land_id",
-        "type": "felt"
-      },
-      {
-        "name": "biome_id",
-        "type": "felt"
-      },
-      {
-        "name": "time",
-        "type": "felt"
-      }
-    ],
-    "keys": [],
-    "name": "NewGame",
-    "type": "event"
+      "data": [
+          {
+              "name": "owner",
+              "type": "felt"
+          },
+          {
+              "name": "land_id",
+              "type": "felt"
+          },
+          {
+              "name": "time",
+              "type": "felt"
+          }
+      ],
+      "keys": [],
+      "name": "NewGame",
+      "type": "event"
   },
   {
-    "data": [
-      {
-        "name": "owner",
-        "type": "felt"
-      },
-      {
-        "name": "time",
-        "type": "felt"
-      },
-      {
-        "name": "land_id",
-        "type": "felt"
-      }
-    ],
-    "keys": [],
-    "name": "ResetGame",
-    "type": "event"
+      "data": [
+          {
+              "name": "owner",
+              "type": "felt"
+          },
+          {
+              "name": "time",
+              "type": "felt"
+          },
+          {
+              "name": "land_id",
+              "type": "felt"
+          }
+      ],
+      "keys": [],
+      "name": "ResetGame",
+      "type": "event"
   },
   {
-    "data": [
-      {
-        "name": "owner",
-        "type": "felt"
-      },
-      {
-        "name": "land_id",
-        "type": "felt"
-      },
-      {
-        "name": "time",
-        "type": "felt"
-      },
-      {
-        "name": "resource_type",
-        "type": "felt"
-      },
-      {
-        "name": "resource_uid",
-        "type": "felt"
-      },
-      {
-        "name": "block_comp",
-        "type": "felt"
-      },
-      {
-        "name": "pos_x",
-        "type": "felt"
-      },
-      {
-        "name": "pos_y",
-        "type": "felt"
-      }
-    ],
-    "keys": [],
-    "name": "HarvestResource",
-    "type": "event"
+      "data": [
+          {
+              "name": "owner",
+              "type": "felt"
+          },
+          {
+              "name": "land_id",
+              "type": "felt"
+          },
+          {
+              "name": "time",
+              "type": "felt"
+          },
+          {
+              "name": "resource_type",
+              "type": "felt"
+          },
+          {
+              "name": "resource_uid",
+              "type": "felt"
+          },
+          {
+              "name": "block_comp",
+              "type": "felt"
+          },
+          {
+              "name": "pos_x",
+              "type": "felt"
+          },
+          {
+              "name": "pos_y",
+              "type": "felt"
+          }
+      ],
+      "keys": [],
+      "name": "HarvestResource",
+      "type": "event"
   },
   {
-    "data": [
-      {
-        "name": "owner",
-        "type": "felt"
-      },
-      {
-        "name": "land_id",
-        "type": "felt"
-      },
-      {
-        "name": "timestamp",
-        "type": "felt"
-      },
-      {
-        "name": "building_type_id",
-        "type": "felt"
-      },
-      {
-        "name": "building_uid",
-        "type": "felt"
-      },
-      {
-        "name": "block_comp",
-        "type": "felt"
-      },
-      {
-        "name": "pos_x",
-        "type": "felt"
-      },
-      {
-        "name": "pos_y",
-        "type": "felt"
-      }
-    ],
-    "keys": [],
-    "name": "Destroy",
-    "type": "event"
+      "data": [
+          {
+              "name": "owner",
+              "type": "felt"
+          },
+          {
+              "name": "land_id",
+              "type": "felt"
+          },
+          {
+              "name": "timestamp",
+              "type": "felt"
+          },
+          {
+              "name": "building_type_id",
+              "type": "felt"
+          },
+          {
+              "name": "building_uid",
+              "type": "felt"
+          },
+          {
+              "name": "block_comp",
+              "type": "felt"
+          },
+          {
+              "name": "pos_x",
+              "type": "felt"
+          },
+          {
+              "name": "pos_y",
+              "type": "felt"
+          }
+      ],
+      "keys": [],
+      "name": "Destroy",
+      "type": "event"
   },
   {
-    "data": [
-      {
-        "name": "owner",
-        "type": "felt"
-      },
-      {
-        "name": "land_id",
-        "type": "felt"
-      },
-      {
-        "name": "time",
-        "type": "felt"
-      },
-      {
-        "name": "building_type_id",
-        "type": "felt"
-      },
-      {
-        "name": "building_uid",
-        "type": "felt"
-      },
-      {
-        "name": "block_comp",
-        "type": "felt"
-      },
-      {
-        "name": "pos_x",
-        "type": "felt"
-      },
-      {
-        "name": "pos_y",
-        "type": "felt"
-      }
-    ],
-    "keys": [],
-    "name": "Build",
-    "type": "event"
+      "data": [
+          {
+              "name": "owner",
+              "type": "felt"
+          },
+          {
+              "name": "land_id",
+              "type": "felt"
+          },
+          {
+              "name": "time",
+              "type": "felt"
+          },
+          {
+              "name": "building_type_id",
+              "type": "felt"
+          },
+          {
+              "name": "building_uid",
+              "type": "felt"
+          },
+          {
+              "name": "block_comp",
+              "type": "felt"
+          },
+          {
+              "name": "pos_x",
+              "type": "felt"
+          },
+          {
+              "name": "pos_y",
+              "type": "felt"
+          }
+      ],
+      "keys": [],
+      "name": "Build",
+      "type": "event"
   },
   {
-    "data": [
-      {
-        "name": "owner",
-        "type": "felt"
-      },
-      {
-        "name": "land_id",
-        "type": "felt"
-      },
-      {
-        "name": "time",
-        "type": "felt"
-      },
-      {
-        "name": "building_type_id",
-        "type": "felt"
-      },
-      {
-        "name": "building_uid",
-        "type": "felt"
-      },
-      {
-        "name": "pos_x",
-        "type": "felt"
-      },
-      {
-        "name": "pos_y",
-        "type": "felt"
-      }
-    ],
-    "keys": [],
-    "name": "Repair",
-    "type": "event"
+      "data": [
+          {
+              "name": "owner",
+              "type": "felt"
+          },
+          {
+              "name": "land_id",
+              "type": "felt"
+          },
+          {
+              "name": "time",
+              "type": "felt"
+          },
+          {
+              "name": "building_type_id",
+              "type": "felt"
+          },
+          {
+              "name": "building_uid",
+              "type": "felt"
+          },
+          {
+              "name": "pos_x",
+              "type": "felt"
+          },
+          {
+              "name": "pos_y",
+              "type": "felt"
+          }
+      ],
+      "keys": [],
+      "name": "Repair",
+      "type": "event"
   },
   {
-    "data": [
-      {
-        "name": "owner",
-        "type": "felt"
-      },
-      {
-        "name": "land_id",
-        "type": "felt"
-      },
-      {
-        "name": "time",
-        "type": "felt"
-      },
-      {
-        "name": "infra_type",
-        "type": "felt"
-      },
-      {
-        "name": "infra_type_id",
-        "type": "felt"
-      },
-      {
-        "name": "infra_uid",
-        "type": "felt"
-      },
-      {
-        "name": "pos_x",
-        "type": "felt"
-      },
-      {
-        "name": "pos_y",
-        "type": "felt"
-      },
-      {
-        "name": "new_pos_x",
-        "type": "felt"
-      },
-      {
-        "name": "new_pos_y",
-        "type": "felt"
-      }
-    ],
-    "keys": [],
-    "name": "Move",
-    "type": "event"
+      "data": [
+          {
+              "name": "owner",
+              "type": "felt"
+          },
+          {
+              "name": "land_id",
+              "type": "felt"
+          },
+          {
+              "name": "time",
+              "type": "felt"
+          },
+          {
+              "name": "infra_type",
+              "type": "felt"
+          },
+          {
+              "name": "infra_type_id",
+              "type": "felt"
+          },
+          {
+              "name": "infra_uid",
+              "type": "felt"
+          },
+          {
+              "name": "pos_x",
+              "type": "felt"
+          },
+          {
+              "name": "pos_y",
+              "type": "felt"
+          },
+          {
+              "name": "new_pos_x",
+              "type": "felt"
+          },
+          {
+              "name": "new_pos_y",
+              "type": "felt"
+          }
+      ],
+      "keys": [],
+      "name": "Move",
+      "type": "event"
   },
   {
-    "data": [
-      {
-        "name": "owner",
-        "type": "felt"
-      },
-      {
-        "name": "land_id",
-        "type": "felt"
-      },
-      {
-        "name": "time",
-        "type": "felt"
-      },
-      {
-        "name": "building_type_id",
-        "type": "felt"
-      },
-      {
-        "name": "building_uid",
-        "type": "felt"
-      },
-      {
-        "name": "pos_x",
-        "type": "felt"
-      },
-      {
-        "name": "pos_y",
-        "type": "felt"
-      },
-      {
-        "name": "nb_blocks",
-        "type": "felt"
-      }
-    ],
-    "keys": [],
-    "name": "FuelProduction",
-    "type": "event"
+      "data": [
+          {
+              "name": "owner",
+              "type": "felt"
+          },
+          {
+              "name": "land_id",
+              "type": "felt"
+          },
+          {
+              "name": "time",
+              "type": "felt"
+          },
+          {
+              "name": "building_type_id",
+              "type": "felt"
+          },
+          {
+              "name": "building_uid",
+              "type": "felt"
+          },
+          {
+              "name": "pos_x",
+              "type": "felt"
+          },
+          {
+              "name": "pos_y",
+              "type": "felt"
+          },
+          {
+              "name": "nb_blocks",
+              "type": "felt"
+          }
+      ],
+      "keys": [],
+      "name": "FuelProduction",
+      "type": "event"
   },
   {
-    "data": [
-      {
-        "name": "owner",
-        "type": "felt"
-      },
-      {
-        "name": "land_id",
-        "type": "felt"
-      },
-      {
-        "name": "time",
-        "type": "felt"
-      },
-      {
-        "name": "block_number",
-        "type": "felt"
-      },
-      {
-        "name": "building_counter",
-        "type": "felt"
-      }
-    ],
-    "keys": [],
-    "name": "Claim",
-    "type": "event"
+      "data": [
+          {
+              "name": "owner",
+              "type": "felt"
+          },
+          {
+              "name": "land_id",
+              "type": "felt"
+          },
+          {
+              "name": "time",
+              "type": "felt"
+          },
+          {
+              "name": "block_number",
+              "type": "felt"
+          },
+          {
+              "name": "building_counter",
+              "type": "felt"
+          }
+      ],
+      "keys": [],
+      "name": "Claim",
+      "type": "event"
   },
   {
-    "inputs": [
-      {
-        "name": "tokenId",
-        "type": "Uint256"
-      },
-      {
-        "name": "biome_id",
-        "type": "felt"
-      }
-    ],
-    "name": "start_game",
-    "outputs": [],
-    "type": "function"
+      "inputs": [
+          {
+              "name": "address_of_controller",
+              "type": "felt"
+          },
+          {
+              "name": "proxy_admin",
+              "type": "felt"
+          }
+      ],
+      "name": "initializer",
+      "outputs": [],
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "resources_addr",
-        "type": "felt"
-      },
-      {
-        "name": "tokenId",
-        "type": "Uint256"
-      },
-      {
-        "name": "pos_x",
-        "type": "felt"
-      },
-      {
-        "name": "pos_y",
-        "type": "felt"
-      }
-    ],
-    "name": "harvest",
-    "outputs": [],
-    "type": "function"
+      "inputs": [
+          {
+              "name": "new_implementation",
+              "type": "felt"
+          }
+      ],
+      "name": "upgrade",
+      "outputs": [],
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
-      {
-        "name": "tokenId",
-        "type": "Uint256"
-      },
-      {
-        "name": "pos_x",
-        "type": "felt"
-      },
-      {
-        "name": "pos_y",
-        "type": "felt"
-      },
-      {
-        "name": "building_type_id",
-        "type": "felt"
-      }
-    ],
-    "name": "build",
-    "outputs": [],
-    "type": "function"
+      "inputs": [
+          {
+              "name": "tokenId",
+              "type": "Uint256"
+          }
+      ],
+      "name": "start_game",
+      "outputs": [],
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
-      {
-        "name": "tokenId",
-        "type": "Uint256"
-      },
-      {
-        "name": "pos_x",
-        "type": "felt"
-      },
-      {
-        "name": "pos_y",
-        "type": "felt"
-      }
-    ],
-    "name": "destroy_building",
-    "outputs": [],
-    "type": "function"
+      "inputs": [
+          {
+              "name": "tokenId",
+              "type": "Uint256"
+          },
+          {
+              "name": "pos_x",
+              "type": "felt"
+          },
+          {
+              "name": "pos_y",
+              "type": "felt"
+          }
+      ],
+      "name": "harvest",
+      "outputs": [],
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
-      {
-        "name": "tokenId",
-        "type": "Uint256"
-      },
-      {
-        "name": "pos_x",
-        "type": "felt"
-      },
-      {
-        "name": "pos_y",
-        "type": "felt"
-      }
-    ],
-    "name": "repair_building",
-    "outputs": [],
-    "type": "function"
+      "inputs": [
+          {
+              "name": "tokenId",
+              "type": "Uint256"
+          },
+          {
+              "name": "pos_x",
+              "type": "felt"
+          },
+          {
+              "name": "pos_y",
+              "type": "felt"
+          },
+          {
+              "name": "building_type_id",
+              "type": "felt"
+          }
+      ],
+      "name": "build",
+      "outputs": [],
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
-      {
-        "name": "tokenId",
-        "type": "Uint256"
-      },
-      {
-        "name": "pos_x",
-        "type": "felt"
-      },
-      {
-        "name": "pos_y",
-        "type": "felt"
-      },
-      {
-        "name": "new_pos_x",
-        "type": "felt"
-      },
-      {
-        "name": "new_pos_y",
-        "type": "felt"
-      }
-    ],
-    "name": "move_infrastructure",
-    "outputs": [],
-    "type": "function"
+      "inputs": [
+          {
+              "name": "tokenId",
+              "type": "Uint256"
+          },
+          {
+              "name": "pos_x",
+              "type": "felt"
+          },
+          {
+              "name": "pos_y",
+              "type": "felt"
+          }
+      ],
+      "name": "destroy_building",
+      "outputs": [],
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
-      {
-        "name": "tokenId",
-        "type": "Uint256"
-      },
-      {
-        "name": "pos_x",
-        "type": "felt"
-      },
-      {
-        "name": "pos_y",
-        "type": "felt"
-      },
-      {
-        "name": "nb_days",
-        "type": "felt"
-      }
-    ],
-    "name": "fuel_building_production",
-    "outputs": [],
-    "type": "function"
+      "inputs": [
+          {
+              "name": "tokenId",
+              "type": "Uint256"
+          },
+          {
+              "name": "pos_x",
+              "type": "felt"
+          },
+          {
+              "name": "pos_y",
+              "type": "felt"
+          }
+      ],
+      "name": "repair_building",
+      "outputs": [],
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
-      {
-        "name": "tokenId",
-        "type": "Uint256"
-      },
-      {
-        "name": "block_nb",
-        "type": "felt"
-      }
-    ],
-    "name": "claim_production",
-    "outputs": [],
-    "type": "function"
+      "inputs": [
+          {
+              "name": "tokenId",
+              "type": "Uint256"
+          },
+          {
+              "name": "pos_x",
+              "type": "felt"
+          },
+          {
+              "name": "pos_y",
+              "type": "felt"
+          },
+          {
+              "name": "new_pos_x",
+              "type": "felt"
+          },
+          {
+              "name": "new_pos_y",
+              "type": "felt"
+          }
+      ],
+      "name": "move_infrastructure",
+      "outputs": [],
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
-      {
-        "name": "tokenId",
-        "type": "Uint256"
-      }
-    ],
-    "name": "reinit_game",
-    "outputs": [],
-    "type": "function"
+      "inputs": [
+          {
+              "name": "tokenId",
+              "type": "Uint256"
+          },
+          {
+              "name": "pos_x",
+              "type": "felt"
+          },
+          {
+              "name": "pos_y",
+              "type": "felt"
+          },
+          {
+              "name": "nb_days",
+              "type": "felt"
+          }
+      ],
+      "name": "fuel_building_production",
+      "outputs": [],
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "owner",
-        "type": "felt"
-      }
-    ],
-    "name": "get_land_id",
-    "outputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+      "inputs": [
+          {
+              "name": "tokenId",
+              "type": "Uint256"
+          },
+          {
+              "name": "block_nb",
+              "type": "felt"
+          }
+      ],
+      "name": "claim_production",
+      "outputs": [],
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      }
-    ],
-    "name": "get_owner",
-    "outputs": [
-      {
-        "name": "owner",
-        "type": "felt"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+      "inputs": [
+          {
+              "name": "tokenId",
+              "type": "Uint256"
+          }
+      ],
+      "name": "reinit_game",
+      "outputs": [],
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      }
-    ],
-    "name": "get_biome_id",
-    "outputs": [
-      {
-        "name": "biome_id",
-        "type": "felt"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+      "inputs": [
+          {
+              "name": "land_id",
+              "type": "felt"
+          }
+      ],
+      "name": "get_map_array",
+      "outputs": [
+          {
+              "name": "data_len",
+              "type": "felt"
+          },
+          {
+              "name": "data",
+              "type": "felt*"
+          }
+      ],
+      "stateMutability": "view",
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      }
-    ],
-    "name": "get_map_array",
-    "outputs": [
-      {
-        "name": "data_len",
-        "type": "felt"
-      },
-      {
-        "name": "data",
-        "type": "felt*"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+      "inputs": [
+          {
+              "name": "land_id",
+              "type": "felt"
+          },
+          {
+              "name": "pos_x",
+              "type": "felt"
+          },
+          {
+              "name": "pos_y",
+              "type": "felt"
+          }
+      ],
+      "name": "read_map_block",
+      "outputs": [
+          {
+              "name": "data",
+              "type": "felt"
+          }
+      ],
+      "stateMutability": "view",
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      },
-      {
-        "name": "pos_x",
-        "type": "felt"
-      },
-      {
-        "name": "pos_y",
-        "type": "felt"
-      }
-    ],
-    "name": "read_map_block",
-    "outputs": [
-      {
-        "name": "data",
-        "type": "felt"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+      "inputs": [
+          {
+              "name": "land_id",
+              "type": "felt"
+          },
+          {
+              "name": "resource_id",
+              "type": "felt"
+          }
+      ],
+      "name": "get_balance",
+      "outputs": [
+          {
+              "name": "current_balance",
+              "type": "felt"
+          }
+      ],
+      "stateMutability": "view",
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      },
-      {
-        "name": "resource_id",
-        "type": "felt"
-      }
-    ],
-    "name": "get_balance",
-    "outputs": [
-      {
-        "name": "current_balance",
-        "type": "felt"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+      "inputs": [
+          {
+              "name": "land_id",
+              "type": "felt"
+          }
+      ],
+      "name": "get_balance_all",
+      "outputs": [
+          {
+              "name": "balance_len",
+              "type": "felt"
+          },
+          {
+              "name": "balance",
+              "type": "felt*"
+          }
+      ],
+      "stateMutability": "view",
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      }
-    ],
-    "name": "get_balance_all",
-    "outputs": [
-      {
-        "name": "balance_len",
-        "type": "felt"
-      },
-      {
-        "name": "balance",
-        "type": "felt*"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+      "inputs": [
+          {
+              "name": "land_id",
+              "type": "felt"
+          }
+      ],
+      "name": "get_building_idx",
+      "outputs": [
+          {
+              "name": "index",
+              "type": "felt"
+          }
+      ],
+      "stateMutability": "view",
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      }
-    ],
-    "name": "get_building_idx",
-    "outputs": [
-      {
-        "name": "index",
-        "type": "felt"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+      "inputs": [
+          {
+              "name": "land_id",
+              "type": "felt"
+          }
+      ],
+      "name": "get_building_counter",
+      "outputs": [
+          {
+              "name": "counter",
+              "type": "felt"
+          }
+      ],
+      "stateMutability": "view",
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      }
-    ],
-    "name": "get_building_counter",
-    "outputs": [
-      {
-        "name": "counter",
-        "type": "felt"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+      "inputs": [
+          {
+              "name": "land_id",
+              "type": "felt"
+          },
+          {
+              "name": "building_uid",
+              "type": "felt"
+          }
+      ],
+      "name": "get_building_recharges",
+      "outputs": [
+          {
+              "name": "incoming_cycles",
+              "type": "felt"
+          },
+          {
+              "name": "active_cycles",
+              "type": "felt"
+          },
+          {
+              "name": "last_fuel",
+              "type": "felt"
+          }
+      ],
+      "stateMutability": "view",
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      },
-      {
-        "name": "building_uid",
-        "type": "felt"
-      }
-    ],
-    "name": "get_building_recharges",
-    "outputs": [
-      {
-        "name": "incoming_cycles",
-        "type": "felt"
-      },
-      {
-        "name": "active_cycles",
-        "type": "felt"
-      },
-      {
-        "name": "last_fuel",
-        "type": "felt"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+      "inputs": [
+          {
+              "name": "land_id",
+              "type": "felt"
+          },
+          {
+              "name": "building_uid",
+              "type": "felt"
+          }
+      ],
+      "name": "get_building_claimable",
+      "outputs": [
+          {
+              "name": "building_type_id",
+              "type": "felt"
+          },
+          {
+              "name": "incoming_cycles",
+              "type": "felt"
+          },
+          {
+              "name": "active_cycles",
+              "type": "felt"
+          },
+          {
+              "name": "last_fuel",
+              "type": "felt"
+          }
+      ],
+      "stateMutability": "view",
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      },
-      {
-        "name": "building_uid",
-        "type": "felt"
-      }
-    ],
-    "name": "get_building_claimable",
-    "outputs": [
-      {
-        "name": "building_type_id",
-        "type": "felt"
-      },
-      {
-        "name": "incoming_cycles",
-        "type": "felt"
-      },
-      {
-        "name": "active_cycles",
-        "type": "felt"
-      },
-      {
-        "name": "last_fuel",
-        "type": "felt"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+      "inputs": [
+          {
+              "name": "land_id",
+              "type": "felt"
+          },
+          {
+              "name": "building_uid",
+              "type": "felt"
+          }
+      ],
+      "name": "get_building_decay",
+      "outputs": [
+          {
+              "name": "decay_level",
+              "type": "felt"
+          }
+      ],
+      "stateMutability": "view",
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      },
-      {
-        "name": "building_uid",
-        "type": "felt"
-      }
-    ],
-    "name": "get_building_decay",
-    "outputs": [
-      {
-        "name": "decay_level",
-        "type": "felt"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+      "inputs": [
+          {
+              "name": "land_id",
+              "type": "felt"
+          }
+      ],
+      "name": "get_all_buildings_data",
+      "outputs": [
+          {
+              "name": "data_len",
+              "type": "felt"
+          },
+          {
+              "name": "data",
+              "type": "felt*"
+          }
+      ],
+      "stateMutability": "view",
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      }
-    ],
-    "name": "get_all_buildings_data",
-    "outputs": [
-      {
-        "name": "data_len",
-        "type": "felt"
-      },
-      {
-        "name": "data",
-        "type": "felt*"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+      "inputs": [
+          {
+              "name": "land_id",
+              "type": "felt"
+          }
+      ],
+      "name": "get_pop",
+      "outputs": [
+          {
+              "name": "pop_len",
+              "type": "felt"
+          },
+          {
+              "name": "pop",
+              "type": "felt*"
+          }
+      ],
+      "stateMutability": "view",
+      "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      }
-    ],
-    "name": "get_pop",
-    "outputs": [
-      {
-        "name": "pop_len",
-        "type": "felt"
-      },
-      {
-        "name": "pop",
-        "type": "felt*"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      }
-    ],
-    "name": "get_init_time",
-    "outputs": [
-      {
-        "name": "time",
-        "type": "felt"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+      "inputs": [
+          {
+              "name": "land_id",
+              "type": "felt"
+          }
+      ],
+      "name": "get_init_time",
+      "outputs": [
+          {
+              "name": "time",
+              "type": "felt"
+          }
+      ],
+      "stateMutability": "view",
+      "type": "function"
   }
 ]
