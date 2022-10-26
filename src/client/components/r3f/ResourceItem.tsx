@@ -282,13 +282,15 @@ export const ResourceItem = memo<IBlock>(
     const animations = useMemo(() => {
       let textureType: Vector2 = new Vector2(0, 0);
       // RANDTREE AND RANDRATIO SHOULD BE GLOBAL TO USE THEM FOR WEATHER
-      let randTree: number = parseInt(
+      const randTree: number = parseInt(
         (Math.random() * (100 - 1) + 1).toFixed(0)
       );
-      let randRatio: number = parseInt(
+      const randRatio: number = parseInt(
         (Math.random() * (15 - 5) + 5).toFixed(0)
       );
-      let randAnim: number = parseInt((Math.random() * (4 - 1) + 1).toFixed(0));
+      const randAnim: number = parseInt(
+        (Math.random() * (4 - 1) + 1).toFixed(0)
+      );
 
       if (randTree < randRatio) {
         if (block.infraType == 1 && block.type == 1 && block.state == 1) {
@@ -356,7 +358,7 @@ export const ResourceItem = memo<IBlock>(
       updateInventory(_inventoryUpdated);
 
       // Update map block front
-      var _map = fullMap;
+      const _map = fullMap;
       console.log("_map ResourceItem", _map);
       if (blockValue.state == 3) {
         blockValue.state = 0;
@@ -373,13 +375,16 @@ export const ResourceItem = memo<IBlock>(
       fullMap[blockValue.posY][blockValue.posX].type = blockValue.type;
       fullMap[blockValue.posY][blockValue.posX].id = blockValue.id;
       updateMapBlock(_map);
-      var _mapComposed = ComposeD(_map);
+      const _mapComposed = ComposeD(_map);
 
       // Update incoming array
       console.log("incoming array", incomingArray);
-      let _incomingArray = deleteElemFromIncoming(incomingArray, blockValue.id);
+      const _incomingArray = deleteElemFromIncoming(
+        incomingArray,
+        blockValue.id
+      );
       console.log("_incomingArray updated", _incomingArray);
-      var incomingArrStr = incomingCompose(_incomingArray);
+      const incomingArrStr = incomingCompose(_incomingArray);
       console.log("_incomingArray string", incomingArrStr);
       // let _updateIncoming = updateIncomingInventories(player, incomingArrStr);
       // console.log("incoming array string", incomingArray);

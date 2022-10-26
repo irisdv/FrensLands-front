@@ -5,8 +5,6 @@ const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const fetch = require("node-fetch");
 
-console.log('fetch', fetch)
-
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
@@ -38,7 +36,7 @@ app.post("/api/signin", async (req, res) => {
     if (!user) {
       const response = await supabase
         .from("users")
-        .insert([{ account: account }]);
+        .insert([{ account: account }]).select();
       user = response.data;
     }
 
@@ -74,24 +72,19 @@ app.post("/api/signin", async (req, res) => {
     var _lands;
     fetch(endpoint, options).then((response) =>
       response.json().then((data) => {
-
-
-        console.log('data', data.data)
         _lands = data.data;
 
         if (data.data.tokens && data.data.tokens.length > 0) {
-          var _landsIds = ''
+          var _landsIds = "";
           data.data.tokens.forEach((land) => {
-            console.log('land', land)
-            _landsIds += (parseInt(land.tokenId) + ',')
+            _landsIds += parseInt(land.tokenId) + ",";
           });
           if (_landsIds.length > 0) _landsIds = _landsIds.slice(0, -1);
-          console.log('_landsIds', _landsIds)
 
           supabase
             .from("lands")
             .update([{ fk_userid: user.id }])
-            .or('tokenId.in.(' + _landsIds + ')')
+            .or("tokenId.in.(" + _landsIds + ")")
             .then((data) => {
               res.json({ user: user, token: token, lands: _lands });
             })

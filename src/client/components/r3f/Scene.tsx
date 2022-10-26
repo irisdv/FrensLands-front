@@ -87,6 +87,7 @@ export const Scene = (props: any) => {
         posX: 0,
         posY: 0,
         selected: 0,
+        moved: 0,
       });
     }
   }, [keyMap]);

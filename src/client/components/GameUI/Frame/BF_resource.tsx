@@ -59,17 +59,17 @@ export function BF_resource(props: any) {
   ) => {
     const _check = checkResHarvest(_typeId - 1, inventory, staticResourcesData);
     if (_check && player.tokenId) {
-      var _inventory = harvestResPay(
+      const _inventory = harvestResPay(
         randType - 1,
         inventoryValue,
         staticResourcesData
       );
       updateInventory(_inventory);
-      var time = Date.now();
+      const time = Date.now();
       updateIncomingActions(1, _posX, _posY, uid, time, 0);
-      let _incomingArray = addElemToIncoming(incomingArray, uid, time);
-      var incomingArrStr = incomingCompose(_incomingArray);
-      let _updateIncoming = updateIncomingInventories(player, incomingArrStr);
+      const _incomingArray = addElemToIncoming(incomingArray, uid, time);
+      const incomingArrStr = incomingCompose(_incomingArray);
+      const _updateIncoming = updateIncomingInventories(player, incomingArrStr);
     } else {
       console.log("Cannot harvest or missing tokenId");
     }
@@ -110,6 +110,7 @@ export function BF_resource(props: any) {
               posX: 0,
               posY: 0,
               selected: 0,
+              moved: 0,
             })
           }
         ></div>
@@ -237,8 +238,8 @@ export function BF_resource(props: any) {
                 ) : (
                   <div
                     className="btnHarvest"
-                    onClick={() =>
-                      harvestingResources(
+                    onClick={async () =>
+                      await harvestingResources(
                         typeId as number,
                         posX,
                         posY,

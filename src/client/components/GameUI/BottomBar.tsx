@@ -30,6 +30,7 @@ export function BottomBar(props: any) {
           posX: 0,
           posY: 0,
           selected: 0,
+          moved: 0,
         });
       }
       if (!displayFrame) {
@@ -40,6 +41,7 @@ export function BottomBar(props: any) {
           posX: 0,
           posY: 0,
           selected: 0,
+          moved: 0,
         });
       }
       setDisplayFrame(!displayFrame);
@@ -52,6 +54,7 @@ export function BottomBar(props: any) {
         posX: 0,
         posY: 0,
         selected: 0,
+        moved: 0,
       });
     } else {
       if (displayFrame) {
@@ -62,6 +65,7 @@ export function BottomBar(props: any) {
           posX: 0,
           posY: 0,
           selected: 0,
+          moved: 0,
         });
         setDisplayFrame(true);
       } else {
@@ -72,6 +76,7 @@ export function BottomBar(props: any) {
           posX: 0,
           posY: 0,
           selected: 0,
+          moved: 0,
         });
         setDisplayFrame(true);
       }

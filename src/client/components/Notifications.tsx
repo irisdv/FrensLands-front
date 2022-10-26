@@ -10,7 +10,7 @@ export default function Notifications() {
       {transactions &&
         transactions.length > 0 &&
         transactions.map((item: any) => {
-          if (item.show)
+          if (item.show) {
             return (
               <NotifItem
                 key={item.transaction_hash + "_" + Date.now()}
@@ -19,6 +19,7 @@ export default function Notifications() {
                 show={item.true}
               />
             );
+          }
         })}
     </>
   );

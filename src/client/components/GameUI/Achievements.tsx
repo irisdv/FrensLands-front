@@ -21,7 +21,7 @@ export function Achievements(props: any) {
       allAchievements.map((achievement: Achievement) => {
         if (achievement.level == props.level) {
           setLastAchievement(achievement);
-          setShowInfo(true);
+          if (tutoMode) setShowInfo(true);
           return achievement;
         }
       });

@@ -5,7 +5,7 @@ import { ResArrCorresp } from "./constant";
  * @param str {string}
  * @return tempArray {[]}
  */
-export const parseResToArray = (str: string) => {
+export const parseResToArray = (str: string): any[] => {
   const tempArray = str.split("-");
 
   return tempArray;
@@ -16,7 +16,7 @@ export const parseResToArray = (str: string) => {
  * @param str {string}
  * @return tempArray {[]}
  */
-export const parsePipeResToArray = (str: string) => {
+export const parsePipeResToArray = (str: string): any[] => {
   const tempArray = str.split("|");
 
   return tempArray;
@@ -29,14 +29,14 @@ export const parsePipeResToArray = (str: string) => {
  * @param name {string} of action
  * @return _msg {string} error message to show to player
  */
-export const buildErrorMsg = (resArr: [], name: string) => {
+export const buildErrorMsg = (resArr: [], name: string): string => {
   let _msg = "";
   _msg += "Not enough ";
   let i = 0;
 
   while (i < resArr.length) {
     _msg += ResArrCorresp[resArr[i]];
-    if (i == resArr.length - 2) {
+    if (i === resArr.length - 2) {
       _msg += " & ";
     } else if (i < resArr.length - 2) {
       _msg += ", ";

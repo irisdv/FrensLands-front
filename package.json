@@ -8,9 +8,7 @@
     "start": "webpack serve --config ./src/client/webpack.dev.js --hot",
     "build": "webpack --config ./src/client/webpack.prod.js --env production --env VERCEL_ENV=$VERCEL_ENV",
     "lint": "eslint . --ext .ts --ext .tsx --fix",
-    "prettier": "prettier --write .",
-    "server-start-dev": "export NODE_ENV=DEV || set NODE_ENV=DEV && concurrently -k \"tsc -p ./src/server -w\" \"nodemon ./dist/server/server.js\" \"webpack serve --config ./src/client/webpack.dev.js\" --env development --hot --watch",
-    "server-start": "nodemon src/server/server.ts"
+    "prettier": "prettier --write ."
   },
   "repository": {
     "type": "git",
@@ -20,8 +18,6 @@
     "@apollo/client": "^3.7.0",
     "@react-three/drei": "^9.17.1",
     "@react-three/fiber": "^8.2.0",
-    "@starknet-react/core": "^0.13.3",
-    "@supabase/gotrue-js": "^2.0.0-rc.10",
     "@supabase/supabase-js": "^2.0.0-rc.12",
     "cors": "^2.8.5",
     "express": "^4.18.1",
@@ -29,14 +25,9 @@
     "graphql": "^16.6.0",
     "jsonwebtoken": "^8.5.1",
     "node-fetch": "^2.6.7",
-    "pg": "^8.8.0",
-    "pg-hstore": "^2.3.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.3.0",
-    "sequelize": "^6.21.6",
-    "socket.io": "^4.5.2",
-    "socket.io-client": "^4.5.2"
+    "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
     "@types/dotenv-webpack": "^7.0.3",
@@ -47,7 +38,6 @@
     "@types/three": "^0.141.0",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "autoprefixer": "^10.4.7",
-    "concurrently": "^7.4.0",
     "css-loader": "^6.7.1",
     "dotenv-webpack": "^8.0.1",
     "eslint": "^8.23.0",
@@ -60,7 +50,6 @@
     "get-starknet": "^1.5.0",
     "gsap": "^3.10.4",
     "html-webpack-plugin": "^5.5.0",
-    "nodemon": "^2.0.19",
     "postcss": "^8.4.14",
     "postcss-loader": "^7.0.0",
     "prettier": "^2.7.1",
