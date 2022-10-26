@@ -16,7 +16,9 @@ interface IBlock {
   textArrRef: any[];
   position: any;
   textureLoader: any;
+  textureLoaderRock: any;
   textureSelected: any;
+  textureSelectedRock: any;
   level: number;
   staticBuildings: any;
   staticResources: any;
@@ -29,7 +31,9 @@ export const ResourceItem = memo<IBlock>(
     textArrRef,
     position,
     textureLoader,
+    textureLoaderRock,
     textureSelected,
+    textureSelectedRock,
     level,
     staticBuildings,
     staticResources,
@@ -68,8 +72,16 @@ export const ResourceItem = memo<IBlock>(
     }, [incomingActions]);
 
     const blockValue = useMemo(() => {
-      if (block) {
-        setLocalTexture(textureLoader);
+      if (block) 
+      {
+        if (block.infraType == 1 && block.type == 2)    // ! ROCK TEXTURE TWEAK
+        {
+          setLocalTexture(textureLoaderRock);
+        }
+        else
+        {
+          setLocalTexture(textureLoader);
+        }
         return block;
       }
     }, [block, level]);
@@ -124,11 +136,22 @@ export const ResourceItem = memo<IBlock>(
           textureType = findTextByID(staticBuildings[block.type - 1].sprite[0]);
         }
       }
-      const localT = textureLoader.clone();
-      localT.needsUpdate = true;
-      localT.offset.set(textureType.x, textureType.y);
-      setLocalTexture(localT);
-      return textureType;
+      if (block.infraType == 1 && block.type == 2)    // ! ROCK TEXTURE TWEAK
+      {
+        const localT = textureLoaderRock.clone();
+        localT.needsUpdate = true;
+        localT.offset.set(textureType.x, textureType.y);
+        setLocalTexture(localT);
+        return textureType;
+      }
+      else
+      {
+        const localT = textureLoader.clone();
+        localT.needsUpdate = true;
+        localT.offset.set(textureType.x, textureType.y);
+        setLocalTexture(localT);
+        return textureType;
+      }
     }, [block, blockValue, level, playerBuilding]);
 
     const textureValueSelected = useMemo(() => {
@@ -181,11 +204,22 @@ export const ResourceItem = memo<IBlock>(
           textureType = findTextByID(staticBuildings[block.type - 1].sprite[0]);
         }
       }
-      const localT = textureSelected.clone();
-      localT.needsUpdate = true;
-      localT.offset.set(textureType.x, textureType.y);
-      setLocalTextureSelected(localT);
-      return textureType;
+      if (block.infraType == 1 && block.type == 2)    // ! ROCK TEXTURE TWEAK
+      {
+        const localT = textureSelectedRock.clone();
+        localT.needsUpdate = true;
+        localT.offset.set(textureType.x, textureType.y);
+        setLocalTextureSelected(localT);
+        return textureType;
+      }
+      else
+      {
+        const localT = textureSelected.clone();
+        localT.needsUpdate = true;
+        localT.offset.set(textureType.x, textureType.y);
+        setLocalTextureSelected(localT);
+        return textureType;
+      }
     }, [block, blockValue, level, playerBuilding]);
 
     const underConstruction = useMemo(() => {

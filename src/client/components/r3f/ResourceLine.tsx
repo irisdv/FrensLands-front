@@ -6,6 +6,8 @@ export const ResourceLine = (props: any) => {
     line,
     textArrRef,
     textureLoader,
+    textureLoaderRock,
+    textureSelectedRock,
     position,
     textureSelected,
     staticBuildings,
@@ -30,6 +32,8 @@ export const ResourceLine = (props: any) => {
             position={position}
             // frontBlockArray={frontBlockArray}
             textureLoader={textureLoader}
+            textureLoaderRock={textureLoaderRock}
+            textureSelectedRock={textureSelectedRock}
             textureSelected={textureSelected}
             // worldType={worldType}
             level={elem.state}
