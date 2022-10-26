@@ -127,24 +127,24 @@ export function MenuBar(props: any) {
         const _data = action.calldata.split("|");
 
         // ! for test contracts
-        if (
-          action.entrypoint == "build" ||
-          action.entrypoint == "destroy_building" ||
-          action.entrypoint == "repair_building" ||
-          action.entrypoint == "move_infrastructure" ||
-          action.entrypoint == "fuel_building_production" ||
-          action.entrypoint == "claim_production" ||
-          action.entrypoint == "reinit_game"
-        ) {
-          _calldata.push(
-            "0x0623dbdd29ae5dc1b314fa41d2b1b5d3014fd62ec86fab7ddd6ef5c2da1d2314"
-          );
-        } else if (action.entrypoint == "harvest") {
-          _calldata.push(
-            "0x07f711ddbb1786333f242b676603e2cadf62034f74e298a0085318649c84ba05"
-          );
-        }
-        //  ! end testing
+        // if (
+        //   action.entrypoint == "build" ||
+        //   action.entrypoint == "destroy_building" ||
+        //   action.entrypoint == "repair_building" ||
+        //   action.entrypoint == "move_infrastructure" ||
+        //   action.entrypoint == "fuel_building_production" ||
+        //   action.entrypoint == "claim_production" ||
+        //   action.entrypoint == "reinit_game"
+        // ) {
+        //   _calldata.push(
+        //     "0x0623dbdd29ae5dc1b314fa41d2b1b5d3014fd62ec86fab7ddd6ef5c2da1d2314"
+        //   );
+        // } else if (action.entrypoint == "harvest") {
+        //   _calldata.push(
+        //     "0x07f711ddbb1786333f242b676603e2cadf62034f74e298a0085318649c84ba05"
+        //   );
+        // }
+        // //  ! end testing
 
         _data.forEach((elem: any) => {
           _calldata.push(elem);
