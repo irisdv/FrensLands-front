@@ -39,7 +39,7 @@ export function MenuBar(props: any) {
     // Multicall
     console.log("actions before claiming = ", payloadActions);
 
-    if (wallet && player.tokendId) {
+    if (wallet.isConnected && player.tokenId > 0) {
       wallet.account.getBlock().then((block: any) => {
         // Update player inventory
         for (let i = 0; i < 7; i++) {
@@ -78,6 +78,8 @@ export function MenuBar(props: any) {
           addAction(actionData[0]);
         });
       });
+    } else {
+      console.log('missing tokenId');
     }
   };
 
