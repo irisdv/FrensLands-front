@@ -72,14 +72,11 @@ export const ResourceItem = memo<IBlock>(
     }, [incomingActions]);
 
     const blockValue = useMemo(() => {
-      if (block) 
-      {
-        if (block.infraType == 1 && block.type == 2)    // ! ROCK TEXTURE TWEAK
-        {
+      if (block) {
+        if (block.infraType == 1 && block.type == 2) {
+          // ! ROCK TEXTURE TWEAK
           setLocalTexture(textureLoaderRock);
-        }
-        else
-        {
+        } else {
           setLocalTexture(textureLoader);
         }
         return block;
@@ -136,16 +133,14 @@ export const ResourceItem = memo<IBlock>(
           textureType = findTextByID(staticBuildings[block.type - 1].sprite[0]);
         }
       }
-      if (block.infraType == 1 && block.type == 2)    // ! ROCK TEXTURE TWEAK
-      {
+      if (block.infraType == 1 && block.type == 2) {
+        // ! ROCK TEXTURE TWEAK
         const localT = textureLoaderRock.clone();
         localT.needsUpdate = true;
         localT.offset.set(textureType.x, textureType.y);
         setLocalTexture(localT);
         return textureType;
-      }
-      else
-      {
+      } else {
         const localT = textureLoader.clone();
         localT.needsUpdate = true;
         localT.offset.set(textureType.x, textureType.y);
@@ -204,16 +199,14 @@ export const ResourceItem = memo<IBlock>(
           textureType = findTextByID(staticBuildings[block.type - 1].sprite[0]);
         }
       }
-      if (block.infraType == 1 && block.type == 2)    // ! ROCK TEXTURE TWEAK
-      {
+      if (block.infraType == 1 && block.type == 2) {
+        // ! ROCK TEXTURE TWEAK
         const localT = textureSelectedRock.clone();
         localT.needsUpdate = true;
         localT.offset.set(textureType.x, textureType.y);
         setLocalTextureSelected(localT);
         return textureType;
-      }
-      else
-      {
+      } else {
         const localT = textureSelected.clone();
         localT.needsUpdate = true;
         localT.offset.set(textureType.x, textureType.y);

@@ -229,7 +229,7 @@ export default function Home() {
                 //   className="relative mx-auto btnPlay pixelated"
                 //   style={{ marginTop: "300px" }}
                 // ></button>
-                // {showNotifPause ? 
+                // {showNotifPause ?
                 // <div className="messageNotifParentNoLand">
                 //     <div
                 //       className="messageNotifPause fontHPxl-sm mx-auto text-center"

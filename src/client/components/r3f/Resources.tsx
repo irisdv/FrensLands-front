@@ -20,7 +20,11 @@ export default function Resources({
   const textureLoader = useMemo(() => {
     if (textArrRef && textArrRef.length > 0) {
       let textObj;
-      textObj = new TextureLoader().load("resources/textures/Matchbox_Tiles_Objects_nogrid_" +(worldType - 1).toString() +".png");
+      textObj = new TextureLoader().load(
+        "resources/textures/Matchbox_Tiles_Objects_nogrid_" +
+          (worldType - 1).toString() +
+          ".png"
+      );
       //textObj = new TextureLoader().load("resources/textures/Matchbox_Tiles_Objects_nogrid_0.png");
       textObj.repeat = new Vector2(0.0625, 0.0625);
       textObj.magFilter = NearestFilter;
@@ -35,7 +39,9 @@ export default function Resources({
     if (textArrRef && textArrRef.length > 0) {
       let textObj;
       //textObj = new TextureLoader().load("resources/textures/Matchbox_Tiles_Objects_nogrid_" +(worldType - 1).toString() +".png");
-      textObj = new TextureLoader().load("resources/textures/Matchbox_Tiles_Objects_nogrid_0.png");
+      textObj = new TextureLoader().load(
+        "resources/textures/Matchbox_Tiles_Objects_nogrid_0.png"
+      );
       textObj.repeat = new Vector2(0.0625, 0.0625);
       textObj.magFilter = NearestFilter;
       textObj.wrapS = RepeatWrapping;
@@ -48,7 +54,11 @@ export default function Resources({
   const textureLoaderSelected = useMemo(() => {
     if (textArrRef && textArrRef.length > 0) {
       let textObj;
-      textObj = new TextureLoader().load("resources/textures/Matchbox_Tiles_Objects_Outlined_nogrid_"+(worldType - 1).toString() +".png");
+      textObj = new TextureLoader().load(
+        "resources/textures/Matchbox_Tiles_Objects_Outlined_nogrid_" +
+          (worldType - 1).toString() +
+          ".png"
+      );
       //textObj = new TextureLoader().load("resources/textures/Matchbox_Tiles_Objects_Outlined_nogrid_0.png");
       textObj.repeat = new Vector2(0.0625, 0.0625);
       textObj.magFilter = NearestFilter;
@@ -63,7 +73,9 @@ export default function Resources({
     if (textArrRef && textArrRef.length > 0) {
       let textObj;
       //textObj = new TextureLoader().load("resources/textures/Matchbox_Tiles_Objects_Outlined_nogrid_"+(worldType - 1).toString() +".png");
-      textObj = new TextureLoader().load("resources/textures/Matchbox_Tiles_Objects_Outlined_nogrid_0.png");
+      textObj = new TextureLoader().load(
+        "resources/textures/Matchbox_Tiles_Objects_Outlined_nogrid_0.png"
+      );
       textObj.repeat = new Vector2(0.0625, 0.0625);
       textObj.magFilter = NearestFilter;
       textObj.wrapS = RepeatWrapping;
@@ -72,7 +84,6 @@ export default function Resources({
       return textObj;
     }
   }, [textArrRef]);
-
 
   return (
     textureLoader != null &&
