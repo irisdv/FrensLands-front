@@ -49,7 +49,7 @@ export function BF_maintain(props: any) {
       _msg = buildErrorMsg(_canMaintain, "fuel prod");
       setMsg(_msg);
     }
-  }, [])
+  }, []);
 
   const pendingRecharges = useMemo(() => {
     console.log("uid", uid);

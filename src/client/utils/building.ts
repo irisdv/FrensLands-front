@@ -459,7 +459,6 @@ export const checkResHarvestMsg = (
   let i: number = 0;
   const res: any = [];
 
-  // while (i < fixResVal[id].harvestCost) {
   while (i < 9) {
     if (inventory[i] < fixResVal[id].harvestCost[i]) {
       res.push(i);

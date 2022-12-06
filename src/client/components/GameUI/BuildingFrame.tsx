@@ -37,6 +37,7 @@ export function BuildingFrame(props: any) {
   }, [show, showFrame, frameData]);
 
   const frameDataValue = useMemo(() => {
+    console.log("frameDataValue", frameData);
     return frameData;
   }, [frameData]);
 
@@ -56,7 +57,7 @@ export function BuildingFrame(props: any) {
       if (frameData.infraType == 1 && frameData.typeId <= 4) {
         // * Check can harvest resource
         const _canHarvest = checkResHarvestMsg(
-          frameData.typeId,
+          (frameData.randType as number) - 1,
           inventory,
           staticResources
         );

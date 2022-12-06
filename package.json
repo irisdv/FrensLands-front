@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.0",
-    "@react-three/drei": "^9.17.1",
-    "@react-three/fiber": "^8.2.0",
+    "@react-three/drei": "^9.46.2",
+    "@react-three/fiber": "^8.9.1",
     "@supabase/supabase-js": "^2.0.0-rc.12",
     "cors": "^2.8.5",
     "express": "^4.18.1",

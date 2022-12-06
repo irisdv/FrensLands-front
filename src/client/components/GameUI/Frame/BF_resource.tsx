@@ -52,12 +52,16 @@ export function BF_resource(props: any) {
   }, [fullMap]);
 
   const harvestingResources = async (
-    _typeId: number,
+    _randType: number,
     _posX: number,
     _posY: number,
     _state: number
   ) => {
-    const _check = checkResHarvest(_typeId - 1, inventory, staticResourcesData);
+    const _check = checkResHarvest(
+      randType - 1,
+      inventory,
+      staticResourcesData
+    );
     if (_check && player.tokenId) {
       const _inventory = harvestResPay(
         randType - 1,
@@ -240,7 +244,7 @@ export function BF_resource(props: any) {
                     className="btnHarvest"
                     onClick={async () =>
                       await harvestingResources(
-                        typeId as number,
+                        randType as number,
                         posX,
                         posY,
                         state as number
