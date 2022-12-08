@@ -20,6 +20,7 @@ export default function Home() {
   const navigate = useNavigate();
   const scrollRef = useRef<null | HTMLDivElement>(null);
   const mapsContract = useMapsContract();
+  const [showNotifPause, setShowNotifPause] = useState(false);
 
   const connectWallet = async () => {
     const _wallet = await getStarknet();
@@ -222,6 +223,27 @@ export default function Home() {
                   className="relative mx-auto btnPlay pixelated"
                   style={{ marginTop: "300px" }}
                 ></button>
+                // <>
+                // <button
+                //   onClick={() => setShowNotifPause(true)}
+                //   className="relative mx-auto btnPlay pixelated"
+                //   style={{ marginTop: "300px" }}
+                // ></button>
+                // {showNotifPause ?
+                // <div className="messageNotifParentNoLand">
+                //     <div
+                //       className="messageNotifPause fontHPxl-sm mx-auto text-center"
+                //       style={{
+                //         borderImage: `url(data:image/svg+xml;base64,${btoa(
+                //           UI_Frames
+                //         )}) 18 fill stretch`,
+                //       }}
+                //     >
+                //       <p>Due to the state of the network we're temporary pausing the game. We'll notify you as soon as testnet comes back to normal.</p>
+                //     </div>
+                //   </div>
+                //   : <></>}
+                //   </>
               )}
             </div>
           </div>

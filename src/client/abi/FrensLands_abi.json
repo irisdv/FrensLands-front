@@ -53,10 +53,6 @@
         "type": "felt"
       },
       {
-        "name": "biome_id",
-        "type": "felt"
-      },
-      {
         "name": "time",
         "type": "felt"
       }
@@ -352,12 +348,34 @@
   {
     "inputs": [
       {
-        "name": "tokenId",
-        "type": "Uint256"
+        "name": "address_of_controller",
+        "type": "felt"
       },
       {
-        "name": "biome_id",
+        "name": "proxy_admin",
         "type": "felt"
+      }
+    ],
+    "name": "initializer",
+    "outputs": [],
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "name": "new_implementation",
+        "type": "felt"
+      }
+    ],
+    "name": "upgrade",
+    "outputs": [],
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "name": "tokenId",
+        "type": "Uint256"
       }
     ],
     "name": "start_game",
@@ -366,10 +384,6 @@
   },
   {
     "inputs": [
-      {
-        "name": "resources_addr",
-        "type": "felt"
-      },
       {
         "name": "tokenId",
         "type": "Uint256"
@@ -389,10 +403,6 @@
   },
   {
     "inputs": [
-      {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
       {
         "name": "tokenId",
         "type": "Uint256"
@@ -417,10 +427,6 @@
   {
     "inputs": [
       {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
-      {
         "name": "tokenId",
         "type": "Uint256"
       },
@@ -440,10 +446,6 @@
   {
     "inputs": [
       {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
-      {
         "name": "tokenId",
         "type": "Uint256"
       },
@@ -462,10 +464,6 @@
   },
   {
     "inputs": [
-      {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
       {
         "name": "tokenId",
         "type": "Uint256"
@@ -494,10 +492,6 @@
   {
     "inputs": [
       {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
-      {
         "name": "tokenId",
         "type": "Uint256"
       },
@@ -521,10 +515,6 @@
   {
     "inputs": [
       {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
-      {
         "name": "tokenId",
         "type": "Uint256"
       },
@@ -540,67 +530,12 @@
   {
     "inputs": [
       {
-        "name": "buildings_addr",
-        "type": "felt"
-      },
-      {
         "name": "tokenId",
         "type": "Uint256"
       }
     ],
     "name": "reinit_game",
     "outputs": [],
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "name": "owner",
-        "type": "felt"
-      }
-    ],
-    "name": "get_land_id",
-    "outputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      }
-    ],
-    "name": "get_owner",
-    "outputs": [
-      {
-        "name": "owner",
-        "type": "felt"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "name": "land_id",
-        "type": "felt"
-      }
-    ],
-    "name": "get_biome_id",
-    "outputs": [
-      {
-        "name": "biome_id",
-        "type": "felt"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {

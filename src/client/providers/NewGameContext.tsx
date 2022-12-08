@@ -678,17 +678,6 @@ export const NewAppStateProvider: React.FC<
       inventoryArray[9] = inventory[0].totalPop;
       inventoryArray[10] = inventory[0].timeSpent;
       inventoryArray[11] = inventory[0].level;
-
-      inventoryArray[0] = 50;
-      inventoryArray[1] = 50;
-      inventoryArray[2] = 100;
-      inventoryArray[3] = 50;
-      inventoryArray[4] = 50;
-      inventoryArray[5] = 50;
-      inventoryArray[6] = 50;
-      inventoryArray[8] = 50;
-      inventoryArray[9] = 50;
-      inventoryArray[11] = 9;
       console.log("inventoryArray = ", inventoryArray);
 
       //  - - - - - - PLAYER BUILDINGS - - - - - -

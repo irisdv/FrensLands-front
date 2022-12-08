@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { destroyAction, fuelProdQuery } from "../../../api/player";
-// import { useGameContext } from "../../../hooks/useGameContext";
 import { useNewGameContext } from "../../../hooks/useNewGameContext";
 import { useSelectContext } from "../../../hooks/useSelectContext";
 import {
@@ -34,6 +33,23 @@ export function BF_maintain(props: any) {
   const [msg, setMsg] = useState("");
   const [showNotif, setShowNotif] = useState(false);
   const [pendingCycles, setPendingCycles] = useState(0);
+
+  useEffect(() => {
+    const _canMaintain = checkResMaintainMsg(
+      typeId - 1,
+      inventory,
+      staticBuildingsData,
+      inputFuel
+    );
+    if (_canMaintain.length == 0) {
+      setCanMaintain(1);
+    } else {
+      setCanMaintain(0);
+      let _msg = "";
+      _msg = buildErrorMsg(_canMaintain, "fuel prod");
+      setMsg(_msg);
+    }
+  }, []);
 
   const pendingRecharges = useMemo(() => {
     console.log("uid", uid);
@@ -147,7 +163,8 @@ export function BF_maintain(props: any) {
       staticBuildingsData,
       inputFuel
     );
-    if (_canMaintain && player.tokenId) {
+    if (_canMaintain.length == 0 && player.tokenId) {
+      setCanMaintain(1);
       const _inventory = maintainBuildingPay(
         type_id - 1,
         inventory,
@@ -169,6 +186,11 @@ export function BF_maintain(props: any) {
       console.log("action", _action[0]);
       addAction(_action[0]);
       setPendingCycles(pendingCycles + cycles);
+    } else {
+      setCanMaintain(0);
+      let _msg = "";
+      _msg = buildErrorMsg(_canMaintain, "fuel prod");
+      setMsg(_msg);
     }
   };
 

@@ -131,7 +131,7 @@ export const initGame = async (
         fk_userid: userId,
         fk_landid: landId,
         entrypoint: "start_game",
-        calldata: tokenId + "|0|" + biomeId,
+        calldata: tokenId + "|0",
         validated: false,
         txHash: txInfo.transaction_hash,
         status: txInfo.code,

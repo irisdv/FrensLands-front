@@ -36,7 +36,8 @@ app.post("/api/signin", async (req, res) => {
     if (!user) {
       const response = await supabase
         .from("users")
-        .insert([{ account: account }]).select();
+        .insert([{ account: account }])
+        .select();
       user = response.data;
     }
 

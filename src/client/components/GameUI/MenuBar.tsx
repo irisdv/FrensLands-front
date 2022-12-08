@@ -39,7 +39,7 @@ export function MenuBar(props: any) {
     // Multicall
     console.log("actions before claiming = ", payloadActions);
 
-    if (wallet && player.tokendId) {
+    if (wallet.isConnected && player.tokenId > 0) {
       wallet.account.getBlock().then((block: any) => {
         // Update player inventory
         for (let i = 0; i < 7; i++) {
@@ -78,6 +78,8 @@ export function MenuBar(props: any) {
           addAction(actionData[0]);
         });
       });
+    } else {
+      console.log('missing tokenId');
     }
   };
 
@@ -127,24 +129,24 @@ export function MenuBar(props: any) {
         const _data = action.calldata.split("|");
 
         // ! for test contracts
-        if (
-          action.entrypoint == "build" ||
-          action.entrypoint == "destroy_building" ||
-          action.entrypoint == "repair_building" ||
-          action.entrypoint == "move_infrastructure" ||
-          action.entrypoint == "fuel_building_production" ||
-          action.entrypoint == "claim_production" ||
-          action.entrypoint == "reinit_game"
-        ) {
-          _calldata.push(
-            "0x0623dbdd29ae5dc1b314fa41d2b1b5d3014fd62ec86fab7ddd6ef5c2da1d2314"
-          );
-        } else if (action.entrypoint == "harvest") {
-          _calldata.push(
-            "0x07f711ddbb1786333f242b676603e2cadf62034f74e298a0085318649c84ba05"
-          );
-        }
-        //  ! end testing
+        // if (
+        //   action.entrypoint == "build" ||
+        //   action.entrypoint == "destroy_building" ||
+        //   action.entrypoint == "repair_building" ||
+        //   action.entrypoint == "move_infrastructure" ||
+        //   action.entrypoint == "fuel_building_production" ||
+        //   action.entrypoint == "claim_production" ||
+        //   action.entrypoint == "reinit_game"
+        // ) {
+        //   _calldata.push(
+        //     "0x0623dbdd29ae5dc1b314fa41d2b1b5d3014fd62ec86fab7ddd6ef5c2da1d2314"
+        //   );
+        // } else if (action.entrypoint == "harvest") {
+        //   _calldata.push(
+        //     "0x07f711ddbb1786333f242b676603e2cadf62034f74e298a0085318649c84ba05"
+        //   );
+        // }
+        // //  ! end testing
 
         _data.forEach((elem: any) => {
           _calldata.push(elem);
