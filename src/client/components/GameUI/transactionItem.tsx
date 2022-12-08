@@ -15,12 +15,12 @@ export function TransactionItem(props: any) {
                 #{index} : <span className="capitalize">{entrypoint}</span>
                 <span>
                   {" "}
-                  {
+                  {/* {
                     staticResources[
                       initialMap[parseInt(calldata[3])][parseInt(calldata[2])]
                         .randType - 1
                     ].name
-                  }
+                  } */}
                 </span>
                 <span>
                   ({parseInt(calldata[2])}, {parseInt(calldata[3])})
@@ -31,7 +31,7 @@ export function TransactionItem(props: any) {
             {entrypoint == "build" && (
               <>
                 #{index} : <span className="capitalize">{entrypoint}</span>
-                <span> {staticBuildings[parseInt(calldata[4]) - 1].name}</span>
+                {/* <span> {staticBuildings[parseInt(calldata[4]) - 1].name}</span> */}
                 <span>
                   ({parseInt(calldata[2])}, {parseInt(calldata[3])})
                 </span>
@@ -67,12 +67,12 @@ export function TransactionItem(props: any) {
                 #{index} :{" "}
                 <span>
                   Fuel production of{" "}
-                  {
+                  {/* {
                     staticBuildings[
                       fullMap[parseInt(calldata[3])][parseInt(calldata[2])]
                         .type - 1
                     ].name
-                  }{" "}
+                  }{" "} */}
                   for {calldata[4]} cycles
                 </span>
                 <span>
