@@ -919,8 +919,6 @@ export const receiveResHarvest = (
 ) => {
   let i: number = 0;
 
-  console.log("fixResVal[id]", fixResVal[id]);
-
   // while (i < fixResVal[id].production.length) {
   while (i < 8) {
     inventory[i] += fixResVal[id].production[i];
@@ -1004,6 +1002,8 @@ export const initCounters = (playerBuilding: any[], staticBuildings: any[]) => {
   incomingInventory[5] = 0;
   incomingInventory[6] = 0;
   incomingInventory[7] = 0;
+
+  console.log("playerBuilding", playerBuilding);
 
   playerBuilding.map((building: any) => {
     if (building.incomingCycles > 0) {

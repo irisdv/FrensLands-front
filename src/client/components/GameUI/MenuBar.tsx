@@ -6,7 +6,7 @@ import { useNewGameContext } from "../../hooks/useNewGameContext";
 import { useFLContract } from "../../hooks/contracts/frenslands";
 import {
   bulkUpdateActions,
-  claimResourcesQuery,
+  // claimResourcesQuery,
   reinitLand,
 } from "../../api/player";
 import { TransactionItem } from "./transactionItem";
@@ -25,6 +25,10 @@ export function MenuBar(props: any) {
     updateActions,
     updateCounters,
     updateClaimRegister,
+    updateInventory,
+    updatePlayerBuildings,
+    updateMapBlock,
+    fullMap,
   } = useNewGameContext();
   const { zoomMode, updateZoom } = useSelectContext();
   const frenslandsContract = useFLContract();
@@ -68,46 +72,61 @@ export function MenuBar(props: any) {
         updateCounters(counters);
 
         const calldata = player.tokenId + "|0|" + block.block_number;
-        claimResourcesQuery(
-          player,
-          inventory,
-          player.claimRegister,
-          "claim_production",
-          calldata
-        ).then((actionData: any) => {
-          addAction(actionData[0]);
+        addAction({
+          entrypoint: "claim_production",
+          calldata: calldata,
+          status: "",
+          txHash: "",
+          validated: false,
         });
       });
     } else {
-      console.log('missing tokenId');
+      console.log("missing tokenId");
     }
   };
 
   const reinitializeLand = async () => {
     if (player.tokenId) {
-      // const result = await wallet.account.execute([
-      //   {
-      //     contractAddress: frenslandsContract?.address as string,
-      //     entrypoint: "reinit_game",
-      //     calldata: [tokenId, 0],
-      //   },
-      // ]);
-      // console.log("result from tx reinit", result);
+      // Update inventory
+      inventory.map((elem: any, index: any) => {
+        inventory[index] = 0;
+      });
+      console.log("inventory", inventory);
+      updateInventory(inventory);
 
-      const result = {
-        code: "",
-        transaction_hash: "",
-      };
+      // Update buildings
+      let _buildings = playerBuilding.filter((res) => {
+        return res.gameUid == 1;
+      });
+      updatePlayerBuildings(_buildings);
+
+      updateMapBlock(initialMap);
+
+      counters[1] = [];
+      counters[2] = [];
+      counters["incomingInventory" as any] = [];
+      counters["inactive" as any] = 0;
+      counters["active" as any] = 0;
+      counters["blockClaimable" as any] = 0;
+      updateCounters(counters);
 
       let hasStarted = true;
       const _hasStarted = payloadActions.filter((action: any) => {
         return action.entrypoint == "start_game";
       });
       if (_hasStarted && _hasStarted.length > 0) hasStarted = false;
-      const _reinitializeGame = await reinitLand(player, result, hasStarted);
-      console.log("_initializeGame", _reinitializeGame);
 
-      window.location.reload();
+      let _actions = [
+        {
+          entrypoint: hasStarted ? "reinit_game" : "start_game",
+          calldata: player.tokenId + "|0",
+          status: "",
+          txHash: "",
+          validated: false,
+        },
+      ];
+      updateActions(_actions);
+      setPopUpInit(false);
     }
   };
 
@@ -127,26 +146,6 @@ export function MenuBar(props: any) {
       ) {
         const _calldata: any[] = [];
         const _data = action.calldata.split("|");
-
-        // ! for test contracts
-        // if (
-        //   action.entrypoint == "build" ||
-        //   action.entrypoint == "destroy_building" ||
-        //   action.entrypoint == "repair_building" ||
-        //   action.entrypoint == "move_infrastructure" ||
-        //   action.entrypoint == "fuel_building_production" ||
-        //   action.entrypoint == "claim_production" ||
-        //   action.entrypoint == "reinit_game"
-        // ) {
-        //   _calldata.push(
-        //     "0x0623dbdd29ae5dc1b314fa41d2b1b5d3014fd62ec86fab7ddd6ef5c2da1d2314"
-        //   );
-        // } else if (action.entrypoint == "harvest") {
-        //   _calldata.push(
-        //     "0x07f711ddbb1786333f242b676603e2cadf62034f74e298a0085318649c84ba05"
-        //   );
-        // }
-        // //  ! end testing
 
         _data.forEach((elem: any) => {
           _calldata.push(elem);

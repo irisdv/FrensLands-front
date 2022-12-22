@@ -96,7 +96,7 @@ export function BottomBar(props: any) {
         }}
       >
         <div className="flex flex-row justify-center inline-block">
-          {level >= (allBuildings[16 - 1].level as any) ? (
+          {level >= (allBuildings[14 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated relative"
               onClick={() => setDisplayingFrame(1, 14)}
@@ -110,7 +110,7 @@ export function BottomBar(props: any) {
             <div className="menuLock pixelated"></div>
           )}
 
-          {level >= (allBuildings[18 - 1].level as any) ? (
+          {level >= (allBuildings[16 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated"
               onClick={() => setDisplayingFrame(1, 16)}
@@ -124,7 +124,7 @@ export function BottomBar(props: any) {
             <div className="menuLock pixelated"></div>
           )}
 
-          {level >= (allBuildings[19 - 1].level as any) ? (
+          {level >= (allBuildings[17 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated"
               onClick={() => setDisplayingFrame(1, 17)}
@@ -138,7 +138,7 @@ export function BottomBar(props: any) {
             <div className="menuLock pixelated"></div>
           )}
 
-          {level >= (allBuildings[17 - 1].level as any) ? (
+          {level >= (allBuildings[15 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated"
               onClick={() => setDisplayingFrame(1, 15)}
@@ -152,7 +152,7 @@ export function BottomBar(props: any) {
             <div className="menuLock pixelated"></div>
           )}
 
-          {level >= (allBuildings[21 - 1].level as any) ? (
+          {level >= (allBuildings[18 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated"
               onClick={() => setDisplayingFrame(1, 18)}
@@ -166,7 +166,7 @@ export function BottomBar(props: any) {
             <div className="menuLock pixelated"></div>
           )}
 
-          {level >= (allBuildings[25 - 1].level as any) ? (
+          {level >= (allBuildings[22 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated"
               onClick={() => setDisplayingFrame(1, 22)}
@@ -180,7 +180,7 @@ export function BottomBar(props: any) {
             <div className="menuLock pixelated"></div>
           )}
 
-          {level >= (allBuildings[26 - 1].level as any) ? (
+          {level >= (allBuildings[23 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated"
               onClick={() => setDisplayingFrame(1, 23)}
@@ -205,7 +205,7 @@ export function BottomBar(props: any) {
         }}
       >
         <div className="flex flex-row justify-center inline-block">
-          {level >= (allBuildings[22 - 1].level as any) ? (
+          {level >= (allBuildings[19 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated"
               onClick={() => setDisplayingFrame(1, 19)}
@@ -219,7 +219,7 @@ export function BottomBar(props: any) {
             <div className="menuLock pixelated"></div>
           )}
 
-          {level >= (allBuildings[23 - 1].level as any) ? (
+          {level >= (allBuildings[20 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated"
               onClick={() => setDisplayingFrame(1, 20)}
@@ -233,7 +233,7 @@ export function BottomBar(props: any) {
             <div className="menuLock pixelated"></div>
           )}
 
-          {level >= (allBuildings[24 - 1].level as any) ? (
+          {level >= (allBuildings[21 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated"
               onClick={() => setDisplayingFrame(1, 21)}
@@ -258,7 +258,7 @@ export function BottomBar(props: any) {
         }}
       >
         <div className="flex flex-row justify-center inline-block">
-          {level >= (allBuildings[11 - 1].level as any) ? (
+          {level >= (allBuildings[9 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated"
               onClick={() => setDisplayingFrame(1, 9)}
@@ -272,7 +272,7 @@ export function BottomBar(props: any) {
             <div className="menuLock pixelated"></div>
           )}
 
-          {level >= (allBuildings[12 - 1].level as any) ? (
+          {level >= (allBuildings[10 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated"
               onClick={() => setDisplayingFrame(1, 10)}
@@ -286,7 +286,7 @@ export function BottomBar(props: any) {
             <div className="menuLock pixelated"></div>
           )}
 
-          {level >= (allBuildings[13 - 1].level as any) ? (
+          {level >= (allBuildings[11 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated"
               onClick={() => setDisplayingFrame(1, 11)}
@@ -300,7 +300,7 @@ export function BottomBar(props: any) {
             <div className="menuLock pixelated"></div>
           )}
 
-          {level >= (allBuildings[14 - 1].level as any) ? (
+          {level >= (allBuildings[12 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated"
               onClick={() => setDisplayingFrame(1, 12)}
@@ -325,7 +325,7 @@ export function BottomBar(props: any) {
         }}
       >
         <div className="flex flex-row justify-center inline-block">
-          {level >= (allBuildings[4 - 1].level as any) ? (
+          {level >= (allBuildings[2 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated relative"
               onClick={() => setDisplayingFrame(1, 2)}
@@ -338,7 +338,7 @@ export function BottomBar(props: any) {
           ) : (
             <div className="menuLock pixelated"></div>
           )}
-          {level >= (allBuildings[5 - 1].level as any) ? (
+          {level >= (allBuildings[3 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated"
               onClick={() => setDisplayingFrame(1, 3)}
@@ -351,7 +351,7 @@ export function BottomBar(props: any) {
           ) : (
             <div className="menuLock pixelated"></div>
           )}
-          {level >= (allBuildings[6 - 1].level as any) ? (
+          {level >= (allBuildings[4 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated"
               onClick={() => setDisplayingFrame(1, 4)}
@@ -376,7 +376,7 @@ export function BottomBar(props: any) {
         }}
       >
         <div className="flex flex-row justify-center inline-block">
-          {level >= (allBuildings[7 - 1].level as any) ? (
+          {level >= (allBuildings[5 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated relative"
               onClick={() => setDisplayingFrame(1, 5)}
@@ -390,7 +390,7 @@ export function BottomBar(props: any) {
             <div className="menuLock pixelated"></div>
           )}
 
-          {level >= (allBuildings[8 - 1].level as any) ? (
+          {level >= (allBuildings[6 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated"
               onClick={() => setDisplayingFrame(1, 6)}
@@ -404,7 +404,7 @@ export function BottomBar(props: any) {
             <div className="menuLock pixelated"></div>
           )}
 
-          {level >= (allBuildings[9 - 1].level as any) ? (
+          {level >= (allBuildings[7 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated"
               onClick={() => setDisplayingFrame(1, 7)}
@@ -418,7 +418,7 @@ export function BottomBar(props: any) {
             <div className="menuLock pixelated"></div>
           )}
 
-          {level >= (allBuildings[15 - 1].level as any) ? (
+          {level >= (allBuildings[13 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated"
               onClick={() => setDisplayingFrame(1, 13)}
@@ -432,7 +432,7 @@ export function BottomBar(props: any) {
             <div className="menuLock pixelated"></div>
           )}
 
-          {level >= (allBuildings[10 - 1].level as any) ? (
+          {level >= (allBuildings[8 - 1].pLevelToUnlock as any) ? (
             <div
               className="btnCategory pixelated"
               onClick={() => setDisplayingFrame(1, 8)}

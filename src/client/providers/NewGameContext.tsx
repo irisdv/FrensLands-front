@@ -1,22 +1,12 @@
 import React, { useReducer, useEffect, useState, useCallback } from "react";
 import { GetBlockResponse } from "starknet";
-import { revComposeD } from "../utils/land";
 import { fillStaticBuildings, fillStaticResources } from "../utils/static";
-import { getStaticBuildings, getStaticResources } from "../api/static";
-import {
-  incomingComposeD,
-  incomingCompose,
-  decomposeCycleRegister,
-  initCounters,
-  composeCycleRegister,
-} from "../utils/building";
+import { initCounters, composeCycleRegister } from "../utils/building";
 import { BuildDelay, HarvestDelay } from "../utils/constant";
-import {
-  bulkUpdateActions,
-  fuelProdEffective,
-  updateIncomingInventories,
-} from "../api/player";
+import { bulkUpdateActions, fuelProdEffective } from "../api/player";
 import { IStarknetWindowObject } from "get-starknet";
+import { allResources } from "../data/resources";
+import { allBuildings } from "../data/buildings";
 
 export interface ILand {
   id: number;
@@ -60,14 +50,7 @@ export interface INewGameState {
   payloadActions: any[]; // actions array to be sent onchain
   cycleRegister: any[];
   initPlayer: (wallet: IStarknetWindowObject) => void;
-  initGameSession: (
-    inventory: any,
-    land: any,
-    playerActions: any,
-    playerBuildings: [],
-    account: string,
-    userId: string
-  ) => void;
+  initGameSession: (landId: number) => void;
   addAction: (action: any) => void;
   updateActions: (actionArray: any[]) => void;
   updateInventory: (inventory: any[]) => void;
@@ -106,14 +89,7 @@ export const NewGameState: INewGameState = {
   incomingArray: [],
   cycleRegister: [],
   initPlayer: (wallet) => {},
-  initGameSession: (
-    inventory,
-    land,
-    playerActions,
-    playerBuildings,
-    account,
-    userId
-  ) => {},
+  initGameSession: (landId) => {},
   addAction: (value) => {},
   updateActions: (actionArray) => {},
   updateInventory: (inventory) => {},
@@ -147,16 +123,16 @@ interface SetGameSession {
   type: "set_gameSession";
   address?: string;
   player: any[];
-  fullMap: any[];
-  actions: any[];
-  playerBuilding: any[];
-  inventory: any[];
+  fullMap?: any[];
+  actions?: any[];
+  playerBuilding?: any[];
+  inventory?: any[];
   staticResources: any[];
   staticBuildings: any[];
-  counters: any[];
-  incomingArray: any[];
-  transactions: any[];
-  cycleRegister: any[];
+  counters?: any[];
+  incomingArray?: any[];
+  transactions?: any[];
+  cycleRegister?: any[];
 }
 
 interface SetPayloadAction {
@@ -238,16 +214,16 @@ function reducer(state: INewGameState, action: Action): INewGameState {
       return {
         ...state,
         player: action.player,
-        fullMap: action.fullMap,
-        payloadActions: action.actions,
-        inventory: action.inventory,
-        playerBuilding: action.playerBuilding,
+        // fullMap: action.fullMap,
+        // payloadActions: action.actions,
+        // inventory: action.inventory,
+        // playerBuilding: action.playerBuilding,
         staticBuildings: action.staticBuildings,
         staticResources: action.staticResources,
-        counters: action.counters,
-        incomingArray: action.incomingArray,
-        transactions: action.transactions,
-        cycleRegister: action.cycleRegister,
+        // counters: action.counters,
+        // incomingArray: action.incomingArray,
+        // transactions: action.transactions,
+        // cycleRegister: action.cycleRegister,
       };
     }
     case "set_payloadAction": {
@@ -398,7 +374,7 @@ export const NewAppStateProvider: React.FC<
               playerBuilding[gameUid].activeCycles += blockEnd - blockStart;
             } else {
               // une partie seulement du fuel est passée
-              var _activeCycles = currentBlock - blockStart;
+              const _activeCycles = currentBlock - blockStart;
               console.log("_activeCycles", _activeCycles);
               playerBuilding[gameUid].activeCycles += _activeCycles;
               playerBuilding[gameUid].incomingCycles += blockEnd - currentBlock;
@@ -413,7 +389,7 @@ export const NewAppStateProvider: React.FC<
                 playerBuilding[gameUid].activeCycles += _remainingCycles;
               } else {
                 // une partie seulement
-                var _activeCycles = currentBlock - lastClaimedBlock;
+                const _activeCycles = currentBlock - lastClaimedBlock;
                 playerBuilding[gameUid].activeCycles += _activeCycles;
                 playerBuilding[gameUid].incomingCycles +=
                   blockEnd - currentBlock;
@@ -491,8 +467,8 @@ export const NewAppStateProvider: React.FC<
                     // Cas action build
                     if (action.entrypoint == "build") {
                       // Increase incoming cycles by 1 in context
-                      var calldata = action.calldata.split("|");
-                      var gameId =
+                      const calldata = action.calldata.split("|");
+                      const gameId =
                         fullMap[parseInt(calldata[3])][parseInt(calldata[2])]
                           .id;
 
@@ -516,8 +492,8 @@ export const NewAppStateProvider: React.FC<
                     ) {
                       // console.log('entrypoint FUEL BUILDING PRODUCTION')
                       // Cas action fuel building production
-                      var calldata = action.calldata.split("|");
-                      var gameId =
+                      const calldata = action.calldata.split("|");
+                      const gameId =
                         fullMap[parseInt(calldata[3])][parseInt(calldata[2])]
                           .id;
                       // console.log('playerBuilding[gameId].incomingCycles', playerBuilding[gameId].incomingCycles)
@@ -652,144 +628,75 @@ export const NewAppStateProvider: React.FC<
   );
 
   const initGameSession = React.useCallback(
-    async (
-      inventory: any,
-      land: any,
-      playerActions: any,
-      playerBuildings: [],
-      account: string,
-      userId: string
-    ) => {
-      //  - - - - - - PLAYER LAND - - - - - -
-      const value = revComposeD(land.fullMap, account);
-      console.log("fullMapArray = ", value.tempArray);
-
-      //  - - - - - - INVENTORY - - - - - -
-      const inventoryArray: any[] = [];
-      inventoryArray[0] = inventory[0].wood;
-      inventoryArray[1] = inventory[0].rock;
-      inventoryArray[2] = inventory[0].food;
-      inventoryArray[3] = inventory[0].metal;
-      inventoryArray[4] = inventory[0].coal;
-      inventoryArray[5] = inventory[0].energy;
-      inventoryArray[6] = inventory[0].coin;
-      inventoryArray[7] = inventory[0].gold;
-      inventoryArray[8] = inventory[0].freePop;
-      inventoryArray[9] = inventory[0].totalPop;
-      inventoryArray[10] = inventory[0].timeSpent;
-      inventoryArray[11] = inventory[0].level;
-      console.log("inventoryArray = ", inventoryArray);
-
-      //  - - - - - - PLAYER BUILDINGS - - - - - -
-      const mapBuildingArray: any[] = [];
-      let lastUID = 0;
-      playerBuildings.map((elem: any) => {
-        mapBuildingArray[elem.gameUid] = [];
-        mapBuildingArray[elem.gameUid].blockX = elem.blockX;
-        mapBuildingArray[elem.gameUid].blockY = elem.blockY;
-        mapBuildingArray[elem.gameUid].activeCycles = 0;
-        mapBuildingArray[elem.gameUid].incomingCycles = 0;
-        mapBuildingArray[elem.gameUid].posX = elem.posX;
-        mapBuildingArray[elem.gameUid].posY = elem.posY;
-        mapBuildingArray[elem.gameUid].type = elem.fk_buildingid;
-        mapBuildingArray[elem.gameUid].decay = elem.decay;
-        mapBuildingArray[elem.gameUid].gameUid = elem.gameUid;
-        mapBuildingArray[elem.gameUid].uid = elem.id;
-        if (elem.gameUid > lastUID) lastUID = elem.gameUid;
-      });
-
-      console.log("gameUid", lastUID);
-      console.log("playerBuildingArray = ", mapBuildingArray);
-
+    async (tokenId: number) => {
       //  - - - - - - STATIC BUILDINGS - - - - - -
-      const staticBuildings: any = await getStaticBuildings();
+      const staticBuildings = allBuildings;
       const fixBuildVal: any[] = fillStaticBuildings(staticBuildings);
       console.log("fixBuildVal = ", fixBuildVal);
 
       //  - - - - - - STATIC RESOURCES - - - - - -
-      const staticResources: any = await getStaticResources(land.biomeId);
+      const biomeId =
+        tokenId <= 50
+          ? 1
+          : tokenId <= 100
+          ? 2
+          : tokenId <= 150
+          ? 3
+          : tokenId <= 200
+          ? 4
+          : 5;
+      const staticResources = allResources.filter(
+        (res) => res.biomeId == biomeId
+      );
       const fixResVal: any[] = fillStaticResources(staticResources);
       console.log("fixResVal = ", fixResVal);
-
-      //  - - - - - - COUNTERS - - - - - -
-
-      const counters: any[] = value.counters;
-      counters["uid" as any] = lastUID;
-      counters["incomingInventory" as any] = [];
-      counters["inactive" as any] = 0;
-      counters["active" as any] = 0;
-      counters["blockClaimable" as any] = 0;
-      console.log("counters", counters);
-
       //  - - - - - - PLAYER ARRAY - - - - - -
 
       const playerArray: any = [];
-      playerArray.landId = land.id;
-      playerArray.tokenId = land.tokenId;
-      playerArray.id = userId;
-      playerArray.biomeId = land.biomeId;
-      playerArray.cycleRegister = land.cycleRegister || ""; // String buildingGameUid-blockStart-blockEnd | ...
-      playerArray.claimRegister = land.claimRegister || 0; // String avec blockNb|blockNb
+      // playerArray.landId = land.id;
+      playerArray.tokenId = tokenId;
+      // playerArray.id = userId;
+      playerArray.biomeId = biomeId;
+      // playerArray.cycleRegister = land.cycleRegister || ""; // String buildingGameUid-blockStart-blockEnd | ...
+      // playerArray.claimRegister = land.claimRegister || 0; // String avec blockNb|blockNb
+      playerArray.cycleRegister = "";
+      playerArray.claimRegister = 0;
       console.log("playerArray", playerArray);
-
-      let register: any = [];
-      if (land.cycleRegister) {
-        register = decomposeCycleRegister(land.cycleRegister);
-      }
-      console.log("cycleRegister array", register);
-
-      //  - - - - - - INCOMING HARVESTS - - - - - -
-
-      // Build incoming Array and update if action finished
-      if (inventory[0].incomingInventories == null) {
-        var incomingArray: any[] = [];
-      } else {
-        const time = Date.now();
-        var incomingArray: any[] = incomingComposeD(
-          inventory[0].incomingInventories,
-          time
-        );
-        const incomingArrStr = incomingCompose(incomingArray);
-        const _updateArr = updateIncomingInventories(
-          playerArray,
-          incomingArrStr
-        );
-      }
 
       //  - - - - - - ONGOING TX - - - - - -
 
-      const transactions: any[] = [];
-      const ongoingTx = land.player_actions.filter((action: any) => {
-        return action.status == "TRANSACTION_RECEIVED";
-      });
-      const txArr: any = [];
-      if (ongoingTx && ongoingTx.length > 0) {
-        ongoingTx.map((tx: any) => {
-          if (!txArr[tx.txHash]) {
-            transactions.push({
-              code: tx.status,
-              transaction_hash: tx.txHash,
-            });
-            txArr[tx.txHash] = [];
-          }
-        });
-      }
+      // const transactions: any[] = [];
+      // const ongoingTx = land.player_actions.filter((action: any) => {
+      //   return action.status == "TRANSACTION_RECEIVED";
+      // });
+      // const txArr: any = [];
+      // if (ongoingTx && ongoingTx.length > 0) {
+      //   ongoingTx.map((tx: any) => {
+      //     if (!txArr[tx.txHash]) {
+      //       transactions.push({
+      //         code: tx.status,
+      //         transaction_hash: tx.txHash,
+      //       });
+      //       txArr[tx.txHash] = [];
+      //     }
+      //   });
+      // }
 
       // ----- FUEL + CLAIM initialization ----
 
       dispatch({
         type: "set_gameSession",
         player: playerArray,
-        fullMap: value.tempArray,
-        actions: playerActions,
-        inventory: inventoryArray,
-        playerBuilding: mapBuildingArray,
+        // fullMap: map,
+        // actions: playerActions,
+        // inventory: inventory,
+        // playerBuilding: mapBuildingArray,
         staticBuildings: fixBuildVal,
         staticResources: fixResVal,
-        incomingArray,
-        counters,
-        transactions,
-        cycleRegister: register,
+        // incomingArray,
+        // counters,
+        // transactions,
+        // cycleRegister: register,
       });
     },
     [dispatch, transactions]

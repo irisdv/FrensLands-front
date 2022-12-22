@@ -385,19 +385,27 @@ export const Map = (props: any) => {
           "|" +
           pos.y;
         // compose new map
-        const _mapComposed = ComposeD(frontBlockArray);
-        const _actionMove = await moveAction(
-          player,
-          "move_infrastructure",
-          calldata,
-          playerBuilding,
-          _mapComposed
-        );
-        addAction(_actionMove[0]);
+        // const _mapComposed = ComposeD(frontBlockArray);
+        // const _actionMove = await moveAction(
+        //   player,
+        //   "move_infrastructure",
+        //   calldata,
+        //   playerBuilding,
+        //   _mapComposed
+        // );
+        addAction({
+          entrypoint: "move_infrastructure",
+          calldata: calldata,
+          status: "",
+          txHash: "",
+          validated: false,
+        });
 
         setMovingBuilding(0);
       } else {
         console.log("create building on Map", frameData?.typeId);
+        console.log("UBlockIDs", UBlockIDs);
+        console.log("counters", counters);
 
         updateIncomingActions(
           2,
@@ -427,11 +435,7 @@ export const Map = (props: any) => {
           inventory,
           staticBuildings
         );
-        const _newLevel = calculatePlayerLevel(
-          _inventoryPay[11],
-          playerBuilding,
-          counters
-        );
+        const _newLevel = calculatePlayerLevel(playerBuilding, counters);
         _inventoryPay[11] = _newLevel;
         console.log("_inventoryPay", _inventoryPay);
         updateInventory(_inventoryPay);
@@ -447,7 +451,8 @@ export const Map = (props: any) => {
           pos.y +
           "|" +
           frameData.typeId;
-        const entrypoint = "build";
+
+        console.log("UBlockIDs", UBlockIDs);
 
         // Create entry in player building & save to context
         const newBuilding: any[] = addToBuildingArray(
@@ -461,18 +466,13 @@ export const Map = (props: any) => {
         );
         updatePlayerBuildings(newBuilding);
 
-        // send request DB
-        const _mapComposed = ComposeD(frontBlockArray);
-        const _action = await buildAction(
-          player,
-          entrypoint,
-          calldata,
-          inventory,
-          newBuilding[newBuilding.length - 1],
-          _mapComposed
-        );
-        // Add action in context
-        addAction(_action[0]);
+        addAction({
+          entrypoint: "build",
+          calldata: calldata,
+          status: "",
+          txHash: "",
+          validated: false,
+        });
 
         // Update global variables
         setUBlockIDs(UBlockIDs + 1);

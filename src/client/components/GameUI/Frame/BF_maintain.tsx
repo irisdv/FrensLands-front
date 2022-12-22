@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { destroyAction, fuelProdQuery } from "../../../api/player";
 import { useNewGameContext } from "../../../hooks/useNewGameContext";
 import { useSelectContext } from "../../../hooks/useSelectContext";
 import {
@@ -8,7 +7,6 @@ import {
   maintainBuildingPay,
   maintainMax,
 } from "../../../utils/building";
-import { ComposeD } from "../../../utils/land";
 import { buildErrorMsg } from "../../../utils/utils";
 import { FrameItem } from "../FrameItem";
 
@@ -26,7 +24,6 @@ export function BF_maintain(props: any) {
     updatePlayerBuildings,
     payloadActions,
   } = useNewGameContext();
-  // const { tokenId } = useGameContext();
 
   const [inputFuel, setInputFuel] = useState(1);
   const [canMaintain, setCanMaintain] = useState(1);
@@ -107,18 +104,13 @@ export function BF_maintain(props: any) {
       _map[_posY][_posX].id = 0;
       updateMapBlock(_map);
 
-      // Send request DB
-      const _mapComposed = ComposeD(_map);
-      const _destroy = await destroyAction(
-        player,
-        "destroy_building",
-        player.tokenId + "|" + 0 + "|" + _posX + "|" + _posY,
-        inventory,
-        uid,
-        _mapComposed
-      );
-      // update action in context
-      addAction(_destroy[0]);
+      addAction({
+        entrypoint: "destroy_building",
+        calldata: player.tokenId + "|" + 0 + "|" + _posX + "|" + _posY,
+        status: "",
+        txHash: "",
+        validated: false,
+      });
 
       updateBuildingFrame(false, {
         infraType: 0,
@@ -177,14 +169,13 @@ export function BF_maintain(props: any) {
       const calldata =
         player.tokenId + "|0|" + pos_x + "|" + pos_y + "|" + cycles;
 
-      const _action = await fuelProdQuery(
-        player,
-        _inventory,
-        "fuel_building_production",
-        calldata
-      );
-      console.log("action", _action[0]);
-      addAction(_action[0]);
+      addAction({
+        entrypoint: "fuel_building_production",
+        calldata: calldata,
+        status: "",
+        txHash: "",
+        validated: false,
+      });
       setPendingCycles(pendingCycles + cycles);
     } else {
       setCanMaintain(0);

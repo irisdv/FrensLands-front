@@ -5,6 +5,9 @@ export function TransactionItem(props: any) {
   const { index, entrypoint, calldata, status, initialMap } = props;
   const { staticResources, fullMap, staticBuildings } = useNewGameContext();
 
+  // console.log('index', index)
+  // console.log('entrypoint', entrypoint)
+
   return (
     <>
       <div className="flex flex-row">

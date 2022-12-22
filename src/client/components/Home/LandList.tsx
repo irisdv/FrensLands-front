@@ -3,10 +3,9 @@ import { useQuery, gql } from "@apollo/client";
 import { hexToDecimalString } from "starknet/utils/number";
 import { allMetadata } from "../../data/metadata";
 import UI_Frames from "../../style/resources/front/Ui_Frames3.svg";
-import { getLandByTokenId, initGame } from "../../api/player";
-import { useFLContract } from "../../hooks/contracts/frenslands";
 import { useNavigate } from "react-router-dom";
-import { useTestContract } from "../../hooks/contracts/test";
+import { useFLContract } from "../../hooks/contracts/frenslands";
+import { number } from "starknet";
 
 export const TOKENS_QUERY = gql`
   query tokens($owner: HexValue) {
@@ -28,10 +27,9 @@ export const INIT_QUERY = gql`
 
 export default function MenuHome(props: any) {
   const { account, userId, starknet } = props;
-  const frenslandsContract = useFLContract();
   const navigate = useNavigate();
   const [isReady, setIsReady] = useState(false);
-  const [initArray, setInitArray] = useState<any[]>([]);
+  const frenslandsContract = useFLContract();
 
   const {
     data,
@@ -57,65 +55,26 @@ export default function MenuHome(props: any) {
   }, [data, isReady]);
 
   useEffect(() => {
-    if (tokenIdsArray != null && tokenIdsArray.length > 0) {
-      const _initArray: any[] = [];
-      getLandByTokenId(tokenIdsArray).then((res: any) => {
-        res.map((elem: any) => {
-          _initArray[elem.tokenId] = elem;
-        });
-        setInitArray(_initArray);
-      });
-    }
+    if (tokenIdsArray && tokenIdsArray.length > 0) setIsReady(true);
   }, [tokenIdsArray]);
-
-  useEffect(() => {
-    if (initArray && initArray.length > 0) setIsReady(true);
-  }, [initArray]);
 
   const startGame = async (_tokenId: number) => {
     console.log("starting game for tokendId", _tokenId);
 
-    if (initArray && initArray[_tokenId]) {
-      if (initArray[_tokenId].isInit) {
-        console.log("isInit", initArray[_tokenId].isInit);
-        navigate("/play", { state: { landId: _tokenId } });
-      } else {
-        // let nonce = await wallet.account.getNonce();
-        // const result = await starknet.account.execute(
-        //   [
-        //     {
-        //       contractAddress: frenslandsContract.address as string,
-        //       entrypoint: "start_game",
-        //       calldata: [_tokenId, 0, initArray[_tokenId].biomeId],
-        //     },
-        //   ]
-        // );
-        // console.log("result from tx", result);
+    if (tokenIdsArray && tokenIdsArray.includes(_tokenId)) {
+      const _res = await starknet.account.callContract({
+        contractAddress: frenslandsContract.address,
+        entrypoint: "get_building_counter",
+        calldata: [number.toFelt(_tokenId)],
+      });
+      console.log("building counter", Number(_res.result[0]));
 
-        const result = {
-          code: "",
-          transaction_hash: "",
-        };
-
-        // Init game in db
-        const _initializeGame = await initGame(
-          userId,
-          initArray[_tokenId].id,
-          initArray[_tokenId].biomeId,
-          _tokenId,
-          result
-        );
-        console.log("_initializeGame", _initializeGame);
-
-        // Go the page play w/ tx ongoing tx information
-        if (result) {
-          navigate("/play", {
-            state: {
-              landId: _tokenId,
-            },
-          });
-        }
-      }
+      navigate("/play", {
+        state: {
+          landId: _tokenId,
+          wasInit: Number(_res.result[0]) === 0 ? false : true,
+        },
+      });
     }
   };
 
@@ -159,7 +118,7 @@ export default function MenuHome(props: any) {
 
   return (
     <>
-      {data && data.tokens && isReady && initArray && (
+      {data && data.tokens && isReady && tokenIdsArray && (
         <>
           <div className={`grid grid-cols-${data.tokens.length} px-8`}>
             {data.tokens.map((land: any) => {

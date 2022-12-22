@@ -65,13 +65,13 @@ export const revComposeD = (compMap: string, account: string) => {
     // Rand for trees and rocks
     if (tempArray[y][x].infraType == 1) {
       if (tempArray[y][x].type == 1) {
-        var randomNum: number = random(specIndex, account) * (3 - 1) + 1;
+        let randomNum: number = random(specIndex, account) * (3 - 1) + 1;
         randomNum = parseInt(randomNum.toFixed(0));
         tempArray[y][x].randType = randomNum;
         specIndex++;
         // console.log("tempArray[y][x].randType = ", tempArray[y][x].randType);
       } else if (tempArray[y][x].type == 2) {
-        var randomNum: number = random(specIndex, account) * (6 - 4) + 4;
+        let randomNum: number = random(specIndex, account) * (6 - 4) + 4;
         randomNum = parseInt(randomNum.toFixed(0));
         tempArray[y][x].randType = randomNum;
         specIndex++;
@@ -311,93 +311,78 @@ export const generateFullMap = () => {
  * @return level {number} updated level number
  */
 export const calculatePlayerLevel = (
-  currLevel: number,
   mapBuildingArray: any[],
   counters: any[]
 ) => {
-  if (currLevel == 1) {
-    const cabin = mapBuildingArray.filter((building) => {
-      return building.type == 1;
-    });
-    if (cabin && cabin[0].decay == 0) return 2;
-  } else if (currLevel == 2) {
-    // Construire une maison + 1 wheat farm
-    if (
-      counters[2] &&
-      counters[2][2] &&
-      counters[2][2] > 0 &&
-      counters[2][14] &&
-      counters[2][14] > 0
-    ) {
-      return 3;
-    }
-  } else if (currLevel == 3) {
-    // Construire une coal plant
-    if (counters[2] && counters[2][18] && counters[2][18] > 0) return 4;
-  } else if (currLevel == 4) {
-    // constuire bakery + grocery shop
-    if (
-      counters[2] &&
-      counters[2][5] &&
-      counters[2][5] > 0 &&
-      counters[2][6] &&
-      counters[2][6] > 0
-    ) {
-      return 5;
-    }
-  } else if (currLevel == 5) {
-    // construire bar + restaurant
-    if (
-      counters[2] &&
-      counters[2][9] &&
-      counters[2][9] > 0 &&
-      counters[2][7] &&
-      counters[2][7] > 0
-    ) {
-      return 6;
-    }
-  } else if (currLevel == 6) {
-    // build police station
-    if (counters[2] && counters[2][19] && counters[2][19] > 0) return 7;
-  } else if (currLevel == 7) {
-    // build apartments
-    if (counters[2] && counters[2][3] && counters[2][3] > 0) return 8;
-  } else if (currLevel == 8) {
-    // build all existing buildings
-    if (
-      counters[2] &&
-      counters[2][4] &&
-      counters[2][4] > 0 &&
-      counters[2][8] &&
-      counters[2][8] > 0 &&
-      counters[2][10] &&
-      counters[2][10] > 0 &&
-      counters[2][11] &&
-      counters[2][11] > 0 &&
-      counters[2][12] &&
-      counters[2][12] > 0 &&
-      counters[2][13] &&
-      counters[2][13] > 0 &&
-      counters[2][15] &&
-      counters[2][15] > 0 &&
-      counters[2][16] &&
-      counters[2][16] > 0 &&
-      counters[2][17] &&
-      counters[2][17] > 0 &&
-      counters[2][20] &&
-      counters[2][20] > 0 &&
-      counters[2][21] &&
-      counters[2][21] > 0 &&
-      counters[2][22] &&
-      counters[2][22] > 0 &&
-      counters[2][23] &&
-      counters[2][23] > 0
-    ) {
-      // 4 8 10 11 12 13 15 16 17 20 21 22 23
-      return 9;
-    }
+  let _level: number = 1;
+
+  const cabin = mapBuildingArray.filter((building) => {
+    return building.type == 1;
+  });
+  if (cabin && cabin[0].decay == 0) _level = 2;
+  if (
+    counters[2] &&
+    counters[2][2] &&
+    counters[2][2] > 0 &&
+    counters[2][14] &&
+    counters[2][14] > 0
+  ) {
+    _level = 3;
   }
-  return currLevel;
+  if (counters[2] && counters[2][18] && counters[2][18] > 0) _level = 4;
+  if (
+    counters[2] &&
+    counters[2][5] &&
+    counters[2][5] > 0 &&
+    counters[2][6] &&
+    counters[2][6] > 0
+  )
+    _level = 5;
+
+  if (
+    counters[2] &&
+    counters[2][9] &&
+    counters[2][9] > 0 &&
+    counters[2][7] &&
+    counters[2][7] > 0
+  )
+    _level = 6;
+
+  if (counters[2] && counters[2][19] && counters[2][19] > 0) _level = 7;
+  if (counters[2] && counters[2][3] && counters[2][3] > 0) _level = 8;
+
+  if (
+    counters[2] &&
+    counters[2][4] &&
+    counters[2][4] > 0 &&
+    counters[2][8] &&
+    counters[2][8] > 0 &&
+    counters[2][10] &&
+    counters[2][10] > 0 &&
+    counters[2][11] &&
+    counters[2][11] > 0 &&
+    counters[2][12] &&
+    counters[2][12] > 0 &&
+    counters[2][13] &&
+    counters[2][13] > 0 &&
+    counters[2][15] &&
+    counters[2][15] > 0 &&
+    counters[2][16] &&
+    counters[2][16] > 0 &&
+    counters[2][17] &&
+    counters[2][17] > 0 &&
+    counters[2][20] &&
+    counters[2][20] > 0 &&
+    counters[2][21] &&
+    counters[2][21] > 0 &&
+    counters[2][22] &&
+    counters[2][22] > 0 &&
+    counters[2][23] &&
+    counters[2][23] > 0
+  )
+    // 4 8 10 11 12 13 15 16 17 20 21 22 23
+    _level = 9;
+  return _level;
 };
 
 export const initMapArr = (account: string) => {
@@ -451,13 +436,13 @@ export const initMapArr = (account: string) => {
     // Rand for trees and rocks
     if (tempArray[y][x].infraType == 1) {
       if (tempArray[y][x].type == 1) {
-        var randomNum: number = random(specIndex, account) * (3 - 1) + 1;
+        let randomNum: number = random(specIndex, account) * (3 - 1) + 1;
         randomNum = parseInt(randomNum.toFixed(0));
         tempArray[y][x].randType = randomNum;
         specIndex++;
         // console.log("tempArray[y][x].randType = ", tempArray[y][x].randType);
       } else if (tempArray[y][x].type == 2) {
-        var randomNum: number = random(specIndex, account) * (6 - 4) + 4;
+        let randomNum: number = random(specIndex, account) * (6 - 4) + 4;
         randomNum = parseInt(randomNum.toFixed(0));
         tempArray[y][x].randType = randomNum;
         specIndex++;
@@ -476,4 +461,78 @@ export const initMapArr = (account: string) => {
   }
 
   return tempArray;
+};
+
+// @notice decompose map received from chain
+export const composeFromChain = (mapFromChain: any, wallet: any) => {
+  let res = [];
+  let x = 1;
+  let y = 1;
+  res[y] = [];
+
+  let counters: any = [];
+  counters[1] = [];
+  counters[2] = [];
+
+  for (let i = 0; i < mapFromChain.length; i++) {
+    if (x > 40) {
+      y++;
+      res[y] = [] as any;
+      x = 1;
+    }
+    let temp = Number(mapFromChain[i]);
+    let block: any[any] = [];
+    if (temp == 0) {
+      block.infraType = 0;
+      block.type = 0;
+      block.id = 0;
+      block.state = 0;
+      block.blockType = 1;
+      block.blockFertility = 99;
+    } else {
+      let tempStr = temp.toString();
+      block.infraType = parseInt(tempStr[0]);
+      block.type = parseInt(tempStr[1] + tempStr[2]);
+      block.id = parseInt(tempStr[3] + tempStr[4] + tempStr[5] + tempStr[6]);
+      block.state = parseInt(tempStr[7]);
+      block.blockType = parseInt(tempStr[8]);
+      block.blockFertility = parseInt(tempStr[9] + tempStr[10]);
+    }
+
+    // generate trees
+    if (block.infraType == 1) {
+      if (block.type == 1) {
+        let randomNum: number = random(block.id, wallet) * (3 - 1) + 1;
+        randomNum = parseInt(randomNum.toFixed(0));
+        block.randType = randomNum;
+      } else if (block.type == 2) {
+        let randomNum: number = random(block.id, wallet) * (6 - 4) + 4;
+        randomNum = parseInt(randomNum.toFixed(0));
+        block.randType = randomNum;
+      } else if (block.type == 3) {
+        block.randType = 7;
+      } else if (block.type == 4) {
+        block.randType = 8;
+      }
+    }
+    block.status = 1; // status (0: harvesting / building ongoing)
+    block.posX = x; // posX
+    block.posY = y; // posY
+
+    if (block.infraType != 0) {
+      let currCounter = 0;
+      if (
+        counters[block.infraType] &&
+        counters[block.infraType][block.type] &&
+        counters[block.infraType][block.type] > 0
+      ) {
+        currCounter = counters[block.infraType][block.type];
+      }
+      counters[block.infraType][block.type] = currCounter + 1;
+    }
+
+    res[y][x] = block;
+    x++;
+  }
+  return { res, counters };
 };

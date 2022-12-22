@@ -38,12 +38,10 @@ export const fillStaticBuildings = (staticBuildings: any): [] => {
     fixBuildVal[staticBuildings[i].id - 1].createCost = _createCost.map((val) =>
       parseInt(val)
     );
-
     const _repairCost = parseResToArray(staticBuildings[i].repairCost);
     fixBuildVal[staticBuildings[i].id - 1].repairCost = _repairCost.map((val) =>
       parseInt(val)
     );
-
     const _maintainCost = parseResToArray(staticBuildings[i].maintainCost);
     fixBuildVal[staticBuildings[i].id - 1].maintainCost = _maintainCost.map(
       (val) => parseInt(val)

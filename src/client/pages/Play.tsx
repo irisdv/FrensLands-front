@@ -8,9 +8,16 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useNewGameContext } from "../hooks/useNewGameContext";
 import { getStarknet } from "get-starknet";
 import { useSelectContext } from "../hooks/useSelectContext";
-import getPlayer, { getLandInformation } from "../api/player";
 import { useFLContract } from "../hooks/contracts/frenslands";
 import { number } from "starknet";
+import {
+  calculatePlayerLevel,
+  composeFromChain,
+  initMapArr,
+} from "../utils/land";
+import { allBuildings } from "../data/buildings";
+import { fillStaticBuildings } from "../utils/static";
+import { initCounters } from "../utils/building";
 
 export default function Play() {
   const {
@@ -22,10 +29,15 @@ export default function Play() {
     inventory,
     counters,
     payloadActions,
+    updateInventory,
+    updateMapBlock,
+    updateCounters,
+    updatePlayerBuildings,
+    addAction,
   } = useNewGameContext();
   const { initSettings } = useSelectContext();
   const { state } = useLocation();
-  const { landId } = state;
+  const { landId, wasInit } = state;
   const navigate = useNavigate();
   const [textArrRef, setTextArrRef] = useState<any[]>([]);
   const [isInit, setIsInit] = useState(false);
@@ -36,59 +48,156 @@ export default function Play() {
     return fullMap;
   }, [fullMap]);
 
-  const compareFullMap = async (_wallet: any, localFullMap: any) => {
-    const _localFullMap = localFullMap.split("|");
-    console.log("_local full map", _localFullMap);
-    console.log("landId", landId);
-    _wallet.account
-      .callContract(
-        {
-          contractAddress: frenslandsContract.address.toLowerCase(),
-          entrypoint: "get_map_array",
-          calldata: [number.toFelt(landId)],
-        },
-        { blockIdentifier: "pending" }
-      )
-      .then((res: any) => {
-        const _updatedArr: any = [];
-        if (res && res.result) {
-          res.result.map((elem: any) => {
-            if (Number(elem) != 640) _updatedArr.push(Number(elem).toString());
-          });
-        }
-        // enlever la première valeur de l'array car == taille de l'array
-        console.log("result fullMap of player", res);
-        console.log("_updatedArr_updatedArr", _updatedArr);
-        if (
-          _updatedArr.length === _localFullMap.length &&
-          _updatedArr.every(function (value: any, index: any) {
-            return value === _localFullMap[index];
-          })
-        ) {
-          console.log("same arrays");
+  const neverInit = (_wallet: any) => {
+    let _inventory = [];
+    _inventory[0] = 0;
+    _inventory[1] = 0;
+    _inventory[2] = 20;
+    _inventory[3] = 0;
+    _inventory[4] = 0;
+    _inventory[5] = 0;
+    _inventory[6] = 0;
+    _inventory[7] = 0;
+    _inventory[8] = 1;
+    _inventory[9] = 1;
+    _inventory[10] = 0;
+    _inventory[11] = 1;
+    console.log(_inventory);
+
+    let _fullMap = initMapArr(_wallet.account.address);
+
+    let _buildings = [];
+    _buildings[1] = {
+      activeCycles: 0,
+      decay: 100,
+      gameUid: 1,
+      incomingCycles: 0,
+      lastFuel: 0,
+      posX: 20,
+      posY: 8,
+      type: 1,
+    };
+
+    let _counters = [];
+    _counters["uid" as any] = 1;
+    _counters["incomingInventory" as any] = [];
+    _counters["inactive" as any] = 0;
+    _counters["active" as any] = 0;
+    _counters["blockClaimable" as any] = 0;
+    _counters[1] = [];
+    _counters[2] = [];
+
+    return { _inventory, _fullMap, _buildings, _counters };
+  };
+
+  const getMap = async (wallet: any, landId: number) => {
+    let _map = await wallet.account.callContract({
+      contractAddress: frenslandsContract.address,
+      entrypoint: "get_map_array",
+      calldata: [number.toFelt(landId)],
+    });
+    _map.result.splice(0, 1);
+    console.log("_map", _map.result);
+    let { res: _mapComp, counters } = composeFromChain(
+      _map.result,
+      wallet.account.address
+    );
+    console.log("_mapComp", _mapComp);
+
+    let _cabinDecay = await wallet.account.callContract({
+      contractAddress: frenslandsContract.address,
+      entrypoint: "get_building_decay",
+      calldata: [number.toFelt(landId), number.toFelt(1)],
+    });
+    console.log("_cabinDecay", Number(_cabinDecay.result[0]));
+
+    let _buildings = await wallet.account.callContract({
+      contractAddress: frenslandsContract.address,
+      entrypoint: "get_all_buildings_data",
+      calldata: [number.toFelt(landId)],
+    });
+    console.log("_buildings", _buildings);
+
+    let playerBuildings: any = [];
+    let lastUID = 0;
+    _buildings.result.splice(0, 1);
+    const blockNb = await wallet.account.getBlock();
+
+    for (let i = 0; i < _buildings.result.length; i += 6) {
+      let id = Number(_buildings.result[i]);
+      let pos_start = Number(_buildings.result[i + 2]).toString();
+      let activeCycles = Number(_buildings.result[i + 3]);
+      let incomingCycles = Number(_buildings.result[i + 4]);
+      let lastFuel = Number(_buildings.result[i + 5]);
+
+      if (incomingCycles > 0) {
+        if (lastFuel + incomingCycles < blockNb.block_number) {
+          // tout le fuel est passé
+          activeCycles += incomingCycles;
+          incomingCycles = 0;
         } else {
-          console.log("not same array");
+          // seulement une partie du fuel est passé
+          let fuelPassed = blockNb.block_number - lastFuel;
+          activeCycles += fuelPassed;
+          incomingCycles -= fuelPassed;
         }
-        return res;
-      })
-      .catch((error: any) => {
-        console.log("error while fetching player fullMap", error);
-      });
+      }
 
-    _wallet.account
-      .callContract(
-        {
-          contractAddress: frenslandsContract.address.toLowerCase(),
-          entrypoint: "get_all_buildings_data",
-          calldata: [number.toFelt(landId)],
-        },
-        { blockIdentifier: "pending" }
-      )
-      .then((res: any) => {
-        console.log("array of buildings", res);
-      });
+      playerBuildings[id] = {
+        type: Number(_buildings.result[i + 1]),
+        posX: Number(pos_start[0] + pos_start[1]),
+        posY: Number(pos_start[2] + pos_start[3]),
+        activeCycles: activeCycles,
+        incomingCycles: incomingCycles,
+        lastFuel: lastFuel,
+        gameUid: Number(_buildings.result[i]),
+        decay: Number(
+          _buildings.result[i + 1] === 1 ? Number(_cabinDecay.result[0]) : 0
+        ),
+      };
+      if (id > lastUID) lastUID = id;
+    }
+    console.log("playerBuildings", playerBuildings);
 
-    return "";
+    const { incomingInventory, inactive, active, nbBlocksClaimable } =
+      initCounters(playerBuildings, fillStaticBuildings(allBuildings));
+
+    counters["uid" as any] = lastUID;
+    counters["incomingInventory" as any] = incomingInventory;
+    counters["inactive" as any] = inactive;
+    counters["active" as any] = active;
+    counters["blockClaimable" as any] = nbBlocksClaimable;
+
+    console.log("counters", counters);
+
+    let _inventory = await wallet.account.callContract({
+      contractAddress: frenslandsContract.address,
+      entrypoint: "get_balance_all",
+      calldata: [number.toFelt(landId)],
+    });
+
+    let _pop = await wallet.account.callContract({
+      contractAddress: frenslandsContract.address,
+      entrypoint: "get_pop",
+      calldata: [number.toFelt(landId)],
+    });
+
+    // build inventory and update
+    for (let i = 0; i < 8; i++) {
+      inventory[i] = Number(_inventory.result[i]);
+      console.log(
+        " Number(_inventory.result[i])",
+        i,
+        Number(_inventory.result[i])
+      );
+    }
+    inventory[8] = Number(_pop.result[2]);
+    inventory[9] = Number(_pop.result[1]);
+    inventory[10] = 0;
+    inventory[11] = calculatePlayerLevel(playerBuildings, counters);
+    console.log("inventory", inventory);
+
+    return { _mapComp, counters, playerBuildings, inventory };
   };
 
   useEffect(() => {
@@ -97,46 +206,31 @@ export default function Play() {
       _wallet.enable().then((data: any) => {
         if (_wallet.isConnected) {
           initPlayer(_wallet);
+          initGameSession(landId);
 
-          getPlayer(_wallet.account.address)
-            .then((data) => {
-              console.log("data", data);
-              if (data) {
-                initSettings({
-                  zoom: data.invZoom,
-                  tutorial: data.tutorial,
-                  sound: data.sound,
-                });
-              }
-              getLandInformation(landId).then((land: any) => {
-                console.log("data land received", land);
-                if (
-                  data &&
-                  land &&
-                  land.inventories &&
-                  land.player_actions &&
-                  land.player_buildings
-                ) {
-                  // Compare data with chain
-                  // compareFullMap(_wallet, land.fullMap).then((res: any) => {
-                  //   console.log("res", res);
-                  // });
-                  //  ! TODO update db names
-                  initGameSession(
-                    land.inventories,
-                    land,
-                    land.player_actions,
-                    land.player_buildings as [],
-                    data.account,
-                    data.id
-                  );
-                  setIsInit(true);
-                }
-              });
-            })
-            .catch((error: any) => {
-              if (error && error.code == "PGRST301") navigate("/");
+          if (wasInit) {
+            getMap(_wallet, landId).then((res) => {
+              updateMapBlock(res._mapComp);
+              updateCounters(res.counters);
+              updatePlayerBuildings(res.playerBuildings);
+              updateInventory(res.inventory);
             });
+          } else {
+            let { _inventory, _fullMap, _buildings, _counters } =
+              neverInit(_wallet);
+            updateMapBlock(_fullMap);
+            updateCounters(_counters);
+            updatePlayerBuildings(_buildings);
+            updateInventory(_inventory);
+            addAction({
+              entrypoint: "start_game",
+              calldata: landId + "|0",
+              status: "",
+              txHash: "",
+              validated: false,
+            });
+          }
+          setIsInit(true);
         } else {
           navigate("/");
         }
@@ -167,7 +261,7 @@ export default function Play() {
     <>
       {inventory &&
       fullMapValue &&
-      player.biomeId &&
+      // player.biomeId &&
       fullMapValue.length > 0 ? (
         <>
           <MenuBar payloadActions={payloadActions} />

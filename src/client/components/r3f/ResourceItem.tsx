@@ -8,8 +8,8 @@ import {
   incomingCompose,
   receiveResHarvest,
 } from "../../utils/building";
-import { harvestAction, updateIncomingInventories } from "../../api/player";
-import { ComposeD } from "../../utils/land";
+// import { harvestAction, updateIncomingInventories } from "../../api/player";
+// import { ComposeD } from "../../utils/land";
 
 interface IBlock {
   block: any;
@@ -368,7 +368,6 @@ export const ResourceItem = memo<IBlock>(
       fullMap[blockValue.posY][blockValue.posX].type = blockValue.type;
       fullMap[blockValue.posY][blockValue.posX].id = blockValue.id;
       updateMapBlock(_map);
-      const _mapComposed = ComposeD(_map);
 
       // Update incoming array
       console.log("incoming array", incomingArray);
@@ -377,27 +376,21 @@ export const ResourceItem = memo<IBlock>(
         blockValue.id
       );
       console.log("_incomingArray updated", _incomingArray);
-      const incomingArrStr = incomingCompose(_incomingArray);
-      console.log("_incomingArray string", incomingArrStr);
-      // let _updateIncoming = updateIncomingInventories(player, incomingArrStr);
-      // console.log("incoming array string", incomingArray);
 
-      const _isHarvested = await harvestAction(
-        player,
-        "harvest",
-        player.tokenId +
+      addAction({
+        entrypoint: "harvest",
+        calldata:
+          player.tokenId +
           "|" +
           0 +
           "|" +
           blockValue.posX +
           "|" +
           blockValue.posY,
-        _inventoryUpdated,
-        _mapComposed,
-        incomingArrStr
-      );
-      addAction(_isHarvested[0]);
-
+        status: "",
+        txHash: "",
+        validated: false,
+      });
       console.log("incoming actions", incomingActions);
     };
 
