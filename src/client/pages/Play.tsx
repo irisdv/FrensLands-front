@@ -183,6 +183,7 @@ export default function Play() {
     });
 
     // build inventory and update
+    _inventory.result.splice(0, 1);
     for (let i = 0; i < 8; i++) {
       inventory[i] = Number(_inventory.result[i]);
       console.log(
