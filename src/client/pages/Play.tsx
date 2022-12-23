@@ -37,7 +37,7 @@ export default function Play() {
   } = useNewGameContext();
   const { initSettings } = useSelectContext();
   const { state } = useLocation();
-  const { landId, wasInit } = state;
+  const { landId, wasInit, bCounter } = state;
   const navigate = useNavigate();
   const [textArrRef, setTextArrRef] = useState<any[]>([]);
   const [isInit, setIsInit] = useState(false);
@@ -111,53 +111,69 @@ export default function Play() {
     });
     console.log("_cabinDecay", Number(_cabinDecay.result[0]));
 
-    let _buildings = await wallet.account.callContract({
-      contractAddress: frenslandsContract.address,
-      entrypoint: "get_all_buildings_data",
-      calldata: [number.toFelt(landId)],
-    });
-    console.log("_buildings", _buildings);
 
     let playerBuildings: any = [];
     let lastUID = 0;
-    _buildings.result.splice(0, 1);
-    const blockNb = await wallet.account.getBlock();
 
-    for (let i = 0; i < _buildings.result.length; i += 6) {
-      let id = Number(_buildings.result[i]);
-      let pos_start = Number(_buildings.result[i + 2]).toString();
-      let activeCycles = Number(_buildings.result[i + 3]);
-      let incomingCycles = Number(_buildings.result[i + 4]);
-      let lastFuel = Number(_buildings.result[i + 5]);
-
-      if (incomingCycles > 0) {
-        if (lastFuel + incomingCycles < blockNb.block_number) {
-          // tout le fuel est passé
-          activeCycles += incomingCycles;
-          incomingCycles = 0;
-        } else {
-          // seulement une partie du fuel est passé
-          let fuelPassed = blockNb.block_number - lastFuel;
-          activeCycles += fuelPassed;
-          incomingCycles -= fuelPassed;
+    if (bCounter > 1) {
+      let _buildings = await wallet.account.callContract({
+        contractAddress: frenslandsContract.address,
+        entrypoint: "get_all_buildings_data",
+        calldata: [number.toFelt(landId)],
+      });
+      console.log("_buildings", _buildings);
+  
+      _buildings.result.splice(0, 1);
+      const blockNb = await wallet.account.getBlock();
+  
+      for (let i = 0; i < _buildings.result.length; i += 6) {
+        let id = Number(_buildings.result[i]);
+        let pos_start = Number(_buildings.result[i + 2]).toString();
+        let activeCycles = Number(_buildings.result[i + 3]);
+        let incomingCycles = Number(_buildings.result[i + 4]);
+        let lastFuel = Number(_buildings.result[i + 5]);
+  
+        if (incomingCycles > 0) {
+          if (lastFuel + incomingCycles < blockNb.block_number) {
+            // tout le fuel est passé
+            activeCycles += incomingCycles;
+            incomingCycles = 0;
+          } else {
+            // seulement une partie du fuel est passé
+            let fuelPassed = blockNb.block_number - lastFuel;
+            activeCycles += fuelPassed;
+            incomingCycles -= fuelPassed;
+          }
         }
+  
+        playerBuildings[id] = {
+          type: Number(_buildings.result[i + 1]),
+          posX: Number(pos_start[0] + pos_start[1]),
+          posY: Number(pos_start[2] + pos_start[3]),
+          activeCycles: activeCycles,
+          incomingCycles: incomingCycles,
+          lastFuel: lastFuel,
+          gameUid: Number(_buildings.result[i]),
+          decay: Number(
+            _buildings.result[i + 1] === 1 ? Number(_cabinDecay.result[0]) : 0
+          ),
+        };
+        if (id > lastUID) lastUID = id;
       }
-
-      playerBuildings[id] = {
-        type: Number(_buildings.result[i + 1]),
-        posX: Number(pos_start[0] + pos_start[1]),
-        posY: Number(pos_start[2] + pos_start[3]),
-        activeCycles: activeCycles,
-        incomingCycles: incomingCycles,
-        lastFuel: lastFuel,
-        gameUid: Number(_buildings.result[i]),
-        decay: Number(
-          _buildings.result[i + 1] === 1 ? Number(_cabinDecay.result[0]) : 0
-        ),
-      };
-      if (id > lastUID) lastUID = id;
+      console.log("playerBuildings", playerBuildings);
+    } else {
+      playerBuildings[1] = {
+        activeCycles: 0,
+        decay: Number(_cabinDecay.result[0]),
+        gameUid: 1,
+        incomingCycles: 0,
+        lastFuel: 0,
+        posX: 20,
+        posY: 8,
+        type: 1,
+      }
+      lastUID = 1;
     }
-    console.log("playerBuildings", playerBuildings);
 
     const { incomingInventory, inactive, active, nbBlocksClaimable } =
       initCounters(playerBuildings, fillStaticBuildings(allBuildings));
@@ -184,13 +200,8 @@ export default function Play() {
 
     // build inventory and update
     _inventory.result.splice(0, 1);
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 7; i++) {
       inventory[i] = Number(_inventory.result[i]);
-      console.log(
-        " Number(_inventory.result[i])",
-        i,
-        Number(_inventory.result[i])
-      );
     }
     inventory[8] = Number(_pop.result[2]);
     inventory[9] = Number(_pop.result[1]);
@@ -262,7 +273,7 @@ export default function Play() {
     <>
       {inventory &&
       fullMapValue &&
-      // player.biomeId &&
+
       fullMapValue.length > 0 ? (
         <>
           <MenuBar payloadActions={payloadActions} />

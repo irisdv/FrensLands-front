@@ -73,6 +73,7 @@ export default function MenuHome(props: any) {
         state: {
           landId: _tokenId,
           wasInit: Number(_res.result[0]) === 0 ? false : true,
+          bCounter: Number(_res.result[0]),
         },
       });
     }

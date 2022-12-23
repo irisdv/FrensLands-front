@@ -144,7 +144,7 @@ export const Map = (props: any) => {
     let tempRayPos = new Vector3();
     const tempInter: any[] = [];
     const tempInterY: any[] = [];
-    var i = 0;
+    let i = 0;
     let k = 0;
     let j = 0;
     while (i < intersects.length) {
@@ -207,7 +207,7 @@ export const Map = (props: any) => {
 
       if (movingBuilding == 1 || placementActive == 1) {
         // frameDataValue?.selected == 1;
-        if (placementActive == 0) setPlacementActive(1);
+        // if (placementActive == 0) setPlacementActive(1);
         setTempBuildMesh(
           new Vector3(
             currBlockPos.x + 0.5,
@@ -231,7 +231,7 @@ export const Map = (props: any) => {
           frontBlockArray[currBlockPos.y][currBlockPos.x].type != null &&
           frontBlockArray[currBlockPos.y][currBlockPos.x].type != 0
         ) {
-          var pos: THREE.Vector2 = new Vector2();
+          const pos: THREE.Vector2 = new Vector2();
           pos.x = currBlockPos.x;
           pos.y = currBlockPos.y;
 
@@ -253,7 +253,7 @@ export const Map = (props: any) => {
           selectedObj?.pos?.y != currBlockPos.y
         ) {
           // No objects are selected on the map
-          var pos: THREE.Vector2 = new Vector2();
+          const pos: THREE.Vector2 = new Vector2();
           pos.x = selectedObj?.pos?.x as number;
           pos.y = selectedObj?.pos?.y as number;
 
@@ -286,7 +286,7 @@ export const Map = (props: any) => {
     }
 
     // Frens going
-    var i = 0;
+    // let i = 0;
     frensArray.map((fren: any, id: any) => {
       let tempValX = 0;
       let tempValY = 0;
@@ -384,15 +384,6 @@ export const Map = (props: any) => {
           (pos.x - 0.5) +
           "|" +
           pos.y;
-        // compose new map
-        // const _mapComposed = ComposeD(frontBlockArray);
-        // const _actionMove = await moveAction(
-        //   player,
-        //   "move_infrastructure",
-        //   calldata,
-        //   playerBuilding,
-        //   _mapComposed
-        // );
         addAction({
           entrypoint: "move_infrastructure",
           calldata: calldata,
@@ -404,8 +395,6 @@ export const Map = (props: any) => {
         setMovingBuilding(0);
       } else {
         console.log("create building on Map", frameData?.typeId);
-        console.log("UBlockIDs", UBlockIDs);
-        console.log("counters", counters);
 
         updateIncomingActions(
           2,
@@ -452,7 +441,8 @@ export const Map = (props: any) => {
           "|" +
           frameData.typeId;
 
-        console.log("UBlockIDs", UBlockIDs);
+
+          console.log('UBlockIDs', UBlockIDs)
 
         // Create entry in player building & save to context
         const newBuilding: any[] = addToBuildingArray(
