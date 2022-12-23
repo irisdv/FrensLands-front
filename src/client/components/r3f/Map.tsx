@@ -14,7 +14,7 @@ import Resources from "./Resources";
 import { Frens } from "./Frens";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
 import { addToBuildingArray, createBuildingPay } from "../../utils/building";
-import { buildAction, moveAction } from "../../api/player";
+// import { buildAction, moveAction } from "../../api/player";
 import { calculatePlayerLevel, ComposeD } from "../../utils/land";
 
 export interface ISelectObject {
@@ -91,8 +91,7 @@ export const Map = (props: any) => {
     }
     let i = 0;
     const tempArray = [];
-    // ! change 2 by max
-    while (i < 2) {
+    while (i < max) {
       const curPos = new Vector2();
       const targetPos = new Vector2();
 
@@ -441,8 +440,7 @@ export const Map = (props: any) => {
           "|" +
           frameData.typeId;
 
-
-          console.log('UBlockIDs', UBlockIDs)
+        console.log("UBlockIDs", UBlockIDs);
 
         // Create entry in player building & save to context
         const newBuilding: any[] = addToBuildingArray(

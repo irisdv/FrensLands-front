@@ -111,7 +111,6 @@ export default function Play() {
     });
     console.log("_cabinDecay", Number(_cabinDecay.result[0]));
 
-
     let playerBuildings: any = [];
     let lastUID = 0;
 
@@ -122,17 +121,17 @@ export default function Play() {
         calldata: [number.toFelt(landId)],
       });
       console.log("_buildings", _buildings);
-  
+
       _buildings.result.splice(0, 1);
       const blockNb = await wallet.account.getBlock();
-  
+
       for (let i = 0; i < _buildings.result.length; i += 6) {
         let id = Number(_buildings.result[i]);
         let pos_start = Number(_buildings.result[i + 2]).toString();
         let activeCycles = Number(_buildings.result[i + 3]);
         let incomingCycles = Number(_buildings.result[i + 4]);
         let lastFuel = Number(_buildings.result[i + 5]);
-  
+
         if (incomingCycles > 0) {
           if (lastFuel + incomingCycles < blockNb.block_number) {
             // tout le fuel est passé
@@ -145,7 +144,7 @@ export default function Play() {
             incomingCycles -= fuelPassed;
           }
         }
-  
+
         playerBuildings[id] = {
           type: Number(_buildings.result[i + 1]),
           posX: Number(pos_start[0] + pos_start[1]),
@@ -171,7 +170,7 @@ export default function Play() {
         posX: 20,
         posY: 8,
         type: 1,
-      }
+      };
       lastUID = 1;
     }
 
@@ -242,6 +241,16 @@ export default function Play() {
               validated: false,
             });
           }
+          const settings = JSON.parse(
+            localStorage.getItem("settings") as string
+          );
+          console.log("settings", settings);
+          initSettings({
+            zoom: settings.zoom === undefined ? true : settings.zoom,
+            tutorial:
+              settings.tutorial === undefined ? true : settings.tutorial,
+            sound: settings.sound === undefined ? true : settings.sound,
+          });
           setIsInit(true);
         } else {
           navigate("/");
@@ -271,10 +280,7 @@ export default function Play() {
 
   return (
     <>
-      {inventory &&
-      fullMapValue &&
-
-      fullMapValue.length > 0 ? (
+      {inventory && fullMapValue && fullMapValue.length > 0 ? (
         <>
           <MenuBar payloadActions={payloadActions} />
           <Achievements level={inventory[11]} />

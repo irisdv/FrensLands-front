@@ -38,12 +38,12 @@ export function Achievements(props: any) {
         showTutorial ? (
           <div
             className="btnShowTuto0 pixelated selectDisable"
-            onClick={() => updateTuto(!showTutorial, player.id as string)}
+            onClick={() => updateTuto(!showTutorial)}
           ></div>
         ) : (
           <div
             className="btnShowTuto1 pixelated selectDisable"
-            onClick={() => updateTuto(!showTutorial, player.id as string)}
+            onClick={() => updateTuto(!showTutorial)}
           ></div>
         )
       ) : (

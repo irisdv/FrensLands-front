@@ -1,5 +1,4 @@
 import React, { useReducer } from "react";
-import { updateTutorial, updateZoomRequest } from "../api/player";
 
 export interface IFrame {
   infraType?: number;
@@ -27,12 +26,10 @@ export interface ISelectState {
   frameData?: IFrame;
   updateBuildingFrame: (show: boolean, data: {}) => void;
   sound?: boolean;
-  // updateSound: (val : boolean) => void;
-  updateZoom: (val: boolean, account: string) => void;
-  // initZoom: (val : boolean) => void;
+  updateZoom: (val: boolean) => void;
   zoomMode?: boolean;
   tutoMode?: boolean;
-  updateTuto: (val: boolean, account: string) => void;
+  updateTuto: (val: boolean) => void;
   initSettings: (val: any) => void;
 }
 
@@ -41,12 +38,10 @@ export const SelectState: ISelectState = {
   frameData: undefined,
   updateBuildingFrame: (show, data) => {},
   sound: true,
-  // updateSound: (val) => {},
   zoomMode: true,
-  updateZoom: (val, account) => {},
-  // initZoom: (val) => {},
+  updateZoom: (val) => {},
   tutoMode: undefined,
-  updateTuto: (val, account) => {},
+  updateTuto: (val) => {},
   initSettings: (val) => {},
 };
 
@@ -78,13 +73,7 @@ interface SetSettings {
   sound?: boolean;
 }
 
-type Action =
-  | SetShowFrame
-  // | SetSound
-  | SetZoom
-  | SetTuto
-  | SetSettings
-  | SetError;
+type Action = SetShowFrame | SetZoom | SetTuto | SetSettings | SetError;
 
 function reducer(state: ISelectState, action: Action): ISelectState {
   switch (action.type) {
@@ -130,7 +119,6 @@ export const SelectStateProvider: React.FC<
   const [state, dispatch] = useReducer(reducer, SelectState);
 
   const updateBuildingFrame = React.useCallback((show: boolean, data: {}) => {
-    // console.log("data update building frame", data);
     dispatch({
       type: "set_showFrame",
       showFrame: show,
@@ -140,6 +128,7 @@ export const SelectStateProvider: React.FC<
 
   const initSettings = React.useCallback((val: any) => {
     // {zoom: val, tutorial: val, sound: val}
+    localStorage.setItem("settings", JSON.stringify(val));
     dispatch({
       type: "set_settings",
       zoomMode: val.zoom as boolean,
@@ -148,29 +137,33 @@ export const SelectStateProvider: React.FC<
     });
   }, []);
 
-  const updateZoom = React.useCallback((val: boolean, uid: string) => {
-    const _zoomUpdate = updateZoomRequest(uid, val);
-
-    _zoomUpdate.then((res) => {
-      if (res) {
-        dispatch({
-          type: "set_zoom",
-          zoomMode: val,
-        });
-      }
+  const updateZoom = React.useCallback((val: boolean) => {
+    localStorage.setItem(
+      "settings",
+      JSON.stringify({
+        zoom: val,
+        tutorial: state.tutoMode,
+        sound: state.sound,
+      })
+    );
+    dispatch({
+      type: "set_zoom",
+      zoomMode: val,
     });
   }, []);
 
-  const updateTuto = React.useCallback((val: boolean, uid: string) => {
-    const _tutoUpdate = updateTutorial(uid, val);
-
-    _tutoUpdate.then((res) => {
-      if (res) {
-        dispatch({
-          type: "set_tuto",
-          tutoMode: val,
-        });
-      }
+  const updateTuto = React.useCallback((val: boolean) => {
+    localStorage.setItem(
+      "settings",
+      JSON.stringify({
+        zoom: state.zoomMode,
+        tutorial: val,
+        sound: state.sound,
+      })
+    );
+    dispatch({
+      type: "set_tuto",
+      tutoMode: val,
     });
   }, []);
 
@@ -181,10 +174,8 @@ export const SelectStateProvider: React.FC<
         showFrame: state.showFrame,
         updateBuildingFrame,
         sound: state.sound,
-        // updateSound,
         zoomMode: state.zoomMode,
         updateZoom,
-        // initZoom,
         tutoMode: state.tutoMode,
         updateTuto,
         initSettings,

@@ -7,7 +7,7 @@ import { useFLContract } from "../../hooks/contracts/frenslands";
 import {
   bulkUpdateActions,
   // claimResourcesQuery,
-  reinitLand,
+  // reinitLand,
 } from "../../api/player";
 import { TransactionItem } from "./transactionItem";
 import { initMapArr } from "../../utils/land";
@@ -170,7 +170,7 @@ export function MenuBar(props: any) {
       updateActions(payloadActions);
 
       // Update in DB
-      const _updatedActions = bulkUpdateActions(player, payloadActions);
+      // const _updatedActions = bulkUpdateActions(player, payloadActions);
       setPopUpTxCart(false);
     });
   };
@@ -497,7 +497,7 @@ export function MenuBar(props: any) {
           <Notifications />
         </div>
       </div>
-      <div onClick={() => updateZoom(!zoomValue, player.id as string)}>
+      <div onClick={() => updateZoom(!zoomValue)}>
         {zoomValue ? (
           <div className="checkZoom1 pixelated"></div>
         ) : (
