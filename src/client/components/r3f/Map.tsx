@@ -189,6 +189,7 @@ export const Map = (props: any) => {
       if (keyMap.KeyD == true) {
         if (frameData?.infraType == 2) {
           setMovingBuilding(1);
+          setPlacementActive(1);
           updateBuildingFrame(false, {
             infraType:
               frontBlockArray[currBlockPos.y][currBlockPos.x].infraType,
@@ -350,7 +351,8 @@ export const Map = (props: any) => {
 
       setPlacementActive(0);
 
-      if (movingBuilding == 1) {
+      // if (movingBuilding == 1) {
+      if (frameData?.moved == 1) {
         // delete old location
         frontBlockArray[frameData.posY][frameData.posX].infraType = 0;
         frontBlockArray[frameData.posY][frameData.posX].type = 0;
@@ -392,7 +394,8 @@ export const Map = (props: any) => {
         });
 
         setMovingBuilding(0);
-      } else {
+      }
+      if (placementActive == 1) {
         console.log("create building on Map", frameData?.typeId);
 
         updateIncomingActions(
@@ -466,6 +469,16 @@ export const Map = (props: any) => {
         setUBlockIDs(UBlockIDs + 1);
         counters["uid" as any]++;
         console.log("counters uid", counters["uid" as any]);
+
+        updateBuildingFrame(false, {
+          infraType: selectedObj?.infraType,
+          id: selectedObj?.type_id,
+          unique_id: selectedObj?.unique_id,
+          posX: selectedObj?.pos?.x,
+          posY: selectedObj?.pos?.y,
+          selected: 0,
+          moved: 0,
+        });
       }
     }
 
