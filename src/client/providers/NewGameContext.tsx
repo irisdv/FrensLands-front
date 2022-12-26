@@ -1,9 +1,8 @@
 import React, { useReducer, useEffect, useState, useCallback } from "react";
 import { GetBlockResponse } from "starknet";
 import { fillStaticBuildings, fillStaticResources } from "../utils/static";
-import { initCounters, composeCycleRegister } from "../utils/building";
+import { initCounters } from "../utils/building";
 import { BuildDelay, HarvestDelay } from "../utils/constant";
-import { bulkUpdateActions, fuelProdEffective } from "../api/player";
 import { IStarknetWindowObject } from "get-starknet";
 import { allResources } from "../data/resources";
 import { allBuildings } from "../data/buildings";
@@ -40,7 +39,6 @@ export interface IPlayerBuilding {
 export interface INewGameState {
   staticResources: any[]; // static data resources spawned
   staticBuildings: any[]; // static data buildings
-  timeSpent: number; // ! to delete
   wallet: any; // starknet
   player: any; // player information (uid, landId, tokenId)
   fullMap: any[]; // fullMap array
@@ -78,7 +76,6 @@ export interface INewGameState {
 export const NewGameState: INewGameState = {
   staticResources: [],
   staticBuildings: [],
-  timeSpent: 0,
   wallet: null,
   player: [],
   fullMap: [],
@@ -101,7 +98,7 @@ export const NewGameState: INewGameState = {
   updateMapBlock: (_map) => {},
   transactions: [],
   updateTransactions: (tx) => {},
-  removeTransaction: (transaction_hash) => {},
+  removeTransaction: (transactionHash) => {},
   updateCycleRegister: (cycleRegister) => {},
   updateCounters: (counters) => {},
   updateClaimRegister: (claimRegister) => {},
@@ -315,18 +312,23 @@ export const NewAppStateProvider: React.FC<
   } = state;
 
   useEffect(() => {
-    if (state.wallet && isInit && transactions && transactions.length > 0) {
+    if (
+      typeof state.wallet !== "undefined" &&
+      isInit &&
+      typeof transactions !== "undefined" &&
+      transactions.length > 0
+    ) {
       const _rejectedTx: any[] = [];
-      transactions.map((transaction: any) => {
-        if (transaction.code == "TRANSACTION_RECEIVED") {
+      transactions.forEach((transaction: any) => {
+        if (transaction.code === "TRANSACTION_RECEIVED") {
           state.wallet.account
             .getTransactionReceipt(transaction.transaction_hash as string)
             .then((res: any) => {
               console.log("getTransactionReceipt", res);
-              if (res.status == "REJECTED") {
+              if (res.status === "REJECTED") {
                 transaction.code = "REJECTED";
                 payloadActions.map((action: any) => {
-                  if (action.txHash == transaction.transaction_hash) {
+                  if (action.txHash === transaction.transaction_hash) {
                     action.status = "REJECTED";
                     _rejectedTx.push(action);
                   }
@@ -335,8 +337,7 @@ export const NewAppStateProvider: React.FC<
             });
         }
       });
-      if (_rejectedTx && _rejectedTx.length > 0) {
-        const _update = bulkUpdateActions(player, payloadActions);
+      if (typeof _rejectedTx === "object" && _rejectedTx.length > 0) {
         updateActions(payloadActions);
       }
     }
@@ -345,14 +346,14 @@ export const NewAppStateProvider: React.FC<
   useEffect(() => {
     if (
       block != null &&
-      playerBuilding &&
-      cycleRegister &&
+      typeof playerBuilding !== "undefined" &&
+      typeof cycleRegister !== "undefined" &&
       !isInit &&
-      (player.claimRegister || player.claimRegister == 0)
+      (typeof player.claimRegister === "string" || player.claimRegister === 0)
     ) {
       const currentBlock = block.block_number;
       let lastClaimedBlock: number;
-      if (player.claimRegister == 0) {
+      if (player.claimRegister === 0) {
         lastClaimedBlock = 0;
       } else {
         const _last = player.claimRegister.split("|");
@@ -362,8 +363,8 @@ export const NewAppStateProvider: React.FC<
       Object.keys(cycleRegister).forEach((gameUid: any) => {
         cycleRegister[gameUid].map((fuelData: any) => {
           console.log("fuelData", fuelData);
-          const blockStart = fuelData[0];
-          const blockEnd = fuelData[1];
+          const blockStart = fuelData[0] as number;
+          const blockEnd = fuelData[1] as number;
 
           if (blockStart > lastClaimedBlock) {
             // Check par rapport au current block où on en est
@@ -426,7 +427,7 @@ export const NewAppStateProvider: React.FC<
                 building.activeCycles += 1;
 
                 // update active inactive counters
-                if (building.incomingCycles == 0) {
+                if (building.incomingCycles === 0) {
                   counters["inactive" as any] += 1;
                   counters["active" as any] -= 1;
                 }
@@ -440,13 +441,13 @@ export const NewAppStateProvider: React.FC<
               }
             });
 
-            let ongoingTx = JSON.parse(
+            const ongoingTx = JSON.parse(
               localStorage.getItem("ongoingTx") as string
             );
-            console.log("ongoingTx in state", ongoingTx);
+            // console.log('ongoingTx in state', ongoingTx)
             // localStorage.setItem('ongoingTx', JSON.stringify([]));
 
-            console.log("transactions", transactions);
+            // console.log('transactions', transactions)
 
             ongoingTx.map((ongoing: any) => {
               const tx = newBlock.transactions.filter((transaction: any) => {
@@ -462,14 +463,14 @@ export const NewAppStateProvider: React.FC<
                   return elem.transaction_hash !== ongoing.transaction_hash;
                 });
                 console.log("updatedOngoingTx", updatedOngoingTx);
-                if (!updatedOngoingTx) updatedOngoingTx = [];
+                if (typeof updatedOngoingTx !== "object") updatedOngoingTx = [];
                 localStorage.setItem(
                   "ongoingTx",
                   JSON.stringify(updatedOngoingTx)
                 );
 
                 // update transactions array to fire notification
-                let index = transactions.findIndex(
+                const index = transactions.findIndex(
                   (elem) => elem.transaction_hash === ongoing.transaction_hash
                 );
                 transactions[index].code = "ACCEPTED_ON_L2";
@@ -532,7 +533,7 @@ export const NewAppStateProvider: React.FC<
                           _lastRegister[1] + parseInt(calldata[4]),
                         ]);
                       }
-                      if (playerBuilding[gameId].incomingCycles == 0) {
+                      if (playerBuilding[gameId].incomingCycles === 0) {
                         counters["inactive" as any] -= 1;
                         counters["active" as any] += 1;
                       }
@@ -550,7 +551,7 @@ export const NewAppStateProvider: React.FC<
 
                 const payloadActionsFiltered = payloadActions.filter(
                   (elem: any) => {
-                    return elem.txHash != ongoing.transaction_hash;
+                    return elem.txHash !== ongoing.transaction_hash;
                   }
                 );
                 console.log("payloadActionsFiltered", payloadActionsFiltered);
@@ -655,7 +656,7 @@ export const NewAppStateProvider: React.FC<
           ? 4
           : 5;
       const staticResources = allResources.filter(
-        (res) => res.biomeId == biomeId
+        (res) => res.biomeId === biomeId
       );
       const fixResVal: any[] = fillStaticResources(staticResources);
       console.log("fixResVal = ", fixResVal);
@@ -728,21 +729,23 @@ export const NewAppStateProvider: React.FC<
       status: number
     ) => {
       if (
-        posX &&
-        posY &&
-        state.incomingActions &&
-        (status == 1 || status == 0)
+        typeof state.incomingActions !== "undefined" &&
+        (status === 1 || status === 0)
       ) {
         const currArr = state.incomingActions;
 
-        if (currArr && currArr[posY] != undefined) {
-          if (!currArr[posY][posX]) currArr[posY][posX] = [];
+        if (
+          typeof currArr === "object" &&
+          typeof currArr[posY] !== "undefined"
+        ) {
+          if (typeof currArr[posY][posX] === "undefined")
+            currArr[posY][posX] = [];
           currArr[posY][posX].uid = uid;
           currArr[posY][posX].status = status;
           currArr[posY][posX].harvestStartTime = time;
-          if (type == 1) {
+          if (type === 1) {
             currArr[posY][posX].harvestDelay = HarvestDelay;
-          } else if (type == 2) {
+          } else if (type === 2) {
             currArr[posY][posX].harvestDelay = BuildDelay;
           }
         } else {
@@ -751,9 +754,9 @@ export const NewAppStateProvider: React.FC<
           currArr[posY][posX].uid = uid;
           currArr[posY][posX].status = status;
           currArr[posY][posX].harvestStartTime = time;
-          if (type == 1) {
+          if (type === 1) {
             currArr[posY][posX].harvestDelay = HarvestDelay;
-          } else if (type == 2) {
+          } else if (type === 2) {
             currArr[posY][posX].harvestDelay = BuildDelay;
           }
         }
@@ -780,7 +783,7 @@ export const NewAppStateProvider: React.FC<
   const updatePlayerBuildingEntry = React.useCallback(
     (_playerBuilding: any) => {
       const _filteredArr = playerBuilding.filter((elem) => {
-        return elem.gameUid != _playerBuilding.gameUid;
+        return elem.gameUid !== _playerBuilding.gameUid;
       });
       _filteredArr[_playerBuilding.gameUid] = _playerBuilding;
       dispatch({
@@ -802,20 +805,20 @@ export const NewAppStateProvider: React.FC<
   );
 
   const removeTransaction = React.useCallback(
-    (transaction_hash: string) => {
+    (transactionHash: string) => {
       const index = state.transactions
         .map(function (e) {
           return e.transaction_hash;
         })
-        .indexOf(transaction_hash);
+        .indexOf(transactionHash);
 
       const _transactions = state.transactions;
 
-      if (_transactions[index].code == "TRANSACTION_RECEIVED") {
+      if (_transactions[index].code === "TRANSACTION_RECEIVED") {
         _transactions[index].show = false;
       } else if (
-        _transactions[index].code == "ACCEPTED_ON_L2" ||
-        _transactions[index].code == "REJECTED"
+        _transactions[index].code === "ACCEPTED_ON_L2" ||
+        _transactions[index].code === "REJECTED"
       ) {
         _transactions.splice(index, 1);
       }
@@ -863,7 +866,6 @@ export const NewAppStateProvider: React.FC<
       value={{
         staticResources: state.staticResources,
         staticBuildings: state.staticBuildings,
-        timeSpent: state.timeSpent,
         wallet: state.wallet,
         player: state.player,
         fullMap: state.fullMap,

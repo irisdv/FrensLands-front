@@ -71,6 +71,7 @@ export default function Play() {
         landId: ("0x" + landId.toString(16).padStart(64, "0")) as HexValue,
       },
     });
+    if (resetsFetched.data.reset.length === 0) return false;
     resetsFetched.data.reset.map((ev: any) => {
       const desiredTime = new Date("2022-12-26 15:00:00");
       const date = new Date(ev.timestamp);
@@ -81,7 +82,7 @@ export default function Play() {
 
   useEffect(() => {
     if (needReset && isInReset) {
-      let _tx = transactions.filter(
+      const _tx = transactions.filter(
         (tx: any) =>
           tx.entrypoint === "reinit_game" && tx.status === "ACCEPTED_ON_L2"
       );
@@ -90,7 +91,7 @@ export default function Play() {
   }, [needReset, isInReset, transactions]);
 
   const neverInit = (_wallet: any) => {
-    let _inventory = [];
+    const _inventory = [];
     _inventory[0] = 0;
     _inventory[1] = 0;
     _inventory[2] = 20;
@@ -105,9 +106,9 @@ export default function Play() {
     _inventory[11] = 1;
     console.log(_inventory);
 
-    let _fullMap = initMapArr(_wallet.account.address);
+    const _fullMap = initMapArr(_wallet.account.address);
 
-    let _buildings: any[] = [];
+    const _buildings: any[] = [];
     _buildings[1].activeCycles = 0;
     _buildings[1].decay = 100;
     _buildings[1].gameUid = 1;
@@ -117,7 +118,7 @@ export default function Play() {
     _buildings[1].posY = 8;
     _buildings[1].type = 1;
 
-    let _counters = [];
+    const _counters = [];
     _counters["uid" as any] = 1;
     _counters["incomingInventory" as any] = [];
     _counters["inactive" as any] = 0;
@@ -135,7 +136,7 @@ export default function Play() {
         landId: ("0x" + landId.toString(16).padStart(64, "0")) as HexValue,
       },
     });
-    let { res: _mapComp, counters } = composeFromIndexer(
+    const { res: _mapComp, counters } = composeFromIndexer(
       mapFetched.data.getLand[0].map,
       wallet.account.address
     );
@@ -143,15 +144,15 @@ export default function Play() {
 
     // Fetch buildings state from indexed on-chain data
     let skip = 0;
-    let limit = 10;
+    const limit = 10;
     let needFetch = true;
-    let playerBuildingsFetched: any = [];
+    const playerBuildingsFetched: any = [];
     while (needFetch) {
       const fetchBuilding = await getBuildings({
         variables: {
           landId: ("0x" + landId.toString(16).padStart(64, "0")) as HexValue,
-          skip: skip,
-          limit: limit,
+          skip,
+          limit,
         },
       });
       playerBuildingsFetched.push(...fetchBuilding.data.getBuildingsState);
@@ -162,7 +163,7 @@ export default function Play() {
       }
     }
 
-    let playerBuildings: any = [];
+    const playerBuildings: any = [];
     let lastUID = 0;
     const blockNb = await wallet.account.getBlock();
     playerBuildingsFetched &&
@@ -170,13 +171,13 @@ export default function Play() {
         const id = Number(building.buildingUid);
         let activeCycles = Number(building.activeCycles);
         let incomingCycles = Number(building.incomingCycles);
-        let lastFuel = Number(building.lastFuel);
+        const lastFuel = Number(building.lastFuel);
         if (incomingCycles > 0) {
           if (lastFuel + incomingCycles < blockNb.block_number) {
             activeCycles += incomingCycles;
             incomingCycles = 0;
           } else {
-            let fuelPassed = blockNb.block_number - lastFuel;
+            const fuelPassed = blockNb.block_number - lastFuel;
             activeCycles += fuelPassed;
             incomingCycles -= fuelPassed;
           }
@@ -186,9 +187,9 @@ export default function Play() {
           type: Number(building.buildingTypeId),
           posX: Number(building.posX),
           posY: Number(building.posY),
-          activeCycles: activeCycles,
-          incomingCycles: incomingCycles,
-          lastFuel: lastFuel,
+          activeCycles,
+          incomingCycles,
+          lastFuel,
           gameUid: id,
           decay: Number(building.decay),
         };
@@ -207,13 +208,13 @@ export default function Play() {
 
     console.log("counters", counters);
 
-    let _inventory = await wallet.account.callContract({
+    const _inventory = await wallet.account.callContract({
       contractAddress: frenslandsContract.address,
       entrypoint: "get_balance_all",
       calldata: [number.toFelt(landId)],
     });
 
-    let _pop = await wallet.account.callContract({
+    const _pop = await wallet.account.callContract({
       contractAddress: frenslandsContract.address,
       entrypoint: "get_pop",
       calldata: [number.toFelt(landId)],
@@ -255,7 +256,7 @@ export default function Play() {
                   setIsInit(true);
                 });
               } else {
-                let { _inventory, _fullMap, _buildings, _counters } =
+                const { _inventory, _fullMap, _buildings, _counters } =
                   neverInit(_wallet);
                 updateMapBlock(_fullMap);
                 updateCounters(_counters);

@@ -69,7 +69,7 @@ export function MenuBar(props: any) {
         const calldata = player.tokenId + "|0|" + block.block_number;
         addAction({
           entrypoint: "claim_production",
-          calldata: calldata,
+          calldata,
           status: "",
           txHash: "",
           validated: false,

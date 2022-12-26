@@ -384,7 +384,7 @@ export const Map = (props: any) => {
           pos.y;
         addAction({
           entrypoint: "move_infrastructure",
-          calldata: calldata,
+          calldata,
           status: "",
           txHash: "",
           validated: false,
@@ -467,7 +467,7 @@ export const Map = (props: any) => {
 
         addAction({
           entrypoint: "build",
-          calldata: calldata,
+          calldata,
           status: "",
           txHash: "",
           validated: false,

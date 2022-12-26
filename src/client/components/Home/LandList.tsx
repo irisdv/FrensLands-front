@@ -36,13 +36,13 @@ export default function MenuHome(props: any) {
   }, [data, isReady]);
 
   useEffect(() => {
-    if (tokenIdsArray && tokenIdsArray.length > 0) setIsReady(true);
+    if (tokenIdsArray != null && tokenIdsArray.length > 0) setIsReady(true);
   }, [tokenIdsArray]);
 
   const startGame = async (_tokenId: number) => {
     console.log("starting game for tokendId", _tokenId);
 
-    if (tokenIdsArray && tokenIdsArray.includes(_tokenId)) {
+    if (tokenIdsArray != null && tokenIdsArray.includes(_tokenId)) {
       const wasInit = await getInit({
         variables: {
           landId: ("0x" + _tokenId.toString(16).padStart(64, "0")) as HexValue,
@@ -99,7 +99,7 @@ export default function MenuHome(props: any) {
 
   return (
     <>
-      {data && data.tokens && isReady && tokenIdsArray && (
+      {data && data.tokens && isReady && tokenIdsArray != null && (
         <>
           <div className={`grid grid-cols-${data.tokens.length} px-8`}>
             {data.tokens.map((land: any) => {

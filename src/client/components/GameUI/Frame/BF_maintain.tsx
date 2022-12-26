@@ -171,7 +171,7 @@ export function BF_maintain(props: any) {
 
       addAction({
         entrypoint: "fuel_building_production",
-        calldata: calldata,
+        calldata,
         status: "",
         txHash: "",
         validated: false,
@@ -195,7 +195,7 @@ export function BF_maintain(props: any) {
       fuel = 100;
     } else if (inputFuel == 100) {
       const _max = maintainMax(typeId - 1, inventory, staticBuildingsData);
-      fuel = _max as number;
+      fuel = _max;
     }
 
     setInputFuel(fuel);
