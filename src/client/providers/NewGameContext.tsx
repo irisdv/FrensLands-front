@@ -366,8 +366,6 @@ export const NewAppStateProvider: React.FC<
           const blockEnd = fuelData[1];
 
           if (blockStart > lastClaimedBlock) {
-            // Rien n'a été claim dans ce fuel
-
             // Check par rapport au current block où on en est
             if (blockEnd <= currentBlock) {
               //
@@ -442,30 +440,50 @@ export const NewAppStateProvider: React.FC<
               }
             });
 
-            // Loop through ongoing transactions to check if it was validated
-            transactions.map((ongoing: any) => {
+            let ongoingTx = JSON.parse(
+              localStorage.getItem("ongoingTx") as string
+            );
+            console.log("ongoingTx in state", ongoingTx);
+            // localStorage.setItem('ongoingTx', JSON.stringify([]));
+
+            console.log("transactions", transactions);
+
+            ongoingTx.map((ongoing: any) => {
               const tx = newBlock.transactions.filter((transaction: any) => {
-                return transaction.transaction_hash == ongoing.transaction_hash;
+                return (
+                  transaction.transaction_hash === ongoing.transaction_hash
+                );
               });
               if (tx.length > 0) {
                 console.log("Tx accepted onchain", tx);
 
-                // update status in transactions array to fire notification
-                ongoing.code = "ACCEPTED_ON_L2";
-                ongoing.show = true;
+                // update local storage (delete ongoing tx for now from local storage)
+                let updatedOngoingTx = ongoingTx.filter((elem: any) => {
+                  return elem.transaction_hash !== ongoing.transaction_hash;
+                });
+                console.log("updatedOngoingTx", updatedOngoingTx);
+                if (!updatedOngoingTx) updatedOngoingTx = [];
+                localStorage.setItem(
+                  "ongoingTx",
+                  JSON.stringify(updatedOngoingTx)
+                );
 
-                // Update payloadActions included in this tx
-                const bulkUpdate: any[] = [];
+                // update transactions array to fire notification
+                let index = transactions.findIndex(
+                  (elem) => elem.transaction_hash === ongoing.transaction_hash
+                );
+                transactions[index].code = "ACCEPTED_ON_L2";
+                transactions[index].show = true;
+
+                // update actionPayload
                 payloadActions.map((action: any, index: number) => {
                   if (action.txHash === ongoing.transaction_hash) {
-                    // console.log('same', action.entrypoint)
-
                     action.validated = true;
                     action.status = "ACCEPTED_ON_L2";
-                    bulkUpdate.push(action);
 
                     // Cas action build
-                    if (action.entrypoint == "build") {
+                    if (action.entrypoint === "build") {
+                      console.log("case action build");
                       // Increase incoming cycles by 1 in context
                       const calldata = action.calldata.split("|");
                       const gameId =
@@ -477,6 +495,11 @@ export const NewAppStateProvider: React.FC<
                           .type > 3
                       ) {
                         playerBuilding[gameId].incomingCycles += 1;
+                        console.log(
+                          "newBlock.block_number",
+                          newBlock.block_number
+                        );
+                        playerBuilding[gameId].lastFuel = newBlock.block_number;
                         cycleRegister[gameId] = [];
                         cycleRegister[gameId].push([
                           newBlock.block_number,
@@ -488,19 +511,15 @@ export const NewAppStateProvider: React.FC<
                         counters["active" as any] += 1;
                       }
                     } else if (
-                      action.entrypoint == "fuel_building_production"
+                      action.entrypoint === "fuel_building_production"
                     ) {
-                      // console.log('entrypoint FUEL BUILDING PRODUCTION')
-                      // Cas action fuel building production
+                      console.log("case action fuel_building_production");
                       const calldata = action.calldata.split("|");
                       const gameId =
                         fullMap[parseInt(calldata[3])][parseInt(calldata[2])]
                           .id;
-                      // console.log('playerBuilding[gameId].incomingCycles', playerBuilding[gameId].incomingCycles)
-                      // console.log('cycleRegister', cycleRegister)
                       const _lastRegister =
                         cycleRegister[gameId][cycleRegister[gameId].length - 1];
-                      // console.log('_lastRegister', _lastRegister)
                       if (_lastRegister[1] < newBlock.block_number) {
                         // Update cycleRegister and playerBuilding incoming cycles
                         cycleRegister[gameId].push([
@@ -520,22 +539,14 @@ export const NewAppStateProvider: React.FC<
                       playerBuilding[gameId].incomingCycles += parseInt(
                         calldata[4]
                       );
+                      console.log(
+                        "newBlock.block_number",
+                        newBlock.block_number
+                      );
+                      playerBuilding[gameId].lastFuel = newBlock.block_number;
                     }
                   }
                 });
-
-                let cycleRegisterStr: any = composeCycleRegister(cycleRegister);
-                if (player.cycleRegister !== cycleRegisterStr) {
-                  player.cycleRegister = cycleRegisterStr;
-                } else {
-                  cycleRegisterStr = 0;
-                }
-
-                const _updateAfterValidated = fuelProdEffective(
-                  player,
-                  bulkUpdate,
-                  cycleRegisterStr
-                );
 
                 const payloadActionsFiltered = payloadActions.filter(
                   (elem: any) => {
@@ -551,8 +562,6 @@ export const NewAppStateProvider: React.FC<
                 updateCounters(counters);
               }
             });
-
-            // TODO handle tx rejected
             return newBlock;
           });
         })
@@ -653,15 +662,15 @@ export const NewAppStateProvider: React.FC<
       //  - - - - - - PLAYER ARRAY - - - - - -
 
       const playerArray: any = [];
-      // playerArray.landId = land.id;
       playerArray.tokenId = tokenId;
-      // playerArray.id = userId;
       playerArray.biomeId = biomeId;
-      // playerArray.cycleRegister = land.cycleRegister || ""; // String buildingGameUid-blockStart-blockEnd | ...
-      // playerArray.claimRegister = land.claimRegister || 0; // String avec blockNb|blockNb
       playerArray.cycleRegister = "";
       playerArray.claimRegister = 0;
       console.log("playerArray", playerArray);
+      // playerArray.cycleRegister = land.cycleRegister || ""; // String buildingGameUid-blockStart-blockEnd | ...
+      // playerArray.claimRegister = land.claimRegister || 0; // String avec blockNb|blockNb
+      // playerArray.landId = land.id;
+      // playerArray.id = userId;
 
       //  - - - - - - ONGOING TX - - - - - -
 

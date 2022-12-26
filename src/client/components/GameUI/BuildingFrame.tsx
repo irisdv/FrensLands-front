@@ -37,7 +37,6 @@ export function BuildingFrame(props: any) {
   }, [show, showFrame, frameData]);
 
   const frameDataValue = useMemo(() => {
-    console.log("frameDataValue", frameData);
     return frameData;
   }, [frameData]);
 

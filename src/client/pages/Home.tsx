@@ -12,15 +12,11 @@ import UI_Frames from "../style/resources/front/Ui_Frames3.svg";
 
 export default function Home() {
   const [wallet, setWallet] = useState<IStarknetWindowObject>();
-  const [signedIn, setSignedIn] = useState(false);
   const [hasLand, setHasLand] = useState<ILand>();
   const [balance, setBalance] = useState<any>(null);
-  const [userId, setUserId] = useState("");
-  const [userLands, setUserLands] = useState<any[]>([]);
   const navigate = useNavigate();
   const scrollRef = useRef<null | HTMLDivElement>(null);
   const mapsContract = useMapsContract();
-  const [showNotifPause, setShowNotifPause] = useState(false);
 
   const connectWallet = async () => {
     const _wallet = await getStarknet();
@@ -119,12 +115,7 @@ export default function Home() {
               {/* User is connected, has an NFT but doesn't have a land  */}
               {wallet?.isConnected && hasLand == null && balance > 0 ? (
                 <>
-                  <LandList
-                    account={wallet.account.address}
-                    userId={userId}
-                    userLands={userLands}
-                    starknet={wallet}
-                  />
+                  <LandList account={wallet.account.address} />
                 </>
               ) : (
                 <></>

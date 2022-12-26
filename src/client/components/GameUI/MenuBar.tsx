@@ -4,13 +4,9 @@ import UI_Frames from "../../style/resources/front/Ui_Frames3.svg";
 import { useSelectContext } from "../../hooks/useSelectContext";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
 import { useFLContract } from "../../hooks/contracts/frenslands";
-import {
-  bulkUpdateActions,
-  // claimResourcesQuery,
-  // reinitLand,
-} from "../../api/player";
 import { TransactionItem } from "./transactionItem";
 import { initMapArr } from "../../utils/land";
+import { number } from "starknet";
 
 export function MenuBar(props: any) {
   const {
@@ -28,7 +24,6 @@ export function MenuBar(props: any) {
     updateInventory,
     updatePlayerBuildings,
     updateMapBlock,
-    fullMap,
   } = useNewGameContext();
   const { zoomMode, updateZoom } = useSelectContext();
   const frenslandsContract = useFLContract();
@@ -86,48 +81,35 @@ export function MenuBar(props: any) {
   };
 
   const reinitializeLand = async () => {
-    if (player.tokenId) {
-      // Update inventory
-      inventory.map((elem: any, index: any) => {
-        inventory[index] = 0;
-      });
-      console.log("inventory", inventory);
-      updateInventory(inventory);
+    wallet.account
+      .execute({
+        contractAddress: frenslandsContract.address.toLowerCase(),
+        entrypoint: "reinit_game",
+        calldata: [number.toFelt(player.tokenId), 0],
+      })
+      .then((response: any) => {
+        response.show = true;
+        transactions.push(response);
 
-      // Update buildings
-      let _buildings = playerBuilding.filter((res) => {
-        return res.gameUid == 1;
-      });
-      updatePlayerBuildings(_buildings);
-
-      updateMapBlock(initialMap);
-
-      counters[1] = [];
-      counters[2] = [];
-      counters["incomingInventory" as any] = [];
-      counters["inactive" as any] = 0;
-      counters["active" as any] = 0;
-      counters["blockClaimable" as any] = 0;
-      updateCounters(counters);
-
-      let hasStarted = true;
-      const _hasStarted = payloadActions.filter((action: any) => {
-        return action.entrypoint == "start_game";
-      });
-      if (_hasStarted && _hasStarted.length > 0) hasStarted = false;
-
-      let _actions = [
-        {
-          entrypoint: hasStarted ? "reinit_game" : "start_game",
+        payloadActions.push({
+          entrypoint: "reinit_game",
           calldata: player.tokenId + "|0",
-          status: "",
-          txHash: "",
-          validated: false,
-        },
-      ];
-      updateActions(_actions);
-      setPopUpInit(false);
-    }
+          status: response.code,
+          txHash: response.transaction_hash,
+        });
+        updateActions(payloadActions);
+
+        // Update in localStorage
+        let ongoingTx = JSON.parse(localStorage.getItem("ongoingTx") as string);
+        if (!ongoingTx) ongoingTx = [];
+        ongoingTx.push({
+          ...response,
+          time: Date.now(),
+        });
+        localStorage.setItem("ongoingTx", JSON.stringify(ongoingTx));
+      });
+    // todo reload page when tx accepted
+    // setPopUpInit(false);
   };
 
   const zoomValue = useMemo(() => {
@@ -135,42 +117,58 @@ export function MenuBar(props: any) {
   }, [zoomMode, wallet]);
 
   const buildMulticall = async () => {
-    console.log("building multicall w/ actions = ", payloadActions);
+    console.log("building multicall w/ first 80 actions = ", payloadActions);
 
     const _calls: any[] = [];
-    payloadActions.forEach((action: any) => {
-      // Build calldata
+    for (
+      let i = 0;
+      i < (payloadActions.length > 80 ? 80 : payloadActions.length);
+      i++
+    ) {
       if (
-        action.status != "TRANSACTION_RECEIVED" &&
-        action.status != "ACCEPTED_ON_L2"
+        payloadActions[i].status != "TRANSACTION_RECEIVED" &&
+        payloadActions[i].status != "ACCEPTED_ON_L2"
       ) {
         const _calldata: any[] = [];
-        const _data = action.calldata.split("|");
+        const _data = payloadActions[i].calldata.split("|");
 
         _data.forEach((elem: any) => {
           _calldata.push(elem);
         });
         _calls.push({
           contractAddress: frenslandsContract.address.toLowerCase(),
-          entrypoint: action.entrypoint as string,
+          entrypoint: payloadActions[i].entrypoint as string,
           calldata: _calldata,
         });
       }
-    });
+    }
 
     wallet.account.execute(_calls).then((response: any) => {
       console.log("response", response);
       response.show = true;
       transactions.push(response);
 
-      payloadActions.map((action: any) => {
-        action.status = response.code;
-        action.txHash = response.transaction_hash;
-      });
+      for (
+        let i = 0;
+        i < (payloadActions.length > 80 ? 80 : payloadActions.length);
+        i++
+      ) {
+        payloadActions[i].status = response.code;
+        payloadActions[i].txHash = response.transaction_hash;
+      }
       updateActions(payloadActions);
 
-      // Update in DB
-      // const _updatedActions = bulkUpdateActions(player, payloadActions);
+      // Update in localStorage
+      let ongoingTx = JSON.parse(localStorage.getItem("ongoingTx") as string);
+      console.log("ongoingTx before", ongoingTx);
+      if (!ongoingTx) ongoingTx = [];
+      ongoingTx.push({
+        ...response,
+        time: Date.now(),
+      });
+      console.log("ongoingTx after", ongoingTx);
+      localStorage.setItem("ongoingTx", JSON.stringify(ongoingTx));
+
       setPopUpTxCart(false);
     });
   };

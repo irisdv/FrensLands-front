@@ -1,35 +1,17 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, useLazyQuery } from "@apollo/client";
 import { hexToDecimalString } from "starknet/utils/number";
 import { allMetadata } from "../../data/metadata";
 import UI_Frames from "../../style/resources/front/Ui_Frames3.svg";
 import { useNavigate } from "react-router-dom";
-import { useFLContract } from "../../hooks/contracts/frenslands";
-import { number } from "starknet";
-
-export const TOKENS_QUERY = gql`
-  query tokens($owner: HexValue) {
-    tokens(owner: $owner) {
-      tokenId
-      owner
-    }
-  }
-`;
-
-export const INIT_QUERY = gql`
-  query tokens($owner: HexValue) {
-    tokens(owner: $owner) {
-      tokenId
-      owner
-    }
-  }
-`;
+import { INIT_QUERY, TOKENS_QUERY } from "../../api/queries";
 
 export default function MenuHome(props: any) {
-  const { account, userId, starknet } = props;
+  const { account } = props;
   const navigate = useNavigate();
   const [isReady, setIsReady] = useState(false);
-  const frenslandsContract = useFLContract();
+  const [getInit, { loading: loadingInit, data: initData, error: initError }] =
+    useLazyQuery(INIT_QUERY);
 
   const {
     data,
@@ -44,7 +26,6 @@ export default function MenuHome(props: any) {
   const tokenIdsArray = useMemo(() => {
     if (data && data.tokens && data.tokens.length > 0) {
       const _tokenIds: any[] = [];
-      console.log("data", data);
       data.tokens.map((land: any) => {
         _tokenIds.push(parseInt(hexToDecimalString(land.tokenId)));
       });
@@ -62,18 +43,17 @@ export default function MenuHome(props: any) {
     console.log("starting game for tokendId", _tokenId);
 
     if (tokenIdsArray && tokenIdsArray.includes(_tokenId)) {
-      const _res = await starknet.account.callContract({
-        contractAddress: frenslandsContract.address,
-        entrypoint: "get_building_counter",
-        calldata: [number.toFelt(_tokenId)],
+      const wasInit = await getInit({
+        variables: {
+          landId: ("0x" + _tokenId.toString(16).padStart(64, "0")) as HexValue,
+        },
       });
-      console.log("building counter", Number(_res.result[0]));
+      console.log("land wasInit", wasInit.data.wasInit);
 
       navigate("/play", {
         state: {
           landId: _tokenId,
-          wasInit: Number(_res.result[0]) === 0 ? false : true,
-          bCounter: Number(_res.result[0]),
+          wasInit: wasInit.data.wasInit,
         },
       });
     }

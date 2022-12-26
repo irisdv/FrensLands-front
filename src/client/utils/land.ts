@@ -482,6 +482,8 @@ export const composeFromChain = (mapFromChain: any, wallet: any) => {
     }
     let temp = Number(mapFromChain[i]);
     let block: any[any] = [];
+
+    if (x == 20 && y == 8) console.log("temp = ", Number(mapFromChain[i]));
     if (temp == 0) {
       block.infraType = 0;
       block.type = 0;
@@ -533,6 +535,81 @@ export const composeFromChain = (mapFromChain: any, wallet: any) => {
 
     res[y][x] = block;
     x++;
+  }
+  return { res, counters };
+};
+
+export const composeFromIndexer = (mapFromIndexer: any, wallet: any) => {
+  let res: any[] = [];
+
+  let counters: any = [];
+  counters[1] = [];
+  counters[2] = [];
+
+  for (let i = 0; i < 16; i++) {
+    res[i + 1] = [];
+
+    for (let j = 0; j < 40; j++) {
+      let block: any[any] = [];
+
+      if (mapFromIndexer[i][j] == "0") {
+        block.infraType = 0;
+        block.type = 0;
+        block.id = 0;
+        block.state = 0;
+        block.blockType = 1;
+        block.blockFertility = 99;
+      } else {
+        block.infraType = parseInt(mapFromIndexer[i][j][0]);
+        block.type = parseInt(
+          mapFromIndexer[i][j][1] + mapFromIndexer[i][j][2]
+        );
+        block.id = parseInt(
+          mapFromIndexer[i][j][3] +
+            mapFromIndexer[i][j][4] +
+            mapFromIndexer[i][j][5] +
+            mapFromIndexer[i][j][6]
+        );
+        block.state = parseInt(mapFromIndexer[i][j][7]);
+        block.blockType = parseInt(mapFromIndexer[i][j][8]);
+        block.blockFertility = parseInt(
+          mapFromIndexer[i][j][9] + mapFromIndexer[i][j][10]
+        );
+      }
+
+      if (block.infraType == 1) {
+        if (block.type == 1) {
+          let randomNum: number = random(block.id, wallet) * (3 - 1) + 1;
+          randomNum = parseInt(randomNum.toFixed(0));
+          block.randType = randomNum;
+        } else if (block.type == 2) {
+          let randomNum: number = random(block.id, wallet) * (6 - 4) + 4;
+          randomNum = parseInt(randomNum.toFixed(0));
+          block.randType = randomNum;
+        } else if (block.type == 3) {
+          block.randType = 7;
+        } else if (block.type == 4) {
+          block.randType = 8;
+        }
+      }
+      block.status = 1; // status (0: harvesting / building ongoing)
+      block.posX = j + 1; // posX
+      block.posY = i + 1; // posY
+
+      if (block.infraType != 0) {
+        let currCounter = 0;
+        if (
+          counters[block.infraType] &&
+          counters[block.infraType][block.type] &&
+          counters[block.infraType][block.type] > 0
+        ) {
+          currCounter = counters[block.infraType][block.type];
+        }
+        counters[block.infraType][block.type] = currCounter + 1;
+      }
+
+      res[i + 1][j + 1] = block;
+    }
   }
   return { res, counters };
 };

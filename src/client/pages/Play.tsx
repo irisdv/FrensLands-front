@@ -12,12 +12,15 @@ import { useFLContract } from "../hooks/contracts/frenslands";
 import { number } from "starknet";
 import {
   calculatePlayerLevel,
-  composeFromChain,
+  composeFromIndexer,
   initMapArr,
 } from "../utils/land";
 import { allBuildings } from "../data/buildings";
 import { fillStaticBuildings } from "../utils/static";
 import { initCounters } from "../utils/building";
+import { useLazyQuery } from "@apollo/client";
+import UI_Frames from "../style/resources/front/Ui_Frames3.svg";
+import { BUILDINGS_QUERY, MAP_QUERY, RESET_QUERY } from "../api/queries";
 
 export default function Play() {
   const {
@@ -33,20 +36,58 @@ export default function Play() {
     updateMapBlock,
     updateCounters,
     updatePlayerBuildings,
+    transactions,
+    updateActions,
     addAction,
   } = useNewGameContext();
   const { initSettings } = useSelectContext();
   const { state } = useLocation();
-  const { landId, wasInit, bCounter } = state;
+  const { landId, wasInit } = state;
   const navigate = useNavigate();
   const [textArrRef, setTextArrRef] = useState<any[]>([]);
   const [isInit, setIsInit] = useState(false);
   const frenslandsContract = useFLContract();
+  const [needReset, setNeedReset] = useState(false);
+  const [isInReset, setIsInReset] = useState(false);
+  const [
+    getBuildings,
+    { loading: loadingBuilding, data: dataBuilding, error: errorBuilding },
+  ] = useLazyQuery(BUILDINGS_QUERY);
+  const [getLand, { loading: loadingLand, data: dataLand, error: errorLand }] =
+    useLazyQuery(MAP_QUERY);
+  const [
+    getResets,
+    { loading: loadingResets, data: dataResets, error: errorResets },
+  ] = useLazyQuery(RESET_QUERY);
 
   const fullMapValue = useMemo(() => {
-    console.log("fullMap in Play.tsx", fullMap);
     return fullMap;
   }, [fullMap]);
+
+  const checkResets = async () => {
+    let _needReset = true;
+    const resetsFetched = await getResets({
+      variables: {
+        landId: ("0x" + landId.toString(16).padStart(64, "0")) as HexValue,
+      },
+    });
+    resetsFetched.data.reset.map((ev: any) => {
+      const desiredTime = new Date("2022-12-26 15:00:00");
+      const date = new Date(ev.timestamp);
+      if (date > desiredTime) _needReset = false;
+    });
+    return _needReset;
+  };
+
+  useEffect(() => {
+    if (needReset && isInReset) {
+      let _tx = transactions.filter(
+        (tx: any) =>
+          tx.entrypoint === "reinit_game" && tx.status === "ACCEPTED_ON_L2"
+      );
+      if (_tx && _tx.length > 0) navigate("/");
+    }
+  }, [needReset, isInReset, transactions]);
 
   const neverInit = (_wallet: any) => {
     let _inventory = [];
@@ -66,17 +107,15 @@ export default function Play() {
 
     let _fullMap = initMapArr(_wallet.account.address);
 
-    let _buildings = [];
-    _buildings[1] = {
-      activeCycles: 0,
-      decay: 100,
-      gameUid: 1,
-      incomingCycles: 0,
-      lastFuel: 0,
-      posX: 20,
-      posY: 8,
-      type: 1,
-    };
+    let _buildings: any[] = [];
+    _buildings[1].activeCycles = 0;
+    _buildings[1].decay = 100;
+    _buildings[1].gameUid = 1;
+    _buildings[1].incomingCycles = 0;
+    _buildings[1].lastFuel = 0;
+    _buildings[1].posX = 20;
+    _buildings[1].posY = 8;
+    _buildings[1].type = 1;
 
     let _counters = [];
     _counters["uid" as any] = 1;
@@ -90,55 +129,53 @@ export default function Play() {
     return { _inventory, _fullMap, _buildings, _counters };
   };
 
-  const getMap = async (wallet: any, landId: number) => {
-    let _map = await wallet.account.callContract({
-      contractAddress: frenslandsContract.address,
-      entrypoint: "get_map_array",
-      calldata: [number.toFelt(landId)],
+  const fetchLandInfo = async (wallet: any, landId: number) => {
+    const mapFetched = await getLand({
+      variables: {
+        landId: ("0x" + landId.toString(16).padStart(64, "0")) as HexValue,
+      },
     });
-    _map.result.splice(0, 1);
-    console.log("_map", _map.result);
-    let { res: _mapComp, counters } = composeFromChain(
-      _map.result,
+    let { res: _mapComp, counters } = composeFromIndexer(
+      mapFetched.data.getLand[0].map,
       wallet.account.address
     );
-    console.log("_mapComp", _mapComp);
+    console.log("map fetched", _mapComp);
 
-    let _cabinDecay = await wallet.account.callContract({
-      contractAddress: frenslandsContract.address,
-      entrypoint: "get_building_decay",
-      calldata: [number.toFelt(landId), number.toFelt(1)],
-    });
-    console.log("_cabinDecay", Number(_cabinDecay.result[0]));
+    // Fetch buildings state from indexed on-chain data
+    let skip = 0;
+    let limit = 10;
+    let needFetch = true;
+    let playerBuildingsFetched: any = [];
+    while (needFetch) {
+      const fetchBuilding = await getBuildings({
+        variables: {
+          landId: ("0x" + landId.toString(16).padStart(64, "0")) as HexValue,
+          skip: skip,
+          limit: limit,
+        },
+      });
+      playerBuildingsFetched.push(...fetchBuilding.data.getBuildingsState);
+      if (fetchBuilding.data.getBuildingsState.length < limit) {
+        needFetch = false;
+      } else {
+        skip += limit;
+      }
+    }
 
     let playerBuildings: any = [];
     let lastUID = 0;
-
-    if (bCounter > 1) {
-      let _buildings = await wallet.account.callContract({
-        contractAddress: frenslandsContract.address,
-        entrypoint: "get_all_buildings_data",
-        calldata: [number.toFelt(landId)],
-      });
-      console.log("_buildings", _buildings);
-
-      _buildings.result.splice(0, 1);
-      const blockNb = await wallet.account.getBlock();
-
-      for (let i = 0; i < _buildings.result.length; i += 6) {
-        let id = Number(_buildings.result[i]);
-        let pos_start = Number(_buildings.result[i + 2]).toString();
-        let activeCycles = Number(_buildings.result[i + 3]);
-        let incomingCycles = Number(_buildings.result[i + 4]);
-        let lastFuel = Number(_buildings.result[i + 5]);
-
+    const blockNb = await wallet.account.getBlock();
+    playerBuildingsFetched &&
+      playerBuildingsFetched.map(async (building: any) => {
+        const id = Number(building.buildingUid);
+        let activeCycles = Number(building.activeCycles);
+        let incomingCycles = Number(building.incomingCycles);
+        let lastFuel = Number(building.lastFuel);
         if (incomingCycles > 0) {
           if (lastFuel + incomingCycles < blockNb.block_number) {
-            // tout le fuel est passé
             activeCycles += incomingCycles;
             incomingCycles = 0;
           } else {
-            // seulement une partie du fuel est passé
             let fuelPassed = blockNb.block_number - lastFuel;
             activeCycles += fuelPassed;
             incomingCycles -= fuelPassed;
@@ -146,33 +183,18 @@ export default function Play() {
         }
 
         playerBuildings[id] = {
-          type: Number(_buildings.result[i + 1]),
-          posX: Number(pos_start[0] + pos_start[1]),
-          posY: Number(pos_start[2] + pos_start[3]),
+          type: Number(building.buildingTypeId),
+          posX: Number(building.posX),
+          posY: Number(building.posY),
           activeCycles: activeCycles,
           incomingCycles: incomingCycles,
           lastFuel: lastFuel,
-          gameUid: Number(_buildings.result[i]),
-          decay: Number(
-            _buildings.result[i + 1] === 1 ? Number(_cabinDecay.result[0]) : 0
-          ),
+          gameUid: id,
+          decay: Number(building.decay),
         };
         if (id > lastUID) lastUID = id;
-      }
-      console.log("playerBuildings", playerBuildings);
-    } else {
-      playerBuildings[1] = {
-        activeCycles: 0,
-        decay: Number(_cabinDecay.result[0]),
-        gameUid: 1,
-        incomingCycles: 0,
-        lastFuel: 0,
-        posX: 20,
-        posY: 8,
-        type: 1,
-      };
-      lastUID = 1;
-    }
+      });
+    console.log("from indexer buildings", playerBuildings);
 
     const { incomingInventory, inactive, active, nbBlocksClaimable } =
       initCounters(playerBuildings, fillStaticBuildings(allBuildings));
@@ -202,6 +224,7 @@ export default function Play() {
     for (let i = 0; i < 7; i++) {
       inventory[i] = Number(_inventory.result[i]);
     }
+    inventory[7] = 0;
     inventory[8] = Number(_pop.result[2]);
     inventory[9] = Number(_pop.result[1]);
     inventory[10] = 0;
@@ -219,45 +242,53 @@ export default function Play() {
           initPlayer(_wallet);
           initGameSession(landId);
 
-          if (wasInit) {
-            getMap(_wallet, landId).then((res) => {
-              updateMapBlock(res._mapComp);
-              updateCounters(res.counters);
-              updatePlayerBuildings(res.playerBuildings);
-              updateInventory(res.inventory);
-            });
-          } else {
-            let { _inventory, _fullMap, _buildings, _counters } =
-              neverInit(_wallet);
-            updateMapBlock(_fullMap);
-            updateCounters(_counters);
-            updatePlayerBuildings(_buildings);
-            updateInventory(_inventory);
-            addAction({
-              entrypoint: "start_game",
-              calldata: landId + "|0",
-              status: "",
-              txHash: "",
-              validated: false,
-            });
-          }
+          // Check if land was Reset before fixing contract bug
+          checkResets().then((res: any) => {
+            if (!res) {
+              setNeedReset(false);
+              if (wasInit) {
+                fetchLandInfo(_wallet, landId).then((res) => {
+                  updateMapBlock(res._mapComp);
+                  updateCounters(res.counters);
+                  updatePlayerBuildings(res.playerBuildings);
+                  updateInventory(res.inventory);
+                  setIsInit(true);
+                });
+              } else {
+                let { _inventory, _fullMap, _buildings, _counters } =
+                  neverInit(_wallet);
+                updateMapBlock(_fullMap);
+                updateCounters(_counters);
+                updatePlayerBuildings(_buildings);
+                updateInventory(_inventory);
+                addAction({
+                  entrypoint: "start_game",
+                  calldata: landId + "|0",
+                  status: "",
+                  txHash: "",
+                  validated: false,
+                });
+                setIsInit(true);
+              }
+            } else {
+              setNeedReset(true);
+            }
+          });
           const settings = JSON.parse(
             localStorage.getItem("settings") as string
           );
-          console.log("settings", settings);
           initSettings({
             zoom: settings.zoom === undefined ? true : settings.zoom,
             tutorial:
               settings.tutorial === undefined ? true : settings.tutorial,
             sound: settings.sound === undefined ? true : settings.sound,
           });
-          setIsInit(true);
         } else {
           navigate("/");
         }
       });
     }
-  }, [wallet]);
+  }, [wallet, landId, dataBuilding, dataLand]);
 
   useEffect(() => {
     let x = 0;
@@ -277,6 +308,38 @@ export default function Play() {
     }
     setTextArrRef(textArrRefTemp);
   }, []);
+
+  const sendResetTx = async () => {
+    wallet.account
+      .execute({
+        contractAddress: frenslandsContract.address.toLowerCase(),
+        entrypoint: "reinit_game",
+        calldata: [number.toFelt(landId), 0],
+      })
+      .then((response: any) => {
+        response.show = true;
+        response.entrypoint = "reinit_game";
+        transactions.push(response);
+
+        payloadActions.push({
+          entrypoint: "reinit_game",
+          calldata: landId + "|0",
+          status: response.code,
+          txHash: response.transaction_hash,
+        });
+        updateActions(payloadActions);
+
+        // Update in localStorage
+        let ongoingTx = JSON.parse(localStorage.getItem("ongoingTx") as string);
+        if (!ongoingTx) ongoingTx = [];
+        ongoingTx.push({
+          ...response,
+          time: Date.now(),
+        });
+        localStorage.setItem("ongoingTx", JSON.stringify(ongoingTx));
+        setIsInReset(true);
+      });
+  };
 
   return (
     <>
@@ -307,6 +370,60 @@ export default function Play() {
             src="resources/front/LoadingScreen.gif"
             className="mx-auto my-auto"
           />
+        </div>
+      )}
+      {needReset && (
+        <div
+          className="flex justify-center selectDisable absolute"
+          style={{
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <div className="parentNotifBug">
+            <div
+              className="popUpNotifsTxCart pixelated fontHPxl-sm"
+              style={{
+                zIndex: 1,
+                borderImage: `url(data:image/svg+xml;base64,${btoa(
+                  UI_Frames
+                )}) 18 fill stretch`,
+                textAlign: "center",
+              }}
+            >
+              <p>
+                We had to update the contracts to fix a bug. Please reset your
+                land to continue playing. This action will reset the state of
+                your land.
+              </p>
+
+              <br />
+              {needReset && !isInReset && (
+                <div style={{ overflowY: "auto", height: "310px" }}>
+                  <div
+                    className="btnCustom pixelated relative"
+                    onClick={async () => await sendResetTx()}
+                  >
+                    <p
+                      className="relative fontHpxl_JuicyXL"
+                      style={{ marginTop: "47px" }}
+                    >
+                      Send TX
+                    </p>
+                  </div>
+                </div>
+              )}
+              {needReset && isInReset && (
+                <p>
+                  Transaction ongoing...
+                  <br />
+                  You'll be redirected to the homepage once the transaction is
+                  accepted.
+                </p>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </>

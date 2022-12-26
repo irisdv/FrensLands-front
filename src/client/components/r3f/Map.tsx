@@ -14,7 +14,6 @@ import Resources from "./Resources";
 import { Frens } from "./Frens";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
 import { addToBuildingArray, createBuildingPay } from "../../utils/building";
-// import { buildAction, moveAction } from "../../api/player";
 import { calculatePlayerLevel, ComposeD } from "../../utils/land";
 
 export interface ISelectObject {
@@ -111,22 +110,18 @@ export const Map = (props: any) => {
   const frameDataValue = useMemo(() => {
     if (frameData != null) {
       if (frameData.selected == 1) {
-        console.log("frameData.selected == 1");
         setPlacementActive(1);
       } else {
-        console.log("frameData.selected == 0");
         setPlacementActive(0);
       }
       if (frameData.moved == 1) {
-        console.log("frameData.moved == 1");
         setMovingBuilding(1);
       } else {
-        console.log("frameData.moved == 0");
         setMovingBuilding(0);
       }
       return frameData;
     }
-  }, [frameData]);
+  }, [frameData, placementActive, movingBuilding]);
 
   useFrame(({ mouse, raycaster }) => {
     // Create a variable with the speed value to change it with weather
@@ -209,10 +204,7 @@ export const Map = (props: any) => {
         }
       }
 
-      // if (movingBuilding == 1 || placementActive == 1) {
       if (frameDataValue?.selected == 1) {
-        // frameDataValue?.selected == 1;
-        // if (placementActive == 0) setPlacementActive(1);
         setTempBuildMesh(
           new Vector3(
             currBlockPos.x + 0.5,
@@ -346,7 +338,6 @@ export const Map = (props: any) => {
       spaceValid == 1 &&
       frameData?.selected &&
       frameData?.selected == 1 &&
-      // placementActive == 1 &&
       frameData?.typeId &&
       frameData?.infraType &&
       frameData.infraType == 2 &&
@@ -358,7 +349,6 @@ export const Map = (props: any) => {
 
       setPlacementActive(0);
 
-      // if (movingBuilding == 1) {
       if (frameData?.moved == 1) {
         // delete old location
         frontBlockArray[frameData.posY][frameData.posX].infraType = 0;
@@ -404,9 +394,6 @@ export const Map = (props: any) => {
       }
 
       if (frameData.selected == 1) {
-        console.log("create building on Map", frameData?.typeId);
-        console.log("building, moved == ", frameData?.moved);
-
         updateBuildingFrame(false, {
           infraType: selectedObj?.infraType,
           id: selectedObj?.type_id,
