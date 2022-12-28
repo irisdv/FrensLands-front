@@ -137,6 +137,7 @@ export default function Play() {
         landId: ("0x" + landId.toString(16).padStart(64, "0")) as HexValue,
       },
     });
+    console.log('mapFetched', mapFetched)
     const { res: _mapComp, counters } = composeFromIndexer(
       mapFetched.data.getLand[0].map,
       wallet.account.address
