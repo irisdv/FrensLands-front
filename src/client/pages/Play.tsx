@@ -166,6 +166,7 @@ export default function Play() {
     const playerBuildings: any = [];
     let lastUID = 0;
     const blockNb = await wallet.account.getBlock();
+    console.log('playerBuildingsFetched', playerBuildingsFetched)
     typeof playerBuildingsFetched !== "undefined" &&
       playerBuildingsFetched.map(async (building: any) => {
         const id = Number(building.buildingUid);
@@ -278,6 +279,7 @@ export default function Play() {
           const settings = JSON.parse(
             localStorage.getItem("settings") as string
           );
+          console.log('settings', settings)
           initSettings({
             zoom: typeof settings.zoom === undefined ? true : settings.zoom,
             tutorial:
