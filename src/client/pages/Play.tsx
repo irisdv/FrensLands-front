@@ -71,14 +71,13 @@ export default function Play() {
         landId: ("0x" + landId.toString(16).padStart(64, "0")) as HexValue,
       },
     });
-    console.log('resetsFetched.data', resetsFetched.data)
-    console.log('resetsFetched.data', resetsFetched.data.reset.length)
     if (resetsFetched.data.reset.length === 0) return false;
-    resetsFetched.data.reset.length > 0 && resetsFetched.data.reset.map((ev: any) => {
-      const desiredTime = new Date("2022-12-26 15:00:00");
-      const date = new Date(ev.timestamp);
-      if (date > desiredTime) _needReset = false;
-    });
+    resetsFetched.data.reset.length > 0 &&
+      resetsFetched.data.reset.map((ev: any) => {
+        const desiredTime = new Date("2022-12-26 15:00:00");
+        const date = new Date(ev.timestamp);
+        if (date > desiredTime) _needReset = false;
+      });
     return _needReset;
   };
 
@@ -169,7 +168,7 @@ export default function Play() {
     let lastUID = 0;
     const blockNb = await wallet.account.getBlock();
     console.log("playerBuildingsFetched", playerBuildingsFetched);
-    typeof playerBuildingsFetched !== "undefined" &&
+    playerBuildingsFetched.length > 0 &&
       playerBuildingsFetched.map(async (building: any) => {
         const id = Number(building.buildingUid);
         let activeCycles = Number(building.activeCycles);
@@ -283,9 +282,9 @@ export default function Play() {
           );
           console.log("settings", settings);
           initSettings({
-            zoom: settings && settings.zoom || true,
-            tutorial: settings && settings.tutorial || true,
-            sound: settings && settings.sound || true,
+            zoom: (settings && settings.zoom) || true,
+            tutorial: (settings && settings.tutorial) || true,
+            sound: (settings && settings.sound) || true,
           });
         } else {
           navigate("/");
