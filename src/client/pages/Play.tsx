@@ -282,7 +282,7 @@ export default function Play() {
           );
           console.log("settings", settings);
           initSettings({
-            zoom: settings.zoom || true,
+            zoom: settings && settings.zoom || true,
             tutorial:
               typeof settings !== "undefined" &&
               typeof settings.tutorial !== "undefined"
