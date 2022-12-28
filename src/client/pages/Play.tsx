@@ -71,6 +71,7 @@ export default function Play() {
         landId: ("0x" + landId.toString(16).padStart(64, "0")) as HexValue,
       },
     });
+    console.log('resetsFetched.data', resetsFetched.data)
     if (resetsFetched.data.reset.length === 0) return false;
     resetsFetched.data.reset.map((ev: any) => {
       const desiredTime = new Date("2022-12-26 15:00:00");
@@ -283,17 +284,17 @@ export default function Play() {
           initSettings({
             zoom:
               typeof settings !== "undefined" &&
-              typeof settings.zoom !== undefined
+              typeof settings.zoom !== "undefined"
                 ? settings.zoom
                 : true,
             tutorial:
               typeof settings !== "undefined" &&
-              typeof settings.tutorial !== undefined
+              typeof settings.tutorial !== "undefined"
                 ? settings.tutorial
                 : true,
             sound:
               typeof settings !== "undefined" &&
-              typeof settings.sound !== undefined
+              typeof settings.sound !== "undefined"
                 ? settings.sound
                 : true,
           });
