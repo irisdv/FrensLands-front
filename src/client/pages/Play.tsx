@@ -72,8 +72,9 @@ export default function Play() {
       },
     });
     console.log('resetsFetched.data', resetsFetched.data)
+    console.log('resetsFetched.data', resetsFetched.data.reset.length)
     if (resetsFetched.data.reset.length === 0) return false;
-    resetsFetched.data.reset.map((ev: any) => {
+    resetsFetched.data.reset.length > 0 && resetsFetched.data.reset.map((ev: any) => {
       const desiredTime = new Date("2022-12-26 15:00:00");
       const date = new Date(ev.timestamp);
       if (date > desiredTime) _needReset = false;
@@ -283,16 +284,8 @@ export default function Play() {
           console.log("settings", settings);
           initSettings({
             zoom: settings && settings.zoom || true,
-            tutorial:
-              typeof settings !== "undefined" &&
-              typeof settings.tutorial !== "undefined"
-                ? settings.tutorial
-                : true,
-            sound:
-              typeof settings !== "undefined" &&
-              typeof settings.sound !== "undefined"
-                ? settings.sound
-                : true,
+            tutorial: settings && settings.tutorial || true,
+            sound: settings && settings.sound || true,
           });
         } else {
           navigate("/");
