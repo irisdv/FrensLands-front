@@ -313,9 +313,9 @@ export const NewAppStateProvider: React.FC<
 
   useEffect(() => {
     if (
-      typeof state.wallet !== "undefined" &&
+      state.wallet &&
       isInit &&
-      typeof transactions !== "undefined" &&
+      transactions &&
       transactions.length > 0
     ) {
       const _rejectedTx: any[] = [];
@@ -346,8 +346,8 @@ export const NewAppStateProvider: React.FC<
   useEffect(() => {
     if (
       block != null &&
-      typeof playerBuilding !== "undefined" &&
-      typeof cycleRegister !== "undefined" &&
+      playerBuilding &&
+      cycleRegister &&
       !isInit &&
       (typeof player.claimRegister === "string" || player.claimRegister === 0)
     ) {
@@ -361,7 +361,7 @@ export const NewAppStateProvider: React.FC<
       }
 
       Object.keys(cycleRegister).forEach((gameUid: any) => {
-        cycleRegister[gameUid].map((fuelData: any) => {
+        cycleRegister[gameUid].length > 0 && cycleRegister[gameUid].map((fuelData: any) => {
           console.log("fuelData", fuelData);
           const blockStart = fuelData[0] as number;
           const blockEnd = fuelData[1] as number;
@@ -421,7 +421,7 @@ export const NewAppStateProvider: React.FC<
             }
 
             // Update incoming & active cycles of each building
-            playerBuilding.map((building: any) => {
+            playerBuilding.length > 0 && playerBuilding.map((building: any) => {
               if (building.incomingCycles > 0) {
                 building.incomingCycles -= 1;
                 building.activeCycles += 1;
@@ -449,7 +449,7 @@ export const NewAppStateProvider: React.FC<
 
             // console.log('transactions', transactions)
 
-            ongoingTx.map((ongoing: any) => {
+            ongoingTx && ongoingTx.map((ongoing: any) => {
               const tx = newBlock.transactions.filter((transaction: any) => {
                 return (
                   transaction.transaction_hash === ongoing.transaction_hash
