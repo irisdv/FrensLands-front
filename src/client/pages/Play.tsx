@@ -166,7 +166,7 @@ export default function Play() {
     const playerBuildings: any = [];
     let lastUID = 0;
     const blockNb = await wallet.account.getBlock();
-    console.log('playerBuildingsFetched', playerBuildingsFetched)
+    console.log("playerBuildingsFetched", playerBuildingsFetched);
     typeof playerBuildingsFetched !== "undefined" &&
       playerBuildingsFetched.map(async (building: any) => {
         const id = Number(building.buildingUid);
@@ -279,12 +279,23 @@ export default function Play() {
           const settings = JSON.parse(
             localStorage.getItem("settings") as string
           );
-          console.log('settings', settings)
+          console.log("settings", settings);
           initSettings({
-            zoom: typeof settings.zoom === undefined ? true : settings.zoom,
+            zoom:
+              typeof settings !== "undefined" &&
+              typeof settings.zoom !== undefined
+                ? settings.zoom
+                : true,
             tutorial:
-              typeof settings.tutorial === undefined ? true : settings.tutorial,
-            sound: typeof settings.sound === undefined ? true : settings.sound,
+              typeof settings !== "undefined" &&
+              typeof settings.tutorial !== undefined
+                ? settings.tutorial
+                : true,
+            sound:
+              typeof settings !== "undefined" &&
+              typeof settings.sound !== undefined
+                ? settings.sound
+                : true,
           });
         } else {
           navigate("/");
