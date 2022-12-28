@@ -312,12 +312,7 @@ export const NewAppStateProvider: React.FC<
   } = state;
 
   useEffect(() => {
-    if (
-      state.wallet &&
-      isInit &&
-      transactions &&
-      transactions.length > 0
-    ) {
+    if (state.wallet && isInit && transactions && transactions.length > 0) {
       const _rejectedTx: any[] = [];
       transactions.forEach((transaction: any) => {
         if (transaction.code === "TRANSACTION_RECEIVED") {
@@ -361,41 +356,46 @@ export const NewAppStateProvider: React.FC<
       }
 
       Object.keys(cycleRegister).forEach((gameUid: any) => {
-        cycleRegister[gameUid].length > 0 && cycleRegister[gameUid].map((fuelData: any) => {
-          console.log("fuelData", fuelData);
-          const blockStart = fuelData[0] as number;
-          const blockEnd = fuelData[1] as number;
+        cycleRegister[gameUid].length > 0 &&
+          cycleRegister[gameUid].map((fuelData: any) => {
+            console.log("fuelData", fuelData);
+            const blockStart = fuelData[0] as number;
+            const blockEnd = fuelData[1] as number;
 
-          if (blockStart > lastClaimedBlock) {
-            // Check par rapport au current block où on en est
-            if (blockEnd <= currentBlock) {
-              //
-              playerBuilding[gameUid].activeCycles += blockEnd - blockStart;
-            } else {
-              // une partie seulement du fuel est passée
-              const _activeCycles = currentBlock - blockStart;
-              console.log("_activeCycles", _activeCycles);
-              playerBuilding[gameUid].activeCycles += _activeCycles;
-              playerBuilding[gameUid].incomingCycles += blockEnd - currentBlock;
-              console.log("blockEnd - _activeCycles", blockEnd - currentBlock);
-            }
-          } else {
-            if (blockEnd > lastClaimedBlock) {
-              // Une partie n'a pas été claimed
-              const _remainingCycles = blockEnd - lastClaimedBlock;
+            if (blockStart > lastClaimedBlock) {
+              // Check par rapport au current block où on en est
               if (blockEnd <= currentBlock) {
-                // tout est déjà passé
-                playerBuilding[gameUid].activeCycles += _remainingCycles;
+                //
+                playerBuilding[gameUid].activeCycles += blockEnd - blockStart;
               } else {
-                // une partie seulement
-                const _activeCycles = currentBlock - lastClaimedBlock;
+                // une partie seulement du fuel est passée
+                const _activeCycles = currentBlock - blockStart;
+                console.log("_activeCycles", _activeCycles);
                 playerBuilding[gameUid].activeCycles += _activeCycles;
                 playerBuilding[gameUid].incomingCycles +=
                   blockEnd - currentBlock;
+                console.log(
+                  "blockEnd - _activeCycles",
+                  blockEnd - currentBlock
+                );
+              }
+            } else {
+              if (blockEnd > lastClaimedBlock) {
+                // Une partie n'a pas été claimed
+                const _remainingCycles = blockEnd - lastClaimedBlock;
+                if (blockEnd <= currentBlock) {
+                  // tout est déjà passé
+                  playerBuilding[gameUid].activeCycles += _remainingCycles;
+                } else {
+                  // une partie seulement
+                  const _activeCycles = currentBlock - lastClaimedBlock;
+                  playerBuilding[gameUid].activeCycles += _activeCycles;
+                  playerBuilding[gameUid].incomingCycles +=
+                    blockEnd - currentBlock;
+                }
               }
             }
-          }
-        });
+          });
       });
 
       // Init counters
@@ -421,25 +421,26 @@ export const NewAppStateProvider: React.FC<
             }
 
             // Update incoming & active cycles of each building
-            playerBuilding.length > 0 && playerBuilding.map((building: any) => {
-              if (building.incomingCycles > 0) {
-                building.incomingCycles -= 1;
-                building.activeCycles += 1;
+            playerBuilding.length > 0 &&
+              playerBuilding.map((building: any) => {
+                if (building.incomingCycles > 0) {
+                  building.incomingCycles -= 1;
+                  building.activeCycles += 1;
 
-                // update active inactive counters
-                if (building.incomingCycles === 0) {
-                  counters["inactive" as any] += 1;
-                  counters["active" as any] -= 1;
-                }
+                  // update active inactive counters
+                  if (building.incomingCycles === 0) {
+                    counters["inactive" as any] += 1;
+                    counters["active" as any] -= 1;
+                  }
 
-                // update incomingInventories & blockClaimable in counters
-                for (let i = 0; i < 8; i++) {
-                  counters["incomingInventory" as any][i] +=
-                    state.staticBuildings[building.type - 1].production[i];
+                  // update incomingInventories & blockClaimable in counters
+                  for (let i = 0; i < 8; i++) {
+                    counters["incomingInventory" as any][i] +=
+                      state.staticBuildings[building.type - 1].production[i];
+                  }
+                  counters["blockClaimable" as any] += 1;
                 }
-                counters["blockClaimable" as any] += 1;
-              }
-            });
+              });
 
             const ongoingTx = JSON.parse(
               localStorage.getItem("ongoingTx") as string
@@ -449,120 +450,125 @@ export const NewAppStateProvider: React.FC<
 
             // console.log('transactions', transactions)
 
-            ongoingTx && ongoingTx.map((ongoing: any) => {
-              const tx = newBlock.transactions.filter((transaction: any) => {
-                return (
-                  transaction.transaction_hash === ongoing.transaction_hash
-                );
-              });
-              if (tx.length > 0) {
-                console.log("Tx accepted onchain", tx);
-
-                // update local storage (delete ongoing tx for now from local storage)
-                let updatedOngoingTx = ongoingTx.filter((elem: any) => {
-                  return elem.transaction_hash !== ongoing.transaction_hash;
+            ongoingTx &&
+              ongoingTx.map((ongoing: any) => {
+                const tx = newBlock.transactions.filter((transaction: any) => {
+                  return (
+                    transaction.transaction_hash === ongoing.transaction_hash
+                  );
                 });
-                console.log("updatedOngoingTx", updatedOngoingTx);
-                if (typeof updatedOngoingTx !== "object") updatedOngoingTx = [];
-                localStorage.setItem(
-                  "ongoingTx",
-                  JSON.stringify(updatedOngoingTx)
-                );
+                if (tx.length > 0) {
+                  console.log("Tx accepted onchain", tx);
 
-                // update transactions array to fire notification
-                const index = transactions.findIndex(
-                  (elem) => elem.transaction_hash === ongoing.transaction_hash
-                );
-                transactions[index].code = "ACCEPTED_ON_L2";
-                transactions[index].show = true;
+                  // update local storage (delete ongoing tx for now from local storage)
+                  let updatedOngoingTx = ongoingTx.filter((elem: any) => {
+                    return elem.transaction_hash !== ongoing.transaction_hash;
+                  });
+                  console.log("updatedOngoingTx", updatedOngoingTx);
+                  if (typeof updatedOngoingTx !== "object")
+                    updatedOngoingTx = [];
+                  localStorage.setItem(
+                    "ongoingTx",
+                    JSON.stringify(updatedOngoingTx)
+                  );
 
-                // update actionPayload
-                payloadActions.map((action: any, index: number) => {
-                  if (action.txHash === ongoing.transaction_hash) {
-                    action.validated = true;
-                    action.status = "ACCEPTED_ON_L2";
+                  // update transactions array to fire notification
+                  const index = transactions.findIndex(
+                    (elem) => elem.transaction_hash === ongoing.transaction_hash
+                  );
+                  transactions[index].code = "ACCEPTED_ON_L2";
+                  transactions[index].show = true;
 
-                    // Cas action build
-                    if (action.entrypoint === "build") {
-                      console.log("case action build");
-                      // Increase incoming cycles by 1 in context
-                      const calldata = action.calldata.split("|");
-                      const gameId =
-                        fullMap[parseInt(calldata[3])][parseInt(calldata[2])]
-                          .id;
+                  // update actionPayload
+                  payloadActions.map((action: any, index: number) => {
+                    if (action.txHash === ongoing.transaction_hash) {
+                      action.validated = true;
+                      action.status = "ACCEPTED_ON_L2";
 
-                      if (
-                        fullMap[parseInt(calldata[3])][parseInt(calldata[2])]
-                          .type > 3
+                      // Cas action build
+                      if (action.entrypoint === "build") {
+                        console.log("case action build");
+                        // Increase incoming cycles by 1 in context
+                        const calldata = action.calldata.split("|");
+                        const gameId =
+                          fullMap[parseInt(calldata[3])][parseInt(calldata[2])]
+                            .id;
+
+                        if (
+                          fullMap[parseInt(calldata[3])][parseInt(calldata[2])]
+                            .type > 3
+                        ) {
+                          playerBuilding[gameId].incomingCycles += 1;
+                          console.log(
+                            "newBlock.block_number",
+                            newBlock.block_number
+                          );
+                          playerBuilding[gameId].lastFuel =
+                            newBlock.block_number;
+                          cycleRegister[gameId] = [];
+                          cycleRegister[gameId].push([
+                            newBlock.block_number,
+                            newBlock.block_number + 1,
+                          ]);
+
+                          // update counters
+                          counters["inactive" as any] -= 1;
+                          counters["active" as any] += 1;
+                        }
+                      } else if (
+                        action.entrypoint === "fuel_building_production"
                       ) {
-                        playerBuilding[gameId].incomingCycles += 1;
+                        console.log("case action fuel_building_production");
+                        const calldata = action.calldata.split("|");
+                        const gameId =
+                          fullMap[parseInt(calldata[3])][parseInt(calldata[2])]
+                            .id;
+                        const _lastRegister =
+                          cycleRegister[gameId][
+                            cycleRegister[gameId].length - 1
+                          ];
+                        if (_lastRegister[1] < newBlock.block_number) {
+                          // Update cycleRegister and playerBuilding incoming cycles
+                          cycleRegister[gameId].push([
+                            newBlock.block_number,
+                            newBlock.block_number + parseInt(calldata[4]),
+                          ]);
+                        } else {
+                          cycleRegister[gameId].push([
+                            _lastRegister[1],
+                            _lastRegister[1] + parseInt(calldata[4]),
+                          ]);
+                        }
+                        if (playerBuilding[gameId].incomingCycles === 0) {
+                          counters["inactive" as any] -= 1;
+                          counters["active" as any] += 1;
+                        }
+                        playerBuilding[gameId].incomingCycles += parseInt(
+                          calldata[4]
+                        );
                         console.log(
                           "newBlock.block_number",
                           newBlock.block_number
                         );
                         playerBuilding[gameId].lastFuel = newBlock.block_number;
-                        cycleRegister[gameId] = [];
-                        cycleRegister[gameId].push([
-                          newBlock.block_number,
-                          newBlock.block_number + 1,
-                        ]);
-
-                        // update counters
-                        counters["inactive" as any] -= 1;
-                        counters["active" as any] += 1;
                       }
-                    } else if (
-                      action.entrypoint === "fuel_building_production"
-                    ) {
-                      console.log("case action fuel_building_production");
-                      const calldata = action.calldata.split("|");
-                      const gameId =
-                        fullMap[parseInt(calldata[3])][parseInt(calldata[2])]
-                          .id;
-                      const _lastRegister =
-                        cycleRegister[gameId][cycleRegister[gameId].length - 1];
-                      if (_lastRegister[1] < newBlock.block_number) {
-                        // Update cycleRegister and playerBuilding incoming cycles
-                        cycleRegister[gameId].push([
-                          newBlock.block_number,
-                          newBlock.block_number + parseInt(calldata[4]),
-                        ]);
-                      } else {
-                        cycleRegister[gameId].push([
-                          _lastRegister[1],
-                          _lastRegister[1] + parseInt(calldata[4]),
-                        ]);
-                      }
-                      if (playerBuilding[gameId].incomingCycles === 0) {
-                        counters["inactive" as any] -= 1;
-                        counters["active" as any] += 1;
-                      }
-                      playerBuilding[gameId].incomingCycles += parseInt(
-                        calldata[4]
-                      );
-                      console.log(
-                        "newBlock.block_number",
-                        newBlock.block_number
-                      );
-                      playerBuilding[gameId].lastFuel = newBlock.block_number;
                     }
-                  }
-                });
+                  });
 
-                const payloadActionsFiltered = payloadActions.filter(
-                  (elem: any) => {
-                    return elem.txHash !== ongoing.transaction_hash;
-                  }
-                );
-                console.log("payloadActionsFiltered", payloadActionsFiltered);
-                // Update values in context w/ dispatch
-                updateActions(payloadActionsFiltered);
-                updateTransactions(transactions);
-                updatePlayerBuildings(playerBuilding);
-                updateCycleRegister(cycleRegister);
-                updateCounters(counters);
-              }
-            });
+                  const payloadActionsFiltered = payloadActions.filter(
+                    (elem: any) => {
+                      return elem.txHash !== ongoing.transaction_hash;
+                    }
+                  );
+                  console.log("payloadActionsFiltered", payloadActionsFiltered);
+                  // Update values in context w/ dispatch
+                  updateActions(payloadActionsFiltered);
+                  updateTransactions(transactions);
+                  updatePlayerBuildings(playerBuilding);
+                  updateCycleRegister(cycleRegister);
+                  updateCounters(counters);
+                }
+              });
             return newBlock;
           });
         })

@@ -137,7 +137,6 @@ export default function Play() {
         landId: ("0x" + landId.toString(16).padStart(64, "0")) as HexValue,
       },
     });
-    console.log('mapFetched', mapFetched)
     const { res: _mapComp, counters } = composeFromIndexer(
       mapFetched.data.getLand[0].map,
       wallet.account.address
@@ -157,7 +156,6 @@ export default function Play() {
           limit,
         },
       });
-      console.log('fetchBuilding', fetchBuilding)
       playerBuildingsFetched.push(...fetchBuilding.data.getBuildingsState);
       if (fetchBuilding.data.getBuildingsState.length < limit) {
         needFetch = false;
@@ -169,8 +167,8 @@ export default function Play() {
     const playerBuildings: any = [];
     let lastUID = 0;
     const blockNb = await wallet.account.getBlock();
-    console.log("playerBuildingsFetched", playerBuildingsFetched);
-    playerBuildingsFetched && playerBuildingsFetched.length > 0 &&
+    playerBuildingsFetched &&
+      playerBuildingsFetched.length > 0 &&
       playerBuildingsFetched.map(async (building: any) => {
         const id = Number(building.buildingUid);
         let activeCycles = Number(building.activeCycles);
