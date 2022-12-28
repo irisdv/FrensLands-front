@@ -82,7 +82,7 @@ export default function Play() {
   };
 
   useEffect(() => {
-    if (needReset && isInReset) {
+    if (needReset && isInReset && transactions.length > 0) {
       const _tx = transactions.filter(
         (tx: any) =>
           tx.entrypoint === "reinit_game" && tx.status === "ACCEPTED_ON_L2"
@@ -157,6 +157,7 @@ export default function Play() {
           limit,
         },
       });
+      console.log('fetchBuilding', fetchBuilding)
       playerBuildingsFetched.push(...fetchBuilding.data.getBuildingsState);
       if (fetchBuilding.data.getBuildingsState.length < limit) {
         needFetch = false;
@@ -169,7 +170,7 @@ export default function Play() {
     let lastUID = 0;
     const blockNb = await wallet.account.getBlock();
     console.log("playerBuildingsFetched", playerBuildingsFetched);
-    playerBuildingsFetched.length > 0 &&
+    playerBuildingsFetched && playerBuildingsFetched.length > 0 &&
       playerBuildingsFetched.map(async (building: any) => {
         const id = Number(building.buildingUid);
         let activeCycles = Number(building.activeCycles);
