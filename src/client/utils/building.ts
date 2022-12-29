@@ -8,43 +8,11 @@
 
 import { HarvestDelay } from "./constant";
 
-// FUNCTION TO DO
-
-// ||||||- enough to harvest : resources / population (type of resource spawned)
-// ||||||- enough to build : resources / population (type of building)
-// ||||||- enough to repair
-// ||||||- get resource / population back from destroying (type of building) ---> unsigned_div_rem keep just quotient | full pop
-// ||||||- enough to fuel production of one building (type of building)
-// ||||||- calculate total claimable resources ()
-// ||||||- can move an infrastructure (is movable, destination block is empty)
-// ||||||- make array of fix building values
-// ||||||- make array of fix resources values
-// ||||||- create building
-// ||||||- repair building
-// ||||||- maintain building
-// ||||||- destroy building
-// ||||||- harvest resources
-// ||||||- receive resources from harvest (with timer)  ----> Need to create a Special Incoming array (checked often)
-// ||||||- levelManagement (increase/decrease)
-// ||||||- REV_cancelCreate
-// ||||||- REV_cancelHarvest
-// ||||||- REV_cancelRepair
-// ||||||- REV_cancelMaintain
-// - REV_cancelMove
-// ||||||- Calculate how many refill you can do on a prod building
-// ||||||- get id from position X|Y
-// ||||||- check if all buildings are still fueled on this cycle and decrement the cycles
-// ||||||- add a number of cycles per building when fueled
-// ||||||- composeD of buildings registers to send to DB
-// ||||||incoming id->timestamp
-
-const incomingArr: any[] = [];
-
 export const addElemToIncoming = (
   incomingArr: any,
   id: number,
   timeStamp: number
-) => {
+): any[] => {
   const i: number = incomingArr.length;
 
   incomingArr[i] = [];
@@ -54,11 +22,11 @@ export const addElemToIncoming = (
   return incomingArr;
 };
 
-export const deleteElemFromIncoming = (incomingArr: any, id: number) => {
+export const deleteElemFromIncoming = (incomingArr: any, id: number): any[] => {
   let i: number = 0;
 
   while (i < incomingArr.length) {
-    if (incomingArr[i].id == id) {
+    if (incomingArr[i].id === id) {
       incomingArr.splice(i);
     }
     i++;
@@ -66,25 +34,29 @@ export const deleteElemFromIncoming = (incomingArr: any, id: number) => {
   return incomingArr;
 };
 
-export const incomingCompose = (incomingArr: any) => {
+export const incomingCompose = (incomingArr: any): string => {
   let i: number = 0;
   let comp: string = "";
 
   while (i < incomingArr.length) {
-    comp = incomingArr[i].id + "-" + incomingArr[i].timeStamp + "|";
+    comp =
+      (incomingArr[i].id as string) +
+      "-" +
+      (incomingArr[i].timeStamp as string) +
+      "|";
     i++;
   }
   return comp;
 };
 
-export const incomingComposeD = (comp: string, time: number) => {
+export const incomingComposeD = (comp: string, time: number): any[] => {
   const incomingArr: any[] = [];
   const compArr = comp.split("|");
 
-  compArr.map((elem: any, index: number) => {
+  compArr.forEach((elem: any, index: number) => {
     if (elem.length > 0) {
       const val = elem.split("-");
-      if (val[1] + HarvestDelay < time) {
+      if (parseInt(val[1]) + HarvestDelay < time) {
         incomingArr[index] = [];
         incomingArr[index].id = val[0];
         incomingArr[index].timeStamp = val[1];
@@ -95,16 +67,16 @@ export const incomingComposeD = (comp: string, time: number) => {
 };
 
 // COMPOSE ALL BUILDING'S CYCLE REGISTER FOR DB
-export const cycleRegisterCompose = (mapBuildingArray: any) => {
+export const cycleRegisterCompose = (mapBuildingArray: any): string => {
   let i: number = 0;
   let cycleReg: string = "";
 
   while (i < mapBuildingArray.length) {
     cycleReg =
       cycleReg +
-      mapBuildingArray[i].id +
+      (mapBuildingArray[i].id as string) +
       "-" +
-      mapBuildingArray[i].cycleRegister +
+      (mapBuildingArray[i].cycleRegister as string) +
       "|";
     i++;
   }
@@ -115,18 +87,18 @@ export const cycleRegisterCompose = (mapBuildingArray: any) => {
 export const cycleRegisterComposeD = (
   cycleReg: string,
   mapBuildingArray: any
-) => {
+): any[] => {
   let i: number = 0;
   let tempId: string = "";
   let id: number = 0;
 
   while (i < cycleReg.length) {
-    if (cycleReg[i] == "-") {
+    if (cycleReg[i] === "-") {
       id = parseInt(tempId);
       tempId = "";
-      while (cycleReg[i] != "|") {
+      while (cycleReg[i] !== "|") {
         mapBuildingArray[id].cycleRegister =
-          mapBuildingArray[id].cycleRegister + cycleReg[i];
+          (mapBuildingArray[id].cycleRegister as string) + cycleReg[i];
         i++;
       }
       i++;
@@ -140,34 +112,33 @@ export const cycleRegisterComposeD = (
 // CHECK AT EVERY CYCLE THE ACTIVE CYCLES LEFT AND UPDATE MAPBUILDING ARRAY ACCORDINGLY
 // called every block change
 // Adds a 0 or 1 in cycleRegister of each building
-export const checkFuelBuildings = (mapBuildingArray: any) => {
-  const i: number = 0;
-
-  while (i < mapBuildingArray.length) {
-    if (mapBuildingArray[i].activeCycles > 0) {
-      if (mapBuildingArray[i].activeCycles == 1) {
-        mapBuildingArray[i].activeCycles = 0;
-        mapBuildingArray[i].cycleRegister =
-          mapBuildingArray[i].cycleRegister + "0";
-      } else if (mapBuildingArray[i].activeCycles > 1) {
-        mapBuildingArray[i].activeCycles -= 1;
-        mapBuildingArray[i].cycleRegister =
-          mapBuildingArray[i].cycleRegister + "1";
+export const checkFuelBuildings = (mapBuildingArray: any): any[] => {
+  return mapBuildingArray.map((building: any) => {
+    if (building.activeCycles > 0) {
+      if (building.activeCycles === 1) {
+        building.activeCycles = 0;
+        building.cycleRegister = (building.cycleRegister as string) + "0";
+      } else if (building.activeCycles > 1) {
+        building.activeCycles -= 1;
+        building.cycleRegister = (building.cycleRegister as string) + "1";
       }
-    } else if (mapBuildingArray[i].activeCycles == 0) {
-      mapBuildingArray[i].cycleRegister =
-        mapBuildingArray[i].cycleRegister + "0";
+    } else if (building.activeCycles === 0) {
+      building.cycleRegister = (building.cycleRegister as string) + "0";
     }
-  }
-  return mapBuildingArray;
+    return building;
+  });
 };
 
 // MAXIMUM REFILL YOU CAN DO TO A BUILDING
-export const maintainMax = (id: number, inventory: any, fixBuildVal: any) => {
+export const maintainMax = (
+  id: number,
+  inventory: any,
+  fixBuildVal: any
+): number => {
   let i: number = 0;
   let numRefill: number = 0;
 
-  while (numRefill == 0 || numRefill) {
+  while (numRefill === 0 || numRefill) {
     while (i < fixBuildVal[id].maintainCost.length) {
       if (inventory[i] < fixBuildVal[id].maintainCost[i] * (numRefill + 1)) {
         console.log("maximum refill of", numRefill, " for ", id);
@@ -178,6 +149,7 @@ export const maintainMax = (id: number, inventory: any, fixBuildVal: any) => {
     i = 0;
     numRefill++;
   }
+  return numRefill;
 };
 
 /**
@@ -192,7 +164,7 @@ export const checkResMaintain = (
   id: number,
   inventory: any,
   fixBuildVal: any
-) => {
+): number => {
   const i: number = 0;
 
   while (i < fixBuildVal[id].maintainCost.length) {
@@ -213,14 +185,13 @@ export const maintainBuildingPay = (
   fixBuildVal: any,
   // mapBuildingArray: any,
   cycles: number
-) => {
+): number[] => {
   let i: number = 0;
 
   while (i < fixBuildVal[id].maintainCost.length) {
     inventory[i] -= fixBuildVal[id].maintainCost[i] * cycles;
     i++;
   }
-
   // refillBuilding(id, mapBuildingArray, cycles);
 
   return inventory;
@@ -231,12 +202,12 @@ export const refillBuilding = (
   id: number,
   mapBuildingArray: any,
   cycles: number
-) => {
+): [] => {
   let i: number = 0;
 
   while (i < mapBuildingArray.length) {
-    if (mapBuildingArray[i].id == id) {
-      mapBuildingArray[i].activeCycles += cycles;
+    if (mapBuildingArray[i].id === id) {
+      (mapBuildingArray[i].activeCycles as number) += cycles;
     }
     i++;
   }
@@ -248,20 +219,20 @@ export const refillBuilding = (
 export const cancelMaintainBuilding = (
   uid: number,
   id: number,
-  inventory: any,
+  inventory: number[],
   fixBuildVal: any,
   mapBuildingArray: any,
   cycles: number
-) => {
+): number[] => {
   let i: number = 0;
 
   while (i < fixBuildVal[id].maintainCost) {
-    inventory[i] += fixBuildVal[id].maintainCost[i] * cycles;
+    inventory[i] += (fixBuildVal[id].maintainCost[i] as number) * cycles;
     i++;
   }
 
   // THAT DOESN"T WORK IF YOU REFILLED AN ALREADY FILLED BUILDING
-  if (mapBuildingArray[uid].activeCycles == 0) {
+  if (mapBuildingArray[uid].activeCycles === 0) {
     i = mapBuildingArray[uid].cycleRegister.length;
     while (i > mapBuildingArray[uid].cycleRegister.length - cycles) {
       mapBuildingArray[uid].cycleRegister[i] = 0;
@@ -271,7 +242,7 @@ export const cancelMaintainBuilding = (
     if (cycles < mapBuildingArray[uid].activeCycles) {
       mapBuildingArray[uid] = mapBuildingArray[uid].activeCycles - cycles;
     } else if (cycles > mapBuildingArray[uid].activeCycles) {
-      const cylesLeft: number = cycles - mapBuildingArray[uid].activeCycles;
+      // const cylesLeft: number = cycles - mapBuildingArray[uid].activeCycles
       mapBuildingArray[uid].activeCycles = 0;
 
       i = mapBuildingArray[uid].cycleRegister.length;
@@ -296,10 +267,10 @@ export const cancelMaintainBuilding = (
  */
 export const checkResMaintainMsg = (
   id: number,
-  inventory: any,
+  inventory: number[],
   fixBuildVal: any,
   multiplier: number
-) => {
+): [] => {
   let i: number = 0;
   const res: any = [];
 
@@ -314,30 +285,33 @@ export const checkResMaintainMsg = (
 };
 
 // CANCEL THE CREATION OF A BUILDING
-export const cancelCreate = (id: number, inventory: any, fixBuildVal: any) => {
+export const cancelCreate = (
+  id: number,
+  inventory: number[],
+  fixBuildVal: any
+): number[] => {
   let i: number = 0;
 
   while (i < fixBuildVal[id].createCost.length) {
-    if (i != 9) {
-      inventory[i] += fixBuildVal[id].createCost[i];
+    if (i !== 9) {
+      inventory[i] += parseInt(fixBuildVal[id].createCost[i]);
     }
     i++;
   }
-  // deleteFromBuildingArray(mapBuildingArray, id); // ! DELETE FROM BUILDING ARRAY WHEN WE PUT mapBuildingArray BACK
-
+  // deleteFromBuildingArray(mapBuildingArray, id);
   return inventory;
 };
 
 // CANCEL THE REPAIR OF A BUILDING
 export const cancelRepairBuilding = (
   id: number,
-  inventory: any,
+  inventory: number[],
   fixBuildVal: any
-) => {
+): number[] => {
   let i: number = 0;
 
   while (i < fixBuildVal[id].repairCost.length) {
-    inventory[i] += fixBuildVal[id].repairCost[i];
+    inventory[i] += parseInt(fixBuildVal[id].repairCost[i]);
     i++;
   }
   return inventory;
@@ -346,16 +320,14 @@ export const cancelRepairBuilding = (
 // CANCEL AN HARVEST COST (WHAT YOU PAY TO HARVEST)
 export const cancelHarvestRes = (
   id: number,
-  // uid: number,
-  inventory: any,
+  inventory: number[],
   fixResVal: any
-  // harvestIncoming: any
-) => {
+): number[] => {
   let i: number = 0;
 
   while (i < fixResVal[id].harvestCost.length) {
-    if (i != 9) {
-      inventory[i] += fixResVal[id].harvestCost[i];
+    if (i !== 9) {
+      inventory[i] += parseInt(fixResVal[id].harvestCost[i]);
     }
     i++;
   }
@@ -366,11 +338,9 @@ export const cancelHarvestRes = (
 
 // DELETE FORM INCOMING HARVEST ARRAY
 export const deleteFromHarvestArray = (
-  id: number,
-  uid: number,
   harvestIncoming: any,
   elem: number
-) => {
+): any[] => {
   harvestIncoming[elem] = [];
 
   return harvestIncoming;
@@ -381,12 +351,12 @@ export const cancelReceiveResHarvest = (
   id: number,
   inventory: any,
   fixResVal: any
-) => {
+): number[] => {
   let i: number = 0;
 
   while (i < fixResVal[id].production.length) {
-    if (i != 9) {
-      inventory[i] -= fixResVal[id].production[i];
+    if (i !== 9) {
+      inventory[i] -= parseInt(fixResVal[id].production[i]);
     }
     i++;
   }
@@ -394,7 +364,11 @@ export const cancelReceiveResHarvest = (
 };
 
 // GET UID OF ENTITY BASED ON POSX AND POSY
-export const getIdFromPos = (fullmap: any, posY: number, posX: number) => {
+export const getIdFromPos = (
+  fullmap: any,
+  posY: number,
+  posX: number
+): number => {
   let id: number = 0;
 
   id = fullmap[posY][posX].id;
@@ -403,14 +377,14 @@ export const getIdFromPos = (fullmap: any, posY: number, posX: number) => {
 };
 
 // GET POS OF ENTITY BASED ON ITS UID
-export const getPosFromId = (fullmap: any, id: number) => {
-  const vecYX: any[] = [];
+export const getPosFromId = (fullmap: any, id: number): number[] => {
+  const vecYX: number[] = [];
   let j: number = 1;
   let i: number = 1;
 
   while (i < fullmap.length) {
     while (j < 41) {
-      if (fullmap[i][j].id == id) {
+      if (fullmap[i][j].id === id) {
         vecYX[0] = fullmap[i][j].posY;
         vecYX[1] = fullmap[i][j].posX;
       }
@@ -430,7 +404,11 @@ export const getPosFromId = (fullmap: any, id: number) => {
  * @param fixResVal {[]} resources spawned static data
  * @return success {number} 0 or 1
  */
-export const checkResHarvest = (id: number, inventory: any, fixResVal: any) => {
+export const checkResHarvest = (
+  id: number,
+  inventory: any,
+  fixResVal: any
+): number => {
   let i: number = 0;
 
   while (i < fixResVal[id].harvestCost) {
@@ -455,7 +433,7 @@ export const checkResHarvestMsg = (
   id: number,
   inventory: any,
   fixResVal: any
-) => {
+): [] => {
   let i: number = 0;
   const res: any = [];
 
@@ -465,7 +443,6 @@ export const checkResHarvestMsg = (
     }
     i++;
   }
-  // console.log("lacking resources to harvest ", res);
   return res;
 };
 
@@ -477,11 +454,15 @@ export const checkResHarvestMsg = (
  * @param fixBuildVal {[]} building static data
  * @return success {number} 0 or 1
  */
-export const checkResBuild = (id: number, inventory: any, fixBuildVal: any) => {
+export const checkResBuild = (
+  id: number,
+  inventory: any,
+  fixBuildVal: any
+): number => {
   let i: number = 0;
 
   while (i < fixBuildVal[id].createCost.length) {
-    if (i == 8) {
+    if (i === 8) {
       if (inventory[i] - fixBuildVal[id].createCost[i] < 1) {
         return 0;
       }
@@ -507,19 +488,16 @@ export const checkResBuildMsg = (
   id: number,
   inventory: any,
   fixBuildVal: any
-) => {
+): [] => {
   let i: number = 0;
   const res: any = [];
 
-  // while (i < fixBuildVal[id].createCost.length) {
   while (i < 9) {
-    if (i == 8) {
+    if (i === 8) {
       if (inventory[i] - fixBuildVal[id].createCost[i] < 1) {
         res.push(i);
-        // console.log("not enough resources to build ", i);
       }
     } else if (inventory[i] < fixBuildVal[id].createCost[i]) {
-      // console.log("not enough resources to build ", i);
       res.push(i);
     }
     i++;
@@ -540,7 +518,7 @@ export const checkResRepair = (
   id: number,
   inventory: any,
   fixBuildVal: any
-) => {
+): number => {
   let i: number = 0;
 
   while (i < fixBuildVal[id].repairCost.length) {
@@ -565,7 +543,7 @@ export const checkResRepairMsg = (
   id: number,
   inventory: any,
   fixBuildVal: any
-) => {
+): [] => {
   let i: number = 0;
   const res: any = [];
 
@@ -586,8 +564,8 @@ export const checkResRepairMsg = (
  * @param fixBuildVal {[]} building static data
  * @return success {number} 0 or 1
  */
-export const checkIsMovable = (id: number, fixBuildVal: any) => {
-  if (fixBuildVal[id].canMove == true) {
+export const checkIsMovable = (id: number, fixBuildVal: any): number => {
+  if (fixBuildVal[id].canMove === true) {
     return 1;
   } else {
     return 0;
@@ -597,21 +575,21 @@ export const checkIsMovable = (id: number, fixBuildVal: any) => {
 // FIND THE LAST CYCLE WHEN CLAIMING HAS BEEN INITIATED
 // playerArray.claimRegister = "dernier block - current block | " where dernier block = lastClaim block
 // 14-18|18-39|39-45|  -> 45
-export const calculateLastClaim = (playerArray: any) => {
+export const calculateLastClaim = (playerArray: any): number => {
   let lastClaim: number = 0;
   let strIndex: number = playerArray.claimRegister.length;
   let found: number = 0;
   let tempStr: string = "";
 
   // CALCULATE LAST CLAIM BASE ON CLAIM REGISTER
-  if (playerArray.claimRegister.length == 0) {
+  if (playerArray.claimRegister.length === 0) {
     lastClaim = 0;
     return lastClaim;
   } else {
-    while (found != 1) {
-      if (playerArray.claimRegister[strIndex] == "-") {
-        while (playerArray.claimRegister[strIndex] != "|") {
-          tempStr = tempStr + playerArray.claimRegister[strIndex];
+    while (found !== 1) {
+      if (playerArray.claimRegister[strIndex] === "-") {
+        while (playerArray.claimRegister[strIndex] !== "|") {
+          tempStr = tempStr + (playerArray.claimRegister[strIndex] as string);
           strIndex++;
         }
         found = 1;
@@ -621,6 +599,7 @@ export const calculateLastClaim = (playerArray: any) => {
       strIndex--;
     }
   }
+  return lastClaim;
 };
 
 /**
@@ -634,22 +613,22 @@ export const calculateLastClaim = (playerArray: any) => {
 export const claim = (
   mapBuildingArray: any,
   fixBuildVal: any,
-  inventory: any,
+  inventory: number[],
   playerArray: any,
   currenCycle: any
-) => {
+): number[] => {
   let i: number = 0;
   let j: number = 0;
   let k: number = 0;
   let totalActive: number = 0;
 
-  const lastClaim: number = calculateLastClaim(playerArray) as number;
+  const lastClaim: number = calculateLastClaim(playerArray);
 
   // CALCULATE THE CLAIM
   while (i < mapBuildingArray.length) {
     k = lastClaim + 1;
     while (k < mapBuildingArray[i].cycleRegister.length) {
-      if (mapBuildingArray[i].cycleRegister[k] == "1") {
+      if (mapBuildingArray[i].cycleRegister[k] === "1") {
         totalActive += 1;
       }
       k++;
@@ -657,7 +636,8 @@ export const claim = (
 
     while (j < fixBuildVal[mapBuildingArray[i].id].production.length) {
       inventory[j] +=
-        fixBuildVal[mapBuildingArray[i].id].production[j] * totalActive;
+        parseInt(fixBuildVal[mapBuildingArray[i].id].production[j]) *
+        totalActive;
       j++;
     }
     j = 0;
@@ -676,21 +656,21 @@ export const claim = (
 
 // FIND THE FIRST CYCLE OF THE LAST CLAIM
 // 14-18|18-39|39-45|  -> 39
-export const calculateLastClaimFirstCycle = (playerArray: any) => {
+export const calculateLastClaimFirstCycle = (playerArray: any): number => {
   let lastClaim: number = 0;
   let strIndex: number = playerArray.claimRegister.length;
   let found: number = 0;
   let tempStr: string = "";
 
   // CALCULATE LAST CLAIM BASE ON CLAIM REGISTER
-  if (playerArray.claimRegister.length == 0) {
+  if (playerArray.claimRegister.length === 0) {
     lastClaim = 0;
     return lastClaim;
   } else {
-    while (found != 1) {
-      if (playerArray.claimRegister[strIndex] == "|") {
-        while (playerArray.claimRegister[strIndex] != "-") {
-          tempStr = tempStr + playerArray.claimRegister[strIndex];
+    while (found !== 1) {
+      if (playerArray.claimRegister[strIndex] === "|") {
+        while (playerArray.claimRegister[strIndex] !== "-") {
+          tempStr = tempStr + (playerArray.claimRegister[strIndex] as string);
           strIndex++;
         }
         found = 1;
@@ -700,6 +680,7 @@ export const calculateLastClaimFirstCycle = (playerArray: any) => {
       strIndex--;
     }
   }
+  return lastClaim;
 };
 
 export const cancelClaim = (
@@ -708,22 +689,20 @@ export const cancelClaim = (
   inventory: any,
   playerArray: any
   // currenCycle: any,
-) => {
+): number[] => {
   let i: number = 0;
   let j: number = 0;
   let k: number = 0;
   let totalActive: number = 0;
 
-  const lastClaimFirstCycle: number = calculateLastClaimFirstCycle(
-    playerArray
-  ) as number;
-  const lastClaim: number = calculateLastClaim(playerArray) as number;
+  const lastClaimFirstCycle: number = calculateLastClaimFirstCycle(playerArray);
+  const lastClaim: number = calculateLastClaim(playerArray);
 
   // CALCULATE THE CLAIM
   while (i < mapBuildingArray.length) {
     k = lastClaimFirstCycle + 1;
     while (k < lastClaimFirstCycle - lastClaim) {
-      if (mapBuildingArray[i].cycleRegister[k] == "1") {
+      if (mapBuildingArray[i].cycleRegister[k] === "1") {
         totalActive += 1;
       }
       k++;
@@ -753,9 +732,9 @@ export const cancelClaim = (
  */
 export const createBuildingPay = (
   id: number,
-  inventory: any,
+  inventory: number[],
   fixBuildVal: any
-) => {
+): number[] => {
   let i: number = 0;
 
   while (i <= 8) {
@@ -764,8 +743,8 @@ export const createBuildingPay = (
   }
   // handle buildings bringing new pop
   if (fixBuildVal[id].createCost[9] > 0) {
-    inventory[9] += fixBuildVal[id].createCost[9];
-    inventory[8] += fixBuildVal[id].createCost[9];
+    inventory[9] += parseInt(fixBuildVal[id].createCost[9]);
+    inventory[8] += parseInt(fixBuildVal[id].createCost[9]);
   }
 
   console.log("inventory after pay building", inventory);
@@ -792,7 +771,7 @@ export const addToBuildingArray = (
   blockX: number,
   blockY: number,
   uid: number
-) => {
+): any[] => {
   const _newEntry: any = [];
   _newEntry.blockX = blockX;
   _newEntry.blockY = blockY;
@@ -810,22 +789,6 @@ export const addToBuildingArray = (
 };
 
 /**
- * deleteFromBuildingArray
- * * Delete a building from player's building array
- * ? check right way to delete an element
- * @param mapBuildingArray {[]}
- * @param uid {number} uid of building to destroy
- * @return mapBuildingArray {[]} updated
- */
-export const deleteFromBuildingArray = (mapBuildingArray: any, uid: number) => {
-  // RIGHT WAY TO DELETE AN ELEMENT ?
-  const temp: any[] = [];
-  mapBuildingArray[uid] = temp;
-
-  return mapBuildingArray;
-};
-
-/**
  * destroyBuilding_
  * * Delete a building from player's building array
  * @param id {[]} type of building destroyed
@@ -835,9 +798,9 @@ export const deleteFromBuildingArray = (mapBuildingArray: any, uid: number) => {
  */
 export const destroyBuilding_ = (
   id: number,
-  inventory: any,
+  inventory: number[],
   fixBuildVal: any
-) => {
+): number[] => {
   let i: number = 0;
   while (i < 8) {
     const quotient =
@@ -849,7 +812,7 @@ export const destroyBuilding_ = (
 
   if (fixBuildVal[id].createCost[8] > 0) {
     // Pop working in the building goes back into freePop
-    inventory[8] += fixBuildVal[id].createCost[8];
+    inventory[8] += parseInt(fixBuildVal[id].createCost[8]);
   }
   if (fixBuildVal[id].createCost[9] > 0) {
     // Pop arrived by building leaves community
@@ -863,10 +826,8 @@ export const repairBuildingPay = (
   id: number,
   inventory: any,
   fixBuildVal: any
-) => {
+): number[] => {
   let i: number = 0;
-
-  // while (i < fixBuildVal[id].repairCost.length) {
   while (i < 9) {
     inventory[i] -= fixBuildVal[id].repairCost[i];
     i++;
@@ -886,20 +847,14 @@ export const repairBuildingPay = (
  */
 export const harvestResPay = (
   id: number,
-  // uid: number,
   inventory: any,
   fixResVal: any
-  // harvestIncoming: any
-) => {
+): number[] => {
   let i: number = 0;
-
-  // while (i < fixResVal[id].harvestCost.length) {
   while (i < 8) {
     inventory[i] -= fixResVal[id].harvestCost[i];
     i++;
   }
-  // addToHarvestArray(id, uid, harvestIncoming);
-  console.log("inventory after loop", inventory);
   return inventory;
 };
 
@@ -914,27 +869,23 @@ export const harvestResPay = (
  */
 export const receiveResHarvest = (
   id: number,
-  inventory: any,
+  inventory: number[],
   fixResVal: any
-) => {
+): number[] => {
   let i: number = 0;
-
-  console.log("fixResVal[id]", fixResVal[id]);
-
-  // while (i < fixResVal[id].production.length) {
   while (i < 8) {
-    inventory[i] += fixResVal[id].production[i];
+    inventory[i] += parseInt(fixResVal[id].production[i]);
     i++;
   }
   return inventory;
 };
 
-export const playerLevelIncrease = (inventory: any) => {
+export const playerLevelIncrease = (inventory: number[]): number[] => {
   inventory[11] += 1;
   return inventory;
 };
 
-export const playerLevelDecrease = (inventory: any) => {
+export const playerLevelDecrease = (inventory: number[]): number[] => {
   inventory[11] -= 1;
   return inventory;
 };
@@ -945,13 +896,19 @@ export const playerLevelDecrease = (inventory: any) => {
  * @param cycleregisterArray {Object{}}
  * @return cycleRegisterStr {string} string
  */
-export const composeCycleRegister = (cycleregisterArray: any) => {
+export const composeCycleRegister = (cycleregisterArray: any): string => {
   let cycleRegisterStr: string = "";
 
   Object.keys(cycleregisterArray).map((uid: any) => {
-    cycleregisterArray[uid].map((elem: any) => {
+    return cycleregisterArray[uid].map((elem: any) => {
       cycleRegisterStr =
-        cycleRegisterStr + uid.toString() + "-" + elem[0] + "-" + elem[1] + "|";
+        cycleRegisterStr +
+        (uid as string) +
+        "-" +
+        (elem[0] as string) +
+        "-" +
+        (elem[1] as string) +
+        "|";
     });
   });
   cycleRegisterStr = cycleRegisterStr.slice(0, -1);
@@ -965,7 +922,7 @@ export const composeCycleRegister = (cycleregisterArray: any) => {
  * @param cycleregisterStr {string}
  * @return cycleRegister {[]} array ordonné through building type id
  */
-export const decomposeCycleRegister = (cycleregisterStr: string) => {
+export const decomposeCycleRegister = (cycleregisterStr: string): any => {
   const cycleRegisterArr = cycleregisterStr.split("|");
 
   const cycleRegister = cycleRegisterArr.reduce(function (acc: any, curr: any) {
@@ -991,11 +948,14 @@ export const decomposeCycleRegister = (cycleregisterStr: string) => {
  * @return active {number} nb of active buildings
  * @return nbBlocksClaimable {number} nb of blocks claimable by player
  */
-export const initCounters = (playerBuilding: any[], staticBuildings: any[]) => {
+export const initCounters = (
+  playerBuilding: any[],
+  staticBuildings: any[]
+): any => {
   let inactive: number = 0;
   let active: number = 0;
   let nbBlocksClaimable: number = 0;
-  const incomingInventory: any[] = [];
+  const incomingInventory: number[] = [];
   incomingInventory[0] = 0;
   incomingInventory[1] = 0;
   incomingInventory[2] = 0;
@@ -1005,14 +965,16 @@ export const initCounters = (playerBuilding: any[], staticBuildings: any[]) => {
   incomingInventory[6] = 0;
   incomingInventory[7] = 0;
 
-  playerBuilding.map((building: any) => {
+  console.log("playerBuilding", playerBuilding);
+
+  playerBuilding.forEach((building: any) => {
     if (building.incomingCycles > 0) {
       active++;
     } else {
       inactive++;
     }
     if (building.activeCycles > 0) {
-      nbBlocksClaimable += building.activeCycles;
+      nbBlocksClaimable += parseInt(building.activeCycles);
       // Calculate incomingInventory with cycles to claim
       for (let i = 0; i < 8; i++) {
         incomingInventory[i] +=

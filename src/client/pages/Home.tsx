@@ -12,65 +12,17 @@ import UI_Frames from "../style/resources/front/Ui_Frames3.svg";
 
 export default function Home() {
   const [wallet, setWallet] = useState<IStarknetWindowObject>();
-  const [signedIn, setSignedIn] = useState(false);
   const [hasLand, setHasLand] = useState<ILand>();
   const [balance, setBalance] = useState<any>(null);
-  const [userId, setUserId] = useState("");
-  const [userLands, setUserLands] = useState<any[]>([]);
   const navigate = useNavigate();
   const scrollRef = useRef<null | HTMLDivElement>(null);
   const mapsContract = useMapsContract();
-  const [showNotifPause, setShowNotifPause] = useState(false);
 
   const connectWallet = async () => {
     const _wallet = await getStarknet();
     await _wallet.enable({ showModal: true });
     setWallet(_wallet);
   };
-
-  const connectUser = (_account: string) => {
-    let _url: string;
-    if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
-      _url = "http://localhost:3001/api/signin";
-    } else {
-      _url = "https://" + process.env.REACT_APP_URL + "/api/signin";
-    }
-
-    fetch(_url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ _account }),
-    })
-      .then(async (res) => await res.json())
-      .then((data) => {
-        console.log("data received from server ", data);
-
-        if (data && data.user) {
-          if (data && data.token) {
-            localStorage.setItem("user", data.token);
-            setUserId(data.user.id);
-            if (data.lands && data.lands.tokens) {
-              setUserLands(data.lands.tokens);
-            }
-            setTimeout(function () {
-              setSignedIn(true);
-            }, 50);
-          }
-        }
-      })
-      .catch((error) => {
-        console.log("error", error);
-      });
-  };
-
-  // Sign in player
-  useEffect(() => {
-    if (wallet?.isConnected && !signedIn) {
-      connectUser(wallet.account.address);
-    }
-  }, [wallet]);
 
   useEffect(() => {
     if (wallet != null && wallet.account && wallet.account.address) {
@@ -92,16 +44,6 @@ export default function Home() {
         });
     }
   }, [wallet]);
-
-  // const checkWasInit = async (_wallet: any, token: number) => {
-  //   const _res = await _wallet.account.callContract({
-  //     contractAddress:
-  //       "0x060363b467a2b8d409234315babe6be180020e0bb65d708c0d09be6fd3691a2f",
-  //     entrypoint: "get_owner",
-  //     calldata: [number.toFelt(token)],
-  //   });
-  //   return _res.result[0];
-  // };
 
   // --------------------- STYLE ------------------------------
   const executeScroll = () => {
@@ -155,7 +97,7 @@ export default function Home() {
               style={{ width: "100vw", top: "0" }}
             >
               {/* Player is already registered and has a land */}
-              {wallet?.isConnected && hasLand != null && signedIn && (
+              {wallet?.isConnected && hasLand != null && (
                 <>
                   <img
                     className="relative mx-auto pixelated nftImg"
@@ -173,12 +115,7 @@ export default function Home() {
               {/* User is connected, has an NFT but doesn't have a land  */}
               {wallet?.isConnected && hasLand == null && balance > 0 ? (
                 <>
-                  <LandList
-                    account={wallet.account.address}
-                    userId={userId}
-                    userLands={userLands}
-                    starknet={wallet}
-                  />
+                  <LandList account={wallet.account.address} />
                 </>
               ) : (
                 <></>

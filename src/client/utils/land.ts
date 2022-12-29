@@ -14,7 +14,7 @@ import { initMap } from "./constant";
  * @param compMap {string}
  * @return tempArray {[]}
  */
-export const revComposeD = (compMap: string, account: string) => {
+export const revComposeD = (compMap: string, account: string): any => {
   const tempArray: any[] = [];
 
   let x: number = 1;
@@ -36,7 +36,7 @@ export const revComposeD = (compMap: string, account: string) => {
       x = 1;
     }
 
-    if (compMapSplit[i] == "0") {
+    if (compMapSplit[i] === "0") {
       tempArray[y][x] = [];
       tempArray[y][x].infraType = 0;
       tempArray[y][x].type = 0;
@@ -63,40 +63,48 @@ export const revComposeD = (compMap: string, account: string) => {
 
     // * Additional values
     // Rand for trees and rocks
-    if (tempArray[y][x].infraType == 1) {
-      if (tempArray[y][x].type == 1) {
-        var randomNum: number = random(specIndex, account) * (3 - 1) + 1;
-        randomNum = parseInt(randomNum.toFixed(0));
-        tempArray[y][x].randType = randomNum;
-        specIndex++;
-        // console.log("tempArray[y][x].randType = ", tempArray[y][x].randType);
-      } else if (tempArray[y][x].type == 2) {
-        var randomNum: number = random(specIndex, account) * (6 - 4) + 4;
-        randomNum = parseInt(randomNum.toFixed(0));
-        tempArray[y][x].randType = randomNum;
-        specIndex++;
-      } else if (tempArray[y][x].type == 3) {
-        tempArray[y][x].randType = 7;
-      } else if (tempArray[y][x].type == 4) {
-        tempArray[y][x].randType = 8;
-      }
+    if (tempArray[y][x].infraType === 1) {
+      const type = tempArray[y][x].type;
+      tempArray[y][x].randType =
+        type === 1
+          ? parseInt((random(specIndex, account) * (3 - 1) + 1).toFixed(0))
+          : type === 2
+          ? parseInt((random(specIndex, account) * (6 - 4) + 4).toFixed(0))
+          : type === 3
+          ? 7
+          : type === 4
+          ? 8
+          : null;
+      if (type === 1 || type === 2) specIndex++;
+
+      // if (tempArray[y][x].type === 1) {
+      //   let randomNum: number = random(specIndex, account) * (3 - 1) + 1
+      //   randomNum = parseInt(randomNum.toFixed(0))
+      //   tempArray[y][x].randType = randomNum
+      //   specIndex++
+      //   // console.log("tempArray[y][x].randType = ", tempArray[y][x].randType);
+      // } else if (tempArray[y][x].type === 2) {
+      //   let randomNum: number = random(specIndex, account) * (6 - 4) + 4
+      //   randomNum = parseInt(randomNum.toFixed(0))
+      //   tempArray[y][x].randType = randomNum
+      //   specIndex++
+      // } else if (tempArray[y][x].type === 3) {
+      //   tempArray[y][x].randType = 7
+      // } else if (tempArray[y][x].type === 4) {
+      //   tempArray[y][x].randType = 8
+      // }
     }
 
     tempArray[y][x].status = 1; // status (0: harvesting / building ongoing)
     tempArray[y][x].posX = x; // posX
     tempArray[y][x].posY = y; // posY
 
-    if (tempArray[y][x].infraType != 0) {
-      // * Counters
-      let currCounter = 0;
-      if (
-        counters[tempArray[y][x].infraType] &&
-        counters[tempArray[y][x].infraType][tempArray[y][x].type] > 0
-      ) {
-        currCounter = counters[tempArray[y][x].infraType][tempArray[y][x].type];
-      }
+    // Update counters
+    if (tempArray[y][x].infraType !== 0) {
+      const currCounter =
+        counters?.[tempArray[y][x].infraType]?.[tempArray[y][x].type] || 0;
       counters[tempArray[y][x].infraType][tempArray[y][x].type] =
-        currCounter + 1;
+        (currCounter as number) + 1;
     }
 
     x++;
@@ -112,51 +120,49 @@ export const revComposeD = (compMap: string, account: string) => {
  * @param fullMap {[]}
  * @return comp {string}
  */
-export const ComposeD = (fullMap: any) => {
+export const ComposeD = (fullMap: any): string => {
   let compStr: string = "";
 
   let x: number = 1;
   let y: number = 1;
-  const i: number = 0;
 
   while (y < 17) {
     while (x < 41) {
-      if (fullMap[y][x].infraType == 0) {
-        if (x == 1 && y == 1) {
+      if (fullMap[y][x].infraType === 0) {
+        if (x === 1 && y === 1) {
           compStr = compStr + "0";
         } else {
           compStr = compStr + "|" + "0";
         }
       } else {
-        let _id = "";
-
+        let _id: string = "";
         // 4 characters for id
         if (fullMap[y][x].id < 10) {
-          _id = "000" + fullMap[y][x].id;
+          _id = "000" + (fullMap[y][x].id as string);
         } else if (fullMap[y][x].id < 100) {
-          _id = "00" + fullMap[y][x].id;
+          _id = "00" + (fullMap[y][x].id as string);
         } else if (fullMap[y][x].id < 1000) {
-          _id = "0" + fullMap[y][x].id;
+          _id = "0" + (fullMap[y][x].id as string);
         } else {
-          _id = fullMap[y][x].id;
+          _id = fullMap[y][x].id as string;
         }
 
         // 2 characters for type
-        let _type = "";
+        let _type: string = "";
         if (fullMap[y][x].type < 10) {
-          _type = "0" + fullMap[y][x].type;
+          _type = "0" + (fullMap[y][x].type as string);
         } else {
-          _type = fullMap[y][x].type;
+          _type = fullMap[y][x].type as string;
         }
         compStr =
           compStr +
           "|" +
-          fullMap[y][x].infraType +
+          (fullMap[y][x].infraType as string) +
           _type +
           _id +
-          fullMap[y][x].state +
-          fullMap[y][x].blockType +
-          fullMap[y][x].blockFertility;
+          (fullMap[y][x].state as string) +
+          (fullMap[y][x].blockType as string) +
+          (fullMap[y][x].blockFertility as string);
       }
       x++;
     }
@@ -168,12 +174,12 @@ export const ComposeD = (fullMap: any) => {
   return compStr;
 };
 
-export const random = (spec: number, account: string) => {
+export const random = (spec: number, account: string): number => {
   const x = Math.sin(seedFromWallet(account) + spec) * 10000;
   return x - Math.floor(x);
 };
 
-export const seedFromWallet = (wallet: string) => {
+export const seedFromWallet = (wallet: string): number => {
   let i: number = 3;
   let seed: number = 0;
   let seedStr: string = "";
@@ -192,7 +198,7 @@ export const seedFromWallet = (wallet: string) => {
  * * Generate all map information on initialization
  * @return fullMap {[]}
  */
-export const generateFullMap = () => {
+export const generateFullMap = (): string => {
   let fullMap: string = "";
   let i: number = 1;
   let j: number = 0;
@@ -229,7 +235,7 @@ export const generateFullMap = () => {
     let fertility: string = "99";
 
     while (j < rock.length) {
-      if (i == rock[j]) {
+      if (i === rock[j]) {
         resType = "02";
       }
       j++;
@@ -237,7 +243,7 @@ export const generateFullMap = () => {
     j = 0;
 
     while (j < bush.length) {
-      if (i == bush[j]) {
+      if (i === bush[j]) {
         resType = "03";
       }
       j++;
@@ -245,7 +251,7 @@ export const generateFullMap = () => {
     j = 0;
 
     while (j < tree.length) {
-      if (i == tree[j]) {
+      if (i === tree[j]) {
         resType = "01";
       }
       j++;
@@ -253,27 +259,27 @@ export const generateFullMap = () => {
     j = 0;
 
     while (j < mine.length) {
-      if (i == mine[j]) {
+      if (i === mine[j]) {
         resType = "04";
       }
       j++;
     }
     j = 0;
 
-    if (i == 300) {
+    if (i === 300) {
       console.log("in condition 300");
       infraType = "2";
       resType = "01";
       tempUID = "0001";
     }
 
-    if (resType == "") {
+    if (resType === "") {
       tempUID = "0";
       fertility = "0";
       infraType = "0";
       matType = "0";
       state = "0";
-    } else if (infraType == "1") {
+    } else if (infraType === "1") {
       tempUID = uid.toString();
       if (uid < 10) {
         tempUID = "000" + uid.toString();
@@ -288,12 +294,7 @@ export const generateFullMap = () => {
     fullMap =
       fullMap +
       parseInt(
-        infraType.toString() +
-          resType.toString() +
-          tempUID.toString() +
-          state.toString() +
-          matType.toString() +
-          fertility.toString()
+        infraType + resType + (tempUID as string) + state + matType + fertility
       ).toString() +
       "|";
 
@@ -311,102 +312,46 @@ export const generateFullMap = () => {
  * @return level {number} updated level number
  */
 export const calculatePlayerLevel = (
-  currLevel: number,
   mapBuildingArray: any[],
   counters: any[]
-) => {
-  if (currLevel == 1) {
-    const cabin = mapBuildingArray.filter((building) => {
-      return building.type == 1;
-    });
-    if (cabin && cabin[0].decay == 0) return 2;
-  } else if (currLevel == 2) {
-    // Construire une maison + 1 wheat farm
-    if (
-      counters[2] &&
-      counters[2][2] &&
-      counters[2][2] > 0 &&
-      counters[2][14] &&
-      counters[2][14] > 0
-    ) {
-      return 3;
-    }
-  } else if (currLevel == 3) {
-    // Construire une coal plant
-    if (counters[2] && counters[2][18] && counters[2][18] > 0) return 4;
-  } else if (currLevel == 4) {
-    // constuire bakery + grocery shop
-    if (
-      counters[2] &&
-      counters[2][5] &&
-      counters[2][5] > 0 &&
-      counters[2][6] &&
-      counters[2][6] > 0
-    ) {
-      return 5;
-    }
-  } else if (currLevel == 5) {
-    // construire bar + restaurant
-    if (
-      counters[2] &&
-      counters[2][9] &&
-      counters[2][9] > 0 &&
-      counters[2][7] &&
-      counters[2][7] > 0
-    ) {
-      return 6;
-    }
-  } else if (currLevel == 6) {
-    // build police station
-    if (counters[2] && counters[2][19] && counters[2][19] > 0) return 7;
-  } else if (currLevel == 7) {
-    // build apartments
-    if (counters[2] && counters[2][3] && counters[2][3] > 0) return 8;
-  } else if (currLevel == 8) {
-    // build all existing buildings
-    if (
-      counters[2] &&
-      counters[2][4] &&
-      counters[2][4] > 0 &&
-      counters[2][8] &&
-      counters[2][8] > 0 &&
-      counters[2][10] &&
-      counters[2][10] > 0 &&
-      counters[2][11] &&
-      counters[2][11] > 0 &&
-      counters[2][12] &&
-      counters[2][12] > 0 &&
-      counters[2][13] &&
-      counters[2][13] > 0 &&
-      counters[2][15] &&
-      counters[2][15] > 0 &&
-      counters[2][16] &&
-      counters[2][16] > 0 &&
-      counters[2][17] &&
-      counters[2][17] > 0 &&
-      counters[2][20] &&
-      counters[2][20] > 0 &&
-      counters[2][21] &&
-      counters[2][21] > 0 &&
-      counters[2][22] &&
-      counters[2][22] > 0 &&
-      counters[2][23] &&
-      counters[2][23] > 0
-    ) {
-      // 4 8 10 11 12 13 15 16 17 20 21 22 23
-      return 9;
-    }
-  }
-  return currLevel;
+): number => {
+  let _level: number = 1;
+  const cabin = mapBuildingArray.find(
+    (building) => typeof building === "object" && building.type === 1
+  );
+  _level = cabin?.decay === 0 ? 2 : _level;
+  _level = counters?.[2]?.[2] > 0 && counters?.[2]?.[14] > 0 ? 3 : _level;
+  _level = counters?.[2]?.[18] > 0 ? 4 : _level;
+  _level = counters?.[2]?.[5] > 0 && counters?.[2]?.[6] > 0 ? 5 : _level;
+  _level = counters?.[2]?.[9] > 0 && counters?.[2]?.[7] > 0 ? 6 : _level;
+  _level = counters?.[2]?.[19] > 0 ? 7 : _level;
+  _level = counters?.[2]?.[3] > 0 ? 8 : _level;
+  _level =
+    counters?.[2]?.[4] > 0 &&
+    counters?.[2]?.[8] > 0 &&
+    counters?.[2]?.[10] > 0 &&
+    counters?.[2]?.[11] > 0 &&
+    counters?.[2]?.[12] > 0 &&
+    counters?.[2]?.[13] > 0 &&
+    counters?.[2]?.[15] > 0 &&
+    counters?.[2]?.[16] > 0 &&
+    counters?.[2]?.[17] > 0 &&
+    counters?.[2]?.[20] > 0 &&
+    counters?.[2]?.[21] > 0 &&
+    counters?.[2]?.[22] > 0 &&
+    counters?.[2]?.[23] > 0
+      ? 9
+      : _level;
+  return _level;
 };
 
-export const initMapArr = (account: string) => {
+export const initMapArr = (account: string): any[] => {
   const tempArray: any[] = [];
 
   let x: number = 1;
   let y: number = 1;
   let i: number = 0;
-  let specIndex: number = 1; // ! THIS NEEDS TO BE GLOBAL
+  let specIndex: number = 1;
 
   tempArray[y] = [];
   const compMapSplit = initMap.split("|");
@@ -422,7 +367,7 @@ export const initMapArr = (account: string) => {
       x = 1;
     }
 
-    if (compMapSplit[i] == "0") {
+    if (compMapSplit[i] === "0") {
       tempArray[y][x] = [];
       tempArray[y][x].infraType = 0;
       tempArray[y][x].type = 0;
@@ -449,23 +394,20 @@ export const initMapArr = (account: string) => {
 
     // * Additional values
     // Rand for trees and rocks
-    if (tempArray[y][x].infraType == 1) {
-      if (tempArray[y][x].type == 1) {
-        var randomNum: number = random(specIndex, account) * (3 - 1) + 1;
-        randomNum = parseInt(randomNum.toFixed(0));
-        tempArray[y][x].randType = randomNum;
-        specIndex++;
-        // console.log("tempArray[y][x].randType = ", tempArray[y][x].randType);
-      } else if (tempArray[y][x].type == 2) {
-        var randomNum: number = random(specIndex, account) * (6 - 4) + 4;
-        randomNum = parseInt(randomNum.toFixed(0));
-        tempArray[y][x].randType = randomNum;
-        specIndex++;
-      } else if (tempArray[y][x].type == 3) {
-        tempArray[y][x].randType = 7;
-      } else if (tempArray[y][x].type == 4) {
-        tempArray[y][x].randType = 8;
-      }
+
+    if (tempArray[y][x].infraType === 1) {
+      const type = tempArray[y][x].type;
+      tempArray[y][x].randType =
+        type === 1
+          ? parseInt((random(specIndex, account) * (3 - 1) + 1).toFixed(0))
+          : type === 2
+          ? parseInt((random(specIndex, account) * (6 - 4) + 4).toFixed(0))
+          : type === 3
+          ? 7
+          : type === 4
+          ? 8
+          : null;
+      if (type === 1 || type === 2) specIndex++;
     }
 
     tempArray[y][x].posX = x; // posX
@@ -476,4 +418,146 @@ export const initMapArr = (account: string) => {
   }
 
   return tempArray;
+};
+
+// @notice decompose map received from chain
+export const composeFromChain = (mapFromChain: any, account: string): any => {
+  const res = [];
+  let specIndex: number = 1;
+  let x = 1;
+  let y = 1;
+  res[y] = [];
+
+  const counters: any = [];
+  counters[1] = [];
+  counters[2] = [];
+
+  for (let i = 0; i < mapFromChain.length; i++) {
+    if (x > 40) {
+      y++;
+      res[y] = [] as any;
+      x = 1;
+    }
+    const temp = Number(mapFromChain[i]);
+    const block: any[any] = [];
+
+    if (temp === 0) {
+      block.infraType = 0;
+      block.type = 0;
+      block.id = 0;
+      block.state = 0;
+      block.blockType = 1;
+      block.blockFertility = 99;
+    } else {
+      const tempStr = temp.toString();
+      block.infraType = parseInt(tempStr[0]);
+      block.type = parseInt(tempStr[1] + tempStr[2]);
+      block.id = parseInt(tempStr[3] + tempStr[4] + tempStr[5] + tempStr[6]);
+      block.state = parseInt(tempStr[7]);
+      block.blockType = parseInt(tempStr[8]);
+      block.blockFertility = parseInt(tempStr[9] + tempStr[10]);
+    }
+
+    // generate trees
+    if (block.infraType === 1) {
+      const type = block.type;
+      block.randType =
+        type === 1
+          ? parseInt((random(specIndex, account) * (3 - 1) + 1).toFixed(0))
+          : type === 2
+          ? parseInt((random(specIndex, account) * (6 - 4) + 4).toFixed(0))
+          : type === 3
+          ? 7
+          : type === 4
+          ? 8
+          : null;
+      if (type === 1 || type === 2) specIndex++;
+    }
+
+    block.status = 1; // status (0: harvesting / building ongoing)
+    block.posX = x; // posX
+    block.posY = y; // posY
+
+    if (block.infraType !== 0) {
+      const currCounter =
+        (counters?.[block.infraType]?.[block.type] as number) || 0;
+      counters[block.infraType][block.type] = currCounter + 1;
+    }
+
+    res[y][x] = block;
+    x++;
+  }
+  return { res, counters };
+};
+
+export const composeFromIndexer = (
+  mapFromIndexer: string[],
+  account: string
+): any => {
+  const res: any[] = [];
+  let specIndex: number = 1;
+
+  const counters: any = [];
+  counters[1] = [];
+  counters[2] = [];
+
+  for (let i = 0; i < 16; i++) {
+    res[i + 1] = [];
+
+    for (let j = 0; j < 40; j++) {
+      const block: any[any] = [];
+
+      if (mapFromIndexer[i][j] === "0") {
+        block.infraType = 0;
+        block.type = 0;
+        block.id = 0;
+        block.state = 0;
+        block.blockType = 1;
+        block.blockFertility = 99;
+      } else {
+        block.infraType = parseInt(mapFromIndexer[i][j][0]);
+        block.type = parseInt(
+          mapFromIndexer[i][j][1] + mapFromIndexer[i][j][2]
+        );
+        block.id = parseInt(
+          mapFromIndexer[i][j][3] +
+            mapFromIndexer[i][j][4] +
+            mapFromIndexer[i][j][5] +
+            mapFromIndexer[i][j][6]
+        );
+        block.state = parseInt(mapFromIndexer[i][j][7]);
+        block.blockType = parseInt(mapFromIndexer[i][j][8]);
+        block.blockFertility = parseInt(
+          mapFromIndexer[i][j][9] + mapFromIndexer[i][j][10]
+        );
+      }
+
+      if (block.infraType === 1) {
+        const type = block.type;
+        block.randType =
+          type === 1
+            ? parseInt((random(specIndex, account) * (3 - 1) + 1).toFixed(0))
+            : type === 2
+            ? parseInt((random(specIndex, account) * (6 - 4) + 4).toFixed(0))
+            : type === 3
+            ? 7
+            : type === 4
+            ? 8
+            : null;
+        if (type === 1 || type === 2) specIndex++;
+      }
+      block.status = 1; // status (0: harvesting / building ongoing)
+      block.posX = j + 1; // posX
+      block.posY = i + 1; // posY
+
+      if (block.infraType !== 0) {
+        const currCounter =
+          (counters?.[block.infraType]?.[block.type] as number) || 0;
+        counters[block.infraType][block.type] = currCounter + 1;
+      }
+
+      res[i + 1][j + 1] = block;
+    }
+  }
+  return { res, counters };
 };

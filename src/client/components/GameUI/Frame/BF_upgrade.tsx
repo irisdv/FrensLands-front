@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { destroyAction, repairAction } from "../../../api/player";
 import { useNewGameContext } from "../../../hooks/useNewGameContext";
 import { useSelectContext } from "../../../hooks/useSelectContext";
 import {
@@ -7,7 +6,7 @@ import {
   destroyBuilding_,
   repairBuildingPay,
 } from "../../../utils/building";
-import { calculatePlayerLevel, ComposeD } from "../../../utils/land";
+import { calculatePlayerLevel } from "../../../utils/land";
 import { FrameItem } from "../FrameItem";
 
 export function BF_upgrade(props: any) {
@@ -58,6 +57,9 @@ export function BF_upgrade(props: any) {
       );
       updateInventory(_inventory);
 
+      console.log("playerBuilding before", playerBuilding);
+      console.log("uid", uid);
+
       // Update decay level of building
       playerBuilding[uid].decay = 0;
       updatePlayerBuildingEntry(playerBuilding[uid]);
@@ -66,11 +68,7 @@ export function BF_upgrade(props: any) {
       _inventory[9] += staticBuildingsData[_typeId - 1].repairCost[9];
       _inventory[8] += staticBuildingsData[_typeId - 1].repairCost[9];
       // Increase player level
-      const _newLevel = calculatePlayerLevel(
-        _inventory[11],
-        playerBuilding,
-        counters
-      );
+      const _newLevel = calculatePlayerLevel(playerBuilding, counters);
       _inventory[11] = _newLevel;
       updateInventory(_inventory);
 
@@ -86,16 +84,22 @@ export function BF_upgrade(props: any) {
       });
 
       // Send request to db
-      const _action = await repairAction(
-        player,
-        "repair_building",
-        player.tokenId + "|" + 0 + "|" + _posX + "|" + _posY,
-        inventory,
-        playerBuilding[uid].gameUid
-      );
-      console.log("_action repair", _action);
+      // const _action = await repairAction(
+      //   player,
+      //   "repair_building",
+      //   player.tokenId + "|" + 0 + "|" + _posX + "|" + _posY,
+      //   inventory,
+      //   playerBuilding[uid].gameUid
+      // );
+      // console.log("_action repair", _action);
       // Update context action
-      addAction(_action[0]);
+      addAction({
+        entrypoint: "repair_building",
+        calldata: player.tokenId + "|" + 0 + "|" + _posX + "|" + _posY,
+        status: "",
+        txHash: "",
+        validated: false,
+      });
     } else {
       console.log("Cannot repair or missing tokenId");
     }
@@ -136,17 +140,13 @@ export function BF_upgrade(props: any) {
       _map[_posY][_posX].id = 0;
       updateMapBlock(_map);
 
-      // ? Send request DB
-      const _mapComposed = ComposeD(_map);
-      const _destroy = await destroyAction(
-        player,
-        "destroy_building",
-        player.tokenId + "|" + 0 + "|" + _posX + "|" + _posY,
-        inventory,
-        uid,
-        _mapComposed
-      );
-      addAction(_destroy[0]);
+      addAction({
+        entrypoint: "destroy_building",
+        calldata: player.tokenId + "|" + 0 + "|" + _posX + "|" + _posY,
+        status: "",
+        txHash: "",
+        validated: false,
+      });
 
       updateBuildingFrame(false, {
         infraType: 0,

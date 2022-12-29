@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-// import { useGameContext } from "../../../hooks/useGameContext";
 import { useNewGameContext } from "../../../hooks/useNewGameContext";
 import { useSelectContext } from "../../../hooks/useSelectContext";
 import {
@@ -10,8 +9,6 @@ import {
   receiveResHarvest,
 } from "../../../utils/building";
 import { FrameItem } from "../FrameItem";
-import { harvestAction, updateIncomingInventories } from "../../../api/player";
-import { ComposeD } from "../../../utils/land";
 import { number } from "starknet";
 
 export function BF_resource(props: any) {
@@ -40,7 +37,6 @@ export function BF_resource(props: any) {
     incomingActions,
     counters,
   } = useNewGameContext();
-  // const { tokenId } = useGameContext();
   const [showNotif, setShowNotif] = useState(false);
 
   const inventoryValue = useMemo(() => {
@@ -71,9 +67,6 @@ export function BF_resource(props: any) {
       updateInventory(_inventory);
       const time = Date.now();
       updateIncomingActions(1, _posX, _posY, uid, time, 0);
-      const _incomingArray = addElemToIncoming(incomingArray, uid, time);
-      const incomingArrStr = incomingCompose(_incomingArray);
-      const _updateIncoming = updateIncomingInventories(player, incomingArrStr);
     } else {
       console.log("Cannot harvest or missing tokenId");
     }

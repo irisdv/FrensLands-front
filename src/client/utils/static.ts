@@ -38,12 +38,10 @@ export const fillStaticBuildings = (staticBuildings: any): [] => {
     fixBuildVal[staticBuildings[i].id - 1].createCost = _createCost.map((val) =>
       parseInt(val)
     );
-
     const _repairCost = parseResToArray(staticBuildings[i].repairCost);
     fixBuildVal[staticBuildings[i].id - 1].repairCost = _repairCost.map((val) =>
       parseInt(val)
     );
-
     const _maintainCost = parseResToArray(staticBuildings[i].maintainCost);
     fixBuildVal[staticBuildings[i].id - 1].maintainCost = _maintainCost.map(
       (val) => parseInt(val)
@@ -92,7 +90,7 @@ export const fillStaticResources = (staticResources: any): [] => {
     fixResVal[i].fertility = staticResources[i].fertilityNeed;
 
     fixResVal[i].sprites = parseResToArray(tempSpriteArray[0]);
-    if (tempSpriteArray[1]) {
+    if (typeof tempSpriteArray[1] === "string" && tempSpriteArray[1] !== "") {
       fixResVal[i].harvestSprites = parseResToArray(tempSpriteArray[1]);
     }
 
@@ -127,7 +125,7 @@ export const generateResourcesComps = (staticBuildings: any): [] => {
     let popAdd = 0;
     building.createCost.forEach((cost: number, index: number) => {
       if (index < 7) {
-        if (cost != 0) {
+        if (cost !== 0) {
           if (cost < 10) {
             createComp =
               createComp + (index + 1).toString() + "0" + cost.toString();
@@ -136,8 +134,8 @@ export const generateResourcesComps = (staticBuildings: any): [] => {
           }
         }
       }
-      if (index == 8) popRequired = cost;
-      if (index == 9) popAdd = cost;
+      if (index === 8) popRequired = cost;
+      if (index === 9) popAdd = cost;
     });
     compValues[building.id].build = {
       comp: createComp,
@@ -149,7 +147,7 @@ export const generateResourcesComps = (staticBuildings: any): [] => {
     let destroyComp = "";
     building.destroy.forEach((cost: number, index: number) => {
       if (index < 7) {
-        if (cost != 0) {
+        if (cost !== 0) {
           if (cost < 10) {
             destroyComp =
               destroyComp + (index + 1).toString() + "0" + cost.toString();
@@ -170,7 +168,7 @@ export const generateResourcesComps = (staticBuildings: any): [] => {
     let maintenanceComp: string = "";
     building.maintainCost.forEach((cost: number, index: number) => {
       if (index < 7) {
-        if (cost != 0) {
+        if (cost !== 0) {
           if (cost < 10) {
             maintenanceComp =
               maintenanceComp + (index + 1).toString() + "0" + cost.toString();
@@ -187,7 +185,7 @@ export const generateResourcesComps = (staticBuildings: any): [] => {
     let productionComp: string = "";
     building.production.forEach((cost: number, index: number) => {
       if (index < 7) {
-        if (cost != 0) {
+        if (cost !== 0) {
           if (cost < 10) {
             productionComp =
               productionComp + (index + 1).toString() + "0" + cost.toString();

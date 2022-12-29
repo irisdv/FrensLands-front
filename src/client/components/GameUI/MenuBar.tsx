@@ -4,13 +4,9 @@ import UI_Frames from "../../style/resources/front/Ui_Frames3.svg";
 import { useSelectContext } from "../../hooks/useSelectContext";
 import { useNewGameContext } from "../../hooks/useNewGameContext";
 import { useFLContract } from "../../hooks/contracts/frenslands";
-import {
-  bulkUpdateActions,
-  claimResourcesQuery,
-  reinitLand,
-} from "../../api/player";
 import { TransactionItem } from "./transactionItem";
 import { initMapArr } from "../../utils/land";
+import { number } from "starknet";
 
 export function MenuBar(props: any) {
   const {
@@ -25,6 +21,9 @@ export function MenuBar(props: any) {
     updateActions,
     updateCounters,
     updateClaimRegister,
+    updateInventory,
+    updatePlayerBuildings,
+    updateMapBlock,
   } = useNewGameContext();
   const { zoomMode, updateZoom } = useSelectContext();
   const frenslandsContract = useFLContract();
@@ -68,47 +67,49 @@ export function MenuBar(props: any) {
         updateCounters(counters);
 
         const calldata = player.tokenId + "|0|" + block.block_number;
-        claimResourcesQuery(
-          player,
-          inventory,
-          player.claimRegister,
-          "claim_production",
-          calldata
-        ).then((actionData: any) => {
-          addAction(actionData[0]);
+        addAction({
+          entrypoint: "claim_production",
+          calldata,
+          status: "",
+          txHash: "",
+          validated: false,
         });
       });
     } else {
-      console.log('missing tokenId');
+      console.log("missing tokenId");
     }
   };
 
   const reinitializeLand = async () => {
-    if (player.tokenId) {
-      // const result = await wallet.account.execute([
-      //   {
-      //     contractAddress: frenslandsContract?.address as string,
-      //     entrypoint: "reinit_game",
-      //     calldata: [tokenId, 0],
-      //   },
-      // ]);
-      // console.log("result from tx reinit", result);
+    wallet.account
+      .execute({
+        contractAddress: frenslandsContract.address.toLowerCase(),
+        entrypoint: "reinit_game",
+        calldata: [number.toFelt(player.tokenId), 0],
+      })
+      .then((response: any) => {
+        response.show = true;
+        transactions.push(response);
 
-      const result = {
-        code: "",
-        transaction_hash: "",
-      };
+        payloadActions.push({
+          entrypoint: "reinit_game",
+          calldata: player.tokenId + "|0",
+          status: response.code,
+          txHash: response.transaction_hash,
+        });
+        updateActions(payloadActions);
 
-      let hasStarted = true;
-      const _hasStarted = payloadActions.filter((action: any) => {
-        return action.entrypoint == "start_game";
+        // Update in localStorage
+        let ongoingTx = JSON.parse(localStorage.getItem("ongoingTx") as string);
+        if (!ongoingTx) ongoingTx = [];
+        ongoingTx.push({
+          ...response,
+          time: Date.now(),
+        });
+        localStorage.setItem("ongoingTx", JSON.stringify(ongoingTx));
       });
-      if (_hasStarted && _hasStarted.length > 0) hasStarted = false;
-      const _reinitializeGame = await reinitLand(player, result, hasStarted);
-      console.log("_initializeGame", _reinitializeGame);
-
-      window.location.reload();
-    }
+    // todo reload page when tx accepted
+    // setPopUpInit(false);
   };
 
   const zoomValue = useMemo(() => {
@@ -116,62 +117,58 @@ export function MenuBar(props: any) {
   }, [zoomMode, wallet]);
 
   const buildMulticall = async () => {
-    console.log("building multicall w/ actions = ", payloadActions);
+    console.log("building multicall w/ first 80 actions = ", payloadActions);
 
     const _calls: any[] = [];
-    payloadActions.forEach((action: any) => {
-      // Build calldata
+    for (
+      let i = 0;
+      i < (payloadActions.length > 80 ? 80 : payloadActions.length);
+      i++
+    ) {
       if (
-        action.status != "TRANSACTION_RECEIVED" &&
-        action.status != "ACCEPTED_ON_L2"
+        payloadActions[i].status != "TRANSACTION_RECEIVED" &&
+        payloadActions[i].status != "ACCEPTED_ON_L2"
       ) {
         const _calldata: any[] = [];
-        const _data = action.calldata.split("|");
-
-        // ! for test contracts
-        // if (
-        //   action.entrypoint == "build" ||
-        //   action.entrypoint == "destroy_building" ||
-        //   action.entrypoint == "repair_building" ||
-        //   action.entrypoint == "move_infrastructure" ||
-        //   action.entrypoint == "fuel_building_production" ||
-        //   action.entrypoint == "claim_production" ||
-        //   action.entrypoint == "reinit_game"
-        // ) {
-        //   _calldata.push(
-        //     "0x0623dbdd29ae5dc1b314fa41d2b1b5d3014fd62ec86fab7ddd6ef5c2da1d2314"
-        //   );
-        // } else if (action.entrypoint == "harvest") {
-        //   _calldata.push(
-        //     "0x07f711ddbb1786333f242b676603e2cadf62034f74e298a0085318649c84ba05"
-        //   );
-        // }
-        // //  ! end testing
+        const _data = payloadActions[i].calldata.split("|");
 
         _data.forEach((elem: any) => {
           _calldata.push(elem);
         });
         _calls.push({
           contractAddress: frenslandsContract.address.toLowerCase(),
-          entrypoint: action.entrypoint as string,
+          entrypoint: payloadActions[i].entrypoint as string,
           calldata: _calldata,
         });
       }
-    });
+    }
 
     wallet.account.execute(_calls).then((response: any) => {
       console.log("response", response);
       response.show = true;
       transactions.push(response);
 
-      payloadActions.map((action: any) => {
-        action.status = response.code;
-        action.txHash = response.transaction_hash;
-      });
+      for (
+        let i = 0;
+        i < (payloadActions.length > 80 ? 80 : payloadActions.length);
+        i++
+      ) {
+        payloadActions[i].status = response.code;
+        payloadActions[i].txHash = response.transaction_hash;
+      }
       updateActions(payloadActions);
 
-      // Update in DB
-      const _updatedActions = bulkUpdateActions(player, payloadActions);
+      // Update in localStorage
+      let ongoingTx = JSON.parse(localStorage.getItem("ongoingTx") as string);
+      console.log("ongoingTx before", ongoingTx);
+      if (!ongoingTx) ongoingTx = [];
+      ongoingTx.push({
+        ...response,
+        time: Date.now(),
+      });
+      console.log("ongoingTx after", ongoingTx);
+      localStorage.setItem("ongoingTx", JSON.stringify(ongoingTx));
+
       setPopUpTxCart(false);
     });
   };
@@ -498,7 +495,7 @@ export function MenuBar(props: any) {
           <Notifications />
         </div>
       </div>
-      <div onClick={() => updateZoom(!zoomValue, player.id as string)}>
+      <div onClick={() => updateZoom(!zoomValue)}>
         {zoomValue ? (
           <div className="checkZoom1 pixelated"></div>
         ) : (

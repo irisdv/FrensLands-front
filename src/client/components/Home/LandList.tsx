@@ -1,37 +1,17 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, useLazyQuery } from "@apollo/client";
 import { hexToDecimalString } from "starknet/utils/number";
 import { allMetadata } from "../../data/metadata";
 import UI_Frames from "../../style/resources/front/Ui_Frames3.svg";
-import { getLandByTokenId, initGame } from "../../api/player";
-import { useFLContract } from "../../hooks/contracts/frenslands";
 import { useNavigate } from "react-router-dom";
-import { useTestContract } from "../../hooks/contracts/test";
-
-export const TOKENS_QUERY = gql`
-  query tokens($owner: HexValue) {
-    tokens(owner: $owner) {
-      tokenId
-      owner
-    }
-  }
-`;
-
-export const INIT_QUERY = gql`
-  query tokens($owner: HexValue) {
-    tokens(owner: $owner) {
-      tokenId
-      owner
-    }
-  }
-`;
+import { INIT_QUERY, TOKENS_QUERY } from "../../api/queries";
 
 export default function MenuHome(props: any) {
-  const { account, userId, starknet } = props;
-  const frenslandsContract = useFLContract();
+  const { account } = props;
   const navigate = useNavigate();
   const [isReady, setIsReady] = useState(false);
-  const [initArray, setInitArray] = useState<any[]>([]);
+  const [getInit, { loading: loadingInit, data: initData, error: initError }] =
+    useLazyQuery(INIT_QUERY);
 
   const {
     data,
@@ -46,7 +26,6 @@ export default function MenuHome(props: any) {
   const tokenIdsArray = useMemo(() => {
     if (data && data.tokens && data.tokens.length > 0) {
       const _tokenIds: any[] = [];
-      console.log("data", data);
       data.tokens.map((land: any) => {
         _tokenIds.push(parseInt(hexToDecimalString(land.tokenId)));
       });
@@ -57,65 +36,26 @@ export default function MenuHome(props: any) {
   }, [data, isReady]);
 
   useEffect(() => {
-    if (tokenIdsArray != null && tokenIdsArray.length > 0) {
-      const _initArray: any[] = [];
-      getLandByTokenId(tokenIdsArray).then((res: any) => {
-        res.map((elem: any) => {
-          _initArray[elem.tokenId] = elem;
-        });
-        setInitArray(_initArray);
-      });
-    }
+    if (tokenIdsArray != null && tokenIdsArray.length > 0) setIsReady(true);
   }, [tokenIdsArray]);
-
-  useEffect(() => {
-    if (initArray && initArray.length > 0) setIsReady(true);
-  }, [initArray]);
 
   const startGame = async (_tokenId: number) => {
     console.log("starting game for tokendId", _tokenId);
 
-    if (initArray && initArray[_tokenId]) {
-      if (initArray[_tokenId].isInit) {
-        console.log("isInit", initArray[_tokenId].isInit);
-        navigate("/play", { state: { landId: _tokenId } });
-      } else {
-        // let nonce = await wallet.account.getNonce();
-        // const result = await starknet.account.execute(
-        //   [
-        //     {
-        //       contractAddress: frenslandsContract.address as string,
-        //       entrypoint: "start_game",
-        //       calldata: [_tokenId, 0, initArray[_tokenId].biomeId],
-        //     },
-        //   ]
-        // );
-        // console.log("result from tx", result);
+    if (tokenIdsArray != null && tokenIdsArray.includes(_tokenId)) {
+      const wasInit = await getInit({
+        variables: {
+          landId: ("0x" + _tokenId.toString(16).padStart(64, "0")) as HexValue,
+        },
+      });
+      console.log("land wasInit", wasInit.data.wasInit);
 
-        const result = {
-          code: "",
-          transaction_hash: "",
-        };
-
-        // Init game in db
-        const _initializeGame = await initGame(
-          userId,
-          initArray[_tokenId].id,
-          initArray[_tokenId].biomeId,
-          _tokenId,
-          result
-        );
-        console.log("_initializeGame", _initializeGame);
-
-        // Go the page play w/ tx ongoing tx information
-        if (result) {
-          navigate("/play", {
-            state: {
-              landId: _tokenId,
-            },
-          });
-        }
-      }
+      navigate("/play", {
+        state: {
+          landId: _tokenId,
+          wasInit: wasInit.data.wasInit,
+        },
+      });
     }
   };
 
@@ -159,7 +99,7 @@ export default function MenuHome(props: any) {
 
   return (
     <>
-      {data && data.tokens && isReady && initArray && (
+      {data && data.tokens && isReady && tokenIdsArray != null && (
         <>
           <div className={`grid grid-cols-${data.tokens.length} px-8`}>
             {data.tokens.map((land: any) => {

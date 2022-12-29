@@ -225,6 +225,11 @@ body {
   position: absolute;
   margin-top: 150px;
 }
+.parentNotifBug {
+  z-index: 1;
+  height: 235px;
+  width: 500px;
+}
 .closeTxCart {
   display: inline-block;
   background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
