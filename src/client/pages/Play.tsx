@@ -1,221 +1,432 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useStarknet } from "@starknet-react/core";
-import useInGameContext from "../hooks/useInGameContext";
-import { Scene } from '../components/r3f/Scene'
+import { Scene } from "../components/r3f/Scene";
 import { MenuBar } from "../components/GameUI/MenuBar";
 import { BottomBar } from "../components/GameUI/BottomBar";
 import { BuildingFrame } from "../components/GameUI/BuildingFrame";
-import { SelectStateProvider } from "../providers/SelectContext";
-import { BuildingStateProvider } from "../providers/BuildingContext";
-import { useGameContext } from "../hooks/useGameContext";
 import { Achievements } from "../components/GameUI/Achievements";
-import { useNavigate } from "react-router-dom";
-import { allMetadata } from "../data/metadata";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useNewGameContext } from "../hooks/useNewGameContext";
+import { getStarknet } from "get-starknet";
+import { useSelectContext } from "../hooks/useSelectContext";
+import { useFLContract } from "../hooks/contracts/frenslands";
+import { number } from "starknet";
+import {
+  calculatePlayerLevel,
+  composeFromIndexer,
+  initMapArr,
+} from "../utils/land";
+import { allBuildings } from "../data/buildings";
+import { fillStaticBuildings } from "../utils/static";
+import { initCounters } from "../utils/building";
+import { useLazyQuery } from "@apollo/client";
+import UI_Frames from "../style/resources/front/Ui_Frames3.svg";
+import { BUILDINGS_QUERY, MAP_QUERY, RESET_QUERY } from "../api/queries";
 
 export default function Play() {
-  const { account } = useStarknet();
-  const { setAddress, updateTokenId, tokenId, fetchMapType } = useGameContext();
-  const [worldType, setWorldType] = useState(-1)
-  const navigate = useNavigate()
+  const {
+    wallet,
+    player,
+    initPlayer,
+    initGameSession,
+    fullMap,
+    inventory,
+    counters,
+    payloadActions,
+    updateInventory,
+    updateMapBlock,
+    updateCounters,
+    updatePlayerBuildings,
+    transactions,
+    updateActions,
+    addAction,
+  } = useNewGameContext();
+  const { initSettings } = useSelectContext();
+  const { state } = useLocation();
+  const { landId, wasInit } = state;
+  const navigate = useNavigate();
+  const [textArrRef, setTextArrRef] = useState<any[]>([]);
+  const [isInit, setIsInit] = useState(false);
+  const frenslandsContract = useFLContract();
+  const [needReset, setNeedReset] = useState(false);
+  const [isInReset, setIsInReset] = useState(false);
+  const [
+    getBuildings,
+    { loading: loadingBuilding, data: dataBuilding, error: errorBuilding },
+  ] = useLazyQuery(BUILDINGS_QUERY);
+  const [getLand, { loading: loadingLand, data: dataLand, error: errorLand }] =
+    useLazyQuery(MAP_QUERY);
+  const [
+    getResets,
+    { loading: loadingResets, data: dataResets, error: errorResets },
+  ] = useLazyQuery(RESET_QUERY);
 
-  const { mapArray } = useInGameContext()
-  const rightBuildingType : any[] = [0, 1, 179, 15, 3, 10, 5, 8, 7, 6, 59, 11, 9, 12, 13, 60, 36, 58, 61, 4, 20, 14, 33, 57, 100, 20, 24, 183]
-  // Big building type
-  // const rightBuildingType : any[] = [0, 81, 179, 15, 83, 114, 105, 89, 90, 91, 108, 85, 86, 87, 88, 109, 104, 102, 45, 84, 20, 93, 97, 107, 100, 148, 146, 184]
-  // XL Cow farm = 45 ou 99
-  // Vegetable farm = 42 ou 102
-  // Wheat farm = 36 ou 103 ou 104
-  const [textArrRef, setTextArrRef] = useState<any[]>([])
-  const [UBlockIDs, setUBlockIDs] = useState(0);
-  const [buildingCounters, setBuildingCounters] = useState<any[]>([])
-  const [level, setLevel] = useState(1);
+  const fullMapValue = useMemo(() => {
+    return fullMap;
+  }, [fullMap]);
+
+  const checkResets = async () => {
+    let _needReset = true;
+    const resetsFetched = await getResets({
+      variables: {
+        landId: ("0x" + landId.toString(16).padStart(64, "0")) as HexValue,
+      },
+    });
+    if (resetsFetched.data.reset.length === 0) return false;
+    resetsFetched.data.reset.length > 0 &&
+      resetsFetched.data.reset.map((ev: any) => {
+        const desiredTime = new Date("2022-12-26 15:00:00");
+        const date = new Date(ev.timestamp);
+        if (date > desiredTime) _needReset = false;
+      });
+    return _needReset;
+  };
 
   useEffect(() => {
-    if (account) {
-      setAddress(account as string);
-    } else {
-      navigate('/')
+    if (needReset && isInReset && transactions.length > 0) {
+      const _tx = transactions.filter(
+        (tx: any) =>
+          tx.entrypoint === "reinit_game" && tx.status === "ACCEPTED_ON_L2"
+      );
+      if (_tx && _tx.length > 0) navigate("/");
     }
-  }, [account])
+  }, [needReset, isInReset, transactions]);
 
-  useEffect(() => {
-    if (account && !tokenId) {
-      updateTokenId(account);
+  const neverInit = (_wallet: any) => {
+    const _inventory = [];
+    _inventory[0] = 0;
+    _inventory[1] = 0;
+    _inventory[2] = 20;
+    _inventory[3] = 0;
+    _inventory[4] = 0;
+    _inventory[5] = 0;
+    _inventory[6] = 0;
+    _inventory[7] = 0;
+    _inventory[8] = 1;
+    _inventory[9] = 1;
+    _inventory[10] = 0;
+    _inventory[11] = 1;
+    console.log(_inventory);
+
+    const _fullMap = initMapArr(_wallet.account.address);
+
+    const _buildings: any[] = [];
+    _buildings[1].activeCycles = 0;
+    _buildings[1].decay = 100;
+    _buildings[1].gameUid = 1;
+    _buildings[1].incomingCycles = 0;
+    _buildings[1].lastFuel = 0;
+    _buildings[1].posX = 20;
+    _buildings[1].posY = 8;
+    _buildings[1].type = 1;
+
+    const _counters = [];
+    _counters["uid" as any] = 1;
+    _counters["incomingInventory" as any] = [];
+    _counters["inactive" as any] = 0;
+    _counters["active" as any] = 0;
+    _counters["blockClaimable" as any] = 0;
+    _counters[1] = [];
+    _counters[2] = [];
+
+    return { _inventory, _fullMap, _buildings, _counters };
+  };
+
+  const fetchLandInfo = async (wallet: any, landId: number) => {
+    const mapFetched = await getLand({
+      variables: {
+        landId: ("0x" + landId.toString(16).padStart(64, "0")) as HexValue,
+      },
+    });
+    const { res: _mapComp, counters } = composeFromIndexer(
+      mapFetched.data.getLand[0].map,
+      wallet.account.address
+    );
+    console.log("map fetched", _mapComp);
+
+    // Fetch buildings state from indexed on-chain data
+    let skip = 0;
+    const limit = 10;
+    let needFetch = true;
+    const playerBuildingsFetched: any = [];
+    while (needFetch) {
+      const fetchBuilding = await getBuildings({
+        variables: {
+          landId: ("0x" + landId.toString(16).padStart(64, "0")) as HexValue,
+          skip,
+          limit,
+        },
+      });
+      playerBuildingsFetched.push(...fetchBuilding.data.getBuildingsState);
+      if (fetchBuilding.data.getBuildingsState.length < limit) {
+        needFetch = false;
+      } else {
+        skip += limit;
+      }
     }
-  }, [account, tokenId])
 
-  useEffect(() => {
-    if (tokenId) {
-      let _metadata = allMetadata.filter(res => res.id == tokenId as number )
-      setWorldType(_metadata[0].biome)
-    }
-  }, [tokenId])
-
-  useEffect(() => {
-    var x = 0;
-    var y = 15;
-    var value = 1;
-    let textArrRefTemp : any[] = []
-
-    while (y >= 0)
-    {
-        textArrRefTemp[y] = [];
-        while (x < 16)
-        {
-            textArrRefTemp[y][x] = value;
-            x++;
-            value++;
-        }
-        x = 0;
-        y--;
-    }
-    setTextArrRef(textArrRefTemp)
-  }, [])
-
-  const frontBlockArray = useMemo(() => {
-    if (mapArray && Object.keys(mapArray).length > 0) {
-      var frontArray: any[] = [];
-      console.log('mapArray received', mapArray)
-      // Decompose array
-      var indexI = 1;
-      var indexJ = 1;
-      var i = 0;
-      var buildingIDs = 0;
-
-      var counters : any[] = []
-
-      while (indexI < 17)
-      {
-        // validatedBlockArray[indexI] = [];
-        frontArray[indexI] = [];
-
-        while (indexJ < 41)
-        {
-          // validatedBlockArray[indexI][indexJ] = decompose(mapArray[i]);
-
-          frontArray[indexI][indexJ] = decompose(mapArray[i]);
-          // frontArray[indexI][indexJ][4] = i;
-          if (frontArray[indexI][indexJ][4] != 0) buildingIDs++;
-
-          if (frontArray[indexI][indexJ] && frontArray[indexI][indexJ][3] && frontArray[indexI][indexJ][3] > 0) {
-            let currCounter = 0;
-            if (counters[frontArray[indexI][indexJ][3]] > 0) currCounter = counters[frontArray[indexI][indexJ][3]]
-
-            if (frontArray[indexI][indexJ][3] == 2 || frontArray[indexI][indexJ][3] == 3 || frontArray[indexI][indexJ][3] == 20) {
-              counters[frontArray[indexI][indexJ][3]] = currCounter + (4 - frontArray[indexI][indexJ][7])
-            } else {
-              counters[frontArray[indexI][indexJ][3]] = currCounter + 1
-            }
+    const playerBuildings: any = [];
+    let lastUID = 0;
+    const blockNb = await wallet.account.getBlock();
+    playerBuildingsFetched &&
+      playerBuildingsFetched.length > 0 &&
+      playerBuildingsFetched.map(async (building: any) => {
+        const id = Number(building.buildingUid);
+        let activeCycles = Number(building.activeCycles);
+        let incomingCycles = Number(building.incomingCycles);
+        const lastFuel = Number(building.lastFuel);
+        if (incomingCycles > 0) {
+          if (lastFuel + incomingCycles < blockNb.block_number) {
+            activeCycles += incomingCycles;
+            incomingCycles = 0;
+          } else {
+            const fuelPassed = blockNb.block_number - lastFuel;
+            activeCycles += fuelPassed;
+            incomingCycles -= fuelPassed;
           }
-
-          indexJ++;
-          i++;
-        }
-        indexJ = 1;
-        indexI++;
-        }
-        setUBlockIDs(buildingIDs)
-        // console.log('building counters', counters)
-        setBuildingCounters(counters)
-
-        // Calculate level 
-        if (frontArray[8][20][7] == 2)  setLevel(2)
-        if (counters[4] && counters[4] > 0 && counters[16] && counters[16] > 0) setLevel(3)
-        if (counters[21] && counters[21] > 0) setLevel(4)
-        if (counters[8] && counters[7] && counters[8] > 0 && counters [7] > 0) setLevel(5)
-        if (counters[9] && counters[11] && counters[9] > 0 && counters[11] > 0) setLevel(6)
-        if (counters[22] && counters[22] > 0) setLevel(7)
-        if (counters[5] && counters[5] > 0) setLevel(8)
-        if (counters[4] > 0 && counters[5] > 0 && counters[6] > 0 && counters[7] > 0 
-              && counters[8] > 0 && counters[9] > 0 && counters[10] > 0 && counters[11] > 0 && counters[12] > 0 && counters[13] > 0 &&
-              counters[14] > 0 && counters[15] > 0 && counters[16] > 0 && counters[17] > 0 && counters[18] > 0 && counters[19] > 0 && 
-              counters[21] > 0 && counters[22] > 0 && counters[23] > 0 && counters[24] > 0 && counters[25] > 0 && counters[26] > 0)
-        {
-          setLevel(9)
         }
 
-        return { frontArray }
+        playerBuildings[id] = {
+          type: Number(building.buildingTypeId),
+          posX: Number(building.posX),
+          posY: Number(building.posY),
+          activeCycles,
+          incomingCycles,
+          lastFuel,
+          gameUid: id,
+          decay: Number(building.decay),
+        };
+        if (id > lastUID) lastUID = id;
+      });
+    console.log("from indexer buildings", playerBuildings);
+
+    const { incomingInventory, inactive, active, nbBlocksClaimable } =
+      initCounters(playerBuildings, fillStaticBuildings(allBuildings));
+
+    counters["uid" as any] = lastUID;
+    counters["incomingInventory" as any] = incomingInventory;
+    counters["inactive" as any] = inactive;
+    counters["active" as any] = active;
+    counters["blockClaimable" as any] = nbBlocksClaimable;
+
+    console.log("counters", counters);
+
+    const _inventory = await wallet.account.callContract({
+      contractAddress: frenslandsContract.address,
+      entrypoint: "get_balance_all",
+      calldata: [number.toFelt(landId)],
+    });
+
+    const _pop = await wallet.account.callContract({
+      contractAddress: frenslandsContract.address,
+      entrypoint: "get_pop",
+      calldata: [number.toFelt(landId)],
+    });
+
+    // build inventory and update
+    _inventory.result.splice(0, 1);
+    for (let i = 0; i < 7; i++) {
+      inventory[i] = Number(_inventory.result[i]);
     }
-  }, [mapArray])
+    inventory[7] = 0;
+    inventory[8] = Number(_pop.result[2]);
+    inventory[9] = Number(_pop.result[1]);
+    inventory[10] = 0;
+    inventory[11] = calculatePlayerLevel(playerBuildings, counters);
+    console.log("inventory", inventory);
 
-  function decompose(elem: any)
-  {
-    var tempDecomp : any[] = [];
+    return { _mapComp, counters, playerBuildings, inventory };
+  };
 
-    if (elem.length < 16)
-    {
-        tempDecomp[0] = parseInt(elem[0]);                      //[pos:x]
-        tempDecomp[1] = parseInt(elem[1] + elem[2]);            //[pos:y]
-        tempDecomp[2] = parseInt(elem[3]);                      //[mat type]
-        tempDecomp[3] = parseInt(elem[4] + elem[5]);            //[ress or bat type]  + 900 pour avoir 999 max
-        tempDecomp[4] = parseInt(elem[6] + elem[7] + elem[8]);  //[UNIQUE ID]
-        tempDecomp[5] = parseInt(elem[9] + elem[10]);           //[health]
-        tempDecomp[6] = parseInt(elem[11] + elem[12]);          //[quantity ress or pop + 900 pour avoir 999 ???
-        tempDecomp[7] = parseInt(elem[13]);                     //[current level]
-        tempDecomp[8] = parseInt(elem[14]);                     //[size]
-        tempDecomp[9] = 0;                                      //[random ID]
-        tempDecomp[10] = 1                                      // Local: Status of building (1 = built, 0 = en construction)
-        tempDecomp[11] = []                                     // last tx hash
+  useEffect(() => {
+    if (!wallet && !isInit && landId) {
+      const _wallet = getStarknet();
+      _wallet.enable().then((data: any) => {
+        if (_wallet.isConnected) {
+          initPlayer(_wallet);
+          initGameSession(landId);
+
+          // Check if land was Reset before fixing contract bug
+          checkResets().then((res: any) => {
+            if (!res) {
+              setNeedReset(false);
+              if (wasInit) {
+                fetchLandInfo(_wallet, landId).then((res) => {
+                  updateMapBlock(res._mapComp);
+                  updateCounters(res.counters);
+                  updatePlayerBuildings(res.playerBuildings);
+                  updateInventory(res.inventory);
+                  setIsInit(true);
+                });
+              } else {
+                const { _inventory, _fullMap, _buildings, _counters } =
+                  neverInit(_wallet);
+                updateMapBlock(_fullMap);
+                updateCounters(_counters);
+                updatePlayerBuildings(_buildings);
+                updateInventory(_inventory);
+                addAction({
+                  entrypoint: "start_game",
+                  calldata: landId + "|0",
+                  status: "",
+                  txHash: "",
+                  validated: false,
+                });
+                setIsInit(true);
+              }
+            } else {
+              setNeedReset(true);
+            }
+          });
+          const settings = JSON.parse(
+            localStorage.getItem("settings") as string
+          );
+          console.log("settings", settings);
+          initSettings({
+            zoom: (settings && settings.zoom) || true,
+            tutorial: (settings && settings.tutorial) || true,
+            sound: (settings && settings.sound) || true,
+          });
+        } else {
+          navigate("/");
+        }
+      });
     }
-    else
-    {
-        tempDecomp[0] = parseInt(elem[0] + elem[1]);            //[pos:x]
-        tempDecomp[1] = parseInt(elem[2] + elem[3]);            //[pos:y]
-        tempDecomp[2] = parseInt(elem[4]);                      //[mat type]
-        tempDecomp[3] = parseInt(elem[5] + elem[6]);            //[ress or bat type]
-        tempDecomp[4] = parseInt(elem[7] + elem[8] + elem[9]);  //[UNIQUE ID]
-        tempDecomp[5] = parseInt(elem[10] + elem[11]);          //[health]
-        tempDecomp[6] = parseInt(elem[12] + elem[13]);          //[quantity ress or pop]
-        tempDecomp[7] = parseInt(elem[14]);                     //[current level]
-        tempDecomp[8] = parseInt(elem[15]);                     //[activity index or number of days active]
-        tempDecomp[9] = 0;                                      //[random ID]
-        tempDecomp[10] = 1                                      // Local : Status of building (1 = built, 0 = en construction // 1= not harvested, 0 = currently harvested)
-        tempDecomp[11] = []                                     // last tx hash
+  }, [wallet, landId, dataBuilding, dataLand]);
+
+  useEffect(() => {
+    let x = 0;
+    let y = 15;
+    let value = 1;
+    const textArrRefTemp: any[] = [];
+
+    while (y >= 0) {
+      textArrRefTemp[y] = [];
+      while (x < 16) {
+        textArrRefTemp[y][x] = value;
+        x++;
+        value++;
+      }
+      x = 0;
+      y--;
     }
+    setTextArrRef(textArrRefTemp);
+  }, []);
 
-    if (tempDecomp[3] == 2 || tempDecomp[3] == 3)
-    {
-      tempDecomp[9] = parseInt((Math.random() * (3 - 1) + 1).toFixed(0));
-    }
+  const sendResetTx = async () => {
+    wallet.account
+      .execute({
+        contractAddress: frenslandsContract.address.toLowerCase(),
+        entrypoint: "reinit_game",
+        calldata: [number.toFelt(landId), 0],
+      })
+      .then((response: any) => {
+        response.show = true;
+        response.entrypoint = "reinit_game";
+        transactions.push(response);
 
-    // if (tempDecomp[4] == 0) // DEBUG CONDITION WITH "ANTI 0"
-    // {
-    //   tempDecomp[3] = 0;
-    // }
+        payloadActions.push({
+          entrypoint: "reinit_game",
+          calldata: landId + "|0",
+          status: response.code,
+          txHash: response.transaction_hash,
+        });
+        updateActions(payloadActions);
 
-    return (tempDecomp);
-  }
+        // Update in localStorage
+        let ongoingTx = JSON.parse(localStorage.getItem("ongoingTx") as string);
+        if (!ongoingTx) ongoingTx = [];
+        ongoingTx.push({
+          ...response,
+          time: Date.now(),
+        });
+        localStorage.setItem("ongoingTx", JSON.stringify(ongoingTx));
+        setIsInReset(true);
+      });
+  };
 
   return (
     <>
-      {frontBlockArray?.frontArray && Object.keys(frontBlockArray.frontArray).length > 0 ? (
+      {inventory && fullMapValue && fullMapValue.length > 0 ? (
         <>
-        <BuildingStateProvider>
-          <SelectStateProvider>
-            <MenuBar />
-            <Achievements level={level} />
-            <div style={{ height: "100vh", width: "100vw", zIndex: "0" }}>
-              {frontBlockArray && Object.keys(frontBlockArray).length > 0 &&
-                worldType != null && worldType != -1 &&
-                  <Scene
-                    mapArray={frontBlockArray.frontArray}
-                    textArrRef={textArrRef}
-                    rightBuildingType={rightBuildingType}
-                    worldType={worldType}
-                    UBlockIDs={UBlockIDs}
-                     />
-                }
-            </div>
-            {frontBlockArray && Object.keys(frontBlockArray).length > 0 &&
-              <BuildingFrame frontBlockArray={frontBlockArray.frontArray} level={level} />
-            }
-            <BottomBar level={level} />
-          </SelectStateProvider>
-          </BuildingStateProvider>
+          <MenuBar payloadActions={payloadActions} />
+          <Achievements level={inventory[11]} />
+          <div style={{ height: "100vh", width: "100vw", zIndex: "0" }}>
+            <Scene
+              mapArray={fullMap}
+              textArrRef={textArrRef}
+              worldType={player.biomeId}
+              UBlockIDs={counters["buildings" as any]}
+            />
+          </div>
+          <BuildingFrame frontBlockArray={fullMap} level={inventory[11]} />
+          <BottomBar level={inventory[11]} />
         </>
       ) : (
-        <div style={{backgroundColor: "rgb(21, 29, 40)", width: "100vw", height: "100vh"}}>
-          <img src="resources/front/LoadingScreen.gif" className="mx-auto my-auto" />
+        <div
+          style={{
+            backgroundColor: "rgb(21, 29, 40)",
+            width: "100vw",
+            height: "100vh",
+          }}
+        >
+          <img
+            src="resources/front/LoadingScreen.gif"
+            className="mx-auto my-auto"
+          />
+        </div>
+      )}
+      {needReset && (
+        <div
+          className="flex justify-center selectDisable absolute"
+          style={{
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <div className="parentNotifBug">
+            <div
+              className="popUpNotifsTxCart pixelated fontHPxl-sm"
+              style={{
+                zIndex: 1,
+                borderImage: `url(data:image/svg+xml;base64,${btoa(
+                  UI_Frames
+                )}) 18 fill stretch`,
+                textAlign: "center",
+              }}
+            >
+              <p>
+                We had to update the contracts to fix a bug. Please reset your
+                land to continue playing. This action will reset the state of
+                your land.
+              </p>
+
+              <br />
+              {needReset && !isInReset && (
+                <div style={{ overflowY: "auto", height: "310px" }}>
+                  <div
+                    className="btnCustom pixelated relative"
+                    onClick={async () => await sendResetTx()}
+                  >
+                    <p
+                      className="relative fontHpxl_JuicyXL"
+                      style={{ marginTop: "47px" }}
+                    >
+                      Send TX
+                    </p>
+                  </div>
+                </div>
+              )}
+              {needReset && isInReset && (
+                <p>
+                  Transaction ongoing...
+                  <br />
+                  You'll be redirected to the homepage once the transaction is
+                  accepted.
+                </p>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </>

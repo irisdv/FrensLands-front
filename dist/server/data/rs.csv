@@ -1,0 +1,41 @@
+id,type,spriteId,animated,biomeId,name,description,locked,size,nbHarvest,fertilityNeed,nbLevels,harvestCost,production
+1,tree,199-200-201-202|203-204-205,TRUE,1,Pine Tree,Trees can be harvested 3 times. You need to have one fren available to harvest a tree.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,2-0-0-0-0-0-0-0-0-0-0-0
+2,tree,215-216-217-218|219-220-221,TRUE,1,Blue Pine Tree,Trees can be harvested 3 times. You need to have one fren available to harvest a tree.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,2-0-0-0-0-0-0-0-0-0-0-0
+3,tree,231-232-233-234|235-236-237,TRUE,1,Grey Pine Tree,Trees can be harvested 3 times. You need to have one fren available to harvest a tree.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,2-0-0-0-0-0-0-0-0-0-0-0
+4,tree,199-200-201-202|203-204-205,TRUE,2,Pine Tree,Trees can be harvested 3 times. You need to have one fren available to harvest a tree.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,2-0-0-0-0-0-0-0-0-0-0-0
+5,tree,215-216-217-218|219-220-221,TRUE,2,Blue Pine Tree,Trees can be harvested 3 times. You need to have one fren available to harvest a tree.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,2-0-0-0-0-0-0-0-0-0-0-0
+6,tree,231-232-233-234|235-236-237,TRUE,2,Grey Pine Tree,Trees can be harvested 3 times. You need to have one fren available to harvest a tree.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,2-0-0-0-0-0-0-0-0-0-0-0
+7,tree,199-200-201-202|203-204-205,TRUE,3,Pine Tree,Trees can be harvested 3 times. You need to have one fren available to harvest a tree.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,2-0-0-0-0-0-0-0-0-0-0-0
+8,tree,215-216-217-218|219-220-221,TRUE,3,Blue Pine Tree,Trees can be harvested 3 times. You need to have one fren available to harvest a tree.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,2-0-0-0-0-0-0-0-0-0-0-0
+9,tree,231-232-233-234|235-236-237,TRUE,3,Grey Pine Tree,Trees can be harvested 3 times. You need to have one fren available to harvest a tree.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,2-0-0-0-0-0-0-0-0-0-0-0
+10,tree,199-200-201-202|203-204-205,TRUE,4,Pine Tree,Trees can be harvested 3 times. You need to have one fren available to harvest a tree.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,2-0-0-0-0-0-0-0-0-0-0-0
+11,tree,215-216-217-218|219-220-221,TRUE,4,Blue Pine Tree,Trees can be harvested 3 times. You need to have one fren available to harvest a tree.,FALSE,1,3,100,1,0-0-2-0-0-0-0-0-0-0-0-0,2-0-0-0-0-0-0-0-0-0-0-0
+12,tree,231-232-233-234|235-236-237,TRUE,4,Grey Pine Tree,Trees can be harvested 3 times. You need to have one fren available to harvest a tree.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,2-0-0-0-0-0-0-0-0-0-0-0
+13,tree,199-200-201-202|203-204-205,TRUE,5,Pine Tree,Trees can be harvested 3 times. You need to have one fren available to harvest a tree.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,2-0-0-0-0-0-0-0-0-0-0-0
+14,tree,215-216-217-218|219-220-221,TRUE,5,Blue Pine Tree,Trees can be harvested 3 times. You need to have one fren available to harvest a tree.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,2-0-0-0-0-0-0-0-0-0-0-0
+15,tree,231-232-233-234|235-236-237,TRUE,5,Grey Pine Tree,Trees can be harvested 3 times. You need to have one fren available to harvest a tree.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,2-0-0-0-0-0-0-0-0-0-0-0
+16,rock,177|171-172-173,FALSE,1,rock,Rocks can be harvested 3 times. You need to have one fren available to harvest a rock.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,0-2-0-0-0-0-0-0-0-0-0-0
+17,rock,180|174-175-176,FALSE,1,rock,Rocks can be harvested 3 times. You need to have one fren available to harvest a rock.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,0-2-0-0-0-0-0-0-0-0-0-0
+18,rock,179|171-173-176,FALSE,1,rock,Rocks can be harvested 3 times. You need to have one fren available to harvest a rock.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,0-2-0-0-0-0-0-0-0-0-0-0
+19,rock,177|171-172-173,FALSE,2,rock,Rocks can be harvested 3 times. You need to have one fren available to harvest a rock.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,0-2-0-0-0-0-0-0-0-0-0-0
+20,rock,180|174-175-176,FALSE,2,rock,Rocks can be harvested 3 times. You need to have one fren available to harvest a rock.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,0-2-0-0-0-0-0-0-0-0-0-0
+21,rock,179|171-173-176,FALSE,2,rock,Rocks can be harvested 3 times. You need to have one fren available to harvest a rock.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,0-2-0-0-0-0-0-0-0-0-0-0
+22,rock,177|171-172-173,FALSE,3,rock,Rocks can be harvested 3 times. You need to have one fren available to harvest a rock.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,0-2-0-0-0-0-0-0-0-0-0-0
+23,rock,180|174-175-176,FALSE,3,rock,Rocks can be harvested 3 times. You need to have one fren available to harvest a rock.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,0-2-0-0-0-0-0-0-0-0-0-0
+24,rock,179|171-173-176,FALSE,3,rock,Rocks can be harvested 3 times. You need to have one fren available to harvest a rock.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,0-2-0-0-0-0-0-0-0-0-0-0
+25,rock,177|171-172-173,FALSE,4,rock,Rocks can be harvested 3 times. You need to have one fren available to harvest a rock.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,0-2-0-0-0-0-0-0-0-0-0-0
+26,rock,180|174-175-176,FALSE,4,rock,Rocks can be harvested 3 times. You need to have one fren available to harvest a rock.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,0-2-0-0-0-0-0-0-0-0-0-0
+27,rock,179|171-173-176,FALSE,4,rock,Rocks can be harvested 3 times. You need to have one fren available to harvest a rock.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,0-2-0-0-0-0-0-0-0-0-0-0
+28,rock,177|171-172-173,FALSE,5,rock,Rocks can be harvested 3 times. You need to have one fren available to harvest a rock.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,0-2-0-0-0-0-0-0-0-0-0-0
+29,rock,180|174-175-176,FALSE,5,rock,Rocks can be harvested 3 times. You need to have one fren available to harvest a rock.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,0-2-0-0-0-0-0-0-0-0-0-0
+30,rock,179|171-173-176,FALSE,5,rock,Rocks can be harvested 3 times. You need to have one fren available to harvest a rock.,FALSE,1,3,100,1,0-0-1-0-0-0-0-0-1-0-0-0,0-2-0-0-0-0-0-0-0-0-0-0
+31,bush,183,FALSE,1,bush,Bushes can be harvested 3 times. Bushes bring food. You need to have one fren available to harvest a bush.,FALSE,1,3,100,1,0-0-0-0-0-0-0-0-1-0-0-0,0-0-2-0-0-0-0-0-0-0-0-0
+32,bush,183,FALSE,2,bush,Bushes can be harvested 3 times. Bushes bring food. You need to have one fren available to harvest a bush.,FALSE,1,3,100,1,0-0-0-0-0-0-0-0-1-0-0-0,0-0-2-0-0-0-0-0-0-0-0-0
+33,bush,183,FALSE,3,bush,Bushes can be harvested 3 times. Bushes bring food. You need to have one fren available to harvest a bush.,FALSE,1,3,100,1,0-0-0-0-0-0-0-0-1-0-0-0,0-0-2-0-0-0-0-0-0-0-0-0
+34,bush,183,FALSE,4,bush,Bushes can be harvested 3 times. Bushes bring food. You need to have one fren available to harvest a bush.,FALSE,1,3,100,1,0-0-0-0-0-0-0-0-1-0-0-0,0-0-2-0-0-0-0-0-0-0-0-0
+35,bush,183,FALSE,5,bush,Bushes can be harvested 3 times. Bushes bring food. You need to have one fren available to harvest a bush.,FALSE,1,3,100,1,0-0-0-0-0-0-0-0-1-0-0-0,0-0-2-0-0-0-0-0-0-0-0-0
+36,mine,20,FALSE,1,mine,"This mine can be harvested 3 times. It will bring you rocks, metal and coal. You need to have 3 frens available to harvest this mine.",FALSE,1,3,100,1,0-0-3-0-0-0-0-0-3-0-0-0,0-1-0-2-2-0-0-0-0-0-0-0
+37,mine,20,FALSE,2,mine,"This mine can be harvested 3 times. It will bring you rocks, metal and coal. You need to have 3 frens available to harvest this mine.",FALSE,1,3,100,1,0-0-3-0-0-0-0-0-3-0-0-0,0-1-0-2-2-0-0-0-0-0-0-0
+38,mine,20,FALSE,3,mine,"This mine can be harvested 3 times. It will bring you rocks, metal and coal. You need to have 3 frens available to harvest this mine.",FALSE,1,3,100,1,0-0-3-0-0-0-0-0-3-0-0-0,0-1-0-2-2-0-0-0-0-0-0-0
+39,mine,20,FALSE,4,mine,"This mine can be harvested 3 times. It will bring you rocks, metal and coal. You need to have 3 frens available to harvest this mine.",FALSE,1,3,100,1,0-0-3-0-0-0-0-0-3-0-0-0,0-1-0-2-2-0-0-0-0-0-0-0
+40,mine,20,FALSE,5,mine,"This mine can be harvested 3 times. It will bring you rocks, metal and coal. You need to have 3 frens available to harvest this mine.",FALSE,1,3,100,1,0-0-3-0-0-0-0-0-3-0-0-0,0-1-0-2-2-0-0-0-0-0-0-0

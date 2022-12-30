@@ -1,1753 +1,483 @@
 import type { Building } from "../model/building";
 
 export const allBuildings: Building[] = [
-    {
-        id: 1,
-        name: "Cabin",
-        category: "Housing",
-        description: "A small cabin to house your first fren. Fixing it will bring 2 new frens into your community.",
-        level: 1,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 0,
-                new_pop: 2
-            },
-            {
-                level: 2,
-                resources: [],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 0,
-                new_pop: 0
-            },
-        ],
-    },
-    {
-        id: 2,
-        name: "Rock",
-        category: "Resource",
-        description: "Rocks can be harvested 3 times. You need to have one fren available to harvest a rock.",
-        level: 0,
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 1
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 1
-            },
-            {
-                level: 2,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 1
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 1
-            },
-            {
-                level: 3,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 1
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 1
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 2,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 1,
-                new_pop: 0
-            },
-            {
-                level: 2,
-                resources: [
-                    {
-                        id: 2,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 1,
-                new_pop: 0
-            },
-            {
-                level: 3,
-                resources: [
-                    {
-                        id: 2,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 1,
-                new_pop: 0
-            }
-        ],
-    },
-    {
-        id: 3,
-        name: "Tree",
-        category: "Resource",
-        description: "Trees can be harvested 3 times. You need to have one fren available to harvest a tree.",
-        level: 0,
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 1
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 1
-            },
-            {
-                level: 2,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 1
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 1
-            },
-            {
-                level: 3,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 1
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 1
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 1,
-                new_pop: 0
-            },
-            {
-                level: 2,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 1,
-                new_pop: 0
-            },
-            {
-                level: 3,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 1,
-                new_pop: 0
-            }
-        ],
-    },
-    {
-        id: 4,
-        name: "House",
-        category: "Housing",
-        description: "Houses bring 2 new frens into your community.",
-        level: 2,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 3
-                    },
-                    {
-                        id: 2,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 0,
-                new_pop: 2
-            }
-        ],
-    },
-    {
-        id: 5,
-        name: "Appartment",
-        category: "Housing",
-        description: "Appartments bring 6 new frens into your community.",
-        level: 7,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 10
-                    },
-                    {
-                        id: 2,
-                        qty: 7
-                    },
-                    {
-                        id: 3,
-                        qty: 4
-                    },
-                    {
-                        id: 10,
-                        qty: 5
-                    }
-                ],
-                frensCoins: 5,
-                energy: 0,
-                pop_min: 0,
-                new_pop: 6
-            }
-        ],
-    },
-    {
-        id: 6,
-        name: "Hotel",
-        category: "Housing",
-        description: "Hotels attracts new frens into your community.",
-        level: 8,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 2,
-                        qty: 22
-                    },
-                    {
-                        id: 3,
-                        qty: 12
-                    },
-                    {
-                        id: 6,
-                        qty: 24
-                    },
-                    {
-                        id: 10,
-                        qty: 16
-                    },
-                    {
-                        id: 11,
-                        qty: 12
-                    }
-                ],
-                frensCoins: 16,
-                energy: 12,
-                pop_min: 7,
-                new_pop: 28
-            }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 7
-                    },
-                    {
-                        id: 10,
-                        qty: 3
-                    },
-                    {
-                        id: 11,
-                        qty: 3
-                    }
-                ],
-                frensCoins: 3,
-                energy: 3,
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 10,
-                        qty: 12
-                    }
-                ],
-                frensCoins: 12,
-                energy: 0,
-            }
-        ],
-    },
-    {
-        id: 7,
-        name: "Bakery",
-        category: "Shops",
-        description: "Which fren doesn't like to eat a croissant or a pain au chocolat for breakfast ? Having a bakery led by a renowned French baker will attract new frens into your community.",
-        level: 3,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 3
-                    },
-                    {
-                        id: 2,
-                        qty: 7
-                    },
-                    {
-                        id: 3,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 2,
-                new_pop: 0
-            }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 1
-                    },
-                    {
-                        id: 3,
-                        qty: 1
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 10,
-                        qty: 3
-                    }
-                ],
-                frensCoins: 3,
-                energy: 0,
-            }
-        ],
-    },
-    {
-        id: 8,
-        name: "Grocery shop",
-        category: "Shops",
-        description: "Everything you need is in the grocery shop. You need to have 2 frens available to build a grocery shop.",
-        level: 3,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 10
-                    },
-                    {
-                        id: 2,
-                        qty: 5
-                    },
-                    {
-                        id: 3,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 2,
-                new_pop: 0
-            }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 11,
-                        qty: 1
-                    },
-                    {
-                        id: 3,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 1,
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 10,
-                        qty: 4
-                    }
-                ],
-                frensCoins: 4,
-                energy: 0,
-            }
-        ],
-    },
-    {
-        id: 9,
-        name: "Restaurant",
-        category: "Shops",
-        description: "A nice restaurant for your frens. You need to have 4 frens available to build a restaurant.",
-        level: 5,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 11
-                    },
-                    {
-                        id: 2,
-                        qty: 13
-                    },
-                    {
-                        id: 3,
-                        qty: 6
-                    },
-                    {
-                        id: 6,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 4,
-                new_pop: 0
-            }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 3
-                    },
-                    {
-                        id: 10,
-                        qty: 2
-                    },
-                ],
-                frensCoins: 2,
-                energy: 0,
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 10,
-                        qty: 4
-                    }
-                ],
-                frensCoins: 4,
-                energy: 0,
-            }
-        ],
-    },
-    {
-        id: 10,
-        name: "Mall",
-        category: "Shops",
-        description: "Your frens will spend their weekends shopping at the mall. You need 16 frens available to build a mall.",
-        level: 8,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 2,
-                        qty: 28
-                    },
-                    {
-                        id: 3,
-                        qty: 35
-                    },
-                    {
-                        id: 6,
-                        qty: 42
-                    },
-                    {
-                        id: 10,
-                        qty: 32
-                    },
-                    {
-                        id: 11,
-                        qty: 17
-                    }
-                ],
-                frensCoins: 32,
-                energy: 17,
-                pop_min: 16,
-                new_pop: 0
-            }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 25
-                    },
-                    {
-                        id: 10,
-                        qty: 7
-                    },
-                    {
-                        id: 11,
-                        qty: 5
-                    },
-                ],
-                frensCoins: 7,
-                energy: 5,
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 10,
-                        qty: 55
-                    }
-                ],
-                frensCoins: 55,
-                energy: 0,
-            }
-        ],
-    },
-    {
-        id: 11,
-        name: "Bar",
-        category: "Entertainment",
-        description: "It's happy hour all the time in Frens Lands ! You need 4 available frens to build a bar.",
-        level: 5,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 10
-                    },
-                    {
-                        id: 2,
-                        qty: 11
-                    },
-                    {
-                        id: 3,
-                        qty: 7
-                    },
-                    {
-                        id: 6,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 4,
-                new_pop: 0
-            }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 2
-                    },
-                    {
-                        id: 10,
-                        qty: 1
-                    },
-                ],
-                frensCoins: 1,
-                energy: 0,
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 10,
-                        qty: 3
-                    }
-                ],
-                frensCoins: 3,
-                energy: 0,
-            }
-        ],
-    },
-    {
-        id: 12,
-        name: "Library",
-        category: "Entertainment",
-        description: "Sundays can be spent peacefully at the library. You need 8 frens available to build a library.",
-        level: 7,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 22
-                    },
-                    {
-                        id: 2,
-                        qty: 13
-                    },
-                    {
-                        id: 3,
-                        qty: 12
-                    },
-                    {
-                        id: 6,
-                        qty: 8
-                    },
-                    {
-                        id: 10,
-                        qty: 15
-                    },
-                    {
-                        id: 11,
-                        qty: 8
-                    }
-                ],
-                frensCoins: 15,
-                energy: 8,
-                pop_min: 8,
-                new_pop: 0
-            }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 6
-                    },
-                    {
-                        id: 10,
-                        qty: 2
-                    },
-                    {
-                        id: 11,
-                        qty: 3
-                    },
-                ],
-                frensCoins: 2,
-                energy: 3,
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 10,
-                        qty: 10
-                    }
-                ],
-                frensCoins: 10,
-                energy: 0,
-            }
-        ],
-    },
-    {
-        id: 13,
-        name: "Swimming Pool",
-        category: "Entertainment",
-        description: "Build a pool for your frens. You need to have 4 available frens to build a swimming pool.",
-        level: 8,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 2,
-                        qty: 5
-                    },
-                    {
-                        id: 3,
-                        qty: 8
-                    },
-                    {
-                        id: 6,
-                        qty: 12
-                    },
-                    {
-                        id: 10,
-                        qty: 18
-                    },
-                    {
-                        id: 11,
-                        qty: 7
-                    }
-                ],
-                frensCoins: 18,
-                energy: 7,
-                pop_min: 4,
-                new_pop: 0
-            }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 5
-                    },
-                    {
-                        id: 10,
-                        qty: 5
-                    },
-                    {
-                        id: 11,
-                        qty: 5
-                    },
-                ],
-                frensCoins: 5,
-                energy: 5,
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 10,
-                        qty: 25
-                    }
-                ],
-                frensCoins: 25,
-                energy: 0,
-            }
-        ],
-    },
-    {
-        id: 14,
-        name: "Cinema",
-        category: "Entertainment",
-        description: "Organize movie nights! You need 6 available frens to build a cinema.",
-        level: 8,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 7
-                    },
-                    {
-                        id: 2,
-                        qty: 26
-                    },
-                    {
-                        id: 6,
-                        qty: 21
-                    },
-                    {
-                        id: 10,
-                        qty: 22
-                    }
-                ],
-                frensCoins: 22,
-                energy: 0,
-                pop_min: 6,
-                new_pop: 0
-            }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 5
-                    },
-                    {
-                        id: 10,
-                        qty: 5
-                    },
-                    {
-                        id: 11,
-                        qty: 5
-                    },
-                ],
-                frensCoins: 5,
-                energy: 5,
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 10,
-                        qty: 25
-                    }
-                ],
-                frensCoins: 25,
-                energy: 0,
-            }
-        ],
-    },
-    {
-        id: 15,
-        name: "Market",
-        category: "Shop",
-        description: "All the resources can be found in the market. You need 12 available frens to build a market.",
-        level: 7,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 7
-                    },
-                    {
-                        id: 2,
-                        qty: 9
-                    },
-                    {
-                        id: 3,
-                        qty: 11
-                    },
-                    {
-                        id: 6,
-                        qty: 12
-                    },
-                    {
-                        id: 10,
-                        qty: 27
-                    }
-                ],
-                frensCoins: 27,
-                energy: 0,
-                pop_min: 12,
-                new_pop: 0
-            }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 6
-                    },
-                    {
-                        id: 10,
-                        qty: 3
-                    },
-                    {
-                        id: 11,
-                        qty: 3
-                    },
-                ],
-                frensCoins: 3,
-                energy: 3,
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 4
-                    },
-                    {
-                        id: 2,
-                        qty: 4
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-            }
-        ],
-    },
-    {
-        id: 16,
-        name: "Wheat Farm",
-        category: "Agriculture",
-        description: "Produce food with the wheat farm. You need 5 available frens to build a wheat farm.",
-        level: 2,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 10
-                    },
-                    {
-                        id: 2,
-                        qty: 3
-                    },
-                    {
-                        id: 3,
-                        qty: 1
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 5,
-                new_pop: 0
-            }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 1
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 3
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-            }
-        ],
-    },
-    {
-        id: 17,
-        name: "Vegetable Farm",
-        category: "Agriculture",
-        description: "Produce food with the vegetable farm. You need 7 available frens to build a vegetable farm.",
-        level: 7,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 10
-                    },
-                    {
-                        id: 2,
-                        qty: 7
-                    },
-                    {
-                        id: 3,
-                        qty: 5
-                    },
-                    {
-                        id: 10,
-                        qty: 3
-                    }
-                ],
-                frensCoins: 3,
-                energy: 0,
-                pop_min: 7,
-                new_pop: 0
-            }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 2,
-                        qty: 1
-                    },
-                ],
-                frensCoins: 0,
-                energy: 0,
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 4
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-            }
-        ],
-    },
-    {
-        id: 18,
-        name: "Cow Farm",
-        category: "Agriculture",
-        description: "Produce food with the cow farm. You need 5 available frens to build a wheat farm.",
-        level: 4,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 14
-                    },
-                    {
-                        id: 2,
-                        qty: 5
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 5,
-                new_pop: 0
-            }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 5
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-            }
-        ],
-    },
-    {
-        id: 19,
-        name: "Tree Farm",
-        category: "Agriculture",
-        description: "Produce wood with the tree farm. You need 9 available frens to build a tree farm.",
-        level: 4,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 12
-                    },
-                    {
-                        id: 2,
-                        qty: 15
-                    },
-                    {
-                        id: 3,
-                        qty: 14
-                    },
-                    {
-                        id: 6,
-                        qty: 5
-                    },
-                    {
-                        id: 10,
-                        qty: 8
-                    },
-                ],
-                frensCoins: 8,
-                energy: 0,
-                pop_min: 9,
-                new_pop: 0
-            }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 5
-                    },
-                    {
-                        id: 10,
-                        qty: 1
-                    },
-                    {
-                        id: 11,
-                        qty: 1
-                    }
-                ],
-                frensCoins: 1,
-                energy: 1,
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 7
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-            }
-        ],
-    },
-    {
-        id: 20,
-        name: "Mine",
-        category: "Mining",
-        description: "This mine can be harvested 3 times. It will bring you rocks, metal and coal. You need to have 3 frens available to harvest this mine.",
-        level: 0,
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 1
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 3
-            },
-            {
-                level: 2,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 1
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 3
-            },
-            {
-                level: 3,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 1
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 3
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 2,
-                        qty: 1
-                    },
-                    {
-                        id: 6,
-                        qty: 2
-                    },
-                    {
-                        id: 8,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 3,
-                new_pop: 0
-            },
-            {
-                level: 2,
-                resources: [
-                    {
-                        id: 2,
-                        qty: 1
-                    },
-                    {
-                        id: 6,
-                        qty: 2
-                    },
-                    {
-                        id: 8,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 3,
-                new_pop: 0
-            },
-            {
-                level: 3,
-                resources: [
-                    {
-                        id: 2,
-                        qty: 1
-                    },
-                    {
-                        id: 6,
-                        qty: 2
-                    },
-                    {
-                        id: 8,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 3,
-                new_pop: 0
-            }
-        ],
-    },
-    {
-        id: 21,
-        name: "Coal Plant",
-        category: "Energy",
-        description: "Coal plants are a good way to produce energy. You need 3 available frens to build a coal plant.",
-        level: 3,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 2,
-                        qty: 10
-                    },
-                    {
-                        id: 3,
-                        qty: 4
-                    },
-                    {
-                        id: 8,
-                        qty: 4
-                    },
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 3,
-                new_pop: 0
-            }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 1
-                    },
-                    {
-                        id: 8,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 11,
-                        qty: 3
-                    }
-                ],
-                frensCoins: 0,
-                energy: 3,
-            }
-        ]
-    },
-    {
-        id: 22,
-        name: "Police Station",
-        category: "Security",
-        description: "Police station make your community more secure. You need to build a police station for every 20 buildings built in your community.",
-        level: 6,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 2,
-                        qty: 10
-                    },
-                    {
-                        id: 3,
-                        qty: 3
-                    },
-                    {
-                        id: 6,
-                        qty: 11
-                    },
-                    {
-                        id: 10,
-                        qty: 21
-                    },
-                ],
-                frensCoins: 21,
-                energy: 0,
-                pop_min: 3,
-                new_pop: 0
-            }
-        ]
-    },
-    {
-        id: 23,
-        name: "Hospital",
-        category: "Security",
-        description: "Building a hospital increases the trust and well being of your community. You need 20 frens available to build a hospital.",
-        level: 7,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 9
-                    },
-                    {
-                        id: 2,
-                        qty: 43
-                    },
-                    {
-                        id: 3,
-                        qty: 36
-                    },
-                    {
-                        id: 6,
-                        qty: 33
-                    },
-                    {
-                        id: 10,
-                        qty: 32
-                    },
-                    {
-                        id: 11,
-                        qty: 19
-                    },
-                ],
-                frensCoins: 32,
-                energy: 19,
-                pop_min: 20,
-                new_pop: 0
-            }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 13
-                    },
-                    {
-                        id: 10,
-                        qty: 4
-                    },
-                    {
-                        id: 11,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 4,
-                energy: 2,
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 10,
-                        qty: 25
-                    }
-                ],
-                frensCoins: 25,
-                energy: 0,
-            }
-        ]
-    },
-    {
-        id: 24,
-        name: "Lab",
-        category: "Research",
-        description: "With the lab you can create even more energy. You need to have 15 frens available to work in your lab.",
-        level: 8,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 2,
-                        qty: 30
-                    },
-                    {
-                        id: 3,
-                        qty: 42
-                    },
-                    {
-                        id: 6,
-                        qty: 56
-                    },
-                    {
-                        id: 10,
-                        qty: 54
-                    },
-                    {
-                        id: 11,
-                        qty: 25
-                    },
-                ],
-                frensCoins: 54,
-                energy: 25,
-                pop_min: 15,
-                new_pop: 0
-            }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 3
-                    },
-                    {
-                        id: 10,
-                        qty: 2
-                    },
-                ],
-                frensCoins: 2,
-                energy: 0,
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 11,
-                        qty: 5
-                    }
-                ],
-                frensCoins: 0,
-                energy: 5,
-            }
-        ]
-    },
-    {
-        id: 25,
-        name: "Coal Mine",
-        category: "Mining",
-        description: "Use coal mines to produce coal and rocks and sustain your other buildings. You need to have 3 frens available to work in your mine.",
-        level: 5,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 12
-                    },
-                    {
-                        id: 2,
-                        qty: 3
-                    },
-                    {
-                        id: 6,
-                        qty: 5
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 3,
-                new_pop: 0
-            }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 1
-                    },
-                    {
-                        id: 10,
-                        qty: 1
-                    }
-                ],
-                frensCoins: 1,
-                energy: 0,
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 2,
-                        qty: 1
-                    },
-                    {
-                        id: 8,
-                        qty: 2
-                    },
-                ],
-                frensCoins: 0,
-                energy: 0,
-            }
-        ]
-    },
-    {
-        id: 26,
-        name: "Metal Mine",
-        category: "Mining",
-        description: "Use metal mines to produce metal and rocks and sustain your other buildings. You need to have 3 frens available to work in your mine.",
-        level: 5,
-        cost_update: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 12
-                    },
-                    {
-                        id: 2,
-                        qty: 3
-                    },
-                    {
-                        id: 6,
-                        qty: 5
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 3,
-                new_pop: 0
-            }
-        ],
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 1
-                    },
-                    {
-                        id: 10,
-                        qty: 1
-                    }
-                ],
-                frensCoins: 1,
-                energy: 0,
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 2,
-                        qty: 1
-                    },
-                    {
-                        id: 6,
-                        qty: 2
-                    },
-                ],
-                frensCoins: 0,
-                energy: 0,
-            }
-        ]
-    },
-    {
-        id: 27,
-        name: "Bush",
-        category: "Resource",
-        description: "Bushes can be harvested 3 times. Bushes bring food. You need to have one fren available to harvest a bush.",
-        level: 0,
-        daily_cost: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 1
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 1
-            },
-            {
-                level: 2,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 1
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 1
-            },
-            {
-                level: 3,
-                resources: [
-                    {
-                        id: 1,
-                        qty: 1
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 1
-            }
-        ],
-        daily_harvest: [
-            {
-                level: 1,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 1,
-                new_pop: 0
-            },
-            {
-                level: 2,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 1,
-                new_pop: 0
-            },
-            {
-                level: 3,
-                resources: [
-                    {
-                        id: 3,
-                        qty: 2
-                    }
-                ],
-                frensCoins: 0,
-                energy: 0,
-                pop_min: 1,
-                new_pop: 0
-            }
-        ],
-    },
-
-]
+  {
+    id: 1,
+    type: "housing",
+    spriteId: "1",
+    name: "Cabin",
+    description:
+      "A small cabin to house your first fren. Fixing it will bring 2 new frens into your community.",
+    pLevelToUnlock: 0,
+    locked: false,
+    size: 1,
+    canDestroy: false,
+    canMove: false,
+    canProduce: false,
+    nbLevels: 2,
+    needMaintain: false,
+    createCost: "0-0-0-0-0-0-0-0-0-0-0-0",
+    maintainCost: "0-0-0-0-0-0-0-0-0-0-0-0",
+    repairCost: "2-0-0-0-0-0-0-0-0-2-0-0",
+    production: "0-0-0-0-0-0-0-0-0-0-0-0",
+    destroy: "0-0-0-0-0-0-0-0-0-0-0-0",
+  },
+  {
+    id: 2,
+    type: "housing",
+    spriteId: "3",
+    name: "House",
+    description: "Houses bring 2 new frens into your community.",
+    pLevelToUnlock: 1,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: false,
+    nbLevels: 1,
+    needMaintain: false,
+    createCost: "3-2-0-0-0-0-0-0-0-2-0-0",
+    maintainCost: "0-0-0-0-0-0-0-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-0",
+    production: "0-0-0-0-0-0-0-0-0-0-0-0",
+    destroy: "2-1-0-0-0-0-0-0-0-2-0-0",
+  },
+  {
+    id: 3,
+    type: "housing",
+    spriteId: "10",
+    name: "Appartment",
+    description: "Appartments bring 6 new frens into your community.",
+    pLevelToUnlock: 6,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "10-7-4-0-0-0-5-0-0-6-0-0",
+    maintainCost: "0-0-0-0-0-0-0-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-1",
+    production: "0-0-0-0-0-0-0-0-0-0-0-0",
+    destroy: "5-4-2-0-0-0-3-0-0-6-0-0",
+  },
+  {
+    id: 4,
+    type: "housing",
+    spriteId: "5",
+    name: "Hotel",
+    description: "Hotels attracts new frens into your community.",
+    pLevelToUnlock: 6,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "0-22-12-24-0-12-16-0-7-28-0-0",
+    maintainCost: "0-0-7-0-0-3-3-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-2",
+    production: "0-0-0-0-0-0-12-0-0-0-0-0",
+    destroy: "0-11-6-12-0-6-8-0-7-28-0-0",
+  },
+  {
+    id: 5,
+    type: "shops",
+    spriteId: "8",
+    name: "Bakery",
+    description:
+      "Which fren doesn't like to eat a croissant or a pain au chocolat for breakfast ? Having a bakery led by a renowned French baker will attract new frens into your community.",
+    pLevelToUnlock: 3,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "3-7-2-0-0-0-0-0-2-0-0-0",
+    maintainCost: "1-0-1-0-0-0-0-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-3",
+    production: "0-0-0-0-0-0-3-0-0-0-0-0",
+    destroy: "1-4-2-0-0-0-0-0-2-0-0-0",
+  },
+  {
+    id: 6,
+    type: "shops",
+    spriteId: "7",
+    name: "Grocery shops",
+    description:
+      "Everything you need is in the grocery shop. You need to have 2 frens available to build a grocery shop.",
+    pLevelToUnlock: 3,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "10-5-2-0-0-0-0-0-2-0-0-0",
+    maintainCost: "0-0-2-0-0-1-0-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-4",
+    production: "0-0-0-0-0-0-4-0-0-0-0-0",
+    destroy: "5-3-1-0-0-0-0-0-2-0-0-0",
+  },
+  {
+    id: 7,
+    type: "shops",
+    spriteId: "6",
+    name: "Restaurant",
+    description:
+      "A nice restaurant for your frens. You need to have 4 frens available to build a restaurant.",
+    pLevelToUnlock: 4,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "11-13-6-2-0-0-0-0-4-0-0-0",
+    maintainCost: "0-0-3-0-0-0-2-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-5",
+    production: "0-0-0-0-0-0-4-0-0-0-0-0",
+    destroy: "5-7-3-1-0-0-0-0-4-0-0-0",
+  },
+  {
+    id: 8,
+    type: "shops",
+    spriteId: "59",
+    name: "Mall",
+    description:
+      "Your frens will spend their weekends shopping at the mall. You need 16 frens available to build a mall.",
+    pLevelToUnlock: 6,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "0-28-35-42-0-17-32-0-16-0-0-0",
+    maintainCost: "0-0-25-0-0-5-7-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-6",
+    production: "0-0-0-0-0-0-55-0-0-0-0-0",
+    destroy: "0-14-17-21-0-9-16-0-16-0-0-0",
+  },
+  {
+    id: 9,
+    type: "entertainment",
+    spriteId: "11",
+    name: "Bar",
+    description:
+      "It's happy hour all the time in Frens Lands ! You need 4 available frens to build a bar.",
+    pLevelToUnlock: 4,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "10-11-7-2-0-0-0-0-4-0-0-0",
+    maintainCost: "0-0-2-0-0-0-1-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-7",
+    production: "0-0-0-0-0-0-3-0-0-0-0-0",
+    destroy: "5-5-4-1-0-0-0-0-4-0-0-0",
+  },
+  {
+    id: 10,
+    type: "entertainment",
+    spriteId: "9",
+    name: "Library",
+    description:
+      "Sundays can be spent peacefully at the library. You need 8 frens available to build a library.",
+    pLevelToUnlock: 6,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "22-13-12-8-0-8-15-0-8-0-0-0",
+    maintainCost: "0-0-6-0-0-3-2-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-8",
+    production: "0-0-0-0-0-0-10-0-0-0-0-0",
+    destroy: "11-7-6-4-0-4-7-0-8-0-0-0",
+  },
+  {
+    id: 11,
+    type: "entertainment",
+    spriteId: "12",
+    name: "Swimming Poo",
+    description:
+      "Build a pool for your frens. You need to have 4 available frens to build a swimming pool.",
+    pLevelToUnlock: 6,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "0-5-8-12-0-7-18-0-4-0-0-0",
+    maintainCost: "0-0-4-0-0-3-3-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-9",
+    production: "0-0-0-0-0-0-18-0-0-0-0-0",
+    destroy: "0-3-4-6-0-3-9-0-4-0-0-0",
+  },
+  {
+    id: 12,
+    type: "entertainment",
+    spriteId: "13",
+    name: "Cinema",
+    description:
+      "Organize movie nights! You need 6 available frens to build a cinema.",
+    pLevelToUnlock: 7,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "7-26-0-21-0-0-22-0-6-0-0-0",
+    maintainCost: "0-0-5-0-0-5-5-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-10",
+    production: "0-0-0-0-0-0-25-0-0-0-0-0",
+    destroy: "4-13-0-10-0-0-11-0-6-0-0-0",
+  },
+  {
+    id: 13,
+    type: "shop",
+    spriteId: "60",
+    name: "Market",
+    description:
+      "All the resources can be found in the market. You need 12 available frens to build a market.",
+    pLevelToUnlock: 7,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "7-9-11-12-0-0-27-0-12-0-0-0",
+    maintainCost: "0-0-6-0-0-3-3-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-11",
+    production: "4-4-0-0-0-0-0-0-0-0-0-0",
+    destroy: "4-5-5-6-0-0-14-0-12-0-0-0",
+  },
+  {
+    id: 14,
+    type: "agriculture",
+    spriteId: "36",
+    name: "Wheat Farm",
+    description:
+      "Produce food with the wheat farm. You need 5 available frens to build a wheat farm.",
+    pLevelToUnlock: 1,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "10-3-1-0-0-0-0-0-5-0-0-0",
+    maintainCost: "1-0-0-0-0-0-0-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-12",
+    production: "0-0-3-0-0-0-0-0-0-0-0-0",
+    destroy: "5-1-0-0-0-0-0-0-5-0-0-0",
+  },
+  {
+    id: 15,
+    type: "agriculture",
+    spriteId: "58",
+    name: "Vegetable Farm",
+    description:
+      "Produce food with the vegetable farm. You need 7 available frens to build a vegetable farm.",
+    pLevelToUnlock: 7,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "10-7-5-0-0-0-3-0-7-0-0-0",
+    maintainCost: "0-1-0-0-0-0-0-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-13",
+    production: "0-0-4-0-0-0-0-0-0-0-0-0",
+    destroy: "5-3-3-0-0-0-1-0-7-0-0-0",
+  },
+  {
+    id: 16,
+    type: "agriculture",
+    spriteId: "61",
+    name: "Cow Farm",
+    description:
+      "Produce food with the cow farm. You need 5 available frens to build a wheat farm.",
+    pLevelToUnlock: 3,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "14-5-0-0-0-0-0-0-5-0-0-0",
+    maintainCost: "2-0-0-0-0-0-0-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-14",
+    production: "0-0-5-0-0-0-0-0-0-0-0-0",
+    destroy: "7-3-0-0-0-0-0-0-5-0-0-0",
+  },
+  {
+    id: 17,
+    type: "agriculture",
+    spriteId: "4",
+    name: "Tree Farm",
+    description:
+      "Produce wood with the tree farm. You need 9 available frens to build a tree farm.",
+    pLevelToUnlock: 3,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "12-15-14-5-0-0-8-0-9-0-0-0",
+    maintainCost: "0-0-5-0-0-1-1-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-15",
+    production: "7-0-0-0-0-0-0-0-0-0-0-0",
+    destroy: "6-7-7-3-0-0-4-0-9-0-0-0",
+  },
+  {
+    id: 18,
+    type: "industry",
+    spriteId: "14",
+    name: "Coal Plant",
+    description:
+      "Coal plants are a good way to produce energy. You need 3 available frens to build a coal plant.",
+    pLevelToUnlock: 2,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "0-10-4-0-4-0-0-0-3-0-0-0",
+    maintainCost: "0-0-1-0-2-0-0-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-16",
+    production: "0-0-0-0-0-3-0-0-0-0-0-0",
+    destroy: "0-5-2-0-2-0-0-0-3-0-0-0",
+  },
+  {
+    id: 19,
+    type: "health & security",
+    spriteId: "33",
+    name: "Police Station",
+    description: "Police station make your community more secure",
+    pLevelToUnlock: 5,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "0-10-3-11-0-0-21-0-3-0-0-0",
+    maintainCost: "0-0-2-0-0-1-2-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-17",
+    production: "0-0-0-0-0-0-2-0-0-0-0-0",
+    destroy: "0-5-2-5-0-0-10-0-3-0-0-0",
+  },
+  {
+    id: 20,
+    type: "health & security",
+    spriteId: "57",
+    name: "Hospital",
+    description:
+      "Building a hospital increases the trust and well being of your community. You need 20 frens available to build a hospital.",
+    pLevelToUnlock: 7,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "9-43-36-33-0-19-32-0-20-0-0-0",
+    maintainCost: "0-0-13-0-0-2-4-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-18",
+    production: "0-0-0-0-0-0-25-0-0-0-0-0",
+    destroy: "5-21-18-16-0-9-16-0-20-0-0-0",
+  },
+  {
+    id: 21,
+    type: "health & security",
+    spriteId: "100",
+    name: "Lab",
+    description:
+      "With the lab you can create even more energy. You need to have 15 frens available to work in your lab.",
+    pLevelToUnlock: 7,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "0-30-42-56-0-25-54-0-15-0-0-0",
+    maintainCost: "0-0-3-0-0-0-2-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-19",
+    production: "0-0-0-0-0-5-0-0-0-0-0-0",
+    destroy: "0-15-21-28-0-12-27-0-15-0-0-0",
+  },
+  {
+    id: 22,
+    type: "industry",
+    spriteId: "20",
+    name: "Coal Mine",
+    description:
+      "	Use coal mines to produce coal and rocks and sustain your other buildings. You need to have 3 frens available to work in your mine.",
+    pLevelToUnlock: 4,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "12-0-1-5-0-0-0-0-3-0-0-0",
+    maintainCost: "1-0-0-0-0-0-1-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-20",
+    production: "0-1-0-0-2-0-0-0-0-0-0-0",
+    destroy: "6-0-0-3-0-0-0-0-3-0-0-0",
+  },
+  {
+    id: 23,
+    type: "industry",
+    spriteId: "20",
+    name: "Metal Mine",
+    description:
+      "	Use metal mines to produce metal and rocks and sustain your other buildings. You need to have 3 frens available to work in your mine.",
+    pLevelToUnlock: 4,
+    locked: false,
+    size: 1,
+    canDestroy: true,
+    canMove: true,
+    canProduce: true,
+    nbLevels: 1,
+    needMaintain: true,
+    createCost: "12-0-1-5-0-0-0-0-3-0-0-0",
+    maintainCost: "1-0-0-0-0-0-1-0-0-0-0-0",
+    repairCost: "2-1-0-0-0-0-0-0-0-0-0-21",
+    production: "0-1-0-2-0-0-0-0-0-0-0-0",
+    destroy: "6-0-0-3-0-0-0-0-3-0-0-0",
+  },
+];

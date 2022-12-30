@@ -1,7 +1,15 @@
 node_modules/
+/api/node_modules
 .env
 .DS_Store
 src/client/hooks/notes.txt
 .vscode
 dist/client/*
 !dist/client/resources
+dist/server/*
+!dist/server/data
+python_server/
+
+src/server/config/
+src/_server
+.test.env

@@ -1,10 +1,9 @@
-import {
-  Transaction,
-  useStarknetTransactionManager,
-} from "@starknet-react/core";
+import // Transaction,
+// useStarknetTransactionManager,
+"@starknet-react/core";
 import React from "react";
 
-function TransactionItem({ transaction }: { transaction: Transaction }) {
+function TransactionItem({ transaction }: { transaction: any }) {
   console.log("transaction", transaction);
   console.log("timestamp", Date.now());
   return (
@@ -20,14 +19,14 @@ function TransactionItem({ transaction }: { transaction: Transaction }) {
 }
 
 export function TransactionList() {
-  const { transactions } = useStarknetTransactionManager();
+  // const { transactions } = useStarknetTransactionManager();
   return (
     <ul>
-      {transactions.map((transaction, index) => (
+      {/* {transactions.map((transaction, index) => (
         <li key={index}>
           <TransactionItem transaction={transaction} />
         </li>
-      ))}
+      ))} */}
     </ul>
   );
 }

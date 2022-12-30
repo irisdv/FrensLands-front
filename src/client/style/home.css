@@ -1,876 +1,870 @@
-
 /* Pink */
 
 .line-xl {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height:calc(32px * 1);
-    width:calc(32px * 32); 
-    background-position:calc(0 * 1 * 32px) calc(30 * 1 * 32px);
-    background-size:calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 1);
+  width: calc(32px * 32);
+  background-position: calc(0 * 1 * 32px) calc(30 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 
 .bg-home {
-    background-color: #151d28;
-    /* height: 1400px; */
-    background: url("resources/front/UI_MainScreen.png") repeat-y center top #151d28;
+  background-color: #151d28;
+  /* height: 1400px; */
+  background: url("resources/front/UI_MainScreen.png") repeat-y center top
+    #151d28;
 }
 @media (min-width: 768px) {
-    .aboutUs-title {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2);
-        width:calc(32px * 11);
-        background-position:calc(17 * 1 * 32px) calc(38 * 1 * 32px);
-        background-size:calc(1280px * 1) calc(1600px * 1);
-    }
-    .aboutUs-img {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 9);
-        width:calc(32px * 18);
-        background-position:calc(18 * 1 * 32px) calc(29 * 1 * 32px);
-        background-size:calc(1280px * 1) calc(1600px * 1);
-    }
-    .aboutUs-team {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2);
-        width:calc(32px * 9);
-        background-position:calc(17 * 1 * 32px) calc(36 * 1 * 32px);
-        background-size:calc(1280px * 1) calc(1600px * 1);
-    }
-    .aboutUs-social {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2);
-        width:calc(32px * 10);
-        background-position:calc(17 * 1 * 32px) calc(34 * 1 * 32px);
-        background-size:calc(1280px * 1) calc(1600px * 1);
-    }
+  .aboutUs-title {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 11);
+    background-position: calc(17 * 1 * 32px) calc(38 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+  }
+  .aboutUs-img {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 9);
+    width: calc(32px * 18);
+    background-position: calc(18 * 1 * 32px) calc(29 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+  }
+  .aboutUs-team {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 9);
+    background-position: calc(17 * 1 * 32px) calc(36 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+  }
+  .aboutUs-social {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 10);
+    background-position: calc(17 * 1 * 32px) calc(34 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+  }
 }
 @media (max-width: 767px) {
-    .aboutUs-title {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2 / 2);
-        width:calc(32px * 11 / 2);
-        background-position:calc(17 * 1 * 32px / 2) calc(38 * 1 * 32px / 2);
-        background-size:calc(1280px * 1 / 2) calc(1600px * 1 / 2);
-    }
-    .aboutUs-img {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 9 / 2);
-        width:calc(32px * 18 / 2);
-        background-position:calc(18 * 1 * 32px / 2) calc(29 * 1 * 32px / 2);
-        background-size:calc(1280px * 1 / 2) calc(1600px * 1 / 2);
-    }
-    .aboutUs-team {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2 / 2);
-        width:calc(32px * 9 / 2);
-        background-position:calc(17 * 1 * 32px / 2) calc(36 * 1 * 32px / 2);
-        background-size:calc(1280px * 1 / 2) calc(1600px * 1 / 2);
-    }
-    .aboutUs-social {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2 / 2);
-        width:calc(32px * 10 / 2);
-        background-position:calc(17 * 1 * 32px / 2) calc(34 * 1 * 32px / 2);
-        background-size:calc(1280px * 1 / 2) calc(1600px * 1 / 2);
-    }
+  .aboutUs-title {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2 / 2);
+    width: calc(32px * 11 / 2);
+    background-position: calc(17 * 1 * 32px / 2) calc(38 * 1 * 32px / 2);
+    background-size: calc(1280px * 1 / 2) calc(1600px * 1 / 2);
+  }
+  .aboutUs-img {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 9 / 2);
+    width: calc(32px * 18 / 2);
+    background-position: calc(18 * 1 * 32px / 2) calc(29 * 1 * 32px / 2);
+    background-size: calc(1280px * 1 / 2) calc(1600px * 1 / 2);
+  }
+  .aboutUs-team {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2 / 2);
+    width: calc(32px * 9 / 2);
+    background-position: calc(17 * 1 * 32px / 2) calc(36 * 1 * 32px / 2);
+    background-size: calc(1280px * 1 / 2) calc(1600px * 1 / 2);
+  }
+  .aboutUs-social {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2 / 2);
+    width: calc(32px * 10 / 2);
+    background-position: calc(17 * 1 * 32px / 2) calc(34 * 1 * 32px / 2);
+    background-size: calc(1280px * 1 / 2) calc(1600px * 1 / 2);
+  }
 }
 
 .aboutUs-line {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height:calc(32px * 1);
-    width:calc(32px * 19);
-    background-position:calc(0 * 1 * 32px) calc(29 * 1 * 32px);
-    background-size:calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 1);
+  width: calc(32px * 19);
+  background-position: calc(0 * 1 * 32px) calc(29 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .aboutUs-social-sm {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height:calc(32px * 2 / 2);
-    width:calc(32px * 10 / 2);
-    background-position:calc(17 * 1 * 32px / 2) calc(34 * 1 * 32px / 2);
-    background-size:calc(1280px * 1 / 2) calc(1600px * 1 / 2);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2 / 2);
+  width: calc(32px * 10 / 2);
+  background-position: calc(17 * 1 * 32px / 2) calc(34 * 1 * 32px / 2);
+  background-size: calc(1280px * 1 / 2) calc(1600px * 1 / 2);
 }
 .img-iris {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height:calc(32px * 6);
-    width:calc(32px * 5);
-    background-position:calc(40 * 1 * 32px) calc(28 * 1 * 32px);
-    background-size:calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 6);
+  width: calc(32px * 5);
+  background-position: calc(40 * 1 * 32px) calc(28 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .img-thomas {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height:calc(32px * 6);
-    width:calc(32px * 5);
-    background-position:calc(35 * 1 * 32px) calc(28 * 1 * 32px);
-    background-size:calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 6);
+  width: calc(32px * 5);
+  background-position: calc(35 * 1 * 32px) calc(28 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .img-hpmnk {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height:calc(32px * 6);
-    width:calc(32px * 5);
-    background-position:calc(30 * 1 * 32px) calc(28 * 1 * 32px);
-    background-size:calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 6);
+  width: calc(32px * 5);
+  background-position: calc(30 * 1 * 32px) calc(28 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .twitterIcon {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height:calc(32px * 2);
-    width:calc(32px * 2);
-    background-position:calc(2 * 1 * 32px) calc(49 * 1 * 32px);
-    background-size:calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 2);
+  background-position: calc(2 * 1 * 32px) calc(49 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .twitterIcon-xl {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height:calc(32px * 3);
-    width:calc(32px * 3);
-    background-position:calc(3 * 1 * 32px) calc(46 * 1 * 32px);
-    background-size:calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 3);
+  width: calc(32px * 3);
+  background-position: calc(3 * 1 * 32px) calc(46 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .discordIcon-xl {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height:calc(32px * 3);
-    width:calc(32px * 3);
-    background-position:calc(6 * 1 * 32px) calc(46 * 1 * 32px);
-    background-size:calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 3);
+  width: calc(32px * 3);
+  background-position: calc(6 * 1 * 32px) calc(46 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
-
 
 /* Page tutorial */
 
 @media (min-width: 768px) {
-    .tuto-title {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2);
-        width:calc(32px * 16);
-        background-position:calc(40 * 1 * 32px) calc(34 * 1 * 32px);
-        background-size:calc(1280px * 1) calc(1600px * 1);
-    }
-    .tutoTestT {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2);
-        width:calc(32px * 15);
-        background-position:calc(40 * 1 * 32px) calc(32 * 1 * 32px);
-        background-size:calc(1280px * 1) calc(1600px * 1);
-    }
+  .tuto-title {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 16);
+    background-position: calc(40 * 1 * 32px) calc(34 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+  }
+  .tutoTestT {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 15);
+    background-position: calc(40 * 1 * 32px) calc(32 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+  }
 }
 @media (max-width: 767px) {
-    .tuto-title {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2 / 2);
-        width:calc(32px * 16 / 2);
-        background-position:calc(40 * 1 * 32px / 2) calc(34 * 1 * 32px / 2);
-        background-size:calc(1280px * 1 / 2) calc(1600px * 1 / 2);
-    }
-    .tutoTestT {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2 / 2);
-        width:calc(32px * 15 / 2);
-        background-position:calc(40 * 1 * 32px / 2) calc(32 * 1 * 32px / 2);
-        background-size:calc(1280px * 1 / 2) calc(1600px * 1 / 2);
-    }
+  .tuto-title {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2 / 2);
+    width: calc(32px * 16 / 2);
+    background-position: calc(40 * 1 * 32px / 2) calc(34 * 1 * 32px / 2);
+    background-size: calc(1280px * 1 / 2) calc(1600px * 1 / 2);
+  }
+  .tutoTestT {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2 / 2);
+    width: calc(32px * 15 / 2);
+    background-position: calc(40 * 1 * 32px / 2) calc(32 * 1 * 32px / 2);
+    background-size: calc(1280px * 1 / 2) calc(1600px * 1 / 2);
+  }
 }
 .harvestT {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height:calc(32px * 2);
-    width:calc(32px * 5);
-    background-position:calc(17 * 1 * 32px) calc(44 * 1 * 32px);
-    background-size:calc(1280px * 1) calc(1600px * 1);
-} 
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 5);
+  background-position: calc(17 * 1 * 32px) calc(44 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
+}
 .buildT {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height:calc(32px * 2);
-    width:calc(32px * 4);
-    background-position:calc(17 * 1 * 32px) calc(42 * 1 * 32px);
-    background-size:calc(1280px * 1) calc(1600px * 1);
-} 
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 4);
+  background-position: calc(17 * 1 * 32px) calc(42 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
+}
 .claimT {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height:calc(32px * 2);
-    width:calc(32px * 5);
-    background-position:calc(17 * 1 * 32px) calc(40 * 1 * 32px);
-    background-size:calc(1280px * 1) calc(1600px * 1);
-} 
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 5);
+  background-position: calc(17 * 1 * 32px) calc(40 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
+}
 
 .braavosIcon {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height:calc(32px * 4);
-    width:calc(32px * 4);
-    background-position:calc(10 * 1 * 32px) calc(46 * 1 * 32px);
-    background-size:calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 4);
+  width: calc(32px * 4);
+  background-position: calc(10 * 1 * 32px) calc(46 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .argentXIcon {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height:calc(32px * 4);
-    width:calc(32px * 4);
-    background-position:calc(6 * 1 * 32px) calc(50 * 1 * 32px);
-    background-size:calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 4);
+  width: calc(32px * 4);
+  background-position: calc(6 * 1 * 32px) calc(50 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .discordIcon-square {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height:calc(32px * 4);
-    width:calc(32px * 4);
-    background-position:calc(10 * 1 * 32px) calc(50 * 1 * 32px);
-    background-size:calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 4);
+  width: calc(32px * 4);
+  background-position: calc(10 * 1 * 32px) calc(50 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .nftmaps {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height:calc(32px * 4);
-    width:calc(32px * 8);
-    background-position:calc(10 * 1 * 32px) calc(42 * 1 * 32px);
-    background-size:calc(1280px * 1) calc(1600px * 1); 
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 4);
+  width: calc(32px * 8);
+  background-position: calc(10 * 1 * 32px) calc(42 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
-
 
 /* Page documentation */
 @media (min-width: 768px) {
-    .documentationT {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2);
-        width:calc(32px * 20);
-        background-position:calc(40 * 1 * 32px) calc(50 * 1 * 32px);
-        background-size:calc(1280px * 1) calc(1600px * 1); 
-    }
-    .notionIcon {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2);
-        width:calc(32px * 15);
-        background-position:calc(40 * 1 * 32px) calc(48 * 1 * 32px);
-        background-size:calc(1280px * 1) calc(1600px * 1);  
-    }
-    .whitepaperIcon {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2);
-        width:calc(32px * 15);
-        background-position:calc(40 * 1 * 32px) calc(46 * 1 * 32px);
-        background-size:calc(1280px * 1) calc(1600px * 1); 
-    }
-    .gitIcon {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2);
-        width:calc(32px * 15);
-        background-position:calc(40 * 1 * 32px) calc(44 * 1 * 32px);
-        background-size:calc(1280px * 1) calc(1600px * 1); 
-    }
-    .pressKitT {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2);
-        width:calc(32px * 9);
-        background-position:calc(20 * 1 * 32px) calc(50 * 1 * 32px);
-        background-size:calc(1280px * 1) calc(1600px * 1); 
-    }
+  .documentationT {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 20);
+    background-position: calc(40 * 1 * 32px) calc(50 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+  }
+  .notionIcon {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 15);
+    background-position: calc(40 * 1 * 32px) calc(48 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+  }
+  .whitepaperIcon {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 15);
+    background-position: calc(40 * 1 * 32px) calc(46 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+  }
+  .gitIcon {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 15);
+    background-position: calc(40 * 1 * 32px) calc(44 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+  }
+  .pressKitT {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 9);
+    background-position: calc(20 * 1 * 32px) calc(50 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+  }
 }
 @media (max-width: 767px) {
-    .documentationT {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2 / 2);
-        width:calc(32px * 20 / 2);
-        background-position:calc(40 * 1 * 32px / 2) calc(50 * 1 * 32px / 2);
-        background-size:calc(1280px * 1 / 2) calc(1600px * 1 / 2); 
-    }
-    .notionIcon {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2 / 2);
-        width:calc(32px * 15 / 2);
-        background-position:calc(40 * 1 * 32px / 2) calc(48 * 1 * 32px / 2);
-        background-size:calc(1280px * 1 / 2) calc(1600px * 1 / 2);  
-    }
-    .whitepaperIcon {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2 / 2);
-        width:calc(32px * 15 / 2);
-        background-position:calc(40 * 1 * 32px / 2) calc(46 * 1 * 32px / 2);
-        background-size:calc(1280px * 1 / 2) calc(1600px * 1 / 2); 
-    }
-    .gitIcon {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2 / 2);
-        width:calc(32px * 15 / 2);
-        background-position:calc(40 * 1 * 32px / 2) calc(44 * 1 * 32px / 2);
-        background-size:calc(1280px * 1 / 2) calc(1600px * 1 / 2); 
-    }
-    .pressKitT {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height:calc(32px * 2 / 2);
-        width:calc(32px * 9 / 2);
-        background-position:calc(20 * 1 * 32px / 2) calc(50 * 1 * 32px / 2);
-        background-size:calc(1280px * 1 / 2) calc(1600px * 1 / 2); 
-    }
+  .documentationT {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2 / 2);
+    width: calc(32px * 20 / 2);
+    background-position: calc(40 * 1 * 32px / 2) calc(50 * 1 * 32px / 2);
+    background-size: calc(1280px * 1 / 2) calc(1600px * 1 / 2);
+  }
+  .notionIcon {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2 / 2);
+    width: calc(32px * 15 / 2);
+    background-position: calc(40 * 1 * 32px / 2) calc(48 * 1 * 32px / 2);
+    background-size: calc(1280px * 1 / 2) calc(1600px * 1 / 2);
+  }
+  .whitepaperIcon {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2 / 2);
+    width: calc(32px * 15 / 2);
+    background-position: calc(40 * 1 * 32px / 2) calc(46 * 1 * 32px / 2);
+    background-size: calc(1280px * 1 / 2) calc(1600px * 1 / 2);
+  }
+  .gitIcon {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2 / 2);
+    width: calc(32px * 15 / 2);
+    background-position: calc(40 * 1 * 32px / 2) calc(44 * 1 * 32px / 2);
+    background-size: calc(1280px * 1 / 2) calc(1600px * 1 / 2);
+  }
+  .pressKitT {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2 / 2);
+    width: calc(32px * 9 / 2);
+    background-position: calc(20 * 1 * 32px / 2) calc(50 * 1 * 32px / 2);
+    background-size: calc(1280px * 1 / 2) calc(1600px * 1 / 2);
+  }
 }
 
 /* .docsPage {
         height: 100%;
 } */
 .imgBanners {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height:calc(32px * 3);
-    width:calc(32px * 7);
-    background-position:calc(25 * 1 * 32px) calc(48 * 1 * 32px);
-    background-size:calc(1280px * 1) calc(1600px * 1); 
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 3);
+  width: calc(32px * 7);
+  background-position: calc(25 * 1 * 32px) calc(48 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .imgLogo {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height:calc(32px * 4);
-    width:calc(32px * 4);
-    background-position:calc(18 * 1 * 32px) calc(48 * 1 * 32px);
-    background-size:calc(1280px * 1) calc(1600px * 1); 
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 4);
+  width: calc(32px * 4);
+  background-position: calc(18 * 1 * 32px) calc(48 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .imgMap {
-    display:inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height:calc(32px * 4);
-    width:calc(32px * 8);
-    background-position:calc(25 * 1 * 32px) calc(44 * 1 * 32px);
-    background-size:calc(1280px * 1) calc(1600px * 1); 
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 4);
+  width: calc(32px * 8);
+  background-position: calc(25 * 1 * 32px) calc(44 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .pressKitElem a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 /* Roadmap */
 
 @media (min-width: 768px) {
-    .roadmapT {
-        display:block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 1);
-        width:calc(64px * 6);
-        background-position:calc(10 * 1 * 64px) calc(3 * 1 * 64px);
-        background-size:calc(640px * 1) calc(640px * 1);
-    }
-    .hackT {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 1);
-        width:calc(64px * 5);
-        background-position:calc(10 * 1 * 64px) calc(9 * 1 * 64px);
-        background-size:calc(640px * 1) calc(640px * 1);
-    }
-    .HBSection {
-        margin-left: -20px;
-    }
-    .HBText {
-        font-size: 15px;
-        color: rgb(168, 181, 178);
-        padding-left: 30px;
-        margin-top: -23px;
-    }
-    .currentB {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 1);
-        width:calc(64px * 5);
-        background-position:calc(5 * 1 * 64px) calc(9 * 1 * 64px);
-        background-size:calc(640px * 1) calc(640px * 1);
-    }
-    .V01 {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 1);
-        width:calc(64px * 2);
-        background-position:calc(0 * 1 * 64px) calc(10 * 1 * 64px);
-        background-size:calc(640px * 1) calc(640px * 1);
-    }
-    .V01Text {
-        font-size: 15px;
-        color: rgb(168, 181, 178);
-        padding-left: 30px;
-        width: 320px;
-        margin-top: -15px;
-    }
-    .V01Text ul {
-        list-style: disc;
-        padding-left: 20px;
-    }
-    .V02 {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 1);
-        width:calc(64px * 2);
-        background-position:calc(8 * 1 * 64px) calc(10 * 1 * 64px);
-        background-size:calc(640px * 1) calc(640px * 1);
-    }
-    .V02Text {
-        font-size: 15px;
-        color: rgb(168, 181, 178);
-        padding-left: 30px;
-        width: 320px;
-        margin-top: -15px;
-    }
-    .V02Text ul {
-        list-style: disc;
-        padding-left: 20px;
-    }
-    .V03 {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 1);
-        width:calc(64px * 2);
-        background-position:calc(6 * 1 * 64px) calc(10 * 1 * 64px);
-        background-size:calc(640px * 1) calc(640px * 1);
-    }
-    .V04 {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 1);
-        width:calc(64px * 2);
-        background-position:calc(4 * 1 * 64px) calc(10 * 1 * 64px);
-        background-size:calc(640px * 1) calc(640px * 1);
-    }
-    .V03Text {
-        font-size: 15px;
-        color: rgb(168, 181, 178);
-        padding-left: 30px;
-        width: 320px;
-        margin-top: -15px;
-    }
-    .V03Text ul {
-        list-style: disc;
-        padding-left: 20px;
-    }
-    .QAT {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 1);
-        width:calc(64px * 5);
-        background-position:calc(0 * 1 * 64px) calc(8 * 1 * 64px);
-        background-size:calc(640px * 1) calc(640px * 1);
-    }
-    .QATSection {
-        margin-left: -20px;
-    }
-    .QATText {
-        font-size: 15px;
-        color: rgb(168, 181, 178);
-        padding-left: 30px;
-        width: 320px;
-        margin-top: -15px;
-    }
-    .lineG {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 3);
-        width:calc(64px * 2);
-        background-position:calc(10 * 1 * 64px) calc(6 * 1 * 64px);
-        background-size:calc(640px * 1) calc(640px * 1);
-    }
-    .lineWTop {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 3);
-        width:calc(64px * 2);
-        background-position:calc(8 * 1 * 64px) calc(6 * 1 * 64px);
-        background-size:calc(640px * 1) calc(640px * 1);
-    }
-    .lineWxs {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 1);
-        width:calc(64px * 2);
-        background-position:calc(8 * 1 * 64px) calc(4 * 1 * 64px);
-        background-size:calc(640px * 1) calc(640px * 1);
-    }
-    .lineSG {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 2);
-        width:calc(64px * 2);
-        background-position:calc(4 * 1 * 64px) calc(6 * 1 * 64px);
-        background-size:calc(640px * 1) calc(640px * 1);
-        /* transform: rotate(90deg); */
-    }
-    .lineWTopS {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 2);
-        width:calc(64px * 2);
-        background-position:calc(6 * 1 * 64px) calc(6 * 1 * 64px);
-        background-size:calc(640px * 1) calc(640px * 1);
-    }
-    .lineMargin {
-        margin-top: -11px;
-    }
+  .roadmapT {
+    display: block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 1);
+    width: calc(64px * 6);
+    background-position: calc(10 * 1 * 64px) calc(3 * 1 * 64px);
+    background-size: calc(640px * 1) calc(640px * 1);
+  }
+  .hackT {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 1);
+    width: calc(64px * 5);
+    background-position: calc(10 * 1 * 64px) calc(9 * 1 * 64px);
+    background-size: calc(640px * 1) calc(640px * 1);
+  }
+  .HBSection {
+    margin-left: -20px;
+  }
+  .HBText {
+    font-size: 15px;
+    color: rgb(168, 181, 178);
+    padding-left: 30px;
+    margin-top: -23px;
+  }
+  .currentB {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 1);
+    width: calc(64px * 5);
+    background-position: calc(5 * 1 * 64px) calc(9 * 1 * 64px);
+    background-size: calc(640px * 1) calc(640px * 1);
+  }
+  .V01 {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 1);
+    width: calc(64px * 2);
+    background-position: calc(0 * 1 * 64px) calc(10 * 1 * 64px);
+    background-size: calc(640px * 1) calc(640px * 1);
+  }
+  .V01Text {
+    font-size: 15px;
+    color: rgb(168, 181, 178);
+    padding-left: 30px;
+    width: 320px;
+    margin-top: -15px;
+  }
+  .V01Text ul {
+    list-style: disc;
+    padding-left: 20px;
+  }
+  .V02 {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 1);
+    width: calc(64px * 2);
+    background-position: calc(8 * 1 * 64px) calc(10 * 1 * 64px);
+    background-size: calc(640px * 1) calc(640px * 1);
+  }
+  .V02Text {
+    font-size: 15px;
+    color: rgb(168, 181, 178);
+    padding-left: 30px;
+    width: 320px;
+    margin-top: -15px;
+  }
+  .V02Text ul {
+    list-style: disc;
+    padding-left: 20px;
+  }
+  .V03 {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 1);
+    width: calc(64px * 2);
+    background-position: calc(6 * 1 * 64px) calc(10 * 1 * 64px);
+    background-size: calc(640px * 1) calc(640px * 1);
+  }
+  .V04 {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 1);
+    width: calc(64px * 2);
+    background-position: calc(4 * 1 * 64px) calc(10 * 1 * 64px);
+    background-size: calc(640px * 1) calc(640px * 1);
+  }
+  .V03Text {
+    font-size: 15px;
+    color: rgb(168, 181, 178);
+    padding-left: 30px;
+    width: 320px;
+    margin-top: -15px;
+  }
+  .V03Text ul {
+    list-style: disc;
+    padding-left: 20px;
+  }
+  .QAT {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 1);
+    width: calc(64px * 5);
+    background-position: calc(0 * 1 * 64px) calc(8 * 1 * 64px);
+    background-size: calc(640px * 1) calc(640px * 1);
+  }
+  .QATSection {
+    margin-left: -20px;
+  }
+  .QATText {
+    font-size: 15px;
+    color: rgb(168, 181, 178);
+    padding-left: 30px;
+    width: 320px;
+    margin-top: -15px;
+  }
+  .lineG {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 3);
+    width: calc(64px * 2);
+    background-position: calc(10 * 1 * 64px) calc(6 * 1 * 64px);
+    background-size: calc(640px * 1) calc(640px * 1);
+  }
+  .lineWTop {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 3);
+    width: calc(64px * 2);
+    background-position: calc(8 * 1 * 64px) calc(6 * 1 * 64px);
+    background-size: calc(640px * 1) calc(640px * 1);
+  }
+  .lineWxs {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 1);
+    width: calc(64px * 2);
+    background-position: calc(8 * 1 * 64px) calc(4 * 1 * 64px);
+    background-size: calc(640px * 1) calc(640px * 1);
+  }
+  .lineSG {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 2);
+    width: calc(64px * 2);
+    background-position: calc(4 * 1 * 64px) calc(6 * 1 * 64px);
+    background-size: calc(640px * 1) calc(640px * 1);
+    /* transform: rotate(90deg); */
+  }
+  .lineWTopS {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 2);
+    width: calc(64px * 2);
+    background-position: calc(6 * 1 * 64px) calc(6 * 1 * 64px);
+    background-size: calc(640px * 1) calc(640px * 1);
+  }
+  .lineMargin {
+    margin-top: -11px;
+  }
 }
 
 @media (max-width: 767px) {
-    .roadmapT {
-        display:block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 1 / 2);
-        width:calc(64px * 6 / 2);
-        background-position:calc(10 * 1 * 64px / 2) calc(3 * 1 * 64px / 2);
-        background-size:calc(640px * 1 / 2) calc(640px * 1 / 2);
-    }
-    .hackT {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 1 / 2);
-        width:calc(64px * 5 / 2);
-        background-position:calc(10 * 1 * 64px / 2) calc(9 * 1 * 64px / 2);
-        background-size:calc(640px * 1 / 2) calc(640px * 1 / 2);
-    }
-    .HBSection {
-        margin-left: -20px;
-    }
-    .HBText {
-        font-size: 13px;
-        color: rgb(168, 181, 178);
-        padding-left: 16px;
-        margin-top: -13px;
-        width: 80vw;
-    }
-    .currentB {
-        display: none;
-        /* display:inline-block;
+  .roadmapT {
+    display: block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 1 / 2);
+    width: calc(64px * 6 / 2);
+    background-position: calc(10 * 1 * 64px / 2) calc(3 * 1 * 64px / 2);
+    background-size: calc(640px * 1 / 2) calc(640px * 1 / 2);
+  }
+  .hackT {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 1 / 2);
+    width: calc(64px * 5 / 2);
+    background-position: calc(10 * 1 * 64px / 2) calc(9 * 1 * 64px / 2);
+    background-size: calc(640px * 1 / 2) calc(640px * 1 / 2);
+  }
+  .HBSection {
+    margin-left: -20px;
+  }
+  .HBText {
+    font-size: 13px;
+    color: rgb(168, 181, 178);
+    padding-left: 16px;
+    margin-top: -13px;
+    width: 80vw;
+  }
+  .currentB {
+    display: none;
+    /* display:inline-block;
         background-image: url("resources/front/WebPageUIAssets.png");
         height:calc(64px * 1 / 2);
         width:calc(64px * 5 / 2);
         background-position:calc(5 * 1 * 64px / 2) calc(9 * 1 * 64px / 2);
         background-size:calc(640px * 1 / 2) calc(640px * 1 / 2); */
-    }
-    .V01 {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 1 / 2);
-        width:calc(64px * 2 / 2);
-        background-position:calc(0 * 1 * 64px / 2) calc(10 * 1 * 64px / 2);
-        background-size:calc(640px * 1 / 2) calc(640px * 1 / 2);
-    }
-    .V01Text {
-        font-size: 13px;
-        color: rgb(168, 181, 178);
-        padding-left: 30px;
-        margin-top: -15px;
-        width: 80vw;
-    }
-    .V01Text ul {
-        list-style: disc;
-    }
-    .V02 {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 1 / 2);
-        width:calc(64px * 2 / 2);
-        background-position:calc(8 * 1 * 64px / 2) calc(10 * 1 * 64px / 2);
-        background-size:calc(640px * 1 / 2) calc(640px * 1 / 2);
-    }
-    .V02Text {
-        font-size: 13px;
-        color: rgb(168, 181, 178);
-        padding-left: 30px;
-        margin-top: -15px;
-        width: 80vw;
-    }
-    .V02Text ul {
-        list-style: disc;
-    }
-    .V03 {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 1 / 2);
-        width:calc(64px * 2 / 2);
-        background-position:calc(6 * 1 * 64px / 2) calc(10 * 1 * 64px / 2);
-        background-size:calc(640px * 1 / 2) calc(640px * 1 / 2);
-    }
-    .V03Text {
-        font-size: 13px;
-        color: rgb(168, 181, 178);
-        padding-left: 30px;
-        margin-top: -15px;
-        width: 80vw;
-    }
-    .V03Text ul {
-        list-style: disc;
-    }
-    .V04 {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 1 / 2);
-        width:calc(64px * 2 / 2);
-        background-position:calc(4 * 1 * 64px / 2) calc(10 * 1 * 64px / 2);
-        background-size:calc(640px * 1 / 2) calc(640px * 1 / 2);
-    }
-    .QAT {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 1 / 2);
-        width:calc(64px * 5 / 2);
-        background-position:calc(0 * 1 * 64px / 2) calc(8 * 1 * 64px / 2);
-        background-size:calc(640px * 1 / 2) calc(640px * 1 / 2);
-    }
-    .QATSection {
-        margin-left: -20px;
-    }
-    .QATText {
-        font-size: 13px;
-        color: rgb(168, 181, 178);
-        padding-left: 16px;
-        margin-top: -15px;
-        width: 80vw;
-    }
-    .lineG {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 3 / 2);
-        width:calc(64px * 2 / 2);
-        background-position:calc(10 * 1 * 64px / 2) calc(6 * 1 * 64px / 2);
-        background-size:calc(640px * 1 / 2) calc(640px * 1 / 2);
-    }
-    .lineWTop {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 3 / 2);
-        width:calc(64px * 2 / 2);
-        background-position:calc(8 * 1 * 64px / 2) calc(6 * 1 * 64px / 2);
-        background-size:calc(640px * 1 / 2) calc(640px * 1 / 2);
-    }
-    .lineWxs {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 1 / 2);
-        width:calc(64px * 2 / 2);
-        background-position:calc(8 * 1 * 64px / 2) calc(4 * 1 * 64px / 2);
-        background-size:calc(640px * 1 / 2) calc(640px * 1 / 2);
-    }
-    .lineSG {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 2 / 2);
-        width:calc(64px * 2 / 2);
-        background-position:calc(4 * 1 * 64px / 2) calc(6 * 1 * 64px / 2);
-        background-size:calc(640px * 1 / 2) calc(640px * 1 / 2);
-        /* transform: rotate(90deg); */
-    }
-    .lineWTopS {
-        display:inline-block;
-        background-image: url("resources/front/WebPageUIAssets.png");
-        height:calc(64px * 2 / 2);
-        width:calc(64px * 2 / 2);
-        background-position:calc(6 * 1 * 64px / 2) calc(6 * 1 * 64px / 2);
-        background-size:calc(640px * 1 / 2) calc(640px * 1 / 2);
-    }
-    .lineMargin {
-        margin-top: -5px;
-    }
+  }
+  .V01 {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 1 / 2);
+    width: calc(64px * 2 / 2);
+    background-position: calc(0 * 1 * 64px / 2) calc(10 * 1 * 64px / 2);
+    background-size: calc(640px * 1 / 2) calc(640px * 1 / 2);
+  }
+  .V01Text {
+    font-size: 13px;
+    color: rgb(168, 181, 178);
+    padding-left: 30px;
+    margin-top: -15px;
+    width: 80vw;
+  }
+  .V01Text ul {
+    list-style: disc;
+  }
+  .V02 {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 1 / 2);
+    width: calc(64px * 2 / 2);
+    background-position: calc(8 * 1 * 64px / 2) calc(10 * 1 * 64px / 2);
+    background-size: calc(640px * 1 / 2) calc(640px * 1 / 2);
+  }
+  .V02Text {
+    font-size: 13px;
+    color: rgb(168, 181, 178);
+    padding-left: 30px;
+    margin-top: -15px;
+    width: 80vw;
+  }
+  .V02Text ul {
+    list-style: disc;
+  }
+  .V03 {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 1 / 2);
+    width: calc(64px * 2 / 2);
+    background-position: calc(6 * 1 * 64px / 2) calc(10 * 1 * 64px / 2);
+    background-size: calc(640px * 1 / 2) calc(640px * 1 / 2);
+  }
+  .V03Text {
+    font-size: 13px;
+    color: rgb(168, 181, 178);
+    padding-left: 30px;
+    margin-top: -15px;
+    width: 80vw;
+  }
+  .V03Text ul {
+    list-style: disc;
+  }
+  .V04 {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 1 / 2);
+    width: calc(64px * 2 / 2);
+    background-position: calc(4 * 1 * 64px / 2) calc(10 * 1 * 64px / 2);
+    background-size: calc(640px * 1 / 2) calc(640px * 1 / 2);
+  }
+  .QAT {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 1 / 2);
+    width: calc(64px * 5 / 2);
+    background-position: calc(0 * 1 * 64px / 2) calc(8 * 1 * 64px / 2);
+    background-size: calc(640px * 1 / 2) calc(640px * 1 / 2);
+  }
+  .QATSection {
+    margin-left: -20px;
+  }
+  .QATText {
+    font-size: 13px;
+    color: rgb(168, 181, 178);
+    padding-left: 16px;
+    margin-top: -15px;
+    width: 80vw;
+  }
+  .lineG {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 3 / 2);
+    width: calc(64px * 2 / 2);
+    background-position: calc(10 * 1 * 64px / 2) calc(6 * 1 * 64px / 2);
+    background-size: calc(640px * 1 / 2) calc(640px * 1 / 2);
+  }
+  .lineWTop {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 3 / 2);
+    width: calc(64px * 2 / 2);
+    background-position: calc(8 * 1 * 64px / 2) calc(6 * 1 * 64px / 2);
+    background-size: calc(640px * 1 / 2) calc(640px * 1 / 2);
+  }
+  .lineWxs {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 1 / 2);
+    width: calc(64px * 2 / 2);
+    background-position: calc(8 * 1 * 64px / 2) calc(4 * 1 * 64px / 2);
+    background-size: calc(640px * 1 / 2) calc(640px * 1 / 2);
+  }
+  .lineSG {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 2 / 2);
+    width: calc(64px * 2 / 2);
+    background-position: calc(4 * 1 * 64px / 2) calc(6 * 1 * 64px / 2);
+    background-size: calc(640px * 1 / 2) calc(640px * 1 / 2);
+    /* transform: rotate(90deg); */
+  }
+  .lineWTopS {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets.png");
+    height: calc(64px * 2 / 2);
+    width: calc(64px * 2 / 2);
+    background-position: calc(6 * 1 * 64px / 2) calc(6 * 1 * 64px / 2);
+    background-size: calc(640px * 1 / 2) calc(640px * 1 / 2);
+  }
+  .lineMargin {
+    margin-top: -5px;
+  }
 }
-
 
 /* Page overview */
 
 @media (min-width: 768px) {
-    .overviewT {
-        display: inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height: calc(32px * 2);
-        width: calc(32px * 12);
-        background-position: calc(25 * 1 * 32px) calc(32 * 1 * 32px);
-        background-size: calc(1280px * 1) calc(1600px * 1);
-    }
+  .overviewT {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2);
+    width: calc(32px * 12);
+    background-position: calc(25 * 1 * 32px) calc(32 * 1 * 32px);
+    background-size: calc(1280px * 1) calc(1600px * 1);
+  }
 }
 
 @media (max-width: 767px) {
-    .overviewT {
-        display: inline-block;
-        background-image: url("resources/front/WebPageUIAssets2.png");
-        height: calc(32px * 2 / 2);
-        width: calc(32px * 12 / 2);
-        background-position: calc(25 * 1 * 32px / 2) calc(32 * 1 * 32px / 2);
-        background-size: calc(1280px * 1 / 2) calc(1600px * 1 / 2);
-    }
+  .overviewT {
+    display: inline-block;
+    background-image: url("resources/front/WebPageUIAssets2.png");
+    height: calc(32px * 2 / 2);
+    width: calc(32px * 12 / 2);
+    background-position: calc(25 * 1 * 32px / 2) calc(32 * 1 * 32px / 2);
+    background-size: calc(1280px * 1 / 2) calc(1600px * 1 / 2);
+  }
 }
 
 /* Menu bar */
 .gameMenuWhite {
-    display: inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height: calc(32px * 2);
-    width: calc(32px * 3);
-    background-position: calc(40 * 1 * 32px) calc(40 * 1 * 32px);
-    background-size: calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 3);
+  background-position: calc(40 * 1 * 32px) calc(40 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .dashWhite {
-    /* display: inline-block; */
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height: calc(32px * 2);
-    width: calc(32px * 2);
-    background-position: calc(37 * 1 * 32px) calc(40 * 1 * 32px);
-    background-size: calc(1280px * 1) calc(1600px * 1);
-    margin-left: -23px;
-    margin-right: -23px;
+  /* display: inline-block; */
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 2);
+  background-position: calc(37 * 1 * 32px) calc(40 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
+  margin-left: -23px;
+  margin-right: -23px;
 }
 .tutorialMenuWhite {
-    display: inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height: calc(32px * 2);
-    width: calc(32px * 5);
-    background-position: calc(35 * 1 * 32px) calc(40 * 1 * 32px);
-    background-size: calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 5);
+  background-position: calc(35 * 1 * 32px) calc(40 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .roadmapMenuWhite {
-    display: inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height: calc(32px * 2);
-    width: calc(32px * 5);
-    background-position: calc(30 * 1 * 32px) calc(40 * 1 * 32px);
-    background-size: calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 5);
+  background-position: calc(30 * 1 * 32px) calc(40 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .aboutMenuWhite {
-    display: inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height: calc(32px * 2);
-    width: calc(32px * 5);
-    background-position: calc(25 * 1 * 32px) calc(40 * 1 * 32px);
-    background-size: calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 5);
+  background-position: calc(25 * 1 * 32px) calc(40 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .docsMenuWhite {
-    display: inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height: calc(32px * 2);
-    width: calc(32px * 3);
-    background-position: calc(20 * 1 * 32px) calc(40 * 1 * 32px);
-    background-size: calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 3);
+  background-position: calc(20 * 1 * 32px) calc(40 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 
 .gameMenuActive {
-    display: inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height: calc(32px * 2);
-    width: calc(32px * 3);
-    background-position: calc(40 * 1 * 32px) calc(36 * 1 * 32px);
-    background-size: calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 3);
+  background-position: calc(40 * 1 * 32px) calc(36 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .tutorialMenuActive {
-    display: inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height: calc(32px * 2);
-    width: calc(32px * 5);
-    background-position: calc(35 * 1 * 32px) calc(36 * 1 * 32px);
-    background-size: calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 5);
+  background-position: calc(35 * 1 * 32px) calc(36 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .roadmapMenuActive {
-    display: inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height: calc(32px * 2);
-    width: calc(32px * 5);
-    background-position: calc(30 * 1 * 32px) calc(36 * 1 * 32px);
-    background-size: calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 5);
+  background-position: calc(30 * 1 * 32px) calc(36 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .aboutMenuActive {
-    display: inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height: calc(32px * 2);
-    width: calc(32px * 5);
-    background-position: calc(25 * 1 * 32px) calc(36 * 1 * 32px);
-    background-size: calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 5);
+  background-position: calc(25 * 1 * 32px) calc(36 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
-.docsMenuActive{
-    display: inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height: calc(32px * 2);
-    width: calc(32px * 3);
-    background-position: calc(20 * 1 * 32px) calc(36 * 1 * 32px);
-    background-size: calc(1280px * 1) calc(1600px * 1);
+.docsMenuActive {
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 3);
+  background-position: calc(20 * 1 * 32px) calc(36 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
-
-
 
 .gameMenuWhite:hover {
-    display: inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height: calc(32px * 2);
-    width: calc(32px * 3);
-    background-position: calc(40 * 1 * 32px) calc(38 * 1 * 32px);
-    background-size: calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 3);
+  background-position: calc(40 * 1 * 32px) calc(38 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
-.tutorialMenuWhite:hover{
-    display: inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height: calc(32px * 2);
-    width: calc(32px * 5);
-    background-position: calc(35 * 1 * 32px) calc(38 * 1 * 32px);
-    background-size: calc(1280px * 1) calc(1600px * 1);
+.tutorialMenuWhite:hover {
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 5);
+  background-position: calc(35 * 1 * 32px) calc(38 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .roadmapMenuWhite:hover {
-    display: inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height: calc(32px * 2);
-    width: calc(32px * 5);
-    background-position: calc(30 * 1 * 32px) calc(38 * 1 * 32px);
-    background-size: calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 5);
+  background-position: calc(30 * 1 * 32px) calc(38 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 .aboutMenuWhite:hover {
-    display: inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height: calc(32px * 2);
-    width: calc(32px * 5);
-    background-position: calc(25 * 1 * 32px) calc(38 * 1 * 32px);
-    background-size: calc(1280px * 1) calc(1600px * 1);
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 5);
+  background-position: calc(25 * 1 * 32px) calc(38 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
-.docsMenuWhite:hover{
-    display: inline-block;
-    background-image: url("resources/front/WebPageUIAssets2.png");
-    height: calc(32px * 2);
-    width: calc(32px * 3);
-    background-position: calc(20 * 1 * 32px) calc(38 * 1 * 32px);
-    background-size: calc(1280px * 1) calc(1600px * 1);
+.docsMenuWhite:hover {
+  display: inline-block;
+  background-image: url("resources/front/WebPageUIAssets2.png");
+  height: calc(32px * 2);
+  width: calc(32px * 3);
+  background-position: calc(20 * 1 * 32px) calc(38 * 1 * 32px);
+  background-size: calc(1280px * 1) calc(1600px * 1);
 }
 
 .carousel {
-    display: inline-flex;
-    overflow-x: hidden;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* For Firefox */
-    -ms-overflow-style: none; /* For Internet Explorer and Edge */
-  }
+  display: inline-flex;
+  overflow-x: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+}
 
-
-  .closeCarousel {
-    display:inline-block;
-    background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
-    height:calc(32px * 1);
-    width:calc(32px * 2);
-    background-position:calc(9 * 1 * 64px) calc(10 * 1 * 64px);
-    background-size:calc(1408px * 1) calc(768px * 1);
-    position: absolute;
-    right: 0;
-    pointer-events: all;
-    z-index: 1;
+.closeCarousel {
+  display: inline-block;
+  background-image: url("resources/front/Matchbox_Tiles_UIMainUpscaled.png");
+  height: calc(32px * 1);
+  width: calc(32px * 2);
+  background-position: calc(9 * 1 * 64px) calc(10 * 1 * 64px);
+  background-size: calc(1408px * 1) calc(768px * 1);
+  position: absolute;
+  right: 0;
+  pointer-events: all;
+  z-index: 1;
 }

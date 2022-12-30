@@ -1,25 +1,21 @@
-export interface Resource {
-    id: number;
-    qty: number;
-  }
-  
-export interface Cost {
-    level: number;
-    resources: Resource[]
-    frensCoins: number;
-    energy: number;
-    pop_min?: number;
-    new_pop?: number;
-}
-  
 export interface Building {
-    id: number;
-    name: string;
-    category: string;
-    description: string;
-    level: number;
-    cost_update?: Cost[];
-    daily_cost?: Cost[];
-    daily_harvest?: Cost[];
-
+  id: number;
+  type: string;
+  spriteId: string;
+  name: string;
+  description: string;
+  pLevelToUnlock: number;
+  locked: boolean;
+  size: number;
+  canDestroy: boolean;
+  canMove: boolean;
+  canProduce: boolean;
+  fertilityNeed?: number;
+  nbLevels: number;
+  needMaintain: boolean;
+  createCost: string;
+  maintainCost: string;
+  repairCost: string;
+  production: string;
+  destroy: string;
 }

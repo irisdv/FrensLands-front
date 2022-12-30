@@ -1,281 +1,659 @@
-import { useStarknet, useStarknetBlock } from "@starknet-react/core";
-import React, { useMemo, useState, useEffect } from "react";
-import { toBN } from "starknet/dist/utils/number";
-import { useGameContext } from "../../hooks/useGameContext";
-import useClaim from "../../hooks/invoke/useClaim";
-import useActiveNotifications from "../../hooks/useNotifications";
+import React, { useMemo, useState } from "react";
 import Notifications from "../Notifications";
-import { allBuildings } from "../../data/buildings";
-import UI_Frames from '../../style/resources/front/Ui_Frames3.svg';
-
-import useResourcesContext from "../../hooks/useResourcesContext";
+import UI_Frames from "../../style/resources/front/Ui_Frames3.svg";
 import { useSelectContext } from "../../hooks/useSelectContext";
-import useReinitialize from "../../hooks/invoke/useReinitialize";
+import { useNewGameContext } from "../../hooks/useNewGameContext";
+import { useFLContract } from "../../hooks/contracts/frenslands";
+import { TransactionItem } from "./transactionItem";
+import { initMapArr } from "../../utils/land";
+import { number } from "starknet";
 
-export function MenuBar() {
-  const {account} = useStarknet()
-  const { data: block } = useStarknetBlock()
+export function MenuBar(props: any) {
+  const {
+    addAction,
+    payloadActions,
+    wallet,
+    inventory,
+    counters,
+    playerBuilding,
+    player,
+    transactions,
+    updateActions,
+    updateCounters,
+    updateClaimRegister,
+    updateInventory,
+    updatePlayerBuildings,
+    updateMapBlock,
+  } = useNewGameContext();
+  const { zoomMode, updateZoom } = useSelectContext();
+  const frenslandsContract = useFLContract();
+  const [popUpInit, setPopUpInit] = useState(false);
+  const [popUpTxCart, setPopUpTxCart] = useState(false);
 
-  const {tokenId, updateTokenId, setAddress, blockGame, buildingData, nonce, updateNonce, counterResources } = useGameContext();
-  const {energy, frensCoins, wood, rock, coal, metal, populationBusy, populationFree, meat, cereal} = useResourcesContext();
-  const { zoomMode, updateZoom } = useSelectContext()
+  const initialMap = useMemo(() => {
+    return initMapArr(wallet.account.address);
+  }, [wallet]);
 
-  const claimingInvoke = useClaim()
-  const activeNotifications = useActiveNotifications()
+  const claimResources = async () => {
+    // Multicall
+    console.log("actions before claiming = ", payloadActions);
 
-  const reinitializeInvoke = useReinitialize()
+    if (wallet.isConnected && player.tokenId > 0) {
+      wallet.account.getBlock().then((block: any) => {
+        // Update player inventory
+        for (let i = 0; i < 7; i++) {
+          inventory[i] += counters["incomingInventory" as any][i];
+        }
 
-  const [ claiming, setClaiming ] = useState<any>(null)
-  const [ btnClaim, setBtnClaim ] = useState(false)
-  const [popUpInit, setPopUpInit] = useState(false)
+        // Update lastClaimedRegister
+        if (player.claimRegister == 0) {
+          player.claimRegister = block.block_number.toString();
+        } else {
+          player.claimRegister += "|" + block.block_number.toString();
+        }
+        console.log("player claimRegister", player.claimRegister);
+        updateClaimRegister(player.claimRegister);
 
-  const [claimableResources, setClaimableResources] = useState<any[]>([])
+        // Reinit counters in context
+        counters["incomingInventory" as any][0] = 0;
+        counters["incomingInventory" as any][1] = 0;
+        counters["incomingInventory" as any][2] = 0;
+        counters["incomingInventory" as any][3] = 0;
+        counters["incomingInventory" as any][4] = 0;
+        counters["incomingInventory" as any][5] = 0;
+        counters["incomingInventory" as any][6] = 0;
+        counters["incomingInventory" as any][7] = 0;
+        counters["nbBlocksClaimable" as any] = 0;
+        updateCounters(counters);
 
-    useEffect(() => {
-      if (account) setAddress(account)
-    }, [account])
+        const calldata = player.tokenId + "|0|" + block.block_number;
+        addAction({
+          entrypoint: "claim_production",
+          calldata,
+          status: "",
+          txHash: "",
+          validated: false,
+        });
+      });
+    } else {
+      console.log("missing tokenId");
+    }
+  };
 
-    useEffect(() => {
-      if (account && !tokenId) {
-        updateTokenId(account);
-      }
-    }, [account, tokenId])
-  
-    // Invoke claim resources
-    const claimResources = () => {
-      if (tokenId) {
-        let tx_hash = claimingInvoke(tokenId, nonceValue)
-        setClaiming(tx_hash);
+  const reinitializeLand = async () => {
+    wallet.account
+      .execute({
+        contractAddress: frenslandsContract.address.toLowerCase(),
+        entrypoint: "reinit_game",
+        calldata: [number.toFelt(player.tokenId), 0],
+      })
+      .then((response: any) => {
+        response.show = true;
+        transactions.push(response);
 
-        tx_hash.then((res) => {
-          console.log('res', res)
-          if (res != 0) {
-            updateNonce(nonceValue)
-          }
-        })
-      } else {
-        console.log('Missing tokenId')
-      }
-      setClaiming(true);
-    };
+        payloadActions.push({
+          entrypoint: "reinit_game",
+          calldata: player.tokenId + "|0",
+          status: response.code,
+          txHash: response.transaction_hash,
+        });
+        updateActions(payloadActions);
 
-    const nonceValue = useMemo(() => {
-      console.log('new nonce value', nonce)
-      return nonce
-    }, [nonce])
+        // Update in localStorage
+        let ongoingTx = JSON.parse(localStorage.getItem("ongoingTx") as string);
+        if (!ongoingTx) ongoingTx = [];
+        ongoingTx.push({
+          ...response,
+          time: Date.now(),
+        });
+        localStorage.setItem("ongoingTx", JSON.stringify(ongoingTx));
+      });
+    // todo reload page when tx accepted
+    // setPopUpInit(false);
+  };
 
-    const reinitializeLand = () => {
-      if (tokenId) {
-        let tx_hash = reinitializeInvoke(tokenId, nonceValue)
+  const zoomValue = useMemo(() => {
+    return zoomMode;
+  }, [zoomMode, wallet]);
 
-        tx_hash.then((res) => {
-          console.log('res', res)
-          if (res != 0) {
-            updateNonce(nonceValue)
-          }
-        })
-      } else {
-        console.log('Missing tokenId')
-      }
-    };
+  const buildMulticall = async () => {
+    console.log("building multicall w/ first 80 actions = ", payloadActions);
 
-    const blockClaimable = useMemo(() => {
-      if (buildingData) {
-        let _newBlockClaimable = 0;
-        let _resources : any[] = []
+    const _calls: any[] = [];
+    for (
+      let i = 0;
+      i < (payloadActions.length > 80 ? 80 : payloadActions.length);
+      i++
+    ) {
+      if (
+        payloadActions[i].status != "TRANSACTION_RECEIVED" &&
+        payloadActions[i].status != "ACCEPTED_ON_L2"
+      ) {
+        const _calldata: any[] = [];
+        const _data = payloadActions[i].calldata.split("|");
 
-        buildingData.active?.forEach((elem : any) => {
-          if (elem['recharges']) {
-            // check lasr claim block number 
-            // current block - last_claim block > then add recharges 
-            if (block?.block_number) {
-              var check = toBN(block?.block_number).toNumber() - elem['last_claim']
-              var block2Claim = 0;
-              if (check > elem['recharges']) {
-                block2Claim = elem['recharges']
-              } else {
-                block2Claim = check
-              }
-              _newBlockClaimable += block2Claim
-              
-              // Get resources to harvest for each claimable building
-              if (block2Claim > 0) {
-
-                allBuildings[elem['type'] - 1].daily_harvest?.[0].resources.map((elem: any) => {
-                  let _currValue = 0
-                  if (_resources[elem.id] && _resources[elem.id] > 0) {
-                    _currValue =  _resources[elem.id] + (elem.qty * block2Claim)
-                  } else {
-                    _currValue += (elem.qty * block2Claim)
-                  }
-                  _resources[elem.id] = _currValue
-                })
-              }
-            }
-          }
-        })
-        setClaimableResources(_resources)
-        return _newBlockClaimable
-      }
-    }, [buildingData])
-
-  // Btn Claim 
-  useEffect(() => {
-    if (block && blockGame) {
-      let current_block = toBN(block?.block_number).toNumber()
-      if (current_block >= blockGame) {
-        setBtnClaim(true)
-      } else {
-        setBtnClaim(false)
+        _data.forEach((elem: any) => {
+          _calldata.push(elem);
+        });
+        _calls.push({
+          contractAddress: frenslandsContract.address.toLowerCase(),
+          entrypoint: payloadActions[i].entrypoint as string,
+          calldata: _calldata,
+        });
       }
     }
-  }, [block?.block_number, blockGame, claiming])
+
+    wallet.account.execute(_calls).then((response: any) => {
+      console.log("response", response);
+      response.show = true;
+      transactions.push(response);
+
+      for (
+        let i = 0;
+        i < (payloadActions.length > 80 ? 80 : payloadActions.length);
+        i++
+      ) {
+        payloadActions[i].status = response.code;
+        payloadActions[i].txHash = response.transaction_hash;
+      }
+      updateActions(payloadActions);
+
+      // Update in localStorage
+      let ongoingTx = JSON.parse(localStorage.getItem("ongoingTx") as string);
+      console.log("ongoingTx before", ongoingTx);
+      if (!ongoingTx) ongoingTx = [];
+      ongoingTx.push({
+        ...response,
+        time: Date.now(),
+      });
+      console.log("ongoingTx after", ongoingTx);
+      localStorage.setItem("ongoingTx", JSON.stringify(ongoingTx));
+
+      setPopUpTxCart(false);
+    });
+  };
 
   return (
     <>
-      <div className="btnBug pixelated selectDisable" onClick={() => window.open("https://forms.gle/87Ldvb1UTw53iUhH7", "_blank")}></div>
-      <div className="btnDoc pixelated selectDisable" onClick={() => window.open("https://frenslands.notion.site/Frens-Lands-0e227f03fa8044638ebcfff414c6be1f", "_blank")}></div>
-      <div className="absolute selectDisable" style={{zIndex: "1"}}>
+      <div
+        className="btnBug pixelated selectDisable"
+        onClick={() =>
+          window.open("https://forms.gle/87Ldvb1UTw53iUhH7", "_blank")
+        }
+      ></div>
+      <div
+        className="btnDoc pixelated selectDisable"
+        onClick={() =>
+          window.open(
+            "https://frenslands.notion.site/Frens-Lands-0e227f03fa8044638ebcfff414c6be1f",
+            "_blank"
+          )
+        }
+      ></div>
+      <div className="absolute selectDisable" style={{ zIndex: "1" }}>
         <div className="flex flex-row justify-center inline-block">
-          {/* {sound ? 
-            <div 
-              className="btnSound1 pixelated" 
+          {/* {sound ?
+            <div
+              className="btnSound1 pixelated"
               style={{ left: "5px" }}
               onClick={() => updateSound(false)}
             ></div>
-            : 
-            <div 
-              className="btnSound0 pixelated" 
+            :
+            <div
+              className="btnSound0 pixelated"
               style={{ left: "5px" }}
               onClick={() => updateSound(true)}
             ></div>
           } */}
 
-          <div id="menuBar" className="relative flex jutify-center items-center inline-block pixelated" style={{ fontSize: "16px" }}>
-            <div className="flex jutify-center relative mx-auto" style={{ marginTop: "-13px", marginLeft: "35px" }}>
+          <div
+            id="menuBar"
+            className="relative flex jutify-center items-center inline-block pixelated"
+            style={{ fontSize: "16px" }}
+          >
+            <div
+              className="flex jutify-center relative mx-auto"
+              style={{ marginTop: "-13px", marginLeft: "35px" }}
+            >
               <div id="menuGold" className="pixelated"></div>
-              <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px", marginLeft: "-10px" }}>
-                {frensCoins ? frensCoins : 0}
+              <div
+                className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
+                style={{ marginTop: "-2px", marginLeft: "-10px" }}
+              >
+                {inventory[6]}
               </div>
-              <div className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"  style={{ marginTop: "-11px", marginLeft:'3px', color: '#55813E', fontSize: '16px' }}>
-                {claimableResources[10] ? "+"+claimableResources[10] : ''}
+              <div
+                className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
+                style={{
+                  marginTop: "-11px",
+                  marginLeft: "3px",
+                  color: "#55813E",
+                  fontSize: "16px",
+                }}
+              >
+                {counters &&
+                counters["incomingInventory" as any] &&
+                counters["incomingInventory" as any][6]
+                  ? "+" + counters["incomingInventory" as any][6]
+                  : ""}
               </div>
             </div>
-            <div className="flex jutify-center relative mx-auto"  style={{ marginTop: "-13px" }}>
+            <div
+              className="flex jutify-center relative mx-auto"
+              style={{ marginTop: "-13px" }}
+            >
               <div id="menuWood" className="pixelated"></div>
-              <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px", marginLeft: "-10px" }}>
-                {wood ? wood : 0}
+              <div
+                className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
+                style={{ marginTop: "-2px", marginLeft: "-10px" }}
+              >
+                {inventory[0]}
               </div>
-              <div className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"  style={{ marginTop: "-11px", marginLeft:'3px', color: '#55813E', fontSize: '16px' }}>
-                {claimableResources[1] ? "+"+claimableResources[1] : ''}
+              <div
+                className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
+                style={{
+                  marginTop: "-11px",
+                  marginLeft: "3px",
+                  color: "#55813E",
+                  fontSize: "16px",
+                }}
+              >
+                {counters &&
+                counters["incomingInventory" as any] &&
+                counters["incomingInventory" as any][0]
+                  ? "+" + counters["incomingInventory" as any][0]
+                  : ""}
               </div>
             </div>
-            <div className="flex jutify-center relative mx-auto" style={{ marginTop: "-13px" }}>
+            <div
+              className="flex jutify-center relative mx-auto"
+              style={{ marginTop: "-13px" }}
+            >
               <div id="menuRock" className="pixelated"></div>
-              <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px", marginLeft: "-10px" }}>
-                {rock ? rock : 0}
+              <div
+                className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
+                style={{ marginTop: "-2px", marginLeft: "-10px" }}
+              >
+                {inventory[1]}
               </div>
-              <div className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"  style={{ marginTop: "-11px", marginLeft:'3px', color: '#55813E', fontSize: '16px' }}>
-                {claimableResources[2] ? "+"+claimableResources[2] : ''}
+              <div
+                className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
+                style={{
+                  marginTop: "-11px",
+                  marginLeft: "3px",
+                  color: "#55813E",
+                  fontSize: "16px",
+                }}
+              >
+                {counters &&
+                counters["incomingInventory" as any] &&
+                counters["incomingInventory" as any][1]
+                  ? "+" + counters["incomingInventory" as any][1]
+                  : ""}
               </div>
             </div>
-            <div className="flex jutify-center relative mx-auto" style={{ marginTop: "-13px" }}>
+            <div
+              className="flex jutify-center relative mx-auto"
+              style={{ marginTop: "-13px" }}
+            >
               <div id="menuMetal" className="pixelated"></div>
-              <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px", marginLeft: "-10px" }}>
-                {metal ? metal : 0}
+              <div
+                className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
+                style={{ marginTop: "-2px", marginLeft: "-10px" }}
+              >
+                {inventory[3]}
               </div>
-              <div className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"  style={{ marginTop: "-11px", marginLeft:'3px', color: '#55813E', fontSize: '16px' }}>
-                {claimableResources[6] ? "+"+claimableResources[6] : ''}
+              <div
+                className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
+                style={{
+                  marginTop: "-11px",
+                  marginLeft: "3px",
+                  color: "#55813E",
+                  fontSize: "16px",
+                }}
+              >
+                {counters &&
+                counters["incomingInventory" as any] &&
+                counters["incomingInventory" as any][3]
+                  ? "+" + counters["incomingInventory" as any][3]
+                  : ""}
               </div>
             </div>
-            <div className="flex jutify-center relative mx-auto" style={{ marginTop: "-13px" }}>
+            <div
+              className="flex jutify-center relative mx-auto"
+              style={{ marginTop: "-13px" }}
+            >
               <div id="menuCoal" className="pixelated"></div>
-              <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px", marginLeft: "-10px" }}>
-                {coal ? coal : 0}
+              <div
+                className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
+                style={{ marginTop: "-2px", marginLeft: "-10px" }}
+              >
+                {inventory[4]}
               </div>
-              <div className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"  style={{ marginTop: "-11px", marginLeft:'3px', color: '#55813E', fontSize: '16px' }}>
-                {claimableResources[8] ? "+"+claimableResources[8] : ''}
+              <div
+                className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
+                style={{
+                  marginTop: "-11px",
+                  marginLeft: "3px",
+                  color: "#55813E",
+                  fontSize: "16px",
+                }}
+              >
+                {counters &&
+                counters["incomingInventory" as any] &&
+                counters["incomingInventory" as any][4]
+                  ? "+" + counters["incomingInventory" as any][4]
+                  : ""}
               </div>
             </div>
-            <div className="flex jutify-center relative mx-auto" style={{ marginTop: "-13px" }}>
+            <div
+              className="flex jutify-center relative mx-auto"
+              style={{ marginTop: "-13px" }}
+            >
               <div id="menuPop" className="pixelated"></div>
-              <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px", marginLeft: "-10px" }}>
-              {populationBusy ? populationBusy : 0}
+              <div
+                className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
+                style={{ marginTop: "-2px", marginLeft: "-10px" }}
+              >
+                {inventory[9] - inventory[8]}
               </div>
             </div>
-            <div className="flex jutify-center relative mx-auto" style={{ marginTop: "-13px" }}>
+            <div
+              className="flex jutify-center relative mx-auto"
+              style={{ marginTop: "-13px" }}
+            >
               <div id="menuPopFree" className="pixelated"></div>
-              <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px", marginLeft: "-10px" }}>
-                {populationFree ? populationFree : 0}
+              <div
+                className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
+                style={{ marginTop: "-2px", marginLeft: "-10px" }}
+              >
+                {inventory[8]}
               </div>
             </div>
-            <div className="flex jutify-center relative mx-auto" style={{ marginTop: "-13px" }}>
+            <div
+              className="flex jutify-center relative mx-auto"
+              style={{ marginTop: "-13px" }}
+            >
               <div id="menuMeat" className="pixelated"></div>
-              <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated"  style={{ marginTop: "-2px", marginLeft: "-10px" }}>
-                {meat ? meat : 0}
+              <div
+                className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
+                style={{ marginTop: "-2px", marginLeft: "-10px" }}
+              >
+                {inventory[2]}
               </div>
-              <div className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"  style={{ marginTop: "-11px", marginLeft:'3px', color: '#55813E', fontSize: '16px' }}>
-                {claimableResources[3] ? "+"+claimableResources[3] : ''}
+              <div
+                className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
+                style={{
+                  marginTop: "-11px",
+                  marginLeft: "3px",
+                  color: "#55813E",
+                  fontSize: "16px",
+                }}
+              >
+                {counters &&
+                counters["incomingInventory" as any] &&
+                counters["incomingInventory" as any][2]
+                  ? "+" + counters["incomingInventory" as any][2]
+                  : ""}
               </div>
             </div>
-            <div className="flex jutify-center relative mx-auto" style={{ marginTop: "-13px" }}>
+            <div
+              className="flex jutify-center relative mx-auto"
+              style={{ marginTop: "-13px" }}
+            >
               <div id="menuEnergy" className="pixelated"></div>
-              <div className="flex items-center fontTom_PXL pb-1 menuItems pixelated" style={{ marginTop: "-2px", marginLeft: "-10px" }}>
-                {energy ? energy : 0}
+              <div
+                className="flex items-center fontTom_PXL pb-1 menuItems pixelated"
+                style={{ marginTop: "-2px", marginLeft: "-10px" }}
+              >
+                {inventory[5]}
               </div>
-              <div className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"  style={{ marginTop: "-11px", marginLeft:'3px', color: '#55813E', fontSize: '16px' }}>
-                {claimableResources[11] ? "+"+ claimableResources[11] : ''}
+              <div
+                className="flex items-center fontHpxl_JuicySmall pb-1 menuItems pixelated"
+                style={{
+                  marginTop: "-11px",
+                  marginLeft: "3px",
+                  color: "#55813E",
+                  fontSize: "16px",
+                }}
+              >
+                {counters &&
+                counters["incomingInventory" as any] &&
+                counters["incomingInventory" as any][5]
+                  ? "+" + counters["incomingInventory" as any][5]
+                  : ""}
               </div>
             </div>
-            <div className="flex jutify-center relative mx-auto" style={{ marginTop: "-13px" }}>
-              {tokenId && blockClaimable && blockClaimable > 0 ? <div className="btnClaim pixelated" onClick={() => claimResources()} ></div> :  <div className="btnClaimDisabled pixelated"></div> }
+            <div
+              className="flex jutify-center relative mx-auto"
+              style={{ marginTop: "-13px" }}
+            >
+              {counters["incomingInventory" as any].filter((elem: any) => {
+                return elem > 0;
+              }).length > 0 ? (
+                <div
+                  className="btnClaim pixelated"
+                  onClick={async () => await claimResources()}
+                ></div>
+              ) : (
+                <div className="btnClaimDisabled pixelated"></div>
+              )}
             </div>
-            <div className="flex jutify-center relative mx-auto" style={{ marginTop: "-13px" }}>
-              {tokenId && <div className="btnInit pixelated" onClick={() => setPopUpInit(true)} ></div> }
+            {/* <div
+              className="flex jutify-center relative mx-auto"
+              style={{ marginTop: "-13px" }}
+            >
+              {tokenId && (
+                <div
+                  className="btnInit pixelated"
+                  onClick={() => setPopUpInit(true)}
+                ></div>
+              )}
+            </div> */}
+
+            <div
+              className="flex jutify-center relative mx-auto"
+              style={{ marginTop: "-13px" }}
+            >
+              {player.tokenId && (
+                <div
+                  className="btnCustom pixelated relative"
+                  onClick={() => setPopUpTxCart(true)}
+                  style={{ marginTop: "-40px" }}
+                >
+                  <p
+                    className="relative fontHpxl_JuicyXL"
+                    style={{ marginTop: "47px", marginLeft: "63px" }}
+                  >
+                    My tx
+                  </p>
+                </div>
+              )}
             </div>
           </div>
-            {/* <div 
-              className="btnBottom pixelated" 
+          {/* <div
+              className="btnBottom pixelated"
               style={{ left: "5px" }}
             >
               <div className="menuSettings pixelated"></div>
             </div> */}
         </div>
       </div>
-      <div onClick={() => updateZoom(!zoomMode)}>
-        {zoomMode ? 
+      <div
+        className="flex jutify-center absolute mx-auto"
+        style={{ bottom: "0px", left: "0px", zIndex: "1" }}
+      >
+        {player.tokenId && (
+          <div
+            className="btnInit pixelated"
+            onClick={() => setPopUpInit(true)}
+          ></div>
+        )}
+      </div>
+      <div className="snackbar-centered">
+        <div id="snackbar-fixed-container">
+          <Notifications />
+        </div>
+      </div>
+      <div onClick={() => updateZoom(!zoomValue)}>
+        {zoomValue ? (
           <div className="checkZoom1 pixelated"></div>
-          :
+        ) : (
           <div className="checkZoom0 pixelated"></div>
-        } 
+        )}
         <div className="btnZoom pixelated"></div>
       </div>
-      <div className="absolute selectDisable" style={{zIndex: "1", pointerEvents: "none"}}>
+      <div
+        className="absolute selectDisable"
+        style={{ zIndex: "1", pointerEvents: "none" }}
+      >
         <div className="subBar">
-          <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "268px" }}>{buildingData && buildingData.total && buildingData.total > 0 ? buildingData.total : 0}</div>
-          <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "452px" }}>{counterResources && counterResources[3] ? counterResources[3] : 0}</div>
-          <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "570px" }}>{counterResources && counterResources[2] ? counterResources[2] : 0}</div>
-          <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "700px" }}>{counterResources && counterResources[27] ? counterResources[27] : 0}</div>
-          <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "898px" }}>{buildingData && buildingData.inactive ? Object.keys(buildingData.inactive).length : 0}</div>
-          <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "1078px" }}>{buildingData && buildingData.active ? Object.keys(buildingData.active).length : 0}</div>
-          <div className="fontHpxl_JuicySmall absolute" style={{ marginTop: "16px", marginLeft: "1261px" }}>{blockClaimable}</div>
+          <div
+            className="fontHpxl_JuicySmall absolute"
+            style={{ marginTop: "16px", marginLeft: "268px" }}
+          >
+            {Object.keys(playerBuilding).length}
+          </div>
+          <div
+            className="fontHpxl_JuicySmall absolute"
+            style={{ marginTop: "16px", marginLeft: "452px" }}
+          >
+            {counters[1][1]}
+          </div>
+          <div
+            className="fontHpxl_JuicySmall absolute"
+            style={{ marginTop: "16px", marginLeft: "570px" }}
+          >
+            {counters[1][2]}
+          </div>
+          <div
+            className="fontHpxl_JuicySmall absolute"
+            style={{ marginTop: "16px", marginLeft: "700px" }}
+          >
+            {counters[1][3]}
+          </div>
+          <div
+            className="fontHpxl_JuicySmall absolute"
+            style={{ marginTop: "16px", marginLeft: "898px" }}
+          >
+            {counters && counters["inactive" as any]}
+          </div>
+          <div
+            className="fontHpxl_JuicySmall absolute"
+            style={{ marginTop: "16px", marginLeft: "1078px" }}
+          >
+            {counters && counters["active" as any]}
+          </div>
+          <div
+            className="fontHpxl_JuicySmall absolute"
+            style={{ marginTop: "16px", marginLeft: "1261px" }}
+          >
+            {counters && counters["blockClaimable" as any]}
+          </div>
         </div>
       </div>
 
-      <Notifications />
-
-      {popUpInit && 
+      {popUpInit && (
         <div className="flex justify-center selectDisable">
-        <div className="parentNotifInit">
-          <div className="popUpNotifsAchievement pixelated fontHPxl-sm" style={{zIndex: 1, borderImage: `url(data:image/svg+xml;base64,${btoa(UI_Frames)}) 18 fill stretch` , textAlign: 'center'}}>
-            <div className="closeAchievement" onClick={() => setPopUpInit(false)}></div>
-            <p>Beware fren !!</p><br/>
-            <p>Are you sure you want to reset your land ? You will loose the entirety of your progression (buildings & resources). This action is irreversible, there is no coming back.</p>
-            <div className="btnInit pixelated" onClick={() => reinitializeLand()}></div>
+          <div className="parentNotifInit">
+            <div
+              className="popUpNotifsAchievement pixelated fontHPxl-sm"
+              style={{
+                zIndex: 1,
+                borderImage: `url(data:image/svg+xml;base64,${btoa(
+                  UI_Frames
+                )}) 18 fill stretch`,
+                textAlign: "center",
+              }}
+            >
+              <div
+                className="closeAchievement"
+                onClick={() => setPopUpInit(false)}
+              ></div>
+              <p>Beware fren !!</p>
+              <br />
+              <p>
+                Are you sure you want to reset your land ? You will loose the
+                entirety of your progression (buildings & resources). This
+                action is irreversible, there is no coming back.
+              </p>
+              <div
+                className="btnInit pixelated"
+                onClick={async () => await reinitializeLand()}
+              ></div>
+            </div>
           </div>
         </div>
+      )}
+
+      {popUpTxCart && (
+        <div className="flex justify-center selectDisable">
+          <div className="parentNotifTxCart">
+            <div
+              className="popUpNotifsTxCart pixelated fontHPxl-sm"
+              style={{
+                zIndex: 1,
+                borderImage: `url(data:image/svg+xml;base64,${btoa(
+                  UI_Frames
+                )}) 18 fill stretch`,
+                textAlign: "center",
+              }}
+            >
+              <div
+                className="closeTxCart"
+                onClick={() => setPopUpTxCart(false)}
+              ></div>
+              <p>Your transactions</p>
+              <br />
+              <div style={{ overflowY: "auto", height: "310px" }}>
+                {payloadActions.length > 0 ? (
+                  payloadActions.map((action: any, key: number) => {
+                    const calldata = action.calldata.split("|");
+                    let status = "not sent";
+                    if (action.status == "TRANSACTION_RECEIVED") {
+                      status = "ongoing";
+                    } else if (action.status == "ACCEPTED_ON_L2") {
+                      status = "accepted";
+                    }
+                    if (
+                      action.status != "ACCEPTED_ON_L2" ||
+                      action.status != "ACCEPTED_ON_L1"
+                    ) {
+                      return (
+                        <TransactionItem
+                          key={key}
+                          index={key}
+                          status={status}
+                          calldata={calldata}
+                          entrypoint={action.entrypoint}
+                          initialMap={initialMap}
+                        />
+                      );
+                    }
+                  })
+                ) : (
+                  <p>You don't have any actions to validate on-chain yet.</p>
+                )}
+                {payloadActions.filter((action: any) => {
+                  return action.status != "TRANSACTION_RECEIVED";
+                }).length > 0 && (
+                  <div
+                    className="btnCustom pixelated relative"
+                    onClick={async () => await buildMulticall()}
+                  >
+                    <p
+                      className="relative fontHpxl_JuicyXL"
+                      style={{ marginTop: "47px" }}
+                    >
+                      Send TX
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
-      }
+      )}
     </>
   );
 }

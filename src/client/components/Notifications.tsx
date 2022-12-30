@@ -1,18 +1,26 @@
 import React from "react";
-import useActiveNotifications from '../hooks/useNotifications'
+import { useNewGameContext } from "../hooks/useNewGameContext";
 import { NotifItem } from "./NotifItem";
 
 export default function Notifications() {
-  const activeNotifications = useActiveNotifications()
-
-  if (activeNotifications) console.log('Transactions', activeNotifications)
+  const { transactions } = useNewGameContext();
 
   return (
     <>
-    {activeNotifications.map((item) => (
-      <NotifItem  key={item.transactionHash} content={item.metadata} status={item.status} notifKey={item.transactionHash} />
-    ))}
-
+      {transactions &&
+        transactions.length > 0 &&
+        transactions.map((item: any) => {
+          if (item.show) {
+            return (
+              <NotifItem
+                key={item.transaction_hash + "_" + Date.now()}
+                transaction_hash={item.transaction_hash}
+                code={item.code}
+                show={item.true}
+              />
+            );
+          }
+        })}
     </>
-  )
+  );
 }
