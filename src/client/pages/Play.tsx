@@ -295,14 +295,19 @@ export default function Play() {
           );
           console.log("settings", settings);
           initSettings({
-            zoom: (settings && settings.zoom) || true,
+            zoom:
+              settings &&
+              typeof settings === "object" &&
+              typeof settings.zoom !== "undefined"
+                ? settings.zoom
+                : true,
             tutorial:
               settings &&
               typeof settings === "object" &&
               typeof settings.tutorial !== "undefined"
                 ? settings.tutorial
                 : true,
-            sound: (settings && settings.sound) || true,
+            sound: true,
           });
         } else {
           navigate("/");
