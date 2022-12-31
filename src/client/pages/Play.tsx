@@ -18,7 +18,7 @@ import {
 import { allBuildings } from "../data/buildings";
 import { fillStaticBuildings } from "../utils/static";
 import { initCounters } from "../utils/building";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import UI_Frames from "../style/resources/front/Ui_Frames3.svg";
 import { BUILDINGS_QUERY, MAP_QUERY, RESET_QUERY } from "../api/queries";
 
@@ -49,47 +49,61 @@ export default function Play() {
   const frenslandsContract = useFLContract();
   const [needReset, setNeedReset] = useState(false);
   const [isInReset, setIsInReset] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
   const [
     getBuildings,
     { loading: loadingBuilding, data: dataBuilding, error: errorBuilding },
   ] = useLazyQuery(BUILDINGS_QUERY);
   const [getLand, { loading: loadingLand, data: dataLand, error: errorLand }] =
     useLazyQuery(MAP_QUERY);
-  const [
-    getResets,
-    { loading: loadingResets, data: dataResets, error: errorResets },
-  ] = useLazyQuery(RESET_QUERY);
+
+  const {
+    loading,
+    error,
+    data: resetData,
+  } = useQuery(RESET_QUERY, {
+    variables: {
+      landId: ("0x" + landId.toString(16).padStart(64, "0")) as HexValue,
+      limit: 50,
+      skip: 0,
+    },
+    pollInterval: 500,
+  });
 
   const fullMapValue = useMemo(() => {
     return fullMap;
   }, [fullMap]);
 
-  const checkResets = async () => {
+  const checkResets = () => {
     let _needReset = true;
-    const resetsFetched = await getResets({
-      variables: {
-        landId: ("0x" + landId.toString(16).padStart(64, "0")) as HexValue,
-      },
-    });
-    if (resetsFetched.data.reset.length === 0) return false;
-    resetsFetched.data.reset.length > 0 &&
-      resetsFetched.data.reset.map((ev: any) => {
+    console.log("resetData fetched", resetData);
+    if (typeof resetData !== "undefined" && resetData.reset.length === 0)
+      return false;
+    typeof resetData !== "undefined" &&
+      resetData.reset.length > 0 &&
+      resetData.reset.forEach((ev: any) => {
         const desiredTime = new Date("2022-12-26 15:00:00");
         const date = new Date(ev.timestamp);
         if (date > desiredTime) _needReset = false;
       });
+    console.log("needReset", _needReset);
     return _needReset;
   };
 
   useEffect(() => {
+    if (loading === false) setHasLoaded(true);
+  });
+
+  useEffect(() => {
     if (needReset && isInReset && transactions.length > 0) {
-      const _tx = transactions.filter(
-        (tx: any) =>
-          tx.entrypoint === "reinit_game" && tx.status === "ACCEPTED_ON_L2"
-      );
-      if (_tx && _tx.length > 0) navigate("/");
+      const _check = checkResets();
+      if (!_check) {
+        setIsInReset(false);
+        setNeedReset(false);
+        navigate("/play");
+      }
     }
-  }, [needReset, isInReset, transactions]);
+  }, [needReset, isInReset, transactions, resetData]);
 
   const neverInit = (_wallet: any) => {
     const _inventory = [];
@@ -238,7 +252,7 @@ export default function Play() {
   };
 
   useEffect(() => {
-    if (!wallet && !isInit && landId) {
+    if (!wallet && !isInit && landId && hasLoaded) {
       const _wallet = getStarknet();
       _wallet.enable().then((data: any) => {
         if (_wallet.isConnected) {
@@ -246,52 +260,61 @@ export default function Play() {
           initGameSession(landId);
 
           // Check if land was Reset before fixing contract bug
-          checkResets().then((res: any) => {
-            if (!res) {
-              setNeedReset(false);
-              if (wasInit) {
-                fetchLandInfo(_wallet, landId).then((res) => {
-                  updateMapBlock(res._mapComp);
-                  updateCounters(res.counters);
-                  updatePlayerBuildings(res.playerBuildings);
-                  updateInventory(res.inventory);
-                  setIsInit(true);
-                });
-              } else {
-                const { _inventory, _fullMap, _buildings, _counters } =
-                  neverInit(_wallet);
-                updateMapBlock(_fullMap);
-                updateCounters(_counters);
-                updatePlayerBuildings(_buildings);
-                updateInventory(_inventory);
-                addAction({
-                  entrypoint: "start_game",
-                  calldata: landId + "|0",
-                  status: "",
-                  txHash: "",
-                  validated: false,
-                });
+          let res = checkResets();
+          if (!res) {
+            setNeedReset(false);
+            if (wasInit) {
+              fetchLandInfo(_wallet, landId).then((res) => {
+                updateMapBlock(res._mapComp);
+                updateCounters(res.counters);
+                updatePlayerBuildings(res.playerBuildings);
+                updateInventory(res.inventory);
                 setIsInit(true);
-              }
+              });
             } else {
-              setNeedReset(true);
+              const { _inventory, _fullMap, _buildings, _counters } =
+                neverInit(_wallet);
+              updateMapBlock(_fullMap);
+              updateCounters(_counters);
+              updatePlayerBuildings(_buildings);
+              updateInventory(_inventory);
+              addAction({
+                entrypoint: "start_game",
+                calldata: landId + "|0",
+                status: "",
+                txHash: "",
+                validated: false,
+              });
+              setIsInit(true);
             }
-          });
+          } else {
+            setNeedReset(true);
+          }
           const settings = JSON.parse(
             localStorage.getItem("settings") as string
           );
           console.log("settings", settings);
           initSettings({
-            zoom: (settings && settings.zoom) || true,
-            tutorial: (settings && settings.tutorial) || true,
-            sound: (settings && settings.sound) || true,
+            zoom:
+              settings &&
+              typeof settings === "object" &&
+              typeof settings.zoom !== "undefined"
+                ? settings.zoom
+                : true,
+            tutorial:
+              settings &&
+              typeof settings === "object" &&
+              typeof settings.tutorial !== "undefined"
+                ? settings.tutorial
+                : true,
+            sound: true,
           });
         } else {
           navigate("/");
         }
       });
     }
-  }, [wallet, landId, dataBuilding, dataLand]);
+  }, [wallet, landId, dataBuilding, dataLand, loading, hasLoaded]);
 
   useEffect(() => {
     let x = 0;
@@ -343,6 +366,8 @@ export default function Play() {
         setIsInReset(true);
       });
   };
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <>
@@ -421,7 +446,7 @@ export default function Play() {
                 <p>
                   Transaction ongoing...
                   <br />
-                  You'll be redirected to the homepage once the transaction is
+                  You'll be redirected to the game once the transaction is
                   accepted.
                 </p>
               )}
