@@ -34,8 +34,8 @@ export const BUILDINGS_QUERY = gql`
 `;
 
 export const RESET_QUERY = gql`
-  query reset($landId: HexValue!) {
-    reset(landId: $landId) {
+  query reset($landId: HexValue!, $limit: Int, $skip: Int) {
+    reset(landId: $landId, limit: $limit, skip: $skip) {
       owner
       landId
       time

@@ -311,30 +311,50 @@ export const NewAppStateProvider: React.FC<
     cycleRegister,
   } = state;
 
+  // Check state of ongoing transactions
   useEffect(() => {
-    if (state.wallet && isInit && transactions && transactions.length > 0) {
-      const _rejectedTx: any[] = [];
-      transactions.forEach((transaction: any) => {
+    let ongoingTx = JSON.parse(localStorage.getItem("ongoingTx") as string);
+    if (state.wallet && isInit && ongoingTx && ongoingTx.length > 0) {
+      ongoingTx.forEach((transaction: any) => {
         if (transaction.code === "TRANSACTION_RECEIVED") {
           state.wallet.account
             .getTransactionReceipt(transaction.transaction_hash as string)
             .then((res: any) => {
               console.log("getTransactionReceipt", res);
               if (res.status === "REJECTED") {
-                transaction.code = "REJECTED";
+                transaction.code = res.code;
                 payloadActions.map((action: any) => {
                   if (action.txHash === transaction.transaction_hash) {
-                    action.status = "REJECTED";
-                    _rejectedTx.push(action);
+                    action.status = res.code;
                   }
                 });
+                updateActions(payloadActions);
+              } else if (
+                transactions &&
+                transactions.length === 0 &&
+                (res.status === "ACCEPTED_ON_L2" ||
+                  res.status === "ACCEPTED_ON_L1")
+              ) {
+                transaction.code = res.status;
+                payloadActions.map((action: any) => {
+                  if (action.txHash === transaction.transaction_hash) {
+                    action.status = res.status;
+                  }
+                });
+                // delete from local storage
+                const updatedOngoingTx = ongoingTx.filter(
+                  (tx: any) =>
+                    tx.transaction_hash !== transaction.transaction_hash
+                );
+                localStorage.setItem(
+                  "ongoingTx",
+                  JSON.stringify(updatedOngoingTx)
+                );
+                updateActions(payloadActions);
               }
             });
         }
       });
-      if (typeof _rejectedTx === "object" && _rejectedTx.length > 0) {
-        updateActions(payloadActions);
-      }
     }
   }, [state.wallet, isInit, transactions]);
 
@@ -420,6 +440,8 @@ export const NewAppStateProvider: React.FC<
               return oldBlock;
             }
 
+            console.log("newBlock", newBlock);
+
             // Update incoming & active cycles of each building
             playerBuilding.length > 0 &&
               playerBuilding.map((building: any) => {
@@ -445,10 +467,10 @@ export const NewAppStateProvider: React.FC<
             const ongoingTx = JSON.parse(
               localStorage.getItem("ongoingTx") as string
             );
-            // console.log('ongoingTx in state', ongoingTx)
+            console.log("ongoingTx in GameContext", ongoingTx);
             // localStorage.setItem('ongoingTx', JSON.stringify([]));
 
-            // console.log('transactions', transactions)
+            console.log("transactions in gameContext", transactions);
 
             ongoingTx &&
               ongoingTx.map((ongoing: any) => {
@@ -585,6 +607,7 @@ export const NewAppStateProvider: React.FC<
     player,
     playerBuilding,
     transactions,
+    state.transactions,
     fullMap,
     counters,
   ]);
@@ -630,7 +653,7 @@ export const NewAppStateProvider: React.FC<
         transactions: txArray,
       });
     },
-    [dispatch, transactions]
+    [dispatch, transactions, state.transactions]
   );
 
   const initPlayer = React.useCallback(
