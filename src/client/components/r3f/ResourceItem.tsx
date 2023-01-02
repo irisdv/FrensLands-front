@@ -320,24 +320,16 @@ export const ResourceItem = memo<IBlock>(
       }
     }, [animIndex]);
 
-    function findTextByID(type: number) {
+    function findTextByID(type: number): Vector2 {
       const posText = new Vector2();
-      let x = 0;
-      let y = 15;
 
-      while (y >= 0) {
-        while (x < 16) {
-          if (type == textArrRef[y][x]) {
-            posText.x = x * (1 / 16);
-            posText.y = y * (1 / 16);
-            return posText;
-          }
-          x++;
-        }
-        x = 0;
-        y--;
-      }
-      return new Vector2(0, 0);
+      let x = 16;
+      let y = 16;
+
+      posText.y = 1 - (Math.floor((type - 1) / y) / 16 + 1 / 16);
+      posText.x = ((type - 1) % x) / 16;
+
+      return posText;
     }
 
     const completeHarvest = async () => {
