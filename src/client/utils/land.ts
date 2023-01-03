@@ -319,7 +319,7 @@ export const calculatePlayerLevel = (
   const cabin = mapBuildingArray.find(
     (building) => typeof building === "object" && building.type === 1
   );
-  _level = cabin?.decay === 0 ? 2 : _level;
+  _level = cabin && cabin?.decay === 0 ? 2 : _level;
   _level = counters?.[2]?.[2] > 0 && counters?.[2]?.[14] > 0 ? 3 : _level;
   _level = counters?.[2]?.[18] > 0 ? 4 : _level;
   _level = counters?.[2]?.[5] > 0 && counters?.[2]?.[6] > 0 ? 5 : _level;
