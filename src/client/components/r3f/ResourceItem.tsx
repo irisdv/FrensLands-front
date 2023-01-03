@@ -121,7 +121,7 @@ export const ResourceItem = memo<IBlock>(
             const _entry = playerBuilding.filter((elem: any) => {
               return elem.gameUid == block.id;
             });
-            if (_entry[0].decay == 100) {
+            if (_entry[0]?.decay == 100) {
               textureType = findTextByID(2);
             } else {
               textureType = findTextByID(
@@ -187,7 +187,7 @@ export const ResourceItem = memo<IBlock>(
             const _entry = playerBuilding.filter((elem: any) => {
               return elem.gameUid == block.id;
             });
-            if (_entry[0].decay == 100) {
+            if (_entry[0]?.decay == 100) {
               textureType = findTextByID(2);
             } else {
               textureType = findTextByID(

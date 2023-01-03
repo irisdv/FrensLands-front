@@ -207,7 +207,7 @@ export default function Play() {
           incomingCycles,
           lastFuel,
           gameUid: id,
-          decay: Number(building.decay),
+          decay: Number(building?.decay),
         };
         if (id > lastUID) lastUID = id;
       });

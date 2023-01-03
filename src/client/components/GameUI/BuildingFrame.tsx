@@ -97,7 +97,7 @@ export function BuildingFrame(props: any) {
               return elem.gameUid == frameData.unique_id;
             });
 
-            if (_entry[0].decay > 0) {
+            if (_entry[0] && _entry[0]?.decay > 0) {
               setDecay(_entry[0].decay);
               const _canRepair = checkResRepairMsg(
                 frameData.typeId - 1,
