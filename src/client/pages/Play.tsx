@@ -124,6 +124,7 @@ export default function Play() {
     const _fullMap = initMapArr(_wallet.account.address);
 
     const _buildings: any[] = [];
+    _buildings[1] = [];
     _buildings[1].activeCycles = 0;
     _buildings[1].decay = 100;
     _buildings[1].gameUid = 1;
