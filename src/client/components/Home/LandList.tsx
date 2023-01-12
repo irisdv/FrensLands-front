@@ -10,6 +10,7 @@ export default function MenuHome(props: any) {
   const { account } = props;
   const navigate = useNavigate();
   const [isReady, setIsReady] = useState(false);
+  const [tokenIdsArray, setTokenIdsArray] = useState<any>(null)
   const [getInit, { loading: loadingInit, data: initData, error: initError }] =
     useLazyQuery(INIT_QUERY);
 
@@ -23,17 +24,17 @@ export default function MenuHome(props: any) {
     },
   });
 
-  const tokenIdsArray = useMemo(() => {
-    if (data && data.tokens && data.tokens.length > 0) {
+  useEffect(() => {
+    if (data && data.tokens && data.tokens.length > 0 && tokenIdsArray == null) {
+      console.log('data fetched from indexer', data.tokens)
       const _tokenIds: any[] = [];
       data.tokens.map((land: any) => {
         _tokenIds.push(parseInt(hexToDecimalString(land.tokenId)));
       });
       console.log("_tokenIds array", _tokenIds);
-
-      return _tokenIds;
+      setTokenIdsArray(_tokenIds);
     }
-  }, [data, isReady]);
+  })
 
   useEffect(() => {
     if (tokenIdsArray != null && tokenIdsArray.length > 0) setIsReady(true);
