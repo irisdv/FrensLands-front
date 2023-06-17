@@ -97,11 +97,12 @@ export default function Home() {
               style={{ width: "100vw", top: "0" }}
             >
               {/* Player is already registered and has a land */}
-              {wallet?.isConnected && hasLand != null && (
+              {/* {wallet?.isConnected && hasLand != null && ( */}
+              {wallet?.isConnected && (
                 <>
                   <img
                     className="relative mx-auto pixelated nftImg"
-                    src={`resources/maps/FrensLand_NFTs_${hasLand.biomeId}.png`}
+                    src={`resources/maps/FrensLand_NFTs_0.png`}
                   />
                   <div style={{ height: "170px", pointerEvents: "all" }}>
                     <button
