@@ -139,7 +139,7 @@ export default function Home() {
                         <a
                           className="cursor-pointer"
                           style={{ color: "#964489" }}
-                          href="https://discord.gg/gehYZU9Trf"
+                          href="#"
                           target="_blank"
                           rel="noreferrer"
                         >

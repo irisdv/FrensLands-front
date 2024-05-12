@@ -81,7 +81,7 @@ export default function Team() {
                 style={{ width: "256px" }}
               >
                 <a
-                  href="https://discord.gg/gehYZU9Trf"
+                  href="#"
                   target="_blank"
                   rel="noreferrer"
                 >

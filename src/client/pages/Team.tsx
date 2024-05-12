@@ -99,7 +99,7 @@ export default function Team() {
                   <div className="twitterIcon-xl mx-2 pixelated"></div>
                 </a>
                 <a
-                  href="https://discord.gg/gehYZU9Trf"
+                  href="#"
                   target="_blank"
                   className="mx-auto text-center"
                   rel="noreferrer"
